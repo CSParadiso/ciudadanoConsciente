@@ -3,28 +3,26 @@ package ciudadano.consciente.modelo;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(schema="app", name = "users")
 //@UserDefinition
 public class Usuario {
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // IDENTITY usa el mecanismo de sequencia de la DB
     @Column(name = "user_id")
     @Id
-    public Integer userId;
+    private Integer userId;
 
     //@Username
-    public String username;
+    private String username;
 
     @Column(name = "pass_word")
     //@Password
-    public String password;
+    private String password;
 
-    public String email;
+    private String email;
 
     public Integer getUserId() {
         return userId;

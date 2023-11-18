@@ -28,4 +28,13 @@ public class ExceptionMappers {
 
     }
 
+    @ServerExceptionMapper
+    public Response mapHttpInternalServerException( HttpInternalServerException x ) {
+
+        auditor.debug(x.getMessage());
+        auditor.debug("mapHttpInternalServerException");
+        return Response.serverError().header("Warning", x.getMessage()).build();
+
+    }
+
 }
