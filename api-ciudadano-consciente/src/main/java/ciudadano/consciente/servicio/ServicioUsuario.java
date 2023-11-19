@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RequestScoped
@@ -79,7 +78,7 @@ public class ServicioUsuario {
         if(password != null && !password.trim().isEmpty()) {usuario.setPassword(password);}
 
         Usuario usuarioActualizado = accesoUsuario.persistir(usuario)
-                .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir actualizació del usuario.") );
+                .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir actualización del usuario.") );
 
         return transformadorUsuario.entidadATransferible(usuarioActualizado);
 
