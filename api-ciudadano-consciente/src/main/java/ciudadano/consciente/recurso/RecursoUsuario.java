@@ -14,10 +14,12 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
 import java.util.List;
 
+@Tag(name = "Recurso Usuario")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -71,13 +73,10 @@ public class RecursoUsuario {
         // Integer.MAX_VALUE es 2,147,483,647. Si el id lo supera lanza 404.
 
         if(identificador == 0) { // Recuperamos todos los usuarios
-            servicioUsuario.obtenerTodos();
             return Response.ok(servicioUsuario.obtenerTodos()).build();
         }
 
-        TransferibleUsuario usuario = servicioUsuario.obtener(identificador);
-
-        return Response.ok(usuario).build();
+        return Response.ok(servicioUsuario.obtener(identificador)).build();
 
     }
 
