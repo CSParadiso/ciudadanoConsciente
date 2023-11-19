@@ -28,4 +28,19 @@ public class AccesoOrganizacion implements PanacheRepositoryBase<Organizacion, I
         return findByIdOptional(identificador);
 
     }
+
+    public Optional<Organizacion> persisir(Organizacion organizacion) {
+
+        auditor.debug("Intentando persistir organización " + organizacion.getOrganizationId());
+        persist(organizacion);
+        return find("name", organizacion.getName()).firstResultOptional();
+
+    }
+
+    public boolean eliminar(Integer identificador) {
+
+        auditor.debug("Intentando eliminar organización " + identificador);
+        return deleteById(identificador);
+
+    }
 }

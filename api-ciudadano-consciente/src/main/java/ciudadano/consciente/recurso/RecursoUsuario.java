@@ -84,7 +84,7 @@ public class RecursoUsuario {
     @Path("/add/")
     @Operation( summary = "Crear un nuevo usuario")
     @APIResponse(
-            responseCode = "200",
+            responseCode = "204",
             description = "Usuario creado con éxito"
     )
 
@@ -131,6 +131,5 @@ public class RecursoUsuario {
         return Response.ok(usuario).build();
 
     }
-    // TODO @Patch -> user
 
 }

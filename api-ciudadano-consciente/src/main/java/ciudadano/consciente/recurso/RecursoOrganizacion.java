@@ -1,6 +1,9 @@
+
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioOrganizacion;
+import ciudadano.consciente.transferible.TransferibleOrganizacion;
+import ciudadano.consciente.transferible.TransferibleRequestCrearOrganizacion;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -41,4 +44,55 @@ public class RecursoOrganizacion {
 
     }
 
+    @POST
+    @Path("add/")
+    @Operation( summary = "Crear una nueva organización.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Organización creada con éxito."
+    )
+    public Response crear(TransferibleRequestCrearOrganizacion transferibleRequestCrearOrganizacion) {
+
+        return Response.ok(servicioOrganizacion.crear(transferibleRequestCrearOrganizacion)).build();
+
+    }
+
+    @Path("delete/")
+    @DELETE
+    @Operation( summary = "Eliminar un usuario a partir de su identificador")
+    @APIResponse(
+            responseCode = "200",
+            description = "Organización eliminada con éxito."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
+    )
+    public Response eliminar(@QueryParam("id") Integer identificador) {
+
+        servicioOrganizacion.eliminar(identificador);
+        return Response.ok().build();
+
+    }
+
+    @PATCH
+    @Path("edit/")
+    @Operation( summary = "Editar Organización")
+    @APIResponse(
+            responseCode = "200",
+            description = "Organización editada con éxito."
+    )
+    public Response editar(@QueryParam("id") Integer identificador,
+                           @QueryParam("name") String name,
+                           @QueryParam("email") String email,
+                           @QueryParam("description") String description) {
+
+        TransferibleOrganizacion organizacion = servicioOrganizacion.editar(identificador, name, email, description);
+        return Response.ok(organizacion).build();
+
+    }
+
+    // TODO @PATCH organization
+
 }
+
