@@ -92,7 +92,5 @@ public class RecursoOrganizacion {
 
     }
 
-    // TODO @PATCH organization
-
 }
 
