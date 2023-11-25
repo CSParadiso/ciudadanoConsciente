@@ -1,0 +1,8 @@
+// TODO cambiar a QueryParam todo lo que tenga estructura definida (Significa modificar todos los crear() y eliminar  los
+//  transferibles de la Resquest). En el body solo lo mutable.
+
+// TODO corregir Paths de todos lo recursos
+
+// TODO Corregir anotaciones apiResponse
+
+// TODO Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus

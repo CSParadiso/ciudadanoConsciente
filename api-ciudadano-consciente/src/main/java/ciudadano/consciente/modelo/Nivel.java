@@ -16,7 +16,7 @@ public class Nivel {
     private String description;
 
     // LA REQUEST RECUPERA TODOS LOS DATOS DE LA CLAVE FORÁNEA. CORROBORAR SI LO VAMOS A USAR O SOBRECARGA LA REQUEST
-    @ManyToOne(fetch = FetchType.LAZY) // o FetchType.EAGER // LAZY: deferred Loading, EAGER: Loading along Entity
+    @ManyToOne(fetch = FetchType.EAGER) // o FetchType.EAGER // LAZY: deferred Loading, EAGER: Loading along Entity
     @JoinColumn(name = "organization", referencedColumnName = "organization_id") // @JoinColumn(nombreClaveForanea en Organizacion, nombreClavePrimaria en Organizacion)
     private Organizacion organization;
 

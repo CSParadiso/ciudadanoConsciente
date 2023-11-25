@@ -7,6 +7,9 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class TransferibleNivel {
 
     @Schema
+    private Integer levelId;
+
+    @Schema
     private String name;
 
     @Schema
@@ -17,6 +20,14 @@ public class TransferibleNivel {
 
     @Schema
     private Nivel parent;
+
+    public Integer getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(Integer levelId) {
+        this.levelId = levelId;
+    }
 
     public String getName() {
         return name;

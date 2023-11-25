@@ -1,7 +1,6 @@
 package ciudadano.consciente.transformador;
 
 import ciudadano.consciente.modelo.Usuario;
-import ciudadano.consciente.transferible.TransferibleRequestCrearUsuario;
 import ciudadano.consciente.transferible.TransferibleUsuario;
 import org.mapstruct.Mapper;
 
@@ -15,6 +14,6 @@ public interface TransformadorUsuario {
 
     List<TransferibleUsuario> entidadATransferible(List<Usuario> usuarioList);
 
-    Usuario transferibleAEntidad(TransferibleRequestCrearUsuario transferible);
+    Usuario transferibleAEntidad(String username);
 
 }

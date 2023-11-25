@@ -1,7 +1,6 @@
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioNivel;
-import ciudadano.consciente.transferible.TransferibleRequestCrearNivel;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -26,8 +25,24 @@ public class RecursoNivel {
     ServicioNivel servicioNivel;
 
     @GET
+    @Operation(summary = "Retornar todos los niveles.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Niveles retornados con éxito."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Problemas al recuperar los niveles. Revisar cabecera 'Warnings'."
+    )
+    public Response obtener() {
+
+        return Response.ok(servicioNivel.obtenerTodos()).build();
+
+    }
+
+    @GET
     @Path("{id}")
-    @Operation(summary = "Retornar un nivel a partir de su identificador. Todos si el id es 0")
+    @Operation(summary = "Retornar un nivel a partir de su identificador.")
     @APIResponse(
             responseCode = "200",
             description = "Nivel retornado con éxito."
@@ -38,37 +53,46 @@ public class RecursoNivel {
     )
     public Response obtener(@PathParam("id") Integer identificador) {
 
-        if(identificador == 0) {
-            return Response.ok(servicioNivel.obtenerTodos()).build();
-        }
-
         return Response.ok(servicioNivel.obtener(identificador)).build();
 
     }
 
     @POST
-    @Path("add/")
     @Operation(summary = "Crear un nivel.")
     @APIResponse(
             responseCode = "200",
             description = "Nivel creado con éxito"
     )
     @APIResponse(
+            responseCode = "400",
+            description = "Problemas al crear Nivel. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
             responseCode = "500",
             description = "Problemas al crear Nivel. Revisar cabecera 'Warning'."
     )
-    public Response crear(TransferibleRequestCrearNivel transferibleRequestCrearNivel) {
+    public Response crear(@QueryParam("name") String name,
+                          @QueryParam("description") String description,
+                          @QueryParam("organization") Integer organization,
+                          @QueryParam("parent") Integer parent) {
 
-        return Response.ok(servicioNivel.crear(transferibleRequestCrearNivel)).build();
+        return Response.ok(servicioNivel.crear(name, description, organization, parent)).build();
 
     }
 
     @DELETE
-    @Path("delete/")
     @Operation(summary = "Eliminar un nivel a partir de su identificador.")
     @APIResponse(
             responseCode = "200",
             description = "Nivel elimninado con éxito."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Problemas al eliminar Nivel. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al identificar Nivel. Revisar cabecera 'Warning'"
     )
     public Response eliminar(@QueryParam("id") Integer identificador) {
 
@@ -77,6 +101,32 @@ public class RecursoNivel {
 
     }
 
-    // TODO @POST (corregir Organizacion y Nivel cuando carga) @PATCH
+    @PATCH
+    @Operation(summary = "Actualizar un nivel a partir de su identificador.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Nivel editado con éxito"
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Problemas al actualizar Nivel. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al actualizar Nivel. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Problemas al actualizar Nivel. Revisar cabecera 'Warning'."
+    )
+    public Response actualizar(@QueryParam("id") Integer identificador,
+                           @QueryParam("name") String name,
+                           @QueryParam("description") String description,
+                           @QueryParam("organization") Integer organization,
+                           @QueryParam("parent") Integer parent) {
+
+        return Response.ok(servicioNivel.actualizar(identificador, name, description, organization, parent)).build();
+
+    }
 
 }

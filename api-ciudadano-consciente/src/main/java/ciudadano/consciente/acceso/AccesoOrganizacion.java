@@ -33,7 +33,7 @@ public class AccesoOrganizacion implements PanacheRepositoryBase<Organizacion, I
 
         auditor.debug("Intentando persistir organización " + organizacion.getOrganizationId());
         persist(organizacion);
-        return find("name", organizacion.getName()).firstResultOptional();
+        return findByIdOptional(organizacion.getOrganizationId());
 
     }
 
@@ -41,6 +41,18 @@ public class AccesoOrganizacion implements PanacheRepositoryBase<Organizacion, I
 
         auditor.debug("Intentando eliminar organización " + identificador);
         return deleteById(identificador);
+
+    }
+
+    public boolean existeNombre(String name) {
+
+        return count("name", name) > 0;
+
+    }
+
+    public boolean existeEmail(String email) {
+
+        return count("email", email) > 0;
 
     }
 }

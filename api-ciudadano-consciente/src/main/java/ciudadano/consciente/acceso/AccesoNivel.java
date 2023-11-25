@@ -15,17 +15,17 @@ public class AccesoNivel implements PanacheRepositoryBase<Nivel, Integer> {
     @Inject
     Logger auditor;
 
-    public Optional<Nivel> obtener(Integer identificador) {
-
-        auditor.debug("Intentando recuperar Nivel " + identificador);
-        return findByIdOptional(identificador);
-
-    }
-
     public List<Nivel> obtenerTodos() {
 
         auditor.debug("Intentando recuparar todos los niveles.");
         return findAll().stream().toList();
+
+    }
+
+    public Optional<Nivel> obtener(Integer identificador) {
+
+        auditor.debug("Intentando recuperar Nivel " + identificador);
+        return findByIdOptional(identificador);
 
     }
 
@@ -40,7 +40,13 @@ public class AccesoNivel implements PanacheRepositoryBase<Nivel, Integer> {
 
         auditor.debug("Intentando persistir Nivel");
         persist(nivel);
-        return find("name", nivel.getName()).firstResultOptional();
+        return findByIdOptional(nivel.getLevelId());
+
+    }
+
+    public boolean existeNombre(String name) {
+
+        return count("name", name) > 0;
 
     }
 }

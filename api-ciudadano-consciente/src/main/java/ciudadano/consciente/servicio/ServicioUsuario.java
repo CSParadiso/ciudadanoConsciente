@@ -1,10 +1,10 @@
 package ciudadano.consciente.servicio;
 
 import ciudadano.consciente.acceso.AccesoUsuario;
+import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.modelo.Usuario;
-import ciudadano.consciente.transferible.TransferibleRequestCrearUsuario;
 import ciudadano.consciente.transferible.TransferibleUsuario;
 import ciudadano.consciente.transformador.TransformadorUsuario;
 import jakarta.enterprise.context.RequestScoped;
@@ -47,19 +47,42 @@ public class ServicioUsuario {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleUsuario crear(TransferibleRequestCrearUsuario transferibleRequestCrearUsuario) {
+    public TransferibleUsuario crear(String email, String username, String password) {
 
-        Usuario usuario = transformadorUsuario.transferibleAEntidad(transferibleRequestCrearUsuario);
+        if(username == null || username.trim().isEmpty() ||
+                email == null || email.trim().isEmpty() ||
+                password == null || password.trim().isEmpty()) {
+            throw new HttpBadRequestException("Todos los campos son requeridos para crear un Usuario.");
+        }
 
-        usuario = accesoUsuario.persistir(usuario)
-                .orElseThrow(() -> new HttpInternalServerException("Error al persistir Usuario"));
+        if(!accesoUsuario.existeUsername(username)) {
+            Usuario usuario = transformadorUsuario.transferibleAEntidad(username);
 
-        return transformadorUsuario.entidadATransferible(usuario);
+            if(!accesoUsuario.existeEmail(email)) {
+                usuario.setEmail(email);
+            } else {
+                throw new HttpBadRequestException("El email de Usuario ya existe o no es válido.");
+            }
+
+            usuario.setPassword(password);
+
+            usuario = accesoUsuario.persistir(usuario)
+                    .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir nuevo Usuario."));
+
+            return transformadorUsuario.entidadATransferible(usuario);
+
+        } else {
+            throw new HttpBadRequestException("El nombre de Usuario ya existe o no es válido.");
+        }
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
     public void eliminar(Integer identificador) {
+
+        if(identificador == null) {
+            throw new HttpBadRequestException("Identificador requerido.");
+        }
 
         if (!accesoUsuario.eliminar(identificador)) {
             throw new HttpNoContentException("Usuario a eliminar no existe");
@@ -68,19 +91,42 @@ public class ServicioUsuario {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleUsuario editar(Integer identificador, String email, String username, String password) {
+    public TransferibleUsuario actualizar(Integer identificador, String email, String username, String password) {
+
+        if((username == null || username.trim().isEmpty()) &&
+                (email == null || email.trim().isEmpty()) &&
+                (password == null || password.trim().isEmpty())) {
+            throw new HttpBadRequestException("Sin campos que actualizar.");
+        }
 
         Usuario usuario = accesoUsuario.findByIdOptional(identificador)
                 .orElseThrow( () -> new HttpNoContentException("El usuario no existe.") );
 
-        if(email != null && !email.trim().isEmpty()) { usuario.setEmail(email); }
-        if(username != null && !username.trim().isEmpty()) {usuario.setUsername(username);}
-        if(password != null && !password.trim().isEmpty()) {usuario.setPassword(password);}
+        if((username != null && !username.trim().isEmpty())) {
+            if (!accesoUsuario.existeUsername(username)) {
+                usuario.setUsername(username);
+            } else {
+                throw new HttpBadRequestException("El nombre de Usuario ya existe o no es válido.");
+            }
+        }
 
-        Usuario usuarioActualizado = accesoUsuario.persistir(usuario)
-                .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir actualización del usuario.") );
+        if(email != null && !email.trim().isEmpty()) {
+            if(!accesoUsuario.existeEmail(email)) {
+                usuario.setEmail(email);
+            } else {
+                throw new HttpBadRequestException("El email de Usuario ya existe o no es válido.");
+            }
+        }
 
-        return transformadorUsuario.entidadATransferible(usuarioActualizado);
+        if(password != null && !password.trim().isEmpty()) {
+            usuario.setPassword(password);
+        }
+
+        usuario = accesoUsuario.persistir(usuario)
+                .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir actualización de Usuario."));
+
+        return transformadorUsuario.entidadATransferible(usuario);
 
     }
+
 }

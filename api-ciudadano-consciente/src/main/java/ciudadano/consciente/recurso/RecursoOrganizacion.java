@@ -2,8 +2,6 @@
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioOrganizacion;
-import ciudadano.consciente.transferible.TransferibleOrganizacion;
-import ciudadano.consciente.transferible.TransferibleRequestCrearOrganizacion;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -28,36 +26,56 @@ public class RecursoOrganizacion {
     ServicioOrganizacion servicioOrganizacion;
 
     @GET
+    @Operation( summary = "Retornar todas las organizaciones")
+    @APIResponse(
+            responseCode = "200",
+            description = "Éxito al recuperar todas las organizaciones."
+    )
+    public Response obtener() {
+
+        return Response.ok(servicioOrganizacion.obtenerTodos()).build();
+
+    }
+
+    @GET
     @Path("{id}/")
-    @Operation( summary = "Retornar una organización a partir de su identificador. Todas si el id es 0.")
+    @Operation( summary = "Retornar una organización a partir de su identificador.")
     @APIResponse(
             responseCode = "200",
             description = "Éxito al recuprar organización."
     )
+    @APIResponse(
+            responseCode = "204",
+            description = "Problemas al recuperar el nivel. Revisar cabecera 'Warning'."
+    )
     public Response obtener(@PathParam("id") Integer identificador) {
-
-        if(identificador == 0) {
-            return Response.ok(servicioOrganizacion.obtenerTodos()).build();
-        }
 
         return Response.ok(servicioOrganizacion.obtener(identificador)).build();
 
     }
 
     @POST
-    @Path("add/")
     @Operation( summary = "Crear una nueva organización.")
     @APIResponse(
             responseCode = "200",
             description = "Organización creada con éxito."
     )
-    public Response crear(TransferibleRequestCrearOrganizacion transferibleRequestCrearOrganizacion) {
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al crear Organización. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Problemas al crear Organización. Revisar cabecera 'Warning'."
+    )
+    public Response crear(@QueryParam("name") String name,
+                          @QueryParam("email") String email,
+                          @QueryParam("description") String description) {
 
-        return Response.ok(servicioOrganizacion.crear(transferibleRequestCrearOrganizacion)).build();
+        return Response.ok(servicioOrganizacion.crear(name, email, description)).build();
 
     }
 
-    @Path("delete/")
     @DELETE
     @Operation( summary = "Eliminar un usuario a partir de su identificador")
     @APIResponse(
@@ -68,6 +86,10 @@ public class RecursoOrganizacion {
             responseCode = "204",
             description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
     )
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
+    )
     public Response eliminar(@QueryParam("id") Integer identificador) {
 
         servicioOrganizacion.eliminar(identificador);
@@ -76,19 +98,29 @@ public class RecursoOrganizacion {
     }
 
     @PATCH
-    @Path("edit/")
-    @Operation( summary = "Editar Organización")
+    @Operation( summary = "Actualizar datos de la Organización")
     @APIResponse(
             responseCode = "200",
             description = "Organización editada con éxito."
     )
-    public Response editar(@QueryParam("id") Integer identificador,
-                           @QueryParam("name") String name,
-                           @QueryParam("email") String email,
-                           @QueryParam("description") String description) {
+    @APIResponse(
+            responseCode = "204",
+            description = "Problemas al actualizar organización. Revisar cabecera 'Warning'"
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al actualizar organización. Revisar cabecera 'Warning'"
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Problemas al actualizar organización. Revisar cabecera 'Warning'"
+    )
+    public Response actualizar(@QueryParam("id") Integer identificador,
+                               @QueryParam("name") String name,
+                               @QueryParam("email") String email,
+                               @QueryParam("description") String description) {
 
-        TransferibleOrganizacion organizacion = servicioOrganizacion.editar(identificador, name, email, description);
-        return Response.ok(organizacion).build();
+        return Response.ok(servicioOrganizacion.actualizar(identificador, name, email, description)).build();
 
     }
 

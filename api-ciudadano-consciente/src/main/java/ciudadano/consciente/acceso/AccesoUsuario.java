@@ -30,9 +30,8 @@ public class AccesoUsuario implements PanacheRepositoryBase<Usuario, Integer> {
     public Optional<Usuario> persistir(Usuario usuario) {
 
         auditor.debug("Intentando persistir usuario");
-        auditor.debug(usuario.getUserId());
         persist(usuario);
-        return find("username", usuario.getUsername()).firstResultOptional();
+        return findByIdOptional(usuario.getUserId());
 
     }
 
@@ -43,4 +42,15 @@ public class AccesoUsuario implements PanacheRepositoryBase<Usuario, Integer> {
 
     }
 
+    public boolean existeUsername(String username) {
+
+        return count("username", username) > 0;
+
+    }
+
+    public boolean existeEmail(String email) {
+
+        return count("email", email) > 0;
+
+    }
 }
