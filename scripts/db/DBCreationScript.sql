@@ -51,7 +51,7 @@ create table app.reference (
 	title varchar(100) not null, 
 	url varchar(350) not null, 
 	description varchar (140), 
-	level_id integer references app.levels on delete cascade 
+	level_id integer references app.levels on delete cascade not null
 );
 
 	-- Tabla tags
@@ -122,7 +122,7 @@ create table app.users_roles_organizations(
 	unique(user_id, role_id, organization)
 );
 
-	-- Tabla Intermedia URL (users, roles, levels) no es necesaria porque el level tiene la organización
+	-- Tabla Intermedia URL (users, roles, levels) no es necesaria porque el level tiene la organización?
 create table app.users_roles_levels (
 	url_id integer generated always as identity primary key, 
 	user_id integer references app.users on delete cascade not null, 

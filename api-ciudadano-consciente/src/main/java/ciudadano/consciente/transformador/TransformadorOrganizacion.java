@@ -3,16 +3,17 @@ package ciudadano.consciente.transformador;
 import ciudadano.consciente.modelo.Organizacion;
 import ciudadano.consciente.transferible.TransferibleOrganizacion;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE) // Ignore advertencia de unmapped
 public interface TransformadorOrganizacion {
     // target = "nombreEnTransferible" source = "nombreEnModelo"
 
-    public TransferibleOrganizacion entidadATransferible(Organizacion organizacion);
+    TransferibleOrganizacion entidadATransferible(Organizacion organizacion);
 
-    public List<TransferibleOrganizacion> entidadATransferible(List<Organizacion> organizacionList);
+    List<TransferibleOrganizacion> entidadATransferible(List<Organizacion> organizacionList);
 
     Organizacion transferibleAEntidad(String name);
 }

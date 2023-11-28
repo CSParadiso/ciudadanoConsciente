@@ -3,10 +3,11 @@ package ciudadano.consciente.transformador;
 import ciudadano.consciente.modelo.Usuario;
 import ciudadano.consciente.transferible.TransferibleUsuario;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE) // Ignore advertencia de unmapped
 public interface TransformadorUsuario {
 
     // target = "nombreEnTransferible" source = "nombreEnModelo"

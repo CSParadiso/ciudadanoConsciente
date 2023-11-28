@@ -29,8 +29,6 @@ public class ServicioUsuario {
 
     public TransferibleUsuario obtener(Integer identificador) {
 
-        auditor.debug("Servicio: intentando obtener usuario.");
-
         Usuario usuario = accesoUsuario.obtener(identificador) // Si obtiene nulo, lanza excepción
                 .orElseThrow(() -> new HttpNoContentException("No existe el usuario con el identificador " + identificador));
 
