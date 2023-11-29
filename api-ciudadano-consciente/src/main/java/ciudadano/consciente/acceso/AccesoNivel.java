@@ -2,6 +2,7 @@ package ciudadano.consciente.acceso;
 
 import ciudadano.consciente.modelo.Nivel;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
@@ -18,7 +19,7 @@ public class AccesoNivel implements PanacheRepositoryBase<Nivel, Integer> {
     public List<Nivel> obtenerTodos() {
 
         auditor.debug("Intentando recuparar todos los niveles.");
-        return findAll().stream().toList();
+        return findAll(Sort.by("levelId")).stream().toList();
 
     }
 

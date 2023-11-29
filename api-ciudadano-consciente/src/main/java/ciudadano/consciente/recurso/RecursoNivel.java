@@ -1,6 +1,8 @@
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioNivel;
+import ciudadano.consciente.transferible.TransferibleActualizarNivel;
+import ciudadano.consciente.transferible.TransferibleCrearNivel;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -71,16 +73,14 @@ public class RecursoNivel {
             responseCode = "500",
             description = "Problemas al crear Nivel. Revisar cabecera 'Warning'."
     )
-    public Response crear(@QueryParam("name") String name,
-                          @QueryParam("description") String description,
-                          @QueryParam("organization") Integer organization,
-                          @QueryParam("parent") Integer parent) {
+    public Response crear(TransferibleCrearNivel transferibleCrearNivel) {
 
-        return Response.ok(servicioNivel.crear(name, description, organization, parent)).build();
+        return Response.ok(servicioNivel.crear(transferibleCrearNivel)).build();
 
     }
 
     @DELETE
+    @Path("{id}")
     @Operation(summary = "Eliminar un nivel a partir de su identificador.")
     @APIResponse(
             responseCode = "200",
@@ -94,7 +94,7 @@ public class RecursoNivel {
             responseCode = "400",
             description = "Problemas al identificar Nivel. Revisar cabecera 'Warning'"
     )
-    public Response eliminar(@QueryParam("id") Integer identificador) {
+    public Response eliminar(@PathParam("id") Integer identificador) {
 
         servicioNivel.eliminar(identificador);
         return Response.ok().build();
@@ -119,13 +119,9 @@ public class RecursoNivel {
             responseCode = "500",
             description = "Problemas al actualizar Nivel. Revisar cabecera 'Warning'."
     )
-    public Response actualizar(@QueryParam("id") Integer identificador,
-                           @QueryParam("name") String name,
-                           @QueryParam("description") String description,
-                           @QueryParam("organization") Integer organization,
-                           @QueryParam("parent") Integer parent) {
+    public Response actualizar(TransferibleActualizarNivel transferibleActualizarNivel) {
 
-        return Response.ok(servicioNivel.actualizar(identificador, name, description, organization, parent)).build();
+        return Response.ok(servicioNivel.actualizar(transferibleActualizarNivel)).build();
 
     }
 

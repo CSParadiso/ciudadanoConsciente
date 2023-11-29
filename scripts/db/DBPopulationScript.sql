@@ -57,6 +57,10 @@ insert into app.levels (name, description, organization, parent)
 values	
 	('Exile On Main Street', 'Level sobre el disco grabado en la mansión francesa', 3, 3);
  
+	-- Insertar Nivel Base para busquedas de Niveles sin padre
+insert into app.levels (level_id, name, description, organization, parent)
+overriding system value
+values(0, 'BaseLevel', 'Nivel fijo para ubicar niveles sin padre', null,null)
 
 -- Averiguar nombres de secuencias
 SELECT column_name, column_default

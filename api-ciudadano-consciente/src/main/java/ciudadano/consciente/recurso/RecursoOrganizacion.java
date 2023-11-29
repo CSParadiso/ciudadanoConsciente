@@ -77,6 +77,7 @@ public class RecursoOrganizacion {
     }
 
     @DELETE
+    @Path("{id}")
     @Operation( summary = "Eliminar un usuario a partir de su identificador")
     @APIResponse(
             responseCode = "200",
@@ -90,7 +91,7 @@ public class RecursoOrganizacion {
             responseCode = "400",
             description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
     )
-    public Response eliminar(@QueryParam("id") Integer identificador) {
+    public Response eliminar(@PathParam("id") Integer identificador) {
 
         servicioOrganizacion.eliminar(identificador);
         return Response.ok().build();
