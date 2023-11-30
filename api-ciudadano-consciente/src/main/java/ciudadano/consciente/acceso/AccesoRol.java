@@ -32,7 +32,7 @@ public class AccesoRol implements PanacheRepositoryBase<Rol, Integer> {
     public boolean existeNombre(String name) {
 
         auditor.debug("Corroborando si existe el Rol.");
-        return count("name", name) <= 0;
+        return count("name", name) > 0;
 
     }
 

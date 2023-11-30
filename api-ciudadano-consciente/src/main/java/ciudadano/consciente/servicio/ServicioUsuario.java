@@ -5,12 +5,14 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.modelo.Usuario;
+import ciudadano.consciente.transferible.TransferibleActualizarUsuario;
+import ciudadano.consciente.transferible.TransferibleCrearUsuario;
 import ciudadano.consciente.transferible.TransferibleUsuario;
 import ciudadano.consciente.transformador.TransformadorUsuario;
+import ciudadano.consciente.utilidad.UtilidadCamposRequest;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.jboss.logging.Logger;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
 public class ServicioUsuario {
 
     @Inject
-    Logger auditor;
+    UtilidadCamposRequest utilidadCamposRequest;
 
     @Inject
     AccesoUsuario accesoUsuario;
@@ -45,33 +47,35 @@ public class ServicioUsuario {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleUsuario crear(String email, String username, String password) {
+    public TransferibleUsuario crear(TransferibleCrearUsuario transferibleCrearUsuario) {
 
-        if(username == null || username.trim().isEmpty() ||
-                email == null || email.trim().isEmpty() ||
-                password == null || password.trim().isEmpty()) {
-            throw new HttpBadRequestException("Todos los campos son requeridos para crear un Usuario.");
+        String email = transferibleCrearUsuario.getEmail();
+        String username = transferibleCrearUsuario.getUsername();
+        String password = transferibleCrearUsuario.getPassword();
+        if(!utilidadCamposRequest.isCampoValido(email) ||
+                !utilidadCamposRequest.isCampoValido(username) ||
+                !utilidadCamposRequest.isCampoValido(password)) {
+            throw new HttpBadRequestException("Todos los campos son requeridos.");
         }
 
-        if(!accesoUsuario.existeUsername(username)) {
-            Usuario usuario = transformadorUsuario.transferibleAEntidad(username);
+        if(accesoUsuario.existeEmail(email)) {
+            throw new HttpBadRequestException("El email ya existe.");
+        }
 
-            if(!accesoUsuario.existeEmail(email)) {
-                usuario.setEmail(email);
-            } else {
-                throw new HttpBadRequestException("El email de Usuario ya existe o no es válido.");
-            }
+        if(accesoUsuario.existeUsername(username)) {
+            throw new HttpBadRequestException("El nombre de usuario ya existe.");
+        }
 
+        Usuario usuario = transformadorUsuario.transferibleAEntidad(email, username);
+
+        if(utilidadCamposRequest.isCampoValido(password)) {
             usuario.setPassword(password);
-
-            usuario = accesoUsuario.persistir(usuario)
-                    .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir nuevo Usuario."));
-
-            return transformadorUsuario.entidadATransferible(usuario);
-
-        } else {
-            throw new HttpBadRequestException("El nombre de Usuario ya existe o no es válido.");
         }
+
+        usuario = accesoUsuario.persistir(usuario)
+                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir nuevo usuario."));
+
+        return transformadorUsuario.entidadATransferible(usuario);
 
     }
 
@@ -89,34 +93,42 @@ public class ServicioUsuario {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleUsuario actualizar(Integer identificador, String email, String username, String password) {
+    public TransferibleUsuario actualizar(TransferibleActualizarUsuario transferibleActualizarUsuario) {
 
-        if((username == null || username.trim().isEmpty()) &&
-                (email == null || email.trim().isEmpty()) &&
-                (password == null || password.trim().isEmpty())) {
-            throw new HttpBadRequestException("Sin campos que actualizar.");
+        Integer userId = transferibleActualizarUsuario.getIdentificador();
+        if(!utilidadCamposRequest.isCampoValido(userId)) {
+            throw new HttpBadRequestException("El campo identificador es requerido");
         }
 
-        Usuario usuario = accesoUsuario.findByIdOptional(identificador)
-                .orElseThrow( () -> new HttpNoContentException("El usuario no existe.") );
+        Usuario usuario = accesoUsuario.obtener(userId)
+                .orElseThrow(()-> new HttpNoContentException("El Usuario no existe."));
 
-        if((username != null && !username.trim().isEmpty())) {
-            if (!accesoUsuario.existeUsername(username)) {
-                usuario.setUsername(username);
-            } else {
-                throw new HttpBadRequestException("El nombre de Usuario ya existe o no es válido.");
-            }
+        String email = transferibleActualizarUsuario.getEmail();
+        String username = transferibleActualizarUsuario.getUsername();
+        String password = transferibleActualizarUsuario.getPassword();
+        if(!utilidadCamposRequest.isCampoValido(email) &&
+                !utilidadCamposRequest.isCampoValido(username) &&
+                !utilidadCamposRequest.isCampoValido(password)) {
+            throw new HttpBadRequestException("Sin campos que actualizar");
         }
 
-        if(email != null && !email.trim().isEmpty()) {
-            if(!accesoUsuario.existeEmail(email)) {
+        if(utilidadCamposRequest.isCampoValido(email)) {
+            if (!accesoUsuario.existeEmail(email)) {
                 usuario.setEmail(email);
             } else {
-                throw new HttpBadRequestException("El email de Usuario ya existe o no es válido.");
+                throw new HttpBadRequestException("El email ya existe.");
             }
         }
 
-        if(password != null && !password.trim().isEmpty()) {
+        if(utilidadCamposRequest.isCampoValido(username)) {
+            if(!accesoUsuario.existeUsername(username)) {
+                usuario.setUsername(username);
+            } else {
+                throw new HttpBadRequestException("El nombre de Usuario ya existe.");
+            }
+        }
+
+        if(utilidadCamposRequest.isCampoValido(password)) {
             usuario.setPassword(password);
         }
 

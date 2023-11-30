@@ -5,8 +5,11 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.modelo.Rol;
+import ciudadano.consciente.transferible.TransferibleActualizarRol;
+import ciudadano.consciente.transferible.TransferibleCrearRol;
 import ciudadano.consciente.transferible.TransferibleRol;
 import ciudadano.consciente.transformador.TransformadorRol;
+import ciudadano.consciente.utilidad.UtilidadCamposRequest;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -15,6 +18,9 @@ import java.util.List;
 
 @RequestScoped
 public class ServicioRol {
+
+    @Inject
+    UtilidadCamposRequest utilidadCamposRequest;
 
     @Inject
     TransformadorRol transformadorRol;
@@ -38,24 +44,23 @@ public class ServicioRol {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleRol crear(String name) {
+    public TransferibleRol crear(TransferibleCrearRol transferibleCrearRol) {
 
-        if(name != null && !name.trim().isEmpty()) {
-
-            if(accesoRol.existeNombre(name)) {
-
-                Rol rol = transformadorRol.transferibleAEntidad(name);
-                rol = accesoRol.persistir(rol)
-                        .orElseThrow( ()-> new HttpInternalServerException("Problemas al crear Rol."));
-                return transformadorRol.entidadATransferible(rol);
-
-            } else {
-                throw new HttpBadRequestException("El Rol ya existe");
-            }
-
-        } else {
+        String name = transferibleCrearRol.getName();
+        if(!utilidadCamposRequest.isCampoValido(name)) {
             throw new HttpBadRequestException("Campo requerido sin completar.");
         }
+
+        if(accesoRol.existeNombre(name)) {
+            throw new HttpBadRequestException("El rol ya existe");
+        }
+
+        Rol rol = transformadorRol.transferibleAEntidad(name);
+
+        rol = accesoRol.persistir(rol)
+                .orElseThrow(()-> new HttpInternalServerException("Problemas al persistir nuevo Rol."));
+
+        return transformadorRol.entidadATransferible(rol);
 
     }
 
@@ -73,25 +78,31 @@ public class ServicioRol {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleRol actualizar(Integer id, String name) {
+    public TransferibleRol actualizar(TransferibleActualizarRol transferibleActualizarRol) {
 
-        if(id == null || name == null || name.trim().isEmpty()) {
-            throw new HttpBadRequestException("Los campos son requeridos son obligatorios.");
+        Integer roleId = transferibleActualizarRol.getId();
+        if(!utilidadCamposRequest.isCampoValido(roleId)) {
+            throw new HttpBadRequestException("El campo identificador es requerido.");
         }
 
-        Rol rol = accesoRol.obtener(id)
+        Rol rol = accesoRol.obtener(roleId)
                 .orElseThrow( ()-> new HttpNoContentException("El Rol no existe."));
 
+        String name = transferibleActualizarRol.getName();
+        if(!utilidadCamposRequest.isCampoValido(name)) {
+            throw new HttpBadRequestException("Sin campos que actualizar");
+        }
+
         if(accesoRol.existeNombre(name)) {
-
-            rol.setName(name);
-            rol = accesoRol.persistir(rol)
-                    .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir Rol actualizado.") );
-            return transformadorRol.entidadATransferible(rol);
-
-        } else {
             throw new HttpBadRequestException("El nombre del Rol ya existe");
         }
+
+        rol.setName(name);
+
+        rol = accesoRol.persistir(rol)
+                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir Rol actualizado.") );
+
+        return transformadorRol.entidadATransferible(rol);
 
     }
 

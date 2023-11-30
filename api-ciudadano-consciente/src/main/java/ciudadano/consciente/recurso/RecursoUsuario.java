@@ -1,6 +1,8 @@
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioUsuario;
+import ciudadano.consciente.transferible.TransferibleActualizarUsuario;
+import ciudadano.consciente.transferible.TransferibleCrearUsuario;
 import ciudadano.consciente.transferible.TransferibleUsuario;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -61,10 +63,6 @@ public class RecursoUsuario {
             description = "Usuario creado con éxito"
     )
     @APIResponse(
-            responseCode = "204",
-            description = "Error al crear usuario. Revisar cabecera 'Warning'."
-    )
-    @APIResponse(
             responseCode = "400",
             description = "Error al crear usuario. Revisar cabecera 'Warning'."
     )
@@ -72,17 +70,16 @@ public class RecursoUsuario {
             responseCode = "500",
             description = "Error al crear usuario. Revisar cabecera 'Warning'."
     )
-    public Response crear(@QueryParam("email") String email,
-                          @QueryParam("username") String username,
-                          @QueryParam("password") String password) {
+    public Response crear(TransferibleCrearUsuario transferibleCrearUsuario) {
 
-        TransferibleUsuario transferibleUsuario = servicioUsuario.crear(email,  username, password);
+        TransferibleUsuario transferibleUsuario = servicioUsuario.crear(transferibleCrearUsuario);
 
         return Response.ok(transferibleUsuario).build();
 
     }
 
     @DELETE
+    @Path("{id}")
     @Operation( summary = "Eliminar un usuario a partir de su identificador.")
     @APIResponse(
             responseCode = "200",
@@ -96,7 +93,7 @@ public class RecursoUsuario {
             responseCode = "400",
             description = "Problemas al identificar usuario. Revisar cabecera 'Warning'"
     )
-    public Response eliminar(@QueryParam("id") Integer identificador) {
+    public Response eliminar(@PathParam("id") Integer identificador) {
 
         servicioUsuario.eliminar(identificador);
 
@@ -122,12 +119,9 @@ public class RecursoUsuario {
             responseCode = "500",
             description = "Error al actualizar usuario. Revisar cabecera 'Warning'."
     )
-    public Response actualizar(@QueryParam("id") Integer identificador,
-                               @QueryParam("email") String email,
-                               @QueryParam("username") String username,
-                               @QueryParam("password") String password) {
+    public Response actualizar(TransferibleActualizarUsuario transferibleActualizarUsuario) {
 
-        TransferibleUsuario usuario = servicioUsuario.actualizar(identificador, email, username, password);
+        TransferibleUsuario usuario = servicioUsuario.actualizar(transferibleActualizarUsuario);
         return Response.ok(usuario).build();
 
     }

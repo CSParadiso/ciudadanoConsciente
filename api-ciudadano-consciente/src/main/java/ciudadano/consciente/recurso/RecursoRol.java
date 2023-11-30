@@ -1,6 +1,8 @@
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioRol;
+import ciudadano.consciente.transferible.TransferibleActualizarRol;
+import ciudadano.consciente.transferible.TransferibleCrearRol;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -63,31 +65,9 @@ public class RecursoRol {
             responseCode = "500",
             description = "Problemas al crear Rol. Revisar cabecera 'Warning'."
     )
-    public Response crear(@QueryParam("name") String name) {
+    public Response crear(TransferibleCrearRol transferibleCrearRol) {
 
-        return Response.ok(servicioRol.crear(name)).build();
-
-    }
-
-    @DELETE
-    @Operation( summary = "Eliminar un Rol.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Éxito al eliminar Rol."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Problemas al eliminar Rol. Revisar cabecera 'Warning'."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Problemas al eliminar Rol. Revisar cabecera 'Warning'."
-    )
-    public Response eliminar(@QueryParam("id") Integer identificador) {
-
-        servicioRol.eliminar(identificador);
-
-        return Response.ok().build();
+        return Response.ok(servicioRol.crear(transferibleCrearRol)).build();
 
     }
 
@@ -109,10 +89,32 @@ public class RecursoRol {
             responseCode = "500",
             description = "Problemas al actualizar Rol. Revisar cabecera 'Warning'."
     )
-    public Response actualizar(@QueryParam("id") Integer id,
-                               @QueryParam("name") String name) {
+    public Response actualizar(TransferibleActualizarRol transferibleActualizarRol) {
 
-        return Response.ok(servicioRol.actualizar(id, name)).build();
+        return Response.ok(servicioRol.actualizar(transferibleActualizarRol)).build();
+
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Operation( summary = "Eliminar un Rol.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Éxito al eliminar Rol."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Problemas al eliminar Rol. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al eliminar Rol. Revisar cabecera 'Warning'."
+    )
+    public Response eliminar(@PathParam("id") Integer identificador) {
+
+        servicioRol.eliminar(identificador);
+
+        return Response.ok().build();
 
     }
 

@@ -15,6 +15,5 @@ public interface TransformadorUsuario {
 
     List<TransferibleUsuario> entidadATransferible(List<Usuario> usuarioList);
 
-    Usuario transferibleAEntidad(String username);
-
+    Usuario transferibleAEntidad(String email, String username);
 }
