@@ -15,5 +15,5 @@ public interface TransformadorOrganizacion {
 
     List<TransferibleOrganizacion> entidadATransferible(List<Organizacion> organizacionList);
 
-    Organizacion transferibleAEntidad(String name);
+    Organizacion transferibleAEntidad(String email);
 }

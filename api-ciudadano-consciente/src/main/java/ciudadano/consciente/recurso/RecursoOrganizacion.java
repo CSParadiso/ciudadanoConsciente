@@ -2,6 +2,8 @@
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioOrganizacion;
+import ciudadano.consciente.transferible.TransferibleActualizarOrganizacion;
+import ciudadano.consciente.transferible.TransferibleCrearOrganizacion;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -10,7 +12,6 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.jboss.logging.Logger;
 
 @Tag(name = "Recurso Organización")
 @RequestScoped
@@ -18,9 +19,6 @@ import org.jboss.logging.Logger;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("organizations/")
 public class RecursoOrganizacion {
-
-    @Inject
-    Logger auditor;
 
     @Inject
     ServicioOrganizacion servicioOrganizacion;
@@ -42,7 +40,7 @@ public class RecursoOrganizacion {
     @Operation( summary = "Retornar una organización a partir de su identificador.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al recuprar organización."
+            description = "Éxito al recuperar organización."
     )
     @APIResponse(
             responseCode = "204",
@@ -68,11 +66,9 @@ public class RecursoOrganizacion {
             responseCode = "500",
             description = "Problemas al crear Organización. Revisar cabecera 'Warning'."
     )
-    public Response crear(@QueryParam("name") String name,
-                          @QueryParam("email") String email,
-                          @QueryParam("description") String description) {
+    public Response crear(TransferibleCrearOrganizacion transferibleCrearOrganizacion) {
 
-        return Response.ok(servicioOrganizacion.crear(name, email, description)).build();
+        return Response.ok(servicioOrganizacion.crear(transferibleCrearOrganizacion)).build();
 
     }
 
@@ -116,12 +112,9 @@ public class RecursoOrganizacion {
             responseCode = "500",
             description = "Problemas al actualizar organización. Revisar cabecera 'Warning'"
     )
-    public Response actualizar(@QueryParam("id") Integer identificador,
-                               @QueryParam("name") String name,
-                               @QueryParam("email") String email,
-                               @QueryParam("description") String description) {
+    public Response actualizar(TransferibleActualizarOrganizacion transferibleActualizarOrganizacion) {
 
-        return Response.ok(servicioOrganizacion.actualizar(identificador, name, email, description)).build();
+        return Response.ok(servicioOrganizacion.actualizar(transferibleActualizarOrganizacion)).build();
 
     }
 

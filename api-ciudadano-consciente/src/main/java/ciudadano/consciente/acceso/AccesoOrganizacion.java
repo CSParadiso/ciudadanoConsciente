@@ -29,7 +29,7 @@ public class AccesoOrganizacion implements PanacheRepositoryBase<Organizacion, I
 
     }
 
-    public Optional<Organizacion> persisir(Organizacion organizacion) {
+    public Optional<Organizacion> persistir(Organizacion organizacion) {
 
         auditor.debug("Intentando persistir organización " + organizacion.getOrganizationId());
         persist(organizacion);

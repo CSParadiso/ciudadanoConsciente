@@ -6,15 +6,14 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.modelo.Nivel;
-import ciudadano.consciente.modelo.Organizacion;
 import ciudadano.consciente.transferible.TransferibleActualizarNivel;
 import ciudadano.consciente.transferible.TransferibleCrearNivel;
 import ciudadano.consciente.transferible.TransferibleNivel;
 import ciudadano.consciente.transformador.TransformadorNivel;
+import ciudadano.consciente.utilidad.UtilidadCamposRequest;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.jboss.logging.Logger;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ import java.util.List;
 public class ServicioNivel {
 
     @Inject
-    Logger auditor;
+    UtilidadCamposRequest utilidadCamposRequest;
 
     @Inject
     AccesoNivel accesoNivel;
@@ -49,115 +48,85 @@ public class ServicioNivel {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void eliminar(Integer identificador) {
-
-        if(identificador == null) {
-            throw new HttpBadRequestException("Identificador requerido.");
-        }
-
-        if(!accesoNivel.eliminar(identificador)) {
-            throw new HttpNoContentException("Organización a eliminar no existe.");
-        }
-
-    }
-
-    @Transactional(Transactional.TxType.REQUIRED)
     public TransferibleNivel crear(TransferibleCrearNivel transferibleCrearNivel) {
 
-        auditor.debug(transferibleCrearNivel.getName());
-
-        if(accesoNivel.existeNombre(transferibleCrearNivel.getName())) {
-            throw new HttpBadRequestException("El nombre de Nivel ya existe o no es válido.");
+        String name = transferibleCrearNivel.getName();
+        if(!utilidadCamposRequest.isCampoValido(name)) {
+            throw new HttpBadRequestException("El nombre del nivel es requerido.");
         }
-        Nivel nivel = transformadorNivel.transferibleAEntidad(transferibleCrearNivel.getName());
+        if(accesoNivel.existeNombre(name)) { //TODO Se debería poder tener niveles con el mismo nombre. Lo que lo diferenciaría sería el padre.
+            throw new HttpBadRequestException("El nombre de Nivel ya existe");
+        }
 
-        if(transferibleCrearNivel.getOrganization() != null) {
+        Nivel nivel = transformadorNivel.transferibleAEntidad(name);
+
+        Integer organization = transferibleCrearNivel.getOrganization();
+        if(utilidadCamposRequest.isCampoValido(organization)) {
             nivel.setOrganization(accesoOrganizacion.obtener(transferibleCrearNivel.getOrganization())
                     .orElse(null));
         }
 
-        if(transferibleCrearNivel.getParent() != null) {
-            nivel.setParent(accesoNivel.obtener(transferibleCrearNivel.getParent())
+        Integer parent =transferibleCrearNivel.getParent();
+        if(utilidadCamposRequest.isCampoValido(parent)) {
+            nivel.setParent(accesoNivel.obtener(parent)
                     .orElse(null));
         }
 
-        nivel.setDescription(transferibleCrearNivel.getDescription());
+        String description = transferibleCrearNivel.getDescription();
+        if(utilidadCamposRequest.isCampoValido(description)) {
+            nivel.setDescription(transferibleCrearNivel.getDescription());
+        }
 
         nivel = accesoNivel.persistir(nivel)
-                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir nuevo Nivel.") );
+                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir actualización de Nivel.") );
 
         return transformadorNivel.entidadATransferible(nivel);
 
     }
 
-    /*@Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleNivel crear(String name, String description, Integer organization, Integer parent) {
-
-        if(name != null && !name.trim().isEmpty() && !accesoNivel.existeNombre(name)) {
-            Nivel nivel = transformadorNivel.transferibleAEntidad(name);
-
-            if (description != null && !description.trim().isEmpty()) {
-                nivel.setDescription(description);
-            }
-
-            if(organization != null) {
-                Organizacion organizacion = accesoOrganizacion.obtener(organization).orElse(null);
-                nivel.setOrganization(organizacion);
-            }
-
-            if(parent != null) {
-                Nivel padre = accesoNivel.obtener(parent).orElse(null);
-                nivel.setParent(padre);
-            }
-
-            nivel = accesoNivel.persistir(nivel)
-                    .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir nuevo Nivel.") );
-
-            return transformadorNivel.entidadATransferible(nivel);
-
-        } else {
-            throw new HttpBadRequestException("El nombre de Nivel ya existe o no es válido.");
-        }
-
-    }*/
-
     @Transactional(Transactional.TxType.REQUIRED)
     public TransferibleNivel actualizar(TransferibleActualizarNivel transferibleActualizarNivel) {
 
-        if(transferibleActualizarNivel.getLevelId() == null) {
+        Integer levelId = transferibleActualizarNivel.getLevelId();
+        if(!utilidadCamposRequest.isCampoValido(levelId)) {
             throw new HttpBadRequestException("El campo identificador de Nivel es requerido.");
         }
 
-        Nivel nivel = accesoNivel.obtener(transferibleActualizarNivel.getLevelId())
+        Nivel nivel = accesoNivel.obtener(levelId)
                 .orElseThrow( () -> new HttpNoContentException("El Nivel no existe."));
 
         String name = transferibleActualizarNivel.getName();
-        if(name != null && !"null".equals(name) && !name.trim().isEmpty()) {
-            auditor.debug("Nombre: " + name);
+        Integer organization = transferibleActualizarNivel.getOrganization();
+        Integer parent =transferibleActualizarNivel.getParent();
+        String description = transferibleActualizarNivel.getDescription();
+        if(!utilidadCamposRequest.isCampoValido(name) &&
+                !utilidadCamposRequest.isCampoValido(parent) &&
+                !utilidadCamposRequest.isCampoValido(organization) &&
+                !utilidadCamposRequest.isCampoValido(description)) {
+            throw new HttpBadRequestException("Sin campos que actualizar.");
+        }
+
+        if(utilidadCamposRequest.isCampoValido(name)) {
             if(!accesoNivel.existeNombre(name)) {
                 nivel.setName(name);
             } else {
-                throw new HttpBadRequestException("El nombre de Nivel ya existe o no es válido.");
+                throw new HttpBadRequestException("El nombre de Nivel ya existe.");
             }
         }
 
-        Integer organization = transferibleActualizarNivel.getOrganization();
-        if(organization != null) {
-            nivel.setOrganization(accesoOrganizacion.obtener(transferibleActualizarNivel.getOrganization())
+        if (utilidadCamposRequest.isCampoValido(organization)) {
+            nivel.setOrganization(accesoOrganizacion.obtener(organization)
                     .orElse(null));
         }
 
-        Integer parent =transferibleActualizarNivel.getParent();
-        if(parent != null) {
+        if(utilidadCamposRequest.isCampoValido(parent)) {
             if(nivel.getLevelId() == parent) {
                 throw new HttpBadRequestException("Un nivel no puede ser padre de sí mismo.");
             }
-            nivel.setParent(accesoNivel.obtener(parent)
-                    .orElse(null));
+            nivel.setParent(accesoNivel.obtener(parent).orElse(null));
         }
 
-        String description = transferibleActualizarNivel.getDescription();
-        if(description != null && !"null".equals(description) && !description.trim().isEmpty()) {
+        if(utilidadCamposRequest.isCampoValido(description)) {
             nivel.setDescription(transferibleActualizarNivel.getDescription());
         }
 
@@ -168,6 +137,17 @@ public class ServicioNivel {
 
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void eliminar(Integer identificador) {
 
+        if(identificador == null) {
+            throw new HttpBadRequestException("Identificador requerido.");
+        }
+
+        if(!accesoNivel.eliminar(identificador)) {
+            throw new HttpNoContentException("Nivel no existe.");
+        }
+
+    }
 
 }

@@ -11,7 +11,6 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.jboss.logging.Logger;
 
 @Tag(name = "Recurso Nivel")
 @RequestScoped
@@ -19,9 +18,6 @@ import org.jboss.logging.Logger;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("levels/")
 public class RecursoNivel {
-
-    @Inject
-    Logger auditor;
 
     @Inject
     ServicioNivel servicioNivel;
@@ -84,7 +80,7 @@ public class RecursoNivel {
     @Operation(summary = "Eliminar un nivel a partir de su identificador.")
     @APIResponse(
             responseCode = "200",
-            description = "Nivel elimninado con éxito."
+            description = "Nivel eliminado con éxito."
     )
     @APIResponse(
             responseCode = "204",
