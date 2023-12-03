@@ -1,6 +1,7 @@
 package ciudadano.consciente.servicio;
 
 import ciudadano.consciente.acceso.AccesoRol;
+import ciudadano.consciente.acceso.AccesoUsuarioRolNivel;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
@@ -8,6 +9,7 @@ import ciudadano.consciente.modelo.Rol;
 import ciudadano.consciente.transferible.TransferibleActualizarRol;
 import ciudadano.consciente.transferible.TransferibleCrearRol;
 import ciudadano.consciente.transferible.TransferibleRol;
+import ciudadano.consciente.transferible.TransferibleUsuario;
 import ciudadano.consciente.transformador.TransformadorRol;
 import ciudadano.consciente.utilidad.UtilidadCamposRequest;
 import jakarta.enterprise.context.RequestScoped;
@@ -27,6 +29,9 @@ public class ServicioRol {
 
     @Inject
     AccesoRol accesoRol;
+
+    @Inject
+    AccesoUsuarioRolNivel accesoUsuarioRolNivel;
 
     public List<TransferibleRol> obtenerTodos() {
 

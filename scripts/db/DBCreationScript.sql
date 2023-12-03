@@ -72,8 +72,7 @@ create table app.activity_types (
 	activity_type_id integer generated always as identity primary key, 
 	name varchar(100) not null,
 	description varchar(255) not null, 
-	functional_template bytea not null, -- archivo .js funcional
-	parameter_model json not null -- archivo json con los parámetros necesarios para el template
+	functional_template_url varchar(500) not null, -- donde viven index.js/jsx  y model.json
 );
 
 ----------------------
@@ -100,7 +99,7 @@ create table app.activity_types (
 create table app.activities (
 	activity_id integer generated always as identity primary key, 
 	description varchar(140) not null,
-	level_id integer references app.levels on delete cascade, 
+	level_id integer references app.levels on delete cascade not null, 
 	activity_type integer default 0 references app.activity_types on delete set default 
 );
 

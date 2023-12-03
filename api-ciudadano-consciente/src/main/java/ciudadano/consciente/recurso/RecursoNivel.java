@@ -145,7 +145,7 @@ public class RecursoNivel {
     public Response asignarRol(@PathParam("id") Integer identificador,
                                TransferibleAsignarRolUsuario transferibleAsignarRolUsuario) {
 
-        TransferibleUsuarioRolNivel usuarioRolNivel = servicioNivel.asignar(transferibleAsignarRolUsuario);
+        TransferibleUsuarioRolNivel usuarioRolNivel = servicioNivel.asignarRol(transferibleAsignarRolUsuario);
 
         URI uri = URI.create("" + usuarioRolNivel.getUrlId());
 

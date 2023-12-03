@@ -160,10 +160,10 @@ public class ServicioNivel {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public TransferibleUsuarioRolNivel asignar(TransferibleAsignarRolUsuario transferibleAsignarRolUsuario) {
+    public TransferibleUsuarioRolNivel asignarRol(TransferibleAsignarRolUsuario transferibleAsignarRolUsuario) {
 
     Integer user = transferibleAsignarRolUsuario.getUser();
-    Integer level = transferibleAsignarRolUsuario.getLevel();
+    Integer level = transferibleAsignarRolUsuario.getRoleableEntity();
     Integer role = transferibleAsignarRolUsuario.getRole();
     if(!utilidadCamposRequest.isCampoValido(user) ||
             !utilidadCamposRequest.isCampoValido(level) ||

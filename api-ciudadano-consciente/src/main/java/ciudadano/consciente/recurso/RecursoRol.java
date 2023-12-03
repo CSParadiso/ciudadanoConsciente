@@ -124,4 +124,17 @@ public class RecursoRol {
 
     }
 
+    /*@GET
+    @Path("{id}/users/levels")
+    @Operation(summary = "Obtener todos los Usuarios de un Rol.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Éxito al recuperar Usuarios."
+    )
+    public Response obtenerUsuarios(@PathParam("id") Integer identificador) {
+
+        return Response.ok(servicioRol.obtenerUsuarios(identificador)).build();
+
+    }
+*/
 }

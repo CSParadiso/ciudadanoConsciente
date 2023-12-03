@@ -11,7 +11,7 @@ public class TransferibleAsignarRolUsuario {
     private Integer role;
 
     @Schema(defaultValue = "null")
-    private Integer level;
+    private Integer roleableEntity;
 
     public Integer getUser() {
         return user;
@@ -29,11 +29,11 @@ public class TransferibleAsignarRolUsuario {
         this.role = role;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Integer getRoleableEntity() {
+        return roleableEntity;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setRoleableEntity(Integer roleableEntity) {
+        this.roleableEntity = roleableEntity;
     }
 }

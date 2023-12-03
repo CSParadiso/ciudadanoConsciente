@@ -22,4 +22,7 @@ public class AccesoUsuarioRolNivel implements PanacheRepositoryBase<UsuarioRolNi
         return findByIdOptional(usuarioRolNivel.getUrlId());
 
     }
+
+
+
 }

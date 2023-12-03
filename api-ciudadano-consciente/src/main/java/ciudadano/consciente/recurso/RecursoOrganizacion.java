@@ -2,9 +2,7 @@
 package ciudadano.consciente.recurso;
 
 import ciudadano.consciente.servicio.ServicioOrganizacion;
-import ciudadano.consciente.transferible.TransferibleActualizarOrganizacion;
-import ciudadano.consciente.transferible.TransferibleCrearOrganizacion;
-import ciudadano.consciente.transferible.TransferibleOrganizacion;
+import ciudadano.consciente.transferible.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -123,6 +121,34 @@ public class RecursoOrganizacion {
         return Response.ok().build();
 
     }
+
+    /*@POST
+    @Path("{id}/roles")
+    @Operation(summary = "Asignar un Rol a un Usuario en una Organización.")
+    @APIResponse(
+            responseCode = "201",
+            description = "Éxito al asignar Rol."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al asignar Rol. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Problemas al asignar Rol. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Problemas al asignar Rol. Revisar cabecera 'Warning'."
+    )
+    public Response asignarRol(@PathParam("id") Integer identificador,
+                               TransferibleAsignarRolUsuario transferibleAsignarRolUsuario) {
+
+        TransferibleUsuarioRolNivel usuarioRolNivel = servicioOrganizacion.asignarRol(transferibleAsignarRolUsuario);
+
+        URI uri = URI.create("" + usuarioRolNivel.getUrlId())
+
+    }*/
 
 }
 
