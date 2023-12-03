@@ -46,6 +46,7 @@ public class AccesoRol implements PanacheRepositoryBase<Rol, Integer> {
 
     public boolean eliminar(Integer identificador) {
 
+        auditor.debug("Intentando elminar Rol.");
         return deleteById(identificador);
 
     }

@@ -37,4 +37,13 @@ public class ExceptionMappers {
 
     }
 
+    @ServerExceptionMapper
+    public Response mapNotFoundExceptionException( HttpNotFoundException x ) {
+
+        auditor.debug(x.getMessage());
+        auditor.debug("mapHttpNotFoundException");
+        return Response.status(Response.Status.NOT_FOUND).header("Warning", x.getMessage()).build();
+
+    }
+
 }

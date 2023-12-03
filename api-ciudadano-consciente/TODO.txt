@@ -1,6 +1,23 @@
-// TODO Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
+// TODO Generar Votos, Preguntas, Etiquetas
 
-// TODO Corroborar que las referencias sean consistentes (ejemplo: que un nivel no sea padre de sí mismo)
+YA SE PUEDE
 
-// TODO cambiar a PathParam los Id de PATCH y DELETE
-// TODO pasar argumentos como json o formdata en el POST y PATCH
+// TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations)
+
+IMPLEMENTACIONES
+// FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
+// FIXME Cambiar los 204 por 404 cuando no existe el recurso (en el GET)
+
+// DOING
+// TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en NIVEL
+// TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en USUARIO
+// TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en ROL
+
+// DONE
+#0 Pasar argumentos como TransferiblesRequest en el POST y PATCH
+
+- Commit
+#1 Cambiar los 200 por 201 cuando se crea con éxito el POST y anexar el header location con la url del recurso creado
+#2 Eliminar las verificaciones de null en los DELETE (el único campo viene por PATH)
+#3 Corroborar que las referencias sean consistentes (Nivel no sea padre de sí mismo en NIVEL)
+#4 Corroborar que las referencias sean consistentes (Unicidad de title en el mismo nivel en REFERENCIA)

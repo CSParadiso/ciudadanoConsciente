@@ -48,7 +48,7 @@ create table app.users (
 	-- Tabla references
 create table app.reference (
 	reference_id integer generated always as identity primary key, 
-	title varchar(100) not null, 
+	title varchar(100) not null, -- En la lógica del negocio el title es unique para cada level
 	url varchar(350) not null, 
 	description varchar (140), 
 	level_id integer references app.levels on delete cascade not null

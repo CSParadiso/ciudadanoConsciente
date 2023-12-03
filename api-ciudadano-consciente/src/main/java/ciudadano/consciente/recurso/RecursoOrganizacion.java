@@ -4,14 +4,18 @@ package ciudadano.consciente.recurso;
 import ciudadano.consciente.servicio.ServicioOrganizacion;
 import ciudadano.consciente.transferible.TransferibleActualizarOrganizacion;
 import ciudadano.consciente.transferible.TransferibleCrearOrganizacion;
+import ciudadano.consciente.transferible.TransferibleOrganizacion;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
+import java.net.URI;
 
 @Tag(name = "Recurso Organización")
 @RequestScoped
@@ -19,6 +23,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("organizations/")
 public class RecursoOrganizacion {
+
+    final String PATH_BASE_RECURSO = "/organizations/";
 
     @Inject
     ServicioOrganizacion servicioOrganizacion;
@@ -55,7 +61,7 @@ public class RecursoOrganizacion {
     @POST
     @Operation( summary = "Crear una nueva organización.")
     @APIResponse(
-            responseCode = "200",
+            responseCode = "201",
             description = "Organización creada con éxito."
     )
     @APIResponse(
@@ -68,30 +74,11 @@ public class RecursoOrganizacion {
     )
     public Response crear(TransferibleCrearOrganizacion transferibleCrearOrganizacion) {
 
-        return Response.ok(servicioOrganizacion.crear(transferibleCrearOrganizacion)).build();
+        TransferibleOrganizacion organizacion = servicioOrganizacion.crear(transferibleCrearOrganizacion);
 
-    }
+        URI uri = URI.create(PATH_BASE_RECURSO + organizacion.getOrganizationId());
 
-    @DELETE
-    @Path("{id}")
-    @Operation( summary = "Eliminar un usuario a partir de su identificador")
-    @APIResponse(
-            responseCode = "200",
-            description = "Organización eliminada con éxito."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
-    )
-    public Response eliminar(@PathParam("id") Integer identificador) {
-
-        servicioOrganizacion.eliminar(identificador);
-        return Response.ok().build();
-
+        return Response.created(uri).entity(organizacion).build();
     }
 
     @PATCH
@@ -115,6 +102,25 @@ public class RecursoOrganizacion {
     public Response actualizar(TransferibleActualizarOrganizacion transferibleActualizarOrganizacion) {
 
         return Response.ok(servicioOrganizacion.actualizar(transferibleActualizarOrganizacion)).build();
+
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Operation( summary = "Eliminar un usuario a partir de su identificador")
+    @APIResponse(
+            responseCode = "200",
+            description = "Organización eliminada con éxito."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
+    )
+    public Response eliminar(@PathParam("id") Integer identificador) {
+
+        servicioOrganizacion.eliminar(identificador);
+
+        return Response.ok().build();
 
     }
 

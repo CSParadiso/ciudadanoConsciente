@@ -80,19 +80,6 @@ public class ServicioUsuario {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void eliminar(Integer identificador) {
-
-        if(identificador == null) {
-            throw new HttpBadRequestException("Identificador requerido.");
-        }
-
-        if (!accesoUsuario.eliminar(identificador)) {
-            throw new HttpNoContentException("Usuario a eliminar no existe");
-        };
-
-    }
-
-    @Transactional(Transactional.TxType.REQUIRED)
     public TransferibleUsuario actualizar(TransferibleActualizarUsuario transferibleActualizarUsuario) {
 
         Integer userId = transferibleActualizarUsuario.getIdentificador();
@@ -136,6 +123,15 @@ public class ServicioUsuario {
                 .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir actualización de Usuario."));
 
         return transformadorUsuario.entidadATransferible(usuario);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void eliminar(Integer identificador) {
+
+        if (!accesoUsuario.eliminar(identificador)) {
+            throw new HttpNoContentException("Usuario a eliminar no existe");
+        };
 
     }
 

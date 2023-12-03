@@ -3,14 +3,18 @@ package ciudadano.consciente.recurso;
 import ciudadano.consciente.servicio.ServicioRol;
 import ciudadano.consciente.transferible.TransferibleActualizarRol;
 import ciudadano.consciente.transferible.TransferibleCrearRol;
+import ciudadano.consciente.transferible.TransferibleRol;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
+import java.net.URI;
 
 @Tag(name = "Recurso Rol")
 @RequestScoped
@@ -18,6 +22,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("roles/")
 public class RecursoRol {
+
+    final String BASE_PATH_RECURSO = "/roles/";
 
     @Inject
     ServicioRol servicioRol;
@@ -54,7 +60,7 @@ public class RecursoRol {
     @POST
     @Operation( summary = "Crear un nuevo Rol.")
     @APIResponse(
-            responseCode = "200",
+            responseCode = "201",
             description = "Éxito al crear Rol."
     )
     @APIResponse(
@@ -67,7 +73,11 @@ public class RecursoRol {
     )
     public Response crear(TransferibleCrearRol transferibleCrearRol) {
 
-        return Response.ok(servicioRol.crear(transferibleCrearRol)).build();
+        TransferibleRol rol = servicioRol.crear(transferibleCrearRol);
+
+        URI uri = URI.create(BASE_PATH_RECURSO + rol.getRoleId());
+
+        return Response.created(uri).entity(rol).build();
 
     }
 
@@ -103,11 +113,7 @@ public class RecursoRol {
             description = "Éxito al eliminar Rol."
     )
     @APIResponse(
-            responseCode = "204",
-            description = "Problemas al eliminar Rol. Revisar cabecera 'Warning'."
-    )
-    @APIResponse(
-            responseCode = "400",
+            responseCode = "404",
             description = "Problemas al eliminar Rol. Revisar cabecera 'Warning'."
     )
     public Response eliminar(@PathParam("id") Integer identificador) {

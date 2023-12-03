@@ -67,10 +67,6 @@ public class ServicioRol {
     @Transactional(Transactional.TxType.REQUIRED)
     public void eliminar(Integer identificador) {
 
-        if(identificador == null) {
-            throw new HttpBadRequestException("El identificador es requerido.");
-        }
-
         if(!accesoRol.eliminar(identificador)) {
             throw new HttpNoContentException("Rol a eliminar no existe.");
         }

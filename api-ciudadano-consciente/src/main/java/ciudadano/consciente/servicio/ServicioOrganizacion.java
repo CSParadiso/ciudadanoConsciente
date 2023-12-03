@@ -129,10 +129,6 @@ public class ServicioOrganizacion {
     @Transactional(Transactional.TxType.REQUIRED)
     public void eliminar(Integer identificador) {
 
-        if(identificador == null) {
-            throw new HttpBadRequestException("Identificador requerido.");
-        }
-
         if(!accesoOrganizacion.eliminar(identificador)) {
             throw new HttpNoContentException("Organización a eliminar no existe");
         }

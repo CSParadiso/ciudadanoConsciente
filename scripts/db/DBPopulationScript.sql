@@ -94,7 +94,11 @@ RENAME COLUMN new_user_id TO user_id;
 ALTER TABLE app.users
 ADD PRIMARY KEY (user_id);
 
-drop table app.users 
+-- Añadir clave foránea faltante a tabla
+alter table app.users_roles_levels 
+add constraint fk_new_user 
+foreign key (user_id) 
+references app.users(user_id);
 
 
 

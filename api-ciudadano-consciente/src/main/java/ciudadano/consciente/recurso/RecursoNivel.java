@@ -1,16 +1,19 @@
 package ciudadano.consciente.recurso;
 
+import ciudadano.consciente.modelo.UsuarioRolNivel;
 import ciudadano.consciente.servicio.ServicioNivel;
-import ciudadano.consciente.transferible.TransferibleActualizarNivel;
-import ciudadano.consciente.transferible.TransferibleCrearNivel;
+import ciudadano.consciente.transferible.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+
+import java.net.URI;
 
 @Tag(name = "Recurso Nivel")
 @RequestScoped
@@ -18,6 +21,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("levels/")
 public class RecursoNivel {
+
+    final String PATH_BASE_RECURSO = "/levels/";
 
     @Inject
     ServicioNivel servicioNivel;
@@ -58,8 +63,8 @@ public class RecursoNivel {
     @POST
     @Operation(summary = "Crear un nivel.")
     @APIResponse(
-            responseCode = "200",
-            description = "Nivel creado con éxito"
+            responseCode = "201",
+            description = "Nivel creado con éxito."
     )
     @APIResponse(
             responseCode = "400",
@@ -71,29 +76,11 @@ public class RecursoNivel {
     )
     public Response crear(TransferibleCrearNivel transferibleCrearNivel) {
 
-        return Response.ok(servicioNivel.crear(transferibleCrearNivel)).build();
+        TransferibleNivel nivel = servicioNivel.crear(transferibleCrearNivel);
 
-    }
+        URI uri = URI.create(PATH_BASE_RECURSO + nivel.getLevelId());
 
-    @DELETE
-    @Path("{id}")
-    @Operation(summary = "Eliminar un nivel a partir de su identificador.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Nivel eliminado con éxito."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Problemas al eliminar Nivel. Revisar cabecera 'Warning'."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Problemas al identificar Nivel. Revisar cabecera 'Warning'"
-    )
-    public Response eliminar(@PathParam("id") Integer identificador) {
-
-        servicioNivel.eliminar(identificador);
-        return Response.ok().build();
+        return Response.created(uri).entity(nivel).build();
 
     }
 
@@ -118,6 +105,51 @@ public class RecursoNivel {
     public Response actualizar(TransferibleActualizarNivel transferibleActualizarNivel) {
 
         return Response.ok(servicioNivel.actualizar(transferibleActualizarNivel)).build();
+
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Operation(summary = "Eliminar un nivel a partir de su identificador.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Nivel eliminado con éxito."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Problemas al identificar Nivel. Revisar cabecera 'Warning'"
+    )
+    public Response eliminar(@PathParam("id") Integer identificador) {
+
+        servicioNivel.eliminar(identificador);
+
+        return Response.ok().build();
+
+    }
+
+    @POST
+    @Path("{id}/roles")
+    @Operation(summary = "Asignar Rol a Usuario en Nivel")
+    @APIResponse(
+            responseCode = "201",
+            description = "Asiganción realizada con éxito"
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Problemas al asignar Rol. Revisar cabecera 'Warning.'"
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Problemas al asignar Rol. Revisar cabecera 'Warning.'"
+    )
+    public Response asignarRol(@PathParam("id") Integer identificador,
+                               TransferibleAsignarRolUsuario transferibleAsignarRolUsuario) {
+
+        TransferibleUsuarioRolNivel usuarioRolNivel = servicioNivel.asignar(transferibleAsignarRolUsuario);
+
+        URI uri = URI.create("" + usuarioRolNivel.getUrlId());
+
+        return Response.created(uri).entity(usuarioRolNivel).build();
 
     }
 

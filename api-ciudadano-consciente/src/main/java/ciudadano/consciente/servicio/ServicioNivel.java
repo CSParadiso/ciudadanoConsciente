@@ -1,19 +1,20 @@
 package ciudadano.consciente.servicio;
 
-import ciudadano.consciente.acceso.AccesoNivel;
-import ciudadano.consciente.acceso.AccesoOrganizacion;
+import ciudadano.consciente.acceso.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.modelo.Nivel;
-import ciudadano.consciente.transferible.TransferibleActualizarNivel;
-import ciudadano.consciente.transferible.TransferibleCrearNivel;
-import ciudadano.consciente.transferible.TransferibleNivel;
+import ciudadano.consciente.modelo.UsuarioRolNivel;
+import ciudadano.consciente.transferible.*;
 import ciudadano.consciente.transformador.TransformadorNivel;
+import ciudadano.consciente.transformador.TransformadorUsuarioRolNivel;
 import ciudadano.consciente.utilidad.UtilidadCamposRequest;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
 
 import java.util.List;
 
@@ -31,6 +32,18 @@ public class ServicioNivel {
 
     @Inject
     TransformadorNivel transformadorNivel;
+
+    @Inject
+    AccesoUsuario accesoUsuario;
+
+    @Inject
+    AccesoRol accesoRol;
+
+    @Inject
+    TransformadorUsuarioRolNivel transformadorUsuarioRolNivel;
+
+    @Inject
+    AccesoUsuarioRolNivel accesoUsuarioRolNivel;
 
     public List<TransferibleNivel> obtenerTodos() {
 
@@ -140,13 +153,39 @@ public class ServicioNivel {
     @Transactional(Transactional.TxType.REQUIRED)
     public void eliminar(Integer identificador) {
 
-        if(identificador == null) {
-            throw new HttpBadRequestException("Identificador requerido.");
-        }
-
         if(!accesoNivel.eliminar(identificador)) {
             throw new HttpNoContentException("Nivel no existe.");
         }
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public TransferibleUsuarioRolNivel asignar(TransferibleAsignarRolUsuario transferibleAsignarRolUsuario) {
+
+    Integer user = transferibleAsignarRolUsuario.getUser();
+    Integer level = transferibleAsignarRolUsuario.getLevel();
+    Integer role = transferibleAsignarRolUsuario.getRole();
+    if(!utilidadCamposRequest.isCampoValido(user) ||
+            !utilidadCamposRequest.isCampoValido(level) ||
+            !utilidadCamposRequest.isCampoValido(role)) {
+        throw new HttpBadRequestException("Todos los campos son requeridos");
+    }
+
+    UsuarioRolNivel usuarioRolNivel = new UsuarioRolNivel();
+
+    usuarioRolNivel.setUser(accesoUsuario.obtener(user)
+            .orElseThrow( ()-> new HttpNotFoundException("Usuario no existe.")));
+
+    usuarioRolNivel.setLevel(accesoNivel.obtener(level)
+            .orElseThrow( ()-> new HttpNotFoundException("Nivel no existe.")));
+
+    usuarioRolNivel.setRole(accesoRol.obtener(role)
+            .orElseThrow( ()-> new HttpNotFoundException("Rol no existe.")));
+
+    usuarioRolNivel = accesoUsuarioRolNivel.persistir(usuarioRolNivel)
+            .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir asignación de Rol de Usuario en Nivel"));
+
+    return transformadorUsuarioRolNivel.entidadATransferible(usuarioRolNivel);
 
     }
 
