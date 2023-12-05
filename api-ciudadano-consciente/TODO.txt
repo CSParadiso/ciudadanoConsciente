@@ -37,6 +37,9 @@ IMPLEMENTACIONES
 #4 Corroborar que las referencias sean consistentes (Unicidad de title en el mismo nivel en REFERENCIA)
 #5 Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en NIVEL
 
-- Commit
+- Commit 639bb55
 #6 Generar Tipos de Actividades (POST y GETall)
 #7 Unir URL del Tipo de Actividad (template y parameterModel viven en la misma carpeta remota- Hablado con Fede.)
+
+- Commit
+#8 Añadida Redirección a FrontEnd (localhost:8080/app lleva a localhost:5173)
