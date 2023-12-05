@@ -21,6 +21,12 @@ function App() {
             <Route index element={<Home />} />
             <Route path="*" element={<NoPage />} />
             {/* Agregar rutas propias */}
+            {/* INIT (pagina inicial, previo al home) */}
+            {/* POOL */}
+            {/* SETTINGS */}
+            {/* MAP */}
+            {/* LEVEL */}
+            {/* ACTIVITI (DINAMICO) */}
           </Route>
         </Routes>
       </BrowserRouter>
