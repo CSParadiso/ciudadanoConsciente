@@ -13,15 +13,17 @@ YA SE PUEDE
 // TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en USUARIO
 // TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en ROL
 
-/
+
 
 
 IMPLEMENTACIONES
 // FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
 // FIXME Cambiar los 204 por 404 cuando no existe el recurso (en el GET)
+// FIXME Refactor PATCH de todas las entidades
+// FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
 
 // DOING
-// TODO Generar Tipos de Actividades
+//
 
 
 
@@ -41,5 +43,8 @@ IMPLEMENTACIONES
 #6 Generar Tipos de Actividades (POST y GETall)
 #7 Unir URL del Tipo de Actividad (template y parameterModel viven en la misma carpeta remota- Hablado con Fede.)
 
-- Commit
+- Commit fa800e3
 #8 Añadida Redirección a FrontEnd (localhost:8080/app lleva a localhost:5173)
+
+- Commit
+#9 Generar Tipos de Actividades (GET, DELETE y PATCH)

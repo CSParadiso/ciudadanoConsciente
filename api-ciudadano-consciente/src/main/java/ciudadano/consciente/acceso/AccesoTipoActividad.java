@@ -1,7 +1,6 @@
 package ciudadano.consciente.acceso;
 
 import ciudadano.consciente.modelo.TipoActividad;
-import ciudadano.consciente.transferible.TransferibleTipoActividad;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -18,7 +17,7 @@ public class AccesoTipoActividad implements PanacheRepositoryBase<TipoActividad,
 
     public Optional<TipoActividad> persistir(TipoActividad tipoActividad) {
 
-        auditor.debug("Intentando persistir Tipo de Actividad");
+        auditor.debug("Intentando persistir Tipo de Actividad " + tipoActividad.getName());
         persist(tipoActividad);
         return findByIdOptional(tipoActividad.getActivityTypeId());
 
@@ -28,6 +27,20 @@ public class AccesoTipoActividad implements PanacheRepositoryBase<TipoActividad,
 
         auditor.debug("Intentando recuparar todos los Tipos de Actividad");
         return findAll().stream().toList();
+
+    }
+
+    public Optional<TipoActividad> obtener(Integer identificador) {
+
+        auditor.debug("Intentando recuperar el Tipo de Actividad " + identificador);
+        return findByIdOptional(identificador);
+
+    }
+
+    public boolean eliminar(Integer identificador) {
+
+        auditor.debug("Intentando eliminar el Tipo de Actividad " + identificador);
+        return deleteById(identificador) ;
 
     }
 }

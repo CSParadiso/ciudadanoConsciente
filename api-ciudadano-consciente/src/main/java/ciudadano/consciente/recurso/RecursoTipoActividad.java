@@ -1,7 +1,8 @@
 package ciudadano.consciente.recurso;
 
-import ciudadano.consciente.modelo.TipoActividad;
+import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.servicio.ServicioTipoActividad;
+import ciudadano.consciente.transferible.TransferibleActualizarTipoActividad;
 import ciudadano.consciente.transferible.TransferibleCrearTipoActividad;
 import ciudadano.consciente.transferible.TransferibleTipoActividad;
 import jakarta.enterprise.context.RequestScoped;
@@ -12,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
@@ -26,6 +28,9 @@ public class RecursoTipoActividad {
 
     @Inject
     ServicioTipoActividad servicioTipoActividad;
+
+    @Inject
+    Logger auditor;
 
     @POST
     @Operation(summary = "Crear un Tipo de Actividad.")
@@ -62,6 +67,69 @@ public class RecursoTipoActividad {
     public Response obtenerTodos() {
 
         return Response.ok(servicioTipoActividad.obtenerTodos()).build();
+
+    }
+
+    @GET
+    @Path("{id}")
+    @Operation(summary = "Recuperar un Tipo de Actividad de acuerdo a su identificador.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Éxito al recuperar Tipo de Actividad."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Problemas al recuperar Tipo de Actividad. Revisar cabecera 'Warning'."
+    )
+    public Response obtener(@PathParam("id") Integer identificador) {
+
+        return Response.ok(servicioTipoActividad.obtener(identificador)).build();
+
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Operation(summary = "Eliminar un Tipo de Actividad de acuerdo a su identificador.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Éxito al eliminar Tipo de Actividad."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Problemas al eliminar el Tipo de Actividad. Revisar cabecera 'Warning'."
+    )
+    public Response eliminar(@PathParam("id") Integer identificador) {
+
+        servicioTipoActividad.eliminar(identificador);
+        return Response.ok().build();
+
+    }
+
+    @PATCH
+    @Path("{id}")
+    @Operation(summary = "Actualizar un Tipo de Actividad de acuerdo a su identificador.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Éxito al actualizar Tipo de Actividad."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Problemas al actualizar Tipo de Actividad. Revisar cabecera 'Warning'."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Problemas al actualizar Tipo de Actividad. Revisar cabecera 'Warning'."
+    )
+    public Response actualizar(@PathParam("id") Integer identificador,
+                               TransferibleActualizarTipoActividad transferibleActualizarTipoActividad) {
+
+        auditor.debug(identificador + "-" + transferibleActualizarTipoActividad.getActivityTypeId());
+
+        if(identificador != transferibleActualizarTipoActividad.getActivityTypeId()) {
+            throw new HttpBadRequestException("El identificador del Body y del Path deben ser iguales.");
+        }
+
+        return Response.ok(servicioTipoActividad.actualizar(identificador, transferibleActualizarTipoActividad)).build();
 
     }
 
