@@ -1,42 +1,42 @@
-// TODO Generar Votos
-// TODO Generar Preguntas
+TODO Generar Votos
+TODO Generar Preguntas
 
-// TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en ORGANIZACION
-// TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en USUARIO
-// TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en ROL
+TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en ORGANIZACION
+TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en USUARIO
+TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en ROL
 
-// TODO Generar Respuestas
-// TODO Generar Actividades
+TODO Generar Respuestas
+TODO Generar Actividades
 
 
-YA SE PUEDE
-// TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en USUARIO
-// TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en ROL
+YA SE PODRÍA
+TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en USUARIO
+TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en ROL
 
 
 
 
 IMPLEMENTACIONES
-// FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
-// FIXME Cambiar los 204 por 404 cuando no existe el recurso (en el GET)
-// FIXME Refactor PATCH de todas las entidades
-// FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
+FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
+FIXME Cambiar los 204 por 404 cuando no existe el recurso (en el GET)
+FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
 
-// DOING
-//
-
-
+DOING
+FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades
+FIXME Refactor: cambiar completamente a idioma inglés
 
 
 
-// DONE
+
+
+DONE
 #0 Pasar argumentos como TransferiblesRequest en el POST y PATCH
 
 - Commit fe565c2
 #1 Cambiar los 200 por 201 cuando se crea con éxito el POST y anexar el header location con la url del recurso creado
 #2 Eliminar las verificaciones de null en los DELETE (el único campo viene por PATH)
-#3 Corroborar que las referencias sean consistentes (Nivel no sea padre de sí mismo en NIVEL)
-#4 Corroborar que las referencias sean consistentes (Unicidad de title en el mismo nivel en REFERENCIA)
+#3 Corroborar que las references sean consistentes (Nivel no sea padre de sí mismo en NIVEL)
+#4 Corroborar que las references sean consistentes (Unicidad de title en el mismo level en REFERENCIA)
 #5 Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en NIVEL
 
 - Commit 639bb55
@@ -46,5 +46,9 @@ IMPLEMENTACIONES
 - Commit fa800e3
 #8 Añadida Redirección a FrontEnd (localhost:8080/app lleva a localhost:5173)
 
-- Commit
+- Commit 7ed776e
 #9 Generar Tipos de Actividades (GET, DELETE y PATCH)
+
+- Commit
+#10 Refactor: cambiar completamente a idioma inglés (Activity Type entero, UtilityVerifyRequestField y App).
+#11 Refactor: cambiar PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Activity Type).

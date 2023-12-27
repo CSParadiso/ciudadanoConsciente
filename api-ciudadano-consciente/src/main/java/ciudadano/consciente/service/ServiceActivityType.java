@@ -1,0 +1,129 @@
+package ciudadano.consciente.service;
+
+import ciudadano.consciente.access.AccessActivityType;
+import ciudadano.consciente.dto.DTOActivityType;
+import ciudadano.consciente.dto.DTOUpdateActivityType;
+import ciudadano.consciente.exception.HttpBadRequestException;
+import ciudadano.consciente.exception.HttpInternalServerException;
+import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.model.ActivityType;
+import ciudadano.consciente.dto.DTOCreateActivityType;
+import ciudadano.consciente.mapper.MapperActivityType;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
+
+import java.util.List;
+
+@RequestScoped
+public class ServiceActivityType {
+
+    @Inject
+    Logger audit;
+
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
+
+    @Inject
+    MapperActivityType mapperActivityType;
+
+    @Inject
+    AccessActivityType accessActivityType;
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOActivityType create(DTOCreateActivityType dtoCreateActivityType) {
+
+        audit.debug("Creating Activity Type.");
+        String name = dtoCreateActivityType.getName();
+        String description = dtoCreateActivityType.getDescription();
+        String functionalTemplateUrl = dtoCreateActivityType.getFunctionalTemplateUrl();
+        if(!utilityVerifyRequestField.isValidField(name) ||
+                !utilityVerifyRequestField.isValidField(description) ||
+                !utilityVerifyRequestField.isValidField(functionalTemplateUrl)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        if(accessActivityType.existsName(name)) {
+            throw new HttpBadRequestException("The name of the Activity Type already exists.");
+        }
+
+        audit.debug("Mapping DTO into Entity.");
+        ActivityType activityType = mapperActivityType.dtoToEntity(name, description, functionalTemplateUrl);
+
+        activityType = accessActivityType.save(activityType)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity Type."));
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperActivityType.entityToDto(activityType);
+
+    }
+
+    public List<DTOActivityType> getAll() {
+
+        audit.debug("Getting all Activity Types.");
+        return mapperActivityType.entityToDto(accessActivityType.getAll());
+
+    }
+
+    public DTOActivityType get(Integer id) {
+
+        audit.debug("Getting Activity Type " + id + ".");
+        ActivityType activityType = accessActivityType.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found."));
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperActivityType.entityToDto(activityType);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void delete(Integer id) {
+
+        audit.debug("Deleting Activity Type " + id + ".");
+        if(!accessActivityType.remove(id)) {
+            throw new HttpNotFoundException("Activity Type not found.");
+        }
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOActivityType update(Integer id, DTOUpdateActivityType dtoUpdateActivityType) {
+
+        audit.debug("Updating Activity Type.");
+        String name = dtoUpdateActivityType.getName();
+        String description = dtoUpdateActivityType.getDescription();
+        String functionalTemplate = dtoUpdateActivityType.getFunctionalTemplateUrl();
+        if(!utilityVerifyRequestField.isValidField(name) &&
+            !utilityVerifyRequestField.isValidField(description) &&
+            !utilityVerifyRequestField.isValidField(functionalTemplate)) {
+            throw new HttpBadRequestException("No updates to make.");
+        }
+
+        ActivityType activityType = accessActivityType.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found."));
+
+        if(utilityVerifyRequestField.isValidField(name)) {
+            if(accessActivityType.existsName(name)) {
+                throw new HttpBadRequestException("The name of the Activity Type already exists.");
+            }
+           activityType.setName(name);
+        }
+
+        if(utilityVerifyRequestField.isValidField(description)) {
+            activityType.setDescription(description);
+        }
+
+        if(utilityVerifyRequestField.isValidField(functionalTemplate)) {
+            activityType.setFunctionalTemplateUrl(functionalTemplate);
+        }
+
+        accessActivityType.save(activityType)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Activity Type.") );
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperActivityType.entityToDto(activityType);
+
+    }
+}

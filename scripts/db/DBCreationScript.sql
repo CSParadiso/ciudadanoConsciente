@@ -70,7 +70,7 @@ create table app.questions (
 	-- Tabla activity_types
 create table app.activity_types (
 	activity_type_id integer generated always as identity primary key, 
-	name varchar(100) not null,
+	name varchar(100) not null unique,
 	description varchar(255) not null, 
 	functional_template_url varchar(500) not null, -- donde viven index.js/jsx  y model.json
 );
