@@ -14,14 +14,10 @@ import java.util.List;
 public interface MapperLevel {
     // target = "nombreEnTransferible" source = "nombreEnModelo"
 
-    DTOLevel entidadATransferible(Level level);
+    DTOLevel entityToDto(Level level);
 
-    List<DTOLevel> entidadATransferible(List<Level> niveles);
+    List<DTOLevel> entityToDto(List<Level> niveles);
 
-    Level transferibleAEntidad(String name);
+    Level dtoToEntity(String name);
 
-    @Mapping(target = "levelId", ignore = true)
-    @Mapping(target = "organization", ignore = true)
-    @Mapping(target = "parent", ignore = true)
-    Level transferibleAEntidad(@MappingTarget Level level, DTOUpdateLevel dtoUpdateLevel);
 }

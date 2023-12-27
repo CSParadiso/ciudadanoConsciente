@@ -22,7 +22,7 @@ public class AccessOrganization implements PanacheRepositoryBase<Organization, I
 
     }
 
-    public Optional<Organization> obtener(Integer identificador) {
+    public Optional<Organization> get(Integer identificador) {
 
         auditor.debug("Intentando recuparar organización " + identificador);
         return findByIdOptional(identificador);

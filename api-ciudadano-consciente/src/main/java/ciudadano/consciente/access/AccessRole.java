@@ -23,7 +23,7 @@ public class AccessRole implements PanacheRepositoryBase<Role, Integer> {
 
     }
 
-    public Optional<Role> obtener(Integer id) {
+    public Optional<Role> get(Integer id) {
 
         return findByIdOptional(id);
 

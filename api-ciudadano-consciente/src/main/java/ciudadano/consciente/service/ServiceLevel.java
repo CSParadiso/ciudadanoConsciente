@@ -46,170 +46,150 @@ public class ServiceLevel {
     AccessUserRoleLevel accessUserRoleLevel;
 
     @Inject
-    Logger auditoria;
+    Logger audit;
 
-    public List<DTOLevel> obtenerTodos() {
+    public List<DTOLevel> getAll() {
 
-        return mapperLevel.entidadATransferible(accessLevel.obtenerTodos());
-
-    }
-
-    public DTOLevel obtener(Integer identificador) {
-
-        Level level = accessLevel.obtener(identificador)
-                .orElseThrow( () -> new HttpNoContentException("El Nivel no existe."));
-
-        return  mapperLevel.entidadATransferible(level);
+        audit.debug("Getting all Levels.");
+        return mapperLevel.entityToDto(accessLevel.getAll());
 
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
-    public DTOLevel create(DTOCreateLevel DTOCreateLevel) {
+    public DTOLevel get(Integer id) {
 
-        String name = DTOCreateLevel.getName();
-        if(!utilityVerifyRequestField.isCampoValido(name)) {
-            throw new HttpBadRequestException("El nombre del nivel es requerido.");
-        }
+        audit.debug("Getting Level " + id + ".");
+        Level level = accessLevel.get(id)
+                .orElseThrow( () -> new HttpNoContentException("Level not found."));
 
-        if(accessLevel.existeNombre(name)) { //TODO Se debería poder tener niveles con el mismo nombre. Lo que lo diferenciaría sería el padre.
-            throw new HttpBadRequestException("El nombre de Nivel ya existe");
-        }
-
-        Level level = mapperLevel.transferibleAEntidad(name);
-
-        Integer organization = DTOCreateLevel.getOrganization();
-        if(utilityVerifyRequestField.isCampoValido(organization)) {
-            level.setOrganization(accessOrganization.obtener(DTOCreateLevel.getOrganization())
-                    .orElse(null));
-        }
-
-        Integer parent = DTOCreateLevel.getParent();
-        if(utilityVerifyRequestField.isCampoValido(parent)) {
-            level.setParent(accessLevel.obtener(parent)
-                    .orElse(null));
-        }
-
-        String description = DTOCreateLevel.getDescription();
-        if(utilityVerifyRequestField.isCampoValido(description)) {
-            level.setDescription(DTOCreateLevel.getDescription());
-        }
-
-        level = accessLevel.persistir(level)
-                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir actualización de Nivel.") );
-
-        return mapperLevel.entidadATransferible(level);
+        audit.debug("Mapping Entity into DTO.");
+        return  mapperLevel.entityToDto(level);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOLevel update(Integer identificador, DTOUpdateLevel dtoUpdateLevel) {
+    public DTOLevel create(DTOCreateLevel dtoCreateLevel) {
 
+        String name = dtoCreateLevel.getName();
+        if(!utilityVerifyRequestField.isValidField(name)) {
+            throw new HttpBadRequestException("The name is required.");
+        }
+
+        if(accessLevel.existName(name)) { // TODO Se debería poder tener niveles con el mismo nombre. Lo que lo diferenciaría sería el padre. O se podría agregar un alias que no sea único, que se usaría en la app.
+            throw new HttpBadRequestException("The name already exists.");
+        }
+
+        audit.debug("Creating Level.");
+        Level level = mapperLevel.dtoToEntity(name);
+
+        Integer organization = dtoCreateLevel.getOrganization();
+        if(utilityVerifyRequestField.isValidField(organization)) {
+            level.setOrganization(accessOrganization.get(dtoCreateLevel.getOrganization())
+                    .orElse(null));
+        }
+
+        Integer parent = dtoCreateLevel.getParent();
+        if(utilityVerifyRequestField.isValidField(parent)) {
+            level.setParent(accessLevel.get(parent)
+                    .orElse(null));
+        }
+
+        String description = dtoCreateLevel.getDescription();
+        if(utilityVerifyRequestField.isValidField(description)) {
+            level.setDescription(dtoCreateLevel.getDescription());
+        }
+
+        audit.debug("Saving Level " + level.getLevelId() + ".");
+        level = accessLevel.save(level)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Level.") );
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperLevel.entityToDto(level);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOLevel update(Integer id, DTOUpdateLevel dtoUpdateLevel) {
+
+        audit.debug("Updating Level " + id + ".");
         String name = dtoUpdateLevel.getName();
         Integer organization = dtoUpdateLevel.getOrganization();
         Integer parent = dtoUpdateLevel.getParent();
         String description = dtoUpdateLevel.getDescription();
-        if(!utilityVerifyRequestField.isCampoValido(name) &&
-                !utilityVerifyRequestField.isCampoValido(parent) &&
-                !utilityVerifyRequestField.isCampoValido(organization) &&
-                !utilityVerifyRequestField.isCampoValido(description)) {
-            throw new HttpBadRequestException("Sin campos que update.");
+        if(!utilityVerifyRequestField.isValidField(name) &&
+                !utilityVerifyRequestField.isValidField(parent) &&
+                !utilityVerifyRequestField.isValidField(organization) &&
+                !utilityVerifyRequestField.isValidField(description)) {
+            throw new HttpBadRequestException("No updates to make.");
         }
 
-        Level level = accessLevel.obtener(identificador)
-                .orElseThrow( () -> new HttpNoContentException("El Nivel no existe."));
+        Level level = accessLevel.get(id)
+                .orElseThrow( () -> new HttpNoContentException("Level not found."));
 
-        // FIXME Resolver Cómo se actualiza una entidad cuando solo algunos campos son modificados.
-
-        if(accessLevel.existeNombre(name)) { //TODO Se debería poder tener niveles con el mismo nombre. Lo que lo diferenciaría sería el padre.
-            throw new HttpBadRequestException("El nombre de Nivel ya existe");
-        }
-
-        mapperLevel.transferibleAEntidad(level, dtoUpdateLevel);
-
-        if(utilityVerifyRequestField.isCampoValido(organization)) {
-            level.setOrganization(accessOrganization.obtener(dtoUpdateLevel.getOrganization())
-                    .orElseThrow( ()-> new HttpNotFoundException("La Organización no existe.")) );
-        }
-
-        if(utilityVerifyRequestField.isCampoValido(parent)) {
-            level.setParent(accessLevel.obtener(parent)
-                    .orElseThrow( ()-> new HttpNotFoundException("El Nivel Padre no existe.")) );
-        }
-
-        accessLevel.persistir(level)
-                .orElseThrow(() -> new HttpInternalServerException("Problemas al persistir Nivel."));
-
-        return mapperLevel.entidadATransferible(level);
-
-        /*
-
-
-        if(utilityVerifyRequestField.isCampoValido(name)) {
-            if(!accessLevel.existeNombre(name)) {
-                level.setName(name);
-            } else {
-                throw new HttpBadRequestException("El nombre de Nivel ya existe.");
+        if(utilityVerifyRequestField.isValidField(name)) {
+            if(accessLevel.existName(name)) {
+                throw new HttpBadRequestException("The name already exists.");
             }
+            level.setName(name);
         }
 
-        if (utilityVerifyRequestField.isCampoValido(organization)) {
-            level.setOrganization(accessOrganization.obtener(organization)
-                    .orElse(null));
+        if(utilityVerifyRequestField.isValidField(organization)) {
+            level.setOrganization(accessOrganization.get(dtoUpdateLevel.getOrganization())
+                    .orElseThrow( ()-> new HttpNotFoundException("Organization not found.")) );
         }
 
-        if(utilityVerifyRequestField.isCampoValido(parent)) {
-            if(level.getLevelId() == parent) {
-                throw new HttpBadRequestException("Un nivel no puede ser padre de sí mismo.");
-            }
-            level.setParent(accessLevel.obtener(parent).orElse(null));
+        if(utilityVerifyRequestField.isValidField(parent)) {
+            level.setParent(accessLevel.get(parent)
+                    .orElseThrow( ()-> new HttpNotFoundException("Parent Level not found.")) );
         }
 
-        if(utilityVerifyRequestField.isCampoValido(description)) {
-            level.setDescription(DTOUpdateLevel.getDescription());
-        }
+        audit.debug("Saving Level " + level.getLevelId() + ".");
+        accessLevel.save(level)
+                .orElseThrow(() -> new HttpInternalServerException("Failed to persist updated Level."));
 
-        level = accessLevel.persistir(level)
-                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir actualización de Nivel.") );
-
-        return mapperLevel.entidadATransferible(level);*/
+        audit.debug("Mapping Entity into DTO.");
+        return mapperLevel.entityToDto(level);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void eliminar(Integer identificador) {
+    public void delete(Integer identificador) {
 
-        if(!accessLevel.eliminar(identificador)) {
+        if(!accessLevel.remove(identificador)) {
             throw new HttpNoContentException("Nivel no existe.");
         }
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOUserRoleLevel asignarRol(DTOAssignRolToUser DTOAssignRolToUser) {
+    public DTOUserRoleLevel assignRole(DTOAssignRolToUser dtoAssignRolToUser) {
 
-    Integer user = DTOAssignRolToUser.getUser();
-    Integer level = DTOAssignRolToUser.getRoleableEntity();
-    Integer role = DTOAssignRolToUser.getRole();
-    if(!utilityVerifyRequestField.isCampoValido(user) ||
-            !utilityVerifyRequestField.isCampoValido(level) ||
-            !utilityVerifyRequestField.isCampoValido(role)) {
-        throw new HttpBadRequestException("Todos los campos son requeridos");
+    audit.debug("Assigning Role to User in Level.");
+    Integer user = dtoAssignRolToUser.getUser();
+    Integer level = dtoAssignRolToUser.getLevelId();
+    Integer role = dtoAssignRolToUser.getRole();
+    if(!utilityVerifyRequestField.isValidField(user) ||
+            !utilityVerifyRequestField.isValidField(level) ||
+            !utilityVerifyRequestField.isValidField(role)) {
+        throw new HttpBadRequestException("All fields required.");
     }
 
+    audit.debug("Creating Role of User in Level.");
     UserRoleLevel userRoleLevel = new UserRoleLevel();
 
-    userRoleLevel.setUser(accessUser.obtener(user)
-            .orElseThrow( ()-> new HttpNotFoundException("Usuario no existe.")));
+    userRoleLevel.setUser(accessUser.get(user)
+            .orElseThrow( ()-> new HttpNotFoundException("User not found.")));
 
-    userRoleLevel.setLevel(accessLevel.obtener(level)
-            .orElseThrow( ()-> new HttpNotFoundException("Nivel no existe.")));
+    userRoleLevel.setLevel(accessLevel.get(level)
+            .orElseThrow( ()-> new HttpNotFoundException("Level not found.")));
 
-    userRoleLevel.setRole(accessRole.obtener(role)
-            .orElseThrow( ()-> new HttpNotFoundException("Rol no existe.")));
+    userRoleLevel.setRole(accessRole.get(role)
+            .orElseThrow( ()-> new HttpNotFoundException("Role not found.")));
 
-    userRoleLevel = accessUserRoleLevel.persistir(userRoleLevel)
-            .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir asignación de Rol de Usuario en Nivel"));
+    audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
+    userRoleLevel = accessUserRoleLevel.save(userRoleLevel)
+            .orElseThrow( ()-> new HttpInternalServerException("Failed to persist UserRoleLevel."));
 
+    audit.debug("Mapping Entity into DTO.");
     return mapperUserRoleLevel.entidadATransferible(userRoleLevel);
 
     }

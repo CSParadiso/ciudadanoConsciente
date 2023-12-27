@@ -15,7 +15,7 @@ public class AccessUserRoleLevel implements PanacheRepositoryBase<UserRoleLevel,
     Logger auditor;
 
 
-    public Optional<UserRoleLevel> persistir(UserRoleLevel userRoleLevel) {
+    public Optional<UserRoleLevel> save(UserRoleLevel userRoleLevel) {
 
         auditor.debug("Intentando persistir UsuarioRolNivel.");
         persist(userRoleLevel);

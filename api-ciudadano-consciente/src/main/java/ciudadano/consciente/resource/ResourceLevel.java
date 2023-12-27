@@ -11,118 +11,131 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Recurso Nivel")
+@Tag(name = "Level Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("levels/")
 public class ResourceLevel {
 
-    final String PATH_BASE_RECURSO = "/levels/";
+    final String PATH_BASE_RESOURCE = "/levels/";
 
     @Inject
     ServiceLevel serviceLevel;
 
+    @Inject
+    Logger audit;
+
     @GET
-    @Operation(summary = "Retornar todos los niveles.")
+    @Operation(summary = "Retrieve all Levels.")
     @APIResponse(
             responseCode = "200",
-            description = "Niveles retornados con éxito."
+            description = "Levels successfully retrieved."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Problemas al recuperar los niveles. Revisar cabecera 'Warnings'."
+            description = "Failed to retrieve all Levels. Verify 'Warning' Header."
     )
-    public Response obtener() {
+    public Response getAll() {
 
-        return Response.ok(serviceLevel.obtenerTodos()).build();
+        audit.debug("Getting all Levels...");
+        return Response.ok(serviceLevel.getAll()).build();
 
     }
 
     @GET
     @Path("{id}")
-    @Operation(summary = "Retornar un nivel a partir de su identificador.")
+    @Operation(summary = "Retrieve a specific Level by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Nivel retornado con éxito."
+            description = "Level successfully retrieved."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Problemas al recuperar Nivel. Revisar cabecera 'Warnings'."
+            description = "Failed to retrieve Level. Verify 'Warning' Header."
     )
-    public Response obtener(@PathParam("id") Integer identificador) {
+    public Response get(@PathParam("id") Integer id) {
 
-        return Response.ok(serviceLevel.obtener(identificador)).build();
+        audit.debug("Getting Level " + id + "...");
+        return Response.ok(serviceLevel.get(id)).build();
 
     }
 
     @POST
-    @Operation(summary = "Create un nivel.")
+    @Operation(summary = "Create a Level.")
     @APIResponse(
             responseCode = "201",
-            description = "Nivel creado con éxito."
+            description = "Level successfully created."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al create Nivel. Revisar cabecera 'Warning'."
+            description = "Failed to create Level. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al create Nivel. Revisar cabecera 'Warning'."
+            description = "Failed to create Level. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateLevel DTOCreateLevel) {
+    public Response create(DTOCreateLevel dtoCreateLevel) {
 
-        DTOLevel nivel = serviceLevel.create(DTOCreateLevel);
+        audit.debug("Creating Level...");
+        DTOLevel level = serviceLevel.create(dtoCreateLevel);
 
-        URI uri = URI.create(PATH_BASE_RECURSO + nivel.getLevelId());
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE + level.getLevelId());
 
-        return Response.created(uri).entity(nivel).build();
+        return Response.created(uri)
+                .entity(level)
+                .build();
 
     }
 
     @PATCH
     @Path("{id}")
-    @Operation(summary = "Update un Nivel de acuerdo a su identificador.")
+    @Operation(summary = "Update a Level by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al update Nivel."
+            description = "Level successfully updated."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al update Nivel. Revisar cabecera 'Warning'."
+            description = "Failed to update Level. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al update Nivel. Revisar cabecera 'Warning'."
+            description = "Failed to update Level. Verify 'Warning' Header."
     )
-    public Response update(@PathParam("id") Integer identificador,
+    public Response update(@PathParam("id") Integer id,
                                DTOUpdateLevel dtoUpdateLevel) {
 
-        if(identificador != dtoUpdateLevel.getLevelId()) {
-            throw new HttpBadRequestException("El identificador del Body y del Path deben ser iguales.");
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(id != dtoUpdateLevel.getLevelId()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
-        return Response.ok(serviceLevel.update(identificador, dtoUpdateLevel)).build();
+        audit.debug("Updating Level" + id + "...");
+        return Response.ok(serviceLevel.update(id, dtoUpdateLevel)).build();
 
     }
 
     @DELETE
     @Path("{id}")
-    @Operation(summary = "Eliminar un nivel a partir de su identificador.")
+    @Operation(summary = "Delete a specific Level by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Nivel eliminado con éxito."
+            description = "Level successfully deleted."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al identificar Nivel. Revisar cabecera 'Warning'"
+            description = "Failed to delete Level. Verify 'Warning' Header."
     )
-    public Response eliminar(@PathParam("id") Integer identificador) {
+    public Response delete(@PathParam("id") Integer id) {
 
-        serviceLevel.eliminar(identificador);
+        audit.debug("Deleting Level " + id + "...");
+        serviceLevel.delete(id);
 
         return Response.ok().build();
 
@@ -130,27 +143,31 @@ public class ResourceLevel {
 
     @POST
     @Path("{id}/roles")
-    @Operation(summary = "Asignar Rol a Usuario en Nivel")
+    @Operation(summary = "Assign Role to User in Level")
     @APIResponse(
             responseCode = "201",
-            description = "Asiganción realizada con éxito"
+            description = "Role successfully assign to User in Level."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al asignar Rol. Revisar cabecera 'Warning.'"
+            description = "Failed to Assign Role to User in Level. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al asignar Rol. Revisar cabecera 'Warning.'"
+            description = "Failed to Assign Role to User in Level. Verify 'Warning' Header."
     )
-    public Response asignarRol(@PathParam("id") Integer identificador,
-                               DTOAssignRolToUser DTOAssignRolToUser) {
+    public Response assignRole(@PathParam("id") Integer id,
+                               DTOAssignRolToUser dtoAssignRolToUser) {
 
-        DTOUserRoleLevel usuarioRolNivel = serviceLevel.asignarRol(DTOAssignRolToUser);
+        audit.debug("Assigning Role" + dtoAssignRolToUser.getRole()
+                + " to User " + dtoAssignRolToUser.getUser()
+                + " in Level " + dtoAssignRolToUser.getLevelId() + "...");
+        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRole(dtoAssignRolToUser);
 
-        URI uri = URI.create("" + usuarioRolNivel.getUrlId());
+        audit.debug("Creating URI...");
+        URI uri = URI.create("" + dtoUserRoleLevel.getUrlId());
 
-        return Response.created(uri).entity(usuarioRolNivel).build();
+        return Response.created(uri).entity(dtoUserRoleLevel).build();
 
     }
 

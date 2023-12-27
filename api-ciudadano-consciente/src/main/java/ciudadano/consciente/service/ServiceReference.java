@@ -61,7 +61,7 @@ public class ServiceReference {
 
         Reference reference = mapperReference.transferibleAEntidad(title, url);
 
-        reference.setLevelId(accessLevel.obtener(level)
+        reference.setLevelId(accessLevel.get(level)
                 .orElseThrow(()-> new HttpNotFoundException("El Nivel no existe.")));
 
         if(accessReference.existeTituloEnNivel(reference.getLevelId(), reference.getTitle())) {
@@ -103,7 +103,7 @@ public class ServiceReference {
         }
 
         if(utilityVerifyRequestField.isValidField(levelId)) {
-            reference.setLevelId(accessLevel.obtener(levelId)
+            reference.setLevelId(accessLevel.get(levelId)
                     .orElseThrow( ()-> new HttpNotFoundException("El nivel no existe.") ));
         }
 

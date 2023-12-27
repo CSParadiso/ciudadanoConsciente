@@ -49,6 +49,10 @@ DONE
 - Commit 7ed776e
 #9 Generar Tipos de Actividades (GET, DELETE y PATCH)
 
-- Commit
+- Commit 0d96db6
 #10 Refactor: cambiar completamente a idioma inglés (Activity Type entero, UtilityVerifyRequestField y App).
 #11 Refactor: cambiar PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Activity Type).
+
+- Commit
+#12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Level enetero)
+#13 Refactor: cambiar completamente a idioma inglés (Level entero)

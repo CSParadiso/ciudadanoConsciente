@@ -11,7 +11,7 @@ public class DTOAssignRolToUser {
     private Integer role;
 
     @Schema(defaultValue = "")
-    private Integer roleableEntity;
+    private Integer levelId;
 
     public Integer getUser() {
         return user;
@@ -29,11 +29,11 @@ public class DTOAssignRolToUser {
         this.role = role;
     }
 
-    public Integer getRoleableEntity() {
-        return roleableEntity;
+    public Integer getLevelId() {
+        return levelId;
     }
 
-    public void setRoleableEntity(Integer roleableEntity) {
-        this.roleableEntity = roleableEntity;
+    public void setLevelId(Integer levelId) {
+        this.levelId = levelId;
     }
 }

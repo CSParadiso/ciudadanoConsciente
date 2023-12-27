@@ -14,40 +14,40 @@ import java.util.Optional;
 public class AccessLevel implements PanacheRepositoryBase<Level, Integer> {
 
     @Inject
-    Logger auditor;
+    Logger audit;
 
-    public List<Level> obtenerTodos() {
+    public List<Level> getAll() {
 
-        auditor.debug("Intentando recuparar todos los niveles.");
+        audit.debug("Trying to retrieve all Levels.");
         return findAll(Sort.by("levelId")).stream().toList();
 
     }
 
-    public Optional<Level> obtener(Integer identificador) {
+    public Optional<Level> get(Integer id) {
 
-        auditor.debug("Intentando recuperar Nivel " + identificador);
-        return findByIdOptional(identificador);
-
-    }
-
-    public boolean eliminar(Integer identificador) {
-
-        auditor.debug("Intentando eliminar Nivel " + identificador);
-        return deleteById(identificador);
+        audit.debug("Trying to retrieve Level " + id + ".");
+        return findByIdOptional(id);
 
     }
 
-    public Optional<Level> persistir(Level level) {
+    public boolean remove(Integer id) {
 
-        auditor.debug("Intentando persistir Nivel");
+        audit.debug("Trying to delete Level  " + id  + ".");
+        return deleteById(id);
+
+    }
+
+    public Optional<Level> save(Level level) {
+
+        audit.debug("Trying to persist Level" + level.getLevelId() + ".");
         persist(level);
         return findByIdOptional(level.getLevelId());
 
     }
 
-    public boolean existeNombre(String name) {
+    public boolean existName(String name) {
 
-        auditor.debug("Verificando si existe el Nivel de nombre: " + name);
+        audit.debug("Verifying if name " + name + "already exists.");
         return count("name", name) > 0;
 
     }

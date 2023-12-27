@@ -15,7 +15,7 @@ public class AccessUser implements PanacheRepositoryBase<User, Integer> {
     @Inject
     Logger auditor;
 
-    public Optional<User> obtener(Integer identificador) {
+    public Optional<User> get(Integer identificador) {
         auditor.debug("Intentando recuperar user del identificador " + identificador);
         return findByIdOptional(identificador);
     }

@@ -40,7 +40,7 @@ public class ServiceRole {
 
     public DTORole obtener(Integer identificador) {
 
-        Role role = accessRole.obtener(identificador)
+        Role role = accessRole.get(identificador)
                 .orElseThrow( ()-> new HttpNoContentException("El Rol no existe."));
 
         return mapperRole.entidadATransferible(role);
@@ -51,7 +51,7 @@ public class ServiceRole {
     public DTORole create(DTOCreateRole DTOCreateRole) {
 
         String name = DTOCreateRole.getName();
-        if(!utilityVerifyRequestField.isCampoValido(name)) {
+        if(!utilityVerifyRequestField.isValidField(name)) {
             throw new HttpBadRequestException("Campo requerido sin completar.");
         }
 
@@ -81,15 +81,15 @@ public class ServiceRole {
     public DTORole update(DTOUpdateRole DTOUpdateRol) {
 
         Integer roleId = DTOUpdateRol.getId();
-        if(!utilityVerifyRequestField.isCampoValido(roleId)) {
+        if(!utilityVerifyRequestField.isValidField(roleId)) {
             throw new HttpBadRequestException("El campo identificador es requerido.");
         }
 
-        Role role = accessRole.obtener(roleId)
+        Role role = accessRole.get(roleId)
                 .orElseThrow( ()-> new HttpNoContentException("El Rol no existe."));
 
         String name = DTOUpdateRol.getName();
-        if(!utilityVerifyRequestField.isCampoValido(name)) {
+        if(!utilityVerifyRequestField.isValidField(name)) {
             throw new HttpBadRequestException("Sin campos que update");
         }
 

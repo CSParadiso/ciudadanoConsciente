@@ -39,7 +39,7 @@ public class ServiceOrganization {
 
     public DTOOrganization obtener(Integer identificador) {
 
-        Organization organization = accessOrganization.obtener(identificador)
+        Organization organization = accessOrganization.get(identificador)
                 .orElseThrow( () -> new HttpNoContentException( "La organización no existe" ));
 
         return mapperOrganization.entidadATransferible(organization);
@@ -50,7 +50,7 @@ public class ServiceOrganization {
     public DTOOrganization create(DTOCreateOrganization DTOCreateOrganization) {
 
         String email = DTOCreateOrganization.getEmail();
-        if(!utilityVerifyRequestField.isCampoValido(email)) {
+        if(!utilityVerifyRequestField.isValidField(email)) {
             throw new HttpBadRequestException("El email es campo requerido.");
         }
 
@@ -61,14 +61,14 @@ public class ServiceOrganization {
         Organization organization = mapperOrganization.transferibleAEntidad(email);
 
         String name = DTOCreateOrganization.getName();
-        if(utilityVerifyRequestField.isCampoValido(name)) {
+        if(utilityVerifyRequestField.isValidField(name)) {
             organization.setName(name);
         } else {
             throw new HttpBadRequestException("El nombre de la organización es requerido");
         }
 
         String description = DTOCreateOrganization.getDescription();
-        if(utilityVerifyRequestField.isCampoValido(description)) {
+        if(utilityVerifyRequestField.isValidField(description)) {
             organization.setDescription(description);
         }
 
@@ -83,23 +83,23 @@ public class ServiceOrganization {
     public DTOOrganization update(DTOUpdateOrganization DTOUpdateOrganization) {
 
         Integer organizationId = DTOUpdateOrganization.getOrganizationId();
-        if(!utilityVerifyRequestField.isCampoValido(organizationId)) {
+        if(!utilityVerifyRequestField.isValidField(organizationId)) {
             throw new HttpBadRequestException("El identificador de la Organización es requerido.");
         }
 
-        Organization organization = accessOrganization.obtener(organizationId)
+        Organization organization = accessOrganization.get(organizationId)
                 .orElseThrow( () -> new HttpNoContentException("La organización no existe.") );
 
         String email = DTOUpdateOrganization.getEmail();
         String name = DTOUpdateOrganization.getName();
         String description = DTOUpdateOrganization.getDescription();
-        if(!utilityVerifyRequestField.isCampoValido(email) &&
-                !utilityVerifyRequestField.isCampoValido(name) &&
-                !utilityVerifyRequestField.isCampoValido(description)) {
+        if(!utilityVerifyRequestField.isValidField(email) &&
+                !utilityVerifyRequestField.isValidField(name) &&
+                !utilityVerifyRequestField.isValidField(description)) {
             throw new HttpBadRequestException("Sin campos que update.");
         }
 
-        if (utilityVerifyRequestField.isCampoValido(name)) {
+        if (utilityVerifyRequestField.isValidField(name)) {
             if(!accessOrganization.existeNombre(name)) {
                 organization.setName(name);
             } else {
@@ -107,7 +107,7 @@ public class ServiceOrganization {
             }
         }
 
-        if (utilityVerifyRequestField.isCampoValido(email)) {
+        if (utilityVerifyRequestField.isValidField(email)) {
             if(!accessOrganization.existeEmail(email)) {
                 organization.setEmail(email);
             } else {
@@ -115,7 +115,7 @@ public class ServiceOrganization {
             }
         }
 
-        if (utilityVerifyRequestField.isCampoValido(description)) {
+        if (utilityVerifyRequestField.isValidField(description)) {
             organization.setDescription(description);
         }
 

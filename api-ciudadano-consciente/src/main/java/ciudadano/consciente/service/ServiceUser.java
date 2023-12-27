@@ -31,7 +31,7 @@ public class ServiceUser {
 
     public DTOUser obtener(Integer identificador) {
 
-        User user = accessUser.obtener(identificador) // Si obtiene nulo, lanza excepción
+        User user = accessUser.get(identificador) // Si obtiene nulo, lanza excepción
                 .orElseThrow(() -> new HttpNoContentException("No existe el usuario con el identificador " + identificador));
 
         return mapperUser.entidadATransferible(user);
@@ -52,9 +52,9 @@ public class ServiceUser {
         String email = DTOCreateUser.getEmail();
         String username = DTOCreateUser.getUsername();
         String password = DTOCreateUser.getPassword();
-        if(!utilityVerifyRequestField.isCampoValido(email) ||
-                !utilityVerifyRequestField.isCampoValido(username) ||
-                !utilityVerifyRequestField.isCampoValido(password)) {
+        if(!utilityVerifyRequestField.isValidField(email) ||
+                !utilityVerifyRequestField.isValidField(username) ||
+                !utilityVerifyRequestField.isValidField(password)) {
             throw new HttpBadRequestException("Todos los campos son requeridos.");
         }
 
@@ -68,7 +68,7 @@ public class ServiceUser {
 
         User user = mapperUser.transferibleAEntidad(email, username);
 
-        if(utilityVerifyRequestField.isCampoValido(password)) {
+        if(utilityVerifyRequestField.isValidField(password)) {
             user.setPassword(password);
         }
 
@@ -83,23 +83,23 @@ public class ServiceUser {
     public DTOUser update(DTOUpdateUser DTOUpdateUser) {
 
         Integer userId = DTOUpdateUser.getIdentificador();
-        if(!utilityVerifyRequestField.isCampoValido(userId)) {
+        if(!utilityVerifyRequestField.isValidField(userId)) {
             throw new HttpBadRequestException("El campo identificador es requerido");
         }
 
-        User user = accessUser.obtener(userId)
+        User user = accessUser.get(userId)
                 .orElseThrow(()-> new HttpNoContentException("El Usuario no existe."));
 
         String email = DTOUpdateUser.getEmail();
         String username = DTOUpdateUser.getUsername();
         String password = DTOUpdateUser.getPassword();
-        if(!utilityVerifyRequestField.isCampoValido(email) &&
-                !utilityVerifyRequestField.isCampoValido(username) &&
-                !utilityVerifyRequestField.isCampoValido(password)) {
+        if(!utilityVerifyRequestField.isValidField(email) &&
+                !utilityVerifyRequestField.isValidField(username) &&
+                !utilityVerifyRequestField.isValidField(password)) {
             throw new HttpBadRequestException("Sin campos que update");
         }
 
-        if(utilityVerifyRequestField.isCampoValido(email)) {
+        if(utilityVerifyRequestField.isValidField(email)) {
             if (!accessUser.existeEmail(email)) {
                 user.setEmail(email);
             } else {
@@ -107,7 +107,7 @@ public class ServiceUser {
             }
         }
 
-        if(utilityVerifyRequestField.isCampoValido(username)) {
+        if(utilityVerifyRequestField.isValidField(username)) {
             if(!accessUser.existeUsername(username)) {
                 user.setUsername(username);
             } else {
@@ -115,7 +115,7 @@ public class ServiceUser {
             }
         }
 
-        if(utilityVerifyRequestField.isCampoValido(password)) {
+        if(utilityVerifyRequestField.isValidField(password)) {
             user.setPassword(password);
         }
 
