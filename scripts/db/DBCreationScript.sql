@@ -117,7 +117,7 @@ create table app.users_roles_organizations(
 	uro_id integer generated always as identity primary key, 
 	user_id integer references app.users on delete cascade not null, 
 	role_id integer default 0 references app.roles on delete set default not null, 
-	organization integer references app.organizations on delete cascade not null, 
+	organization_id integer references app.organizations on delete cascade not null, 
 	unique(user_id, role_id, organization)
 );
 

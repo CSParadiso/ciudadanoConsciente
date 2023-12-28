@@ -1,14 +1,11 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Level;
-import ciudadano.consciente.model.Role;
-import ciudadano.consciente.model.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOUserRoleLevel {
+public class DTOUserRoleOrganization {
 
     @Schema
-    private Integer urlId;
+    private Integer uroId;
 
     @Schema
     private Integer user;
@@ -17,14 +14,14 @@ public class DTOUserRoleLevel {
     private Integer role;
 
     @Schema
-    private Integer level;
+    private Integer organization;
 
-    public Integer getUrlId() {
-        return urlId;
+    public Integer getUroId() {
+        return uroId;
     }
 
-    public void setUrlId(Integer urlId) {
-        this.urlId = urlId;
+    public void setUroId(Integer uroId) {
+        this.uroId = uroId;
     }
 
     public Integer getUser() {
@@ -43,11 +40,11 @@ public class DTOUserRoleLevel {
         this.role = role;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Integer getOrganization() {
+        return organization;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setOrganization(Integer organization) {
+        this.organization = organization;
     }
 }

@@ -11,9 +11,9 @@ import java.util.List;
 public interface MapperOrganization {
     // target = "nombreEnTransferible" source = "nombreEnModelo"
 
-    DTOOrganization entidadATransferible(Organization organization);
+    DTOOrganization entityToDto(Organization organization);
 
-    List<DTOOrganization> entidadATransferible(List<Organization> organizationList);
+    List<DTOOrganization> entityToDto(List<Organization> organizationList);
 
-    Organization transferibleAEntidad(String email);
+    Organization dtoToEntity(String email, String name);
 }

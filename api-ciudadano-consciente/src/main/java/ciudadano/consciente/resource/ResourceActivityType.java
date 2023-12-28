@@ -112,7 +112,7 @@ public class ResourceActivityType {
 
     @PATCH
     @Path("{id}")
-    @Operation(summary = "Update a specific Activity Type by its ID.")
+    @Operation(summary = "Update an Activity Type.")
     @APIResponse(
             responseCode = "200",
             description = "Activity Types successfully updated."

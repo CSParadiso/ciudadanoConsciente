@@ -95,7 +95,7 @@ public class ResourceLevel {
 
     @PATCH
     @Path("{id}")
-    @Operation(summary = "Update a Level by its ID.")
+    @Operation(summary = "Update a Level.")
     @APIResponse(
             responseCode = "200",
             description = "Level successfully updated."
@@ -143,10 +143,14 @@ public class ResourceLevel {
 
     @POST
     @Path("{id}/roles")
-    @Operation(summary = "Assign Role to User in Level")
+    @Operation(summary = "Assign Role to User in Level.")
     @APIResponse(
             responseCode = "201",
             description = "Role successfully assign to User in Level."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to Assign Role to User in Level. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "404",
@@ -157,15 +161,22 @@ public class ResourceLevel {
             description = "Failed to Assign Role to User in Level. Verify 'Warning' Header."
     )
     public Response assignRole(@PathParam("id") Integer id,
-                               DTOAssignRolToUser dtoAssignRolToUser) {
+                               DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel) {
 
-        audit.debug("Assigning Role" + dtoAssignRolToUser.getRole()
-                + " to User " + dtoAssignRolToUser.getUser()
-                + " in Level " + dtoAssignRolToUser.getLevelId() + "...");
-        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRole(dtoAssignRolToUser);
+        final String PATH_BASE_USER_ROL_LEVEL = "/user-rol-level/";
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(id != dtoAssignRoleToUserLevel.getLevel()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+        }
+
+        audit.debug("Assigning Role" + dtoAssignRoleToUserLevel.getRole()
+                + " to User " + dtoAssignRoleToUserLevel.getUser()
+                + " in Level " + dtoAssignRoleToUserLevel.getLevel() + "...");
+        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRole(dtoAssignRoleToUserLevel);
 
         audit.debug("Creating URI...");
-        URI uri = URI.create("" + dtoUserRoleLevel.getUrlId());
+        URI uri = URI.create(PATH_BASE_USER_ROL_LEVEL + dtoUserRoleLevel.getUrlId());
 
         return Response.created(uri).entity(dtoUserRoleLevel).build();
 

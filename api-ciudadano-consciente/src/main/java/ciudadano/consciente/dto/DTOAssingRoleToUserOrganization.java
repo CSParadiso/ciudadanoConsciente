@@ -2,7 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOAssignRolToUser {
+public class DTOAssingRoleToUserOrganization {
 
     @Schema(defaultValue = "")
     private Integer user;
@@ -11,7 +11,7 @@ public class DTOAssignRolToUser {
     private Integer role;
 
     @Schema(defaultValue = "")
-    private Integer levelId;
+    private Integer organization;
 
     public Integer getUser() {
         return user;
@@ -29,11 +29,11 @@ public class DTOAssignRolToUser {
         this.role = role;
     }
 
-    public Integer getLevelId() {
-        return levelId;
+    public Integer getOrganization() {
+        return organization;
     }
 
-    public void setLevelId(Integer levelId) {
-        this.levelId = levelId;
+    public void setOrganization(Integer organization) {
+        this.organization = organization;
     }
 }

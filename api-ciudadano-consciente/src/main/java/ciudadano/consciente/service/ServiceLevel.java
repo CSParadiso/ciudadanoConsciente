@@ -14,6 +14,7 @@ import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -161,12 +162,12 @@ public class ServiceLevel {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOUserRoleLevel assignRole(DTOAssignRolToUser dtoAssignRolToUser) {
+    public DTOUserRoleLevel assignRole(DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel) {
 
     audit.debug("Assigning Role to User in Level.");
-    Integer user = dtoAssignRolToUser.getUser();
-    Integer level = dtoAssignRolToUser.getLevelId();
-    Integer role = dtoAssignRolToUser.getRole();
+    Integer user = dtoAssignRoleToUserLevel.getUser();
+    Integer level = dtoAssignRoleToUserLevel.getLevel();
+    Integer role = dtoAssignRoleToUserLevel.getRole();
     if(!utilityVerifyRequestField.isValidField(user) ||
             !utilityVerifyRequestField.isValidField(level) ||
             !utilityVerifyRequestField.isValidField(role)) {
@@ -186,8 +187,12 @@ public class ServiceLevel {
             .orElseThrow( ()-> new HttpNotFoundException("Role not found.")));
 
     audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
-    userRoleLevel = accessUserRoleLevel.save(userRoleLevel)
-            .orElseThrow( ()-> new HttpInternalServerException("Failed to persist UserRoleLevel."));
+    try {
+        accessUserRoleLevel.save(userRoleLevel)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist UserRoleLevel."));
+    } catch (ConstraintViolationException e) {
+        throw new HttpBadRequestException("Already exists Role for User in Level.");
+    }
 
     audit.debug("Mapping Entity into DTO.");
     return mapperUserRoleLevel.entidadATransferible(userRoleLevel);

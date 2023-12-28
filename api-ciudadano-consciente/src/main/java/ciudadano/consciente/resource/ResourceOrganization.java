@@ -1,6 +1,7 @@
 
 package ciudadano.consciente.resource;
 
+import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -11,143 +12,173 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Recurso Organización")
+@Tag(name = "Organization Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("organizations/")
+@Path("organizations")
 public class ResourceOrganization {
 
-    final String PATH_BASE_RECURSO = "/organizations/";
+    final String PATH_BASE_RESOURCE = "/organizations/";
 
     @Inject
     ServiceOrganization serviceOrganization;
 
+    @Inject
+    Logger audit;
+
     @GET
-    @Operation( summary = "Retornar todas las organizaciones")
+    @Operation( summary = "Retrieve all Organizations.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al recuperar todas las organizaciones."
+            description = "Organizations retrieved successfully."
     )
-    public Response obtener() {
+    public Response getAll() {
 
-        return Response.ok(serviceOrganization.obtenerTodos()).build();
+        audit.debug("Getting all Organizations...");
+        return Response.ok(serviceOrganization.getAll()).build();
 
     }
 
     @GET
     @Path("{id}/")
-    @Operation( summary = "Retornar una organización a partir de su identificador.")
+    @Operation( summary = "Retrieve an specific Organization by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al recuperar organización."
+            description = "Organization successfully retrieved."
     )
     @APIResponse(
-            responseCode = "204",
-            description = "Problemas al recuperar el nivel. Revisar cabecera 'Warning'."
+            responseCode = "404",
+            description = "Failed to retrieve Organization. Verify 'Warning' Header."
     )
-    public Response obtener(@PathParam("id") Integer identificador) {
+    public Response get(@PathParam("id") Integer id) {
 
-        return Response.ok(serviceOrganization.obtener(identificador)).build();
+        audit.debug("Getting Organization " + id + "...");
+        return Response.ok(serviceOrganization.get(id)).build();
 
     }
 
     @POST
-    @Operation( summary = "Create una nueva organización.")
+    @Operation( summary = "Create a new Organization.")
     @APIResponse(
             responseCode = "201",
-            description = "Organización creada con éxito."
+            description = "Organization successfully created."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al create Organización. Revisar cabecera 'Warning'."
+            description = "Failed to create new Organization. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al create Organización. Revisar cabecera 'Warning'."
+            description = "Failed to create new Organization. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateOrganization DTOCreateOrganization) {
+    public Response create(DTOCreateOrganization dtoCreateOrganization) {
 
-        DTOOrganization organizacion = serviceOrganization.create(DTOCreateOrganization);
+        audit.debug("Creating Organization...");
+        DTOOrganization organization = serviceOrganization.create(dtoCreateOrganization);
 
-        URI uri = URI.create(PATH_BASE_RECURSO + organizacion.getOrganizationId());
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE + organization.getOrganizationId());
 
-        return Response.created(uri).entity(organizacion).build();
+        return Response.created(uri).entity(organization).build();
     }
 
     @PATCH
-    @Operation( summary = "Update datos de la Organización")
+    @Path("{id}")
+    @Operation( summary = "Update Organization.")
     @APIResponse(
             responseCode = "200",
-            description = "Organización editada con éxito."
+            description = "Organization successfully updated."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Problemas al update organización. Revisar cabecera 'Warning'"
+            description = "Failed to update new Organization. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al update organización. Revisar cabecera 'Warning'"
+            description = "Failed to update new Organization. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al update organización. Revisar cabecera 'Warning'"
+            description = "Failed to update new Organization. Verify 'Warning' Header."
     )
-    public Response update(DTOUpdateOrganization DTOUpdateOrganization) {
+    public Response update(@PathParam("id") Integer id,
+                           DTOUpdateOrganization dtoUpdateOrganization) {
 
-        return Response.ok(serviceOrganization.update(DTOUpdateOrganization)).build();
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(id != dtoUpdateOrganization.getOrganizationId()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+        }
+
+        audit.debug("Updating Organization" + id + "...");
+        return Response.ok(serviceOrganization.update(id, dtoUpdateOrganization)).build();
 
     }
 
     @DELETE
     @Path("{id}")
-    @Operation( summary = "Eliminar un usuario a partir de su identificador")
+    @Operation( summary = "Delete an Organization.")
     @APIResponse(
             responseCode = "200",
-            description = "Organización eliminada con éxito."
+            description = "Organization successfully deleted."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al identificar organización. Revisar cabecera 'Warning'"
+            description = "Failed to delete new Organization. Verify 'Warning' Header."
     )
-    public Response eliminar(@PathParam("id") Integer identificador) {
+    public Response delete(@PathParam("id") Integer id) {
 
-        serviceOrganization.eliminar(identificador);
+        audit.debug("Deleting Organization " + id + "...");
+        serviceOrganization.delete(id);
 
         return Response.ok().build();
 
     }
 
-    /*@POST
+    @POST
     @Path("{id}/roles")
-    @Operation(summary = "Asignar un Rol a un Usuario en una Organización.")
+    @Operation(summary = "Assign Role to User in Organization.")
     @APIResponse(
             responseCode = "201",
-            description = "Éxito al asignar Rol."
+            description = "Role successfully assign to User in Organization."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al asignar Rol. Revisar cabecera 'Warning'."
+            description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al asignar Rol. Revisar cabecera 'Warning'."
+            description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al asignar Rol. Revisar cabecera 'Warning'."
+            description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header."
     )
-    public Response asignarRol(@PathParam("id") Integer identificador,
-                               TransferibleAsignarRolUsuario transferibleAsignarRolUsuario) {
+    public Response assignRole(@PathParam("id") Integer id,
+                               DTOAssingRoleToUserOrganization dtoAssingRoleToUserOrganization) {
 
-        TransferibleUsuarioRolNivel usuarioRolNivel = servicioOrganizacion.asignarRol(transferibleAsignarRolUsuario);
+        final String PATH_BASE_USER_ROL_ORGANIZATION = "/user-rol-organization/";
 
-        URI uri = URI.create("" + usuarioRolNivel.getUrlId())
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(id != dtoAssingRoleToUserOrganization.getOrganization()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+        }
 
-    }*/
+        audit.debug("Assigning Role" + dtoAssingRoleToUserOrganization.getRole()
+                + " to User " + dtoAssingRoleToUserOrganization.getUser()
+                + " in Organization " + dtoAssingRoleToUserOrganization.getOrganization() + "...");
+        DTOUserRoleOrganization dtoUserRoleOrganization = serviceOrganization.assignRole(dtoAssingRoleToUserOrganization);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_USER_ROL_ORGANIZATION + dtoUserRoleOrganization.getOrganization());
+
+        return Response.created(uri).entity(dtoUserRoleOrganization).build();
+
+    }
 
 }
 

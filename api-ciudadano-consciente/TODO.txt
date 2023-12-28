@@ -20,10 +20,11 @@ IMPLEMENTACIONES
 FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
 FIXME Cambiar los 204 por 404 cuando no existe el recurso (en el GET)
 FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
+FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 
 DOING
-FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades
-FIXME Refactor: cambiar completamente a idioma inglés
+FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Organization)
+FIXME Refactor: cambiar completamente a idioma inglés (Organization) -
 
 
 
@@ -53,6 +54,11 @@ DONE
 #10 Refactor: cambiar completamente a idioma inglés (Activity Type entero, UtilityVerifyRequestField y App).
 #11 Refactor: cambiar PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Activity Type).
 
+- Commit ed05cbf
+ #12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Level entero)
+ #13 Refactor: cambiar completamente a idioma inglés (Level entero)
+
 - Commit
-#12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Level enetero)
-#13 Refactor: cambiar completamente a idioma inglés (Level entero)
+#12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Organization entero)
+#13 Refactor: cambiar completamente a idioma inglés (Organizations entero)
+#14 Feat: Generada funcionalidad UserRoleOrganization desde el lado de la Organization (faltan las capas desde su punto de vista)
