@@ -10,9 +10,11 @@ import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperUserRoleOrganization;
+import ciudadano.consciente.model.Level;
 import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.mapper.MapperOrganization;
 import ciudadano.consciente.model.UserRolOrganization;
+import ciudadano.consciente.model.UserRoleLevel;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -193,6 +195,24 @@ public class ServiceOrganization {
 
         audit.debug("Mapping Entity into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRolOrganization);
+
+    }
+
+    public List<DTOUserRoleOrganization> getUserRoleOrganization(Integer id) {
+
+        audit.debug("Getting Organization " + id + ".");
+        Organization organization = accessOrganization.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Organization not found.") );
+
+        audit.debug("Retrieving all UserRole of Organization "  + organization.getOrganizationId() + ".");
+        List<UserRolOrganization> userRolOrganizations = accessUserRoleOrganization.getByOrganization(organization);
+
+        if(userRolOrganizations.isEmpty()) {
+            throw new HttpNoContentException("No Roles assigned to User in Organization.");
+        }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUserRoleOrganization.entityToDto(userRolOrganizations);
 
     }
 }

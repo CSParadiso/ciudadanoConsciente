@@ -1,17 +1,21 @@
 TODO Generar Votos
 TODO Generar Preguntas
 
-TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en ORGANIZACION
 TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en USUARIO
 TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en ROL
+TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en USUARIO
+TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en ROL
 
 TODO Generar Respuestas
 TODO Generar Actividades
 
 
 YA SE PODRÍA
-TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en USUARIO
-TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en ROL
+TODO Terminar Arquitectura entera de UserRoleLevel
+TODO Terminar Arquitectura entera de UserRoleOrganization
+
+TODO GET, GETALL, PATCH, DELETE de UserRoleLevel en Level
+TODO GET, GETALL, PATCH, DELETE de UserRoleOrganization en Organization
 
 
 
@@ -23,8 +27,9 @@ FIXME Refactor de las excepciones creando el transferible de acuerdo a la Refere
 FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 
 DOING
-FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Organization)
-FIXME Refactor: cambiar completamente a idioma inglés (Organization) -
+FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Reference)
+FIXME Refactor: migrado completamente a idioma inglés Reference
+
 
 
 
@@ -58,7 +63,11 @@ DONE
  #12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Level entero)
  #13 Refactor: cambiar completamente a idioma inglés (Level entero)
 
-- Commit
+- Commit 3df07c9
 #12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) de todas las entidades (Organization entero)
-#13 Refactor: cambiar completamente a idioma inglés (Organizations entero)
+#13 Refactor: migrado completamente a idioma inglés Organization
 #14 Feat: Generada funcionalidad UserRoleOrganization desde el lado de la Organization (faltan las capas desde su punto de vista)
+
+- Commit
+#15 Feat: Implemenatado el GETALL de UserRoleLevel en Level
+#16 Feat: Implementado el GETALL de UserRoleOrganization en Organization

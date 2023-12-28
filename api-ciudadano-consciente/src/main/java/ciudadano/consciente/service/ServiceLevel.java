@@ -195,8 +195,25 @@ public class ServiceLevel {
     }
 
     audit.debug("Mapping Entity into DTO.");
-    return mapperUserRoleLevel.entidadATransferible(userRoleLevel);
+    return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
 
+    public List<DTOUserRoleLevel> getUserRoleLevel(Integer id) {
+
+        audit.debug("Getting Level " + id + ".");
+        Level level = accessLevel.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Level not found.") );
+
+        audit.debug("Retrieving all UserRole of Level "  + level.getLevelId() + ".");
+        List<UserRoleLevel> userRoleLevel = accessUserRoleLevel.getByLevel(level);
+
+        if(userRoleLevel.isEmpty()) {
+            throw new HttpNoContentException("No Roles assigned to User in Level.");
+        }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUserRoleLevel.entityToDto(userRoleLevel);
+
+    }
 }

@@ -141,6 +141,8 @@ public class ResourceLevel {
 
     }
 
+    // ROLE HANDLING IN LEVEL
+
     @POST
     @Path("{id}/roles")
     @Operation(summary = "Assign Role to User in Level.")
@@ -179,6 +181,24 @@ public class ResourceLevel {
         URI uri = URI.create(PATH_BASE_USER_ROL_LEVEL + dtoUserRoleLevel.getUrlId());
 
         return Response.created(uri).entity(dtoUserRoleLevel).build();
+
+    }
+
+    @GET
+    @Path("{id}/roles")
+    @Operation(summary = "Retrieve all the UserRole in Level.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Roles of User in Level successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header."
+    )
+    public Response getAll(@PathParam("id") Integer id) {
+
+        audit.debug("Getting all the UserRole of Level " + id + "...");
+        return Response.ok(serviceLevel.getUserRoleLevel(id)).build();
 
     }
 

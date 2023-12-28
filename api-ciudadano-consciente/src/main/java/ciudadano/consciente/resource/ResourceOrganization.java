@@ -139,6 +139,8 @@ public class ResourceOrganization {
 
     }
 
+    // ROLE HANDLING IN ORGANIZATIONS
+
     @POST
     @Path("{id}/roles")
     @Operation(summary = "Assign Role to User in Organization.")
@@ -177,6 +179,24 @@ public class ResourceOrganization {
         URI uri = URI.create(PATH_BASE_USER_ROL_ORGANIZATION + dtoUserRoleOrganization.getOrganization());
 
         return Response.created(uri).entity(dtoUserRoleOrganization).build();
+
+    }
+
+    @GET
+    @Path("{id}/roles")
+    @Operation(summary = "Retrieve all the UserRole in Organization.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Roles of User in Organization successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Roles of User in Organization. Verify 'Warning' Header."
+    )
+    public Response getAll(@PathParam("id") Integer id) {
+
+        audit.debug("Getting all the UserRole of Organization " + id + "...");
+        return Response.ok(serviceOrganization.getUserRoleOrganization(id)).build();
 
     }
 
