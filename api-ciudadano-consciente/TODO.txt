@@ -25,10 +25,11 @@ FIXME Considerar responder con la clase Java WebResponseException en lugar de la
 FIXME Cambiar los 204 por 404 cuando no existe el recurso (en el GET)
 FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
 FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
+FIXME Refactor: Corroborar si las verificaciones de identificadores en los recursos de los PATCH es mejor hacerlas con el compareTo que con el !=
 
 DOING
-FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Role)
-FIXME Refactor: migrado completamente a idioma inglés Role
+FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (User)
+FIXME Refactor: migrado completamente a idioma inglés User
 
 
 

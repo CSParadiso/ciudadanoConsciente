@@ -5,17 +5,17 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class DTOUpdateRole {
 
     @Schema(defaultValue = "")
-    private Integer id;
+    private Integer roleId;
 
     @Schema(defaultValue = "")
     private String name;
 
-    public Integer getId() {
-        return id;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 
     public String getName() {
