@@ -13,41 +13,42 @@ import java.util.Optional;
 public class AccessRole implements PanacheRepositoryBase<Role, Integer> {
 
     @Inject
-    Logger auditor;
+    Logger audit;
 
 
-    public List<Role> obtenerTodos() {
+    public List<Role> getAll() {
 
-        auditor.debug("Intentando recuperar todos los roles.");
+        audit.debug("Trying to retrive all Roles.");
         return findAll().stream().toList();
 
     }
 
     public Optional<Role> get(Integer id) {
 
+        audit.debug("Getting Role " + id + ".");
         return findByIdOptional(id);
 
     }
 
-    public boolean existeNombre(String name) {
+    public boolean existsName(String name) {
 
-        auditor.debug("Corroborando si existe el Rol.");
+        audit.debug("Verifying if name already exists.");
         return count("name", name) > 0;
 
     }
 
-    public Optional<Role> persistir(Role role) {
+    public Optional<Role> save(Role role) {
 
-        auditor.debug("Intentando persistir Rol.");
+        audit.debug("Trying to persist Role " + role.getRoleId() + ".");
         persist(role);
         return findByIdOptional(role.getRoleId());
 
     }
 
-    public boolean eliminar(Integer identificador) {
+    public boolean remove(Integer id) {
 
-        auditor.debug("Intentando elminar Rol.");
-        return deleteById(identificador);
+        audit.debug("Trying to remove Role.");
+        return deleteById(id);
 
     }
 

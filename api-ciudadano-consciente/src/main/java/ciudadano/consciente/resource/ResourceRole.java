@@ -1,5 +1,6 @@
 package ciudadano.consciente.resource;
 
+import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceRole;
 import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;
@@ -12,128 +13,131 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Recurso Rol")
+@Tag(name = "Role Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("roles/")
 public class ResourceRole {
 
-    final String BASE_PATH_RECURSO = "/roles/";
+    final String BASE_PATH_RESOURCE = "/roles/";
+
+    @Inject
+    Logger audit;
 
     @Inject
     ServiceRole serviceRole;
 
     @GET
-    @Operation( summary = "Retornar todos los roles." )
+    @Operation( summary = "Retrieve all Roles." )
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al recuperar roles"
+            description = "Roles successfully retrieved."
     )
-    public Response obtenerTodos() {
+    public Response getAll() {
 
-        return Response.ok(serviceRole.obtenerTodos()).build();
+        audit.debug("Retrieving all Roles...");
+        return Response.ok(serviceRole.getAll()).build();
 
     }
 
     @GET
     @Path("{id}")
-    @Operation( summary = "Retornar un rol a partir de su identificador." )
+    @Operation( summary = "Retrieve a specific Role by its ID." )
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al recuperar Rol."
+            description = "Role successfully retrieved."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Problemas al recuperar Rol. Revisar cabecera 'Warning'."
+            description = "Failed to retrieve Role. Verify 'Warning' Header."
     )
-    public Response obtener(@PathParam("id") Integer identificador) {
+    public Response get(@PathParam("id") Integer id) {
 
-        return Response.ok(serviceRole.obtener(identificador)).build();
+        audit.debug("Retrieving Role " + id + "...");
+        return Response.ok(serviceRole.get(id)).build();
 
     }
 
     @POST
-    @Operation( summary = "Create un nuevo Rol.")
+    @Operation( summary = "Create a new Role.")
     @APIResponse(
             responseCode = "201",
-            description = "Éxito al create Rol."
+            description = "Role successfully created."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al create Rol. Revisar cabecera 'Warning'."
+            description = "Failed to create Role."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al create Rol. Revisar cabecera 'Warning'."
+            description = "Failed to create Role. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateRole DTOCreateRole) {
+    public Response create(DTOCreateRole dtoCreateRole) {
 
-        DTORole rol = serviceRole.create(DTOCreateRole);
+        audit.debug("Creating Role...");
+        DTORole rol = serviceRole.create(dtoCreateRole);
 
-        URI uri = URI.create(BASE_PATH_RECURSO + rol.getRoleId());
+        audit.debug("Creating URI...");
+        URI uri = URI.create(BASE_PATH_RESOURCE + rol.getRoleId());
 
         return Response.created(uri).entity(rol).build();
 
     }
 
     @PATCH
-    @Operation(summary = "Update Rol a partir de su identificador.")
+    @Path("{id}")
+    @Operation(summary = "Update a Role.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al update Rol."
+            description = "Role successfully updated."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Problemas al update Rol. Revisar cabecera 'Warning'."
+            description = "Failed to update Role. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al update Rol. Revisar cabecera 'Warning'."
+            description = "Failed to update Role. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al update Rol. Revisar cabecera 'Warning'."
+            description = "Failed to update Role. Verify 'Warning' Header."
     )
-    public Response update(DTOUpdateRole DTOUpdateRol) {
+    public Response update(@PathParam("id") Integer id, DTOUpdateRole dtoUpdateRole) {
 
-        return Response.ok(serviceRole.update(DTOUpdateRol)).build();
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(id.compareTo(dtoUpdateRole.getRoleId()) != 0 )  {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+        }
+
+        audit.debug("Updating Role... " + id + "...");
+        return Response.ok(serviceRole.update(id, dtoUpdateRole)).build();
 
     }
 
     @DELETE
     @Path("{id}")
-    @Operation( summary = "Eliminar un Rol.")
+    @Operation( summary = "Delete a Role.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al eliminar Rol."
+            description = "Role successfully deleted."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al eliminar Rol. Revisar cabecera 'Warning'."
+            description = "Failed to delete Role. Verify 'Warning' Header."
     )
-    public Response eliminar(@PathParam("id") Integer identificador) {
+    public Response delete(@PathParam("id") Integer id) {
 
-        serviceRole.eliminar(identificador);
+        audit.debug("Deleting Role " + id + "...");
+        serviceRole.delete(id);
 
         return Response.ok().build();
 
     }
 
-    /*@GET
-    @Path("{id}/users/levels")
-    @Operation(summary = "Obtener todos los Usuarios de un Rol.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Éxito al recuperar Usuarios."
-    )
-    public Response obtenerUsuarios(@PathParam("id") Integer identificador) {
-
-        return Response.ok(servicioRol.obtenerUsuarios(identificador)).build();
-
-    }
-*/
 }

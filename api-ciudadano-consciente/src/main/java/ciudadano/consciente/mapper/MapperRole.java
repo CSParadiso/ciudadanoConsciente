@@ -10,10 +10,10 @@ import java.util.List;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE) // Ignore advertencia de unmapped
 public interface MapperRole {
 
-    List<DTORole> entidadATransferible(List<Role> roles);
+    List<DTORole> entityToDto(List<Role> roles);
 
-    DTORole entidadATransferible(Role role);
+    DTORole entityToDto(Role role);
 
-    Role transferibleAEntidad(String name);
+    Role dtoToEntity(String name);
 
 }

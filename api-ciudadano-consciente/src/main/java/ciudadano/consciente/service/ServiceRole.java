@@ -14,11 +14,15 @@ import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
 
 import java.util.List;
 
 @RequestScoped
 public class ServiceRole {
+
+    @Inject
+    Logger audit;
 
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
@@ -32,77 +36,82 @@ public class ServiceRole {
     @Inject
     AccessUserRoleLevel accessUserRoleLevel;
 
-    public List<DTORole> obtenerTodos() {
+    public List<DTORole> getAll() {
 
-        return mapperRole.entidadATransferible(accessRole.obtenerTodos());
+        audit.debug("Getting all Roles.");
+        return mapperRole.entityToDto(accessRole.getAll());
 
     }
 
-    public DTORole obtener(Integer identificador) {
+    public DTORole get(Integer id) {
 
-        Role role = accessRole.get(identificador)
-                .orElseThrow( ()-> new HttpNoContentException("El Rol no existe."));
+        audit.debug("Retrieving Role " + id + " .");
+        Role role = accessRole.get(id)
+                .orElseThrow( ()-> new HttpNoContentException("Role not found."));
 
-        return mapperRole.entidadATransferible(role);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperRole.entityToDto(role);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTORole create(DTOCreateRole DTOCreateRole) {
+    public DTORole create(DTOCreateRole dtoCreateRole) {
 
-        String name = DTOCreateRole.getName();
+        audit.debug("Creating new Role.");
+        String name = dtoCreateRole.getName();
         if(!utilityVerifyRequestField.isValidField(name)) {
-            throw new HttpBadRequestException("Campo requerido sin completar.");
+            throw new HttpBadRequestException("Name field required.");
         }
 
-        if(accessRole.existeNombre(name)) {
-            throw new HttpBadRequestException("El rol ya existe");
+        if(accessRole.existsName(name)) {
+            throw new HttpBadRequestException("The name of the Role already exists.");
         }
 
-        Role role = mapperRole.transferibleAEntidad(name);
+        audit.debug("Mapping DTO into Entity");
+        Role role = mapperRole.dtoToEntity(name);
 
-        role = accessRole.persistir(role)
-                .orElseThrow(()-> new HttpInternalServerException("Problemas al persistir nuevo Rol."));
+        audit.debug("Saving new Role " + role.getRoleId() + ".");
+        accessRole.save(role)
+                .orElseThrow(()-> new HttpInternalServerException("Failed to persist new Role."));
 
-        return mapperRole.entidadATransferible(role);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperRole.entityToDto(role);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void eliminar(Integer identificador) {
+    public void delete(Integer id) {
 
-        if(!accessRole.eliminar(identificador)) {
-            throw new HttpNoContentException("Rol a eliminar no existe.");
+        audit.debug("Deleting Role " + id + ".");
+        if(!accessRole.remove(id)) {
+            throw new HttpNoContentException("Role not found.");
         }
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTORole update(DTOUpdateRole DTOUpdateRol) {
+    public DTORole update(Integer id, DTOUpdateRole dtoUpdateRole) {
 
-        Integer roleId = DTOUpdateRol.getId();
-        if(!utilityVerifyRequestField.isValidField(roleId)) {
-            throw new HttpBadRequestException("El campo identificador es requerido.");
-        }
+        audit.debug("Updating Role " + id + ".");
+        Role role = accessRole.get(id)
+                .orElseThrow( ()-> new HttpNoContentException("Role not found."));
 
-        Role role = accessRole.get(roleId)
-                .orElseThrow( ()-> new HttpNoContentException("El Rol no existe."));
-
-        String name = DTOUpdateRol.getName();
+        String name = dtoUpdateRole.getName();
         if(!utilityVerifyRequestField.isValidField(name)) {
-            throw new HttpBadRequestException("Sin campos que update");
+            throw new HttpBadRequestException("No updates to make.");
         }
 
-        if(accessRole.existeNombre(name)) {
-            throw new HttpBadRequestException("El nombre del Rol ya existe");
+        if(accessRole.existsName(name)) {
+            throw new HttpBadRequestException("The name of the Role already exists.");
         }
-
         role.setName(name);
 
-        role = accessRole.persistir(role)
-                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir Rol actualizado.") );
+        audit.debug("Saving Role " + role.getRoleId() + ".");
+        accessRole.save(role)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Role.") );
 
-        return mapperRole.entidadATransferible(role);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperRole.entityToDto(role);
 
     }
 
