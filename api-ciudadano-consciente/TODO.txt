@@ -14,8 +14,8 @@ YA SE PODRÍA
 TODO Terminar Arquitectura entera de UserRoleLevel
 TODO Terminar Arquitectura entera de UserRoleOrganization
 
-TODO GET, GETALL, PATCH, DELETE de UserRoleLevel en Level
-TODO GET, GETALL, PATCH, DELETE de UserRoleOrganization en Organization
+TODO GET, PATCH, DELETE de UserRoleLevel en Level
+TODO GET, PATCH, DELETE de UserRoleOrganization en Organization
 
 
 
@@ -27,8 +27,8 @@ FIXME Refactor de las excepciones creando el transferible de acuerdo a la Refere
 FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 
 DOING
-FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Reference)
-FIXME Refactor: migrado completamente a idioma inglés Reference
+FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Role)
+FIXME Refactor: migrado completamente a idioma inglés Role
 
 
 
@@ -68,6 +68,10 @@ DONE
 #13 Refactor: migrado completamente a idioma inglés Organization
 #14 Feat: Generada funcionalidad UserRoleOrganization desde el lado de la Organization (faltan las capas desde su punto de vista)
 
-- Commit
-#15 Feat: Implemenatado el GETALL de UserRoleLevel en Level
+- Commit d5e00e3
+#15 Feat: Implementado el GETALL de UserRoleLevel en Level
 #16 Feat: Implementado el GETALL de UserRoleOrganization en Organization
+
+- Commit
+#12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Reference entero)
+#13 Refactor: migrado completamente a idioma inglés Reference

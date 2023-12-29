@@ -6,6 +6,7 @@ import ciudadano.consciente.dto.DTOReference;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.model.Level;
 import ciudadano.consciente.model.Reference;
 import ciudadano.consciente.dto.DTOUpdateReference;
 import ciudadano.consciente.dto.DTOCreateReference;
@@ -14,6 +15,7 @@ import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
 
 import java.util.List;
 
@@ -32,87 +34,93 @@ public class ServiceReference {
     @Inject
     MapperReference mapperReference;
 
-    public List<DTOReference> obtenerTodos() {
+    @Inject
+    Logger audit;
 
-        return mapperReference.entidadATransferible(accessReference.obtenerTodos());
+    public List<DTOReference> getAll() {
+
+        audit.debug("Retrieving all References.");
+        return mapperReference.entityToDto(accessReference.getAll());
 
     }
 
-    public DTOReference obtener(Integer identificador) {
+    public DTOReference get(Integer id) {
 
-        Reference reference = accessReference.obtener(identificador)
-                .orElseThrow( ()-> new HttpNotFoundException("La Referencia no existe.") );
+        audit.debug("Retrieving Reference " + id + ".");
+        Reference reference = accessReference.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Reference not found.") );
 
-        return mapperReference.entidadATransferible(reference);
+        return mapperReference.entityToDto(reference);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOReference create(DTOCreateReference DTOCreateReference) {
+    public DTOReference create(DTOCreateReference dtoCreateReference) {
 
-        String title = DTOCreateReference.getTitle();
-        String url = DTOCreateReference.getUrl();
-        Integer level = DTOCreateReference.getLevel();
+        audit.debug("Creating Reference.");
+
+        String title = dtoCreateReference.getTitle();
+        String url = dtoCreateReference.getUrl();
+        Integer levelDto = dtoCreateReference.getLevel();
         if(!utilityVerifyRequestField.isValidField(title) ||
                 !utilityVerifyRequestField.isValidField(url) ||
-                !utilityVerifyRequestField.isValidField(level)) {
-            throw new HttpBadRequestException("Los campos titulo, url y nivel son requeridos");
+                !utilityVerifyRequestField.isValidField(levelDto)) {
+            throw new HttpBadRequestException("Title, URL and Level required.");
         }
 
-        Reference reference = mapperReference.transferibleAEntidad(title, url);
+        Level level = accessLevel.get(levelDto)
+                .orElseThrow(()-> new HttpNotFoundException("Level not found."));
 
-        reference.setLevelId(accessLevel.get(level)
-                .orElseThrow(()-> new HttpNotFoundException("El Nivel no existe.")));
-
-        if(accessReference.existeTituloEnNivel(reference.getLevelId(), reference.getTitle())) {
-            throw new HttpBadRequestException("Ya existe una referencia con ese título en este nivel.");
+        audit.debug("Verifying if title " + title + " of Reference already exists in Level " + levelDto);
+        if(accessReference.existsTitleInLevel(level, title)) {
+            throw new HttpBadRequestException("Already exists a Reference with that title in Level.");
         }
 
-        String description = DTOCreateReference.getDescription();
+        Reference reference = mapperReference.dtoToEntity(dtoCreateReference);
+
+        // Esto quizás es innecesario, ya se mapea antes
+        String description = dtoCreateReference.getDescription();
         if(utilityVerifyRequestField.isValidField(description)) {
             reference.setDescription(description);
         }
 
-        reference = accessReference.persistir(reference)
-                .orElseThrow(()-> new HttpInternalServerException("Problemas al persistir nueva Referencia."));
+        audit.debug("Saving Reference " + reference.getReferenceId() + ".");
+        accessReference.save(reference)
+                .orElseThrow(()-> new HttpInternalServerException("Failed to persist new Reference."));
 
-        return mapperReference.entidadATransferible(reference);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperReference.entityToDto(reference);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOReference update(DTOUpdateReference DTOUpdateReference) {
+    public DTOReference update(Integer id, DTOUpdateReference dtoUpdateReference) {
 
-        Integer referenceID = DTOUpdateReference.getReferenceId();
-        if(!utilityVerifyRequestField.isValidField(referenceID)) {
-            throw new HttpBadRequestException("El campo identificador es requerido.");
-        }
+        audit.debug("Updating Reference " + id + ".");
+        Reference reference = accessReference.get(id)
+                .orElseThrow(()-> new HttpNotFoundException("Reference not found."));
 
-        Reference reference = accessReference.obtener(referenceID)
-                .orElseThrow(()-> new HttpNotFoundException("La Referencia no existe"));
-
-        Integer levelId = DTOUpdateReference.getLevel();
-        String title = DTOUpdateReference.getTitle();
-        String url = DTOUpdateReference.getUrl();
-        String description = DTOUpdateReference.getDescription();
-        if(!utilityVerifyRequestField.isValidField(levelId) &&
+        Integer level = dtoUpdateReference.getLevel();
+        String title = dtoUpdateReference.getTitle();
+        String url = dtoUpdateReference.getUrl();
+        String description = dtoUpdateReference.getDescription();
+        if(!utilityVerifyRequestField.isValidField(level) &&
                 !utilityVerifyRequestField.isValidField(title) &&
                 !utilityVerifyRequestField.isValidField(url) &&
                 !utilityVerifyRequestField.isValidField(description)) {
-            throw new HttpBadRequestException("Sin campos que update");
+            throw new HttpBadRequestException("No updates to make.");
         }
 
-        if(utilityVerifyRequestField.isValidField(levelId)) {
-            reference.setLevelId(accessLevel.get(levelId)
-                    .orElseThrow( ()-> new HttpNotFoundException("El nivel no existe.") ));
+        if(utilityVerifyRequestField.isValidField(level)) {
+            reference.setLevel(accessLevel.get(level)
+                    .orElseThrow( ()-> new HttpNotFoundException("Level not found.") ));
         }
 
         if(utilityVerifyRequestField.isValidField(title)) {
-            if(accessReference.existeTituloEnNivel(reference.getLevelId(), title)) {
-                throw new HttpBadRequestException("Ya existe una referencia con ese título en este nivel.");
-            } else {
-                reference.setTitle(title);
-            };
+            if(accessReference.existsTitleInLevel(reference.getLevel(), title)) {
+                throw new HttpBadRequestException("Already exists a Reference with that title in Level.");
+            }
+            reference.setTitle(title);
         }
 
         if(utilityVerifyRequestField.isValidField(url)) {
@@ -123,18 +131,21 @@ public class ServiceReference {
             reference.setDescription(description);
         }
 
-        reference = accessReference.persistir(reference)
-                .orElseThrow(()-> new HttpInternalServerException("Problemas al persistir actualización de Referencia."));
+        audit.debug("Saving Reference " + reference.getReferenceId() + ".");
+        accessReference.save(reference)
+                .orElseThrow(()-> new HttpInternalServerException("Failed to persist updated Reference."));
 
-        return mapperReference.entidadATransferible(reference);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperReference.entityToDto(reference);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void eliminar(Integer identificador) {
+    public void delete(Integer id) {
 
-        if(!accessReference.eliminar(identificador)) {
-            throw new HttpNotFoundException("Referencia a eliminar no existe");
+        audit.debug("Deleting Reference " + id + ".");
+        if(!accessReference.remove(id)) {
+            throw new HttpNotFoundException("Reference not found");
         };
 
     }

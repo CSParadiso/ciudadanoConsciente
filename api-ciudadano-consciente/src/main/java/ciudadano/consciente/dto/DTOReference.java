@@ -20,7 +20,7 @@ public class DTOReference {
     private String description;
 
     @Schema
-    private Level levelId;
+    private Integer level;
 
     public Integer getReferenceId() {
         return referenceId;
@@ -54,11 +54,11 @@ public class DTOReference {
         this.description = description;
     }
 
-    public Level getLevelId() {
-        return levelId;
+    public Integer getLevel() {
+        return level;
     }
 
-    public void setLevelId(Level levelId) {
-        this.levelId = levelId;
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

@@ -1,6 +1,8 @@
 package ciudadano.consciente.resource;
 
+import ciudadano.consciente.dto.DTOOrganization;
 import ciudadano.consciente.dto.DTOReference;
+import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceReference;
 import ciudadano.consciente.dto.DTOUpdateReference;
 import ciudadano.consciente.dto.DTOCreateReference;
@@ -12,116 +14,133 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Recurso Referencia")
+@Tag(name = "Reference Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("references")
 public class ResourceReference {
 
-    static final String PATH_BASE_RECURSO = "/references/";
+    static final String PATH_BASE_RESOURCE = "/references/";
 
     @Inject
     ServiceReference serviceReference;
 
+    @Inject
+    Logger audit;
+
     @GET
-    @Operation(summary = "Retornar todas las referencias.")
+    @Operation(summary = "Retrieve all References.")
     @APIResponse(
             responseCode = "200",
-            description = "Referencias retornadas con éxito."
+            description = "References successfully retrieved."
     )
-    public Response obtenerTodos() {
+    public Response getAll() {
 
-        return Response.ok(serviceReference.obtenerTodos()).build();
+        audit.debug("Getting all References...");
+        return Response.ok(serviceReference.getAll()).build();
 
     }
 
     @GET
     @Path("{id}")
-    @Operation(summary = "Retornar un usuario a partir de su identificador.")
+    @Operation(summary = "Retrieve a specific Reference by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Referencia recuperada con éxito."
+            description = "Reference successfully retrieved."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Referencia no existe."
+            description = "Failed to retrieve Reference. Verify 'Warning' Header."
     )
-    public Response obtener(@PathParam("id") Integer identificador) {
+    public Response get(@PathParam("id") Integer id) {
 
-        return Response.ok(serviceReference.obtener(identificador)).build();
+        audit.debug("Retrieving Reference " + id + ".");
+        return Response.ok(serviceReference.get(id)).build();
 
     }
 
     @POST
-    @Operation(summary = "Create Referencia para un Nivel.")
+    @Operation(summary = "Create a new Reference.")
     @APIResponse(
             responseCode = "201",
-            description = "Referencia creada con éxito"
+            description = "Reference successfully created."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al create Referencia. Revisar cabecera 'Warning'."
+            description = "Failed to create Reference. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al create Referencia. Revisar cabecera 'Warning'."
+            description = "Failed to create Reference. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al create Referencia. Revisar cabecera 'Warning'."
+            description = "Failed to create Reference. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateReference DTOCreateReference) {
+    public Response create(DTOCreateReference dtoCreateReference) {
 
-        DTOReference referencia = serviceReference.create(DTOCreateReference);
+        audit.debug("Creating Reference...");
+        DTOReference reference = serviceReference.create(dtoCreateReference);
 
-        URI uri = URI.create(PATH_BASE_RECURSO + referencia.getReferenceId());
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE + reference.getReferenceId());
 
-        return Response.created(uri).entity(referencia).build();
+        return Response.created(uri).entity(reference).build();
 
     }
 
     @PATCH
-    @Operation(summary = "Update una Referencia.")
+    @Path("{id}")
+    @Operation(summary = "Update a Reference.")
     @APIResponse(
             responseCode = "200",
-            description = "Referencia actualizada con éxito"
+            description = "Reference successfully updated."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al update Referencia. Revisar cabecera 'Warning'."
+            description = "Failed to update Reference. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Problemas al update Referencia. Revisar cabecera 'Warning'."
+            description = "Failed to update Reference. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Problemas al update Referencia. Revisar cabecera 'Warning'."
+            description = "Failed to update Reference. Verify 'Warning' Header."
     )
-    public Response update(DTOUpdateReference DTOUpdateReference) {
+    public Response update(@PathParam("id") Integer id,
+                           DTOUpdateReference dtoUpdateReference) {
 
-        return Response.ok(serviceReference.update(DTOUpdateReference)).build();
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(id != dtoUpdateReference.getReferenceId()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+        }
+
+        audit.debug("Updating Reference " + id + "...");
+        return Response.ok(serviceReference.update(id, dtoUpdateReference)).build();
 
     }
 
     @DELETE
     @Path("{id}")
-    @Operation(summary = "Eliminar una Referencia a partir de su identificador.")
+    @Operation(summary = "Delete a Reference.")
     @APIResponse(
             responseCode = "200",
-            description = "Referencia eliminada con éxito"
+            description = "Reference successfully deleted."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al eliminar Referencia. Revisar cabecera 'Warning'."
+            description = "Failed to delete Reference. Verify 'Warning' Header."
     )
-    public Response eliminar(@PathParam("id") Integer identificador) {
+    public Response delete(@PathParam("id") Integer id) {
 
-        serviceReference.eliminar(identificador);
+        audit.debug("Deleting Reference " + id + "...");
+        serviceReference.delete(id);
 
         return Response.ok().build();
 

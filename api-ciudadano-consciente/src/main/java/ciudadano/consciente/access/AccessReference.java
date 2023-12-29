@@ -14,40 +14,41 @@ import java.util.Optional;
 public class AccessReference implements PanacheRepositoryBase<Reference, Integer> {
 
     @Inject
-    Logger auditor;
+    Logger audit;
 
-    public boolean existeTituloEnNivel(Level level, String title) {
+    public boolean existsTitleInLevel(Level level, String title) {
 
-        return count("levelId = ?1 and title = ?2", level, title) > 0;
+        audit.debug("Verifying if exists Title in Level.");
+        return count("level = ?1 and title = ?2", level, title) > 0;
 
     }
 
-    public Optional<Reference> persistir(Reference reference) {
+    public Optional<Reference> save(Reference reference) {
 
-        auditor.debug("Intentando persistir Referencia.");
+        audit.debug("Trying to persist Reference.");
         persist(reference);
         return  findByIdOptional(reference.getReferenceId());
 
     }
 
-    public List<Reference> obtenerTodos() {
+    public List<Reference> getAll() {
 
-        auditor.debug("Intentando recuperar todas las referencias.");
+        audit.debug("Trying to retrieve all References.");
         return findAll().stream().toList();
 
     }
 
-    public Optional<Reference> obtener(Integer identificador) {
+    public Optional<Reference> get(Integer id) {
 
-        auditor.debug("Intentando recuperar Referencia.");
-        return findByIdOptional(identificador);
+        audit.debug("Trying to retrieve Reference " + id + ".");
+        return findByIdOptional(id);
 
     }
 
-    public boolean eliminar(Integer identificador) {
+    public boolean remove(Integer id) {
 
-        auditor.debug("Intentando eliminar Referencia.");
-        return deleteById(identificador);
+        audit.debug("Trying to delete Reference " + id + ".");
+        return deleteById(id);
 
     }
 }

@@ -51,7 +51,8 @@ create table app.reference (
 	title varchar(100) not null, -- En la lógica del negocio el title es unique para cada level
 	url varchar(350) not null, 
 	description varchar (140), 
-	level_id integer references app.levels on delete cascade not null
+	level_id integer references app.levels on delete cascade not null,
+	unique(title, level_id) -- En un nivel el nombre de la referencia es único
 );
 
 	-- Tabla tags

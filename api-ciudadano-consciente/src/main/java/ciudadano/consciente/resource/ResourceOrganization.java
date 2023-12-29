@@ -85,6 +85,7 @@ public class ResourceOrganization {
         URI uri = URI.create(PATH_BASE_RESOURCE + organization.getOrganizationId());
 
         return Response.created(uri).entity(organization).build();
+
     }
 
     @PATCH

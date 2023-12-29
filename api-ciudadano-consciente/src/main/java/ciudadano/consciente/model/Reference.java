@@ -19,7 +19,7 @@ public class Reference {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "level_id", referencedColumnName = "level_id")
-    private Level levelId;
+    private Level level;
 
     public Integer getReferenceId() {
         return referenceId;
@@ -53,11 +53,11 @@ public class Reference {
         this.description = description;
     }
 
-    public Level getLevelId() {
-        return levelId;
+    public Level getLevel() {
+        return level;
     }
 
-    public void setLevelId(Level levelId) {
-        this.levelId = levelId;
+    public void setLevel(Level level) {
+        this.level = level;
     }
 }
