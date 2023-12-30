@@ -1,6 +1,7 @@
 package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.DTOUser;
+import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceUser;
 import ciudadano.consciente.dto.DTOUpdateUser;
 import ciudadano.consciente.dto.DTOCreateUser;
@@ -14,115 +15,129 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Recurso Usuario")
+@Tag(name = "User Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/users")
 public class ResourceUser {
 
-    final String BASE_PATH_RECURSO = "/users/";
+    final String BASE_PATH_RESOURCE = "/users/";
 
     @Inject
-    ServiceUser servicioUsuario;
+    ServiceUser serviceUser;
+
+    @Inject
+    Logger audit;
 
     @GET
-    @Operation( summary = "Retornar todos los usuarios.")
+    @Operation( summary = "Retrieve all users.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al recuperar",
-            content = @Content(schema = @Schema(implementation = DTOUser.class))
+            description = "Users successfully retrieved."
             )
-    public Response obtener() {
+    public Response getAll() {
 
-        return Response.ok(servicioUsuario.obtenerTodos()).build();
+        audit.debug("Getting all Users...");
+        return Response.ok(serviceUser.getAll()).build();
 
     }
 
     @GET
     @Path("/{id}/")
-    @Operation( summary = "Retornar un usuario a partir de su identificador.")
+    @Operation( summary = "Retrieve a specific User by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Éxito al recuperar"
+            description = "User successfully retrieved."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Error al identificar usuario. Revisar cabecera 'Warning'."
+            description = "Failed to retrieve User. Verify 'Warning' Header."
     )
-    public Response obtener(@PathParam("id") Integer identificador) {
+    public Response get(@PathParam("id") Integer id) {
 
-        // Integer.MAX_VALUE es 2,147,483,647. Si el id lo supera lanza 404.
-        return Response.ok(servicioUsuario.obtener(identificador)).build();
+        audit.debug("Getting User " + id + "...");
+        return Response.ok(serviceUser.get(id)).build();
 
     }
 
     @POST
-    @Operation( summary = "Create un nuevo usuario")
+    @Operation( summary = "Create a new User.")
     @APIResponse(
             responseCode = "201",
-            description = "Usuario creado con éxito"
+            description = "User successfully created."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Error al create usuario. Revisar cabecera 'Warning'."
+            description = "Failed to create User. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Error al create usuario. Revisar cabecera 'Warning'."
+            description = "Failed to create User. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateUser DTOCreateUser) {
+    public Response create(DTOCreateUser dtoCreateUser) {
 
-        DTOUser usuario = servicioUsuario.create(DTOCreateUser);
+        audit.debug("Creating User...");
+        DTOUser user = serviceUser.create(dtoCreateUser);
 
-        URI uri = URI.create(BASE_PATH_RECURSO + usuario.getUserId());
+        audit.debug("Creating URI...");
+        URI uri = URI.create(BASE_PATH_RESOURCE + user.getUserId());
 
-        return Response.created(uri).entity(usuario).build();
+        return Response.created(uri).entity(user).build();
 
     }
 
     @PATCH
-    @Operation( summary = "Update datos de Usuario.")
+    @Path("{id}")
+    @Operation( summary = "Update User.")
     @APIResponse(
             responseCode = "200",
-            description = "Usuario editado con éxito."
+            description = "User successfully updated."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Error al update usuario. Revisar cabecera 'Warning'."
+            description = "Failed to update User. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Error al update usuario. Revisar cabecera 'Warning'."
+            description = "Failed to update User. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Error al update usuario. Revisar cabecera 'Warning'."
+            description = "Failed to update User. Verify 'Warning' Header."
     )
-    public Response update(DTOUpdateUser DTOUpdateUser) {
+    public Response update(@PathParam("id") Integer id, DTOUpdateUser dtoUpdateUser) {
 
-        DTOUser usuario = servicioUsuario.update(DTOUpdateUser);
-        return Response.ok(usuario).build();
+        // TODO Corroborar que existan antes de comprobar
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(id.compareTo(dtoUpdateUser.getUserId()) != 0 )  {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+        }
+
+        audit.debug("Updating User... " + id + "...");
+        return Response.ok(serviceUser.update(id, dtoUpdateUser)).build();
 
     }
 
     @DELETE
     @Path("{id}")
-    @Operation( summary = "Eliminar un usuario a partir de su identificador.")
+    @Operation( summary = "Delete a User.")
     @APIResponse(
             responseCode = "200",
-            description = "Usuario eliminado con éxito."
+            description = "User successfully deleted."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Problemas al identificar usuario. Revisar cabecera 'Warning'"
+            description = "Failed to create User. Verify 'Warning' Header."
     )
-    public Response eliminar(@PathParam("id") Integer identificador) {
+    public Response delete(@PathParam("id") Integer id) {
 
-        servicioUsuario.eliminar(identificador);
+        audit.debug("Deleting User " + id + "...");
+        serviceUser.delete(id);
 
         return Response.ok().build();
 

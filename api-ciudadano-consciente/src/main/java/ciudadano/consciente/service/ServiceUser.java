@@ -1,24 +1,26 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.AccessUser;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.model.User;
-import ciudadano.consciente.dto.DTOUpdateUser;
-import ciudadano.consciente.dto.DTOCreateUser;
-import ciudadano.consciente.dto.DTOUser;
 import ciudadano.consciente.mapper.MapperUser;
+import ciudadano.consciente.model.Role;
+import ciudadano.consciente.model.User;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
 
 import java.util.List;
 
-
 @RequestScoped
 public class ServiceUser {
+
+    @Inject
+    Logger audit;
 
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
@@ -29,110 +31,113 @@ public class ServiceUser {
     @Inject
     MapperUser mapperUser;
 
-    public DTOUser obtener(Integer identificador) {
+    public DTOUser get(Integer id) {
 
-        User user = accessUser.get(identificador) // Si obtiene nulo, lanza excepción
-                .orElseThrow(() -> new HttpNoContentException("No existe el usuario con el identificador " + identificador));
+        audit.debug("Retrieving User " + id + ".");
+        User user = accessUser.get(id)
+                .orElseThrow(() -> new HttpNoContentException("User not found."));
 
-        return mapperUser.entidadATransferible(user);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUser.entityToDto(user);
 
     }
 
-    public List<DTOUser> obtenerTodos() {
+    public List<DTOUser> getAll() {
 
-        List<User> userList = accessUser.obtenerTodos();
+        audit.debug("Retrieving all Users.");
+        List<User> userList = accessUser.getAll();
 
-        return mapperUser.entidadATransferible(userList);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUser.entityToDto(userList);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOUser create(DTOCreateUser DTOCreateUser) {
+    public DTOUser create(DTOCreateUser dtoCreateUser) {
 
-        String email = DTOCreateUser.getEmail();
-        String username = DTOCreateUser.getUsername();
-        String password = DTOCreateUser.getPassword();
+        audit.debug("Creating new User.");
+        String email = dtoCreateUser.getEmail();
+        String username = dtoCreateUser.getUsername();
+        String password = dtoCreateUser.getPassword();
         if(!utilityVerifyRequestField.isValidField(email) ||
                 !utilityVerifyRequestField.isValidField(username) ||
                 !utilityVerifyRequestField.isValidField(password)) {
-            throw new HttpBadRequestException("Todos los campos son requeridos.");
+            throw new HttpBadRequestException("All fields required.");
         }
 
-        if(accessUser.existeEmail(email)) {
-            throw new HttpBadRequestException("El email ya existe.");
+        if(accessUser.existsEmail(email)) {
+            throw new HttpBadRequestException("Email already exists.");
         }
 
-        if(accessUser.existeUsername(username)) {
-            throw new HttpBadRequestException("El nombre de usuario ya existe.");
+        if(accessUser.existsUsername(username)) {
+            throw new HttpBadRequestException("Username already exists.");
         }
 
-        User user = mapperUser.transferibleAEntidad(email, username);
+        audit.debug("Mapping DTO into Entity.");
+        User user = mapperUser.dtoToEntity(dtoCreateUser);
 
-        if(utilityVerifyRequestField.isValidField(password)) {
-            user.setPassword(password);
-        }
+        audit.debug("Saving User " + user.getUserId() + ".");
+        accessUser.save(user)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new User."));
 
-        user = accessUser.persistir(user)
-                .orElseThrow( ()-> new HttpInternalServerException("Problemas al persistir nuevo usuario."));
-
-        return mapperUser.entidadATransferible(user);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUser.entityToDto(user);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOUser update(DTOUpdateUser DTOUpdateUser) {
+    public DTOUser update(Integer id, DTOUpdateUser dtoUpdateUser) {
 
-        Integer userId = DTOUpdateUser.getIdentificador();
-        if(!utilityVerifyRequestField.isValidField(userId)) {
-            throw new HttpBadRequestException("El campo identificador es requerido");
-        }
+        audit.debug("Updating User " + id + ".");
+        User user = accessUser.get(id)
+                .orElseThrow( ()-> new HttpNoContentException("User not found."));
 
-        User user = accessUser.get(userId)
-                .orElseThrow(()-> new HttpNoContentException("El Usuario no existe."));
-
-        String email = DTOUpdateUser.getEmail();
-        String username = DTOUpdateUser.getUsername();
-        String password = DTOUpdateUser.getPassword();
+        String email = dtoUpdateUser.getEmail();
+        String username = dtoUpdateUser.getUsername();
+        String password = dtoUpdateUser.getPassword();
         if(!utilityVerifyRequestField.isValidField(email) &&
                 !utilityVerifyRequestField.isValidField(username) &&
                 !utilityVerifyRequestField.isValidField(password)) {
-            throw new HttpBadRequestException("Sin campos que update");
-        }
-
-        if(utilityVerifyRequestField.isValidField(email)) {
-            if (!accessUser.existeEmail(email)) {
-                user.setEmail(email);
-            } else {
-                throw new HttpBadRequestException("El email ya existe.");
-            }
+            throw new HttpBadRequestException("No updates to make.");
         }
 
         if(utilityVerifyRequestField.isValidField(username)) {
-            if(!accessUser.existeUsername(username)) {
-                user.setUsername(username);
-            } else {
-                throw new HttpBadRequestException("El nombre de Usuario ya existe.");
+            if(accessUser.existsUsername(username)) {
+                throw new HttpBadRequestException("Username already exists.");
             }
+            user.setUsername(username);
+        }
+
+        if (utilityVerifyRequestField.isValidField(email)) {
+            if(accessUser.existsEmail(email)) {
+                throw new HttpBadRequestException("Email already exists.");
+            }
+            user.setEmail(email);
         }
 
         if(utilityVerifyRequestField.isValidField(password)) {
             user.setPassword(password);
         }
 
-        user = accessUser.persistir(user)
-                .orElseThrow( () -> new HttpInternalServerException("Problemas al persistir actualización de Usuario."));
+        audit.debug("Saving User " + user.getUserId() + ".");
+        accessUser.save(user)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated User.") );
 
-        return mapperUser.entidadATransferible(user);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUser.entityToDto(user);
 
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void eliminar(Integer identificador) {
+    public void delete(Integer id) {
 
-        if (!accessUser.eliminar(identificador)) {
-            throw new HttpNoContentException("Usuario a eliminar no existe");
+        audit.debug("Deleting User " + id + ".");
+        if (!accessUser.delete(id)) {
+            throw new HttpNoContentException("User not found.");
         };
 
     }
+
+
 
 }

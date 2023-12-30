@@ -1,5 +1,6 @@
 package ciudadano.consciente.mapper;
 
+import ciudadano.consciente.dto.DTOCreateUser;
 import ciudadano.consciente.dto.DTOUser;
 import ciudadano.consciente.model.User;
 import org.mapstruct.Mapper;
@@ -11,9 +12,10 @@ import java.util.List;
 public interface MapperUser {
 
     // target = "nombreEnTransferible" source = "nombreEnModelo"
-    DTOUser entidadATransferible(User user);
+    DTOUser entityToDto(User user);
 
-    List<DTOUser> entidadATransferible(List<User> userList);
+    List<DTOUser> entityToDto(List<User> userList);
 
-    User transferibleAEntidad(String email, String username);
+    User dtoToEntity(DTOCreateUser dtoCreateUser);
+
 }

@@ -5,7 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 public class DTOUpdateUser {
 
     @Schema(defaultValue = "")
-    private Integer identificador;
+    private Integer userId;
     @Schema(defaultValue = "")
     private String email;
     @Schema(defaultValue = "")
@@ -13,12 +13,12 @@ public class DTOUpdateUser {
     @Schema(defaultValue = "")
     private String password;
 
-    public Integer getIdentificador() {
-        return identificador;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setIdentificador(Integer identificador) {
-        this.identificador = identificador;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getEmail() {

@@ -13,43 +13,45 @@ import java.util.Optional;
 public class AccessUser implements PanacheRepositoryBase<User, Integer> {
 
     @Inject
-    Logger auditor;
+    Logger audit;
 
-    public Optional<User> get(Integer identificador) {
-        auditor.debug("Intentando recuperar user del identificador " + identificador);
-        return findByIdOptional(identificador);
+    public Optional<User> get(Integer id) {
+        audit.debug("Trying to retrieve User " + id);
+        return findByIdOptional(id);
     }
 
-    public List<User> obtenerTodos() {
+    public List<User> getAll() {
 
-        auditor.debug("Intentando recuperar todos los usuarios");
+        audit.debug("Trying to retrieve all Users.");
         return findAll().stream().toList();
 
     }
 
-    public Optional<User> persistir(User user) {
+    public Optional<User> save(User user) {
 
-        auditor.debug("Intentando persistir usuario");
+        audit.debug("Trying to persist User " + user.getUserId() + ".");
         persist(user);
         return findByIdOptional(user.getUserId());
 
     }
 
-    public boolean eliminar(Integer identificador) {
+    public boolean delete(Integer id) {
 
-        auditor.debug("Intentando eliminar usuario " + identificador);
-        return deleteById(identificador);
+        audit.debug("Trying to delete User " + id + ".");
+        return deleteById(id);
 
     }
 
-    public boolean existeUsername(String username) {
+    public boolean existsUsername(String username) {
 
+        audit.debug("Verifying if username exists.");
         return count("username", username) > 0;
 
     }
 
-    public boolean existeEmail(String email) {
+    public boolean existsEmail(String email) {
 
+        audit.debug("Verifying if email exists.");
         return count("email", email) > 0;
 
     }

@@ -29,7 +29,7 @@ FIXME Refactor: Corroborar si las verificaciones de identificadores en los recur
 
 DOING
 FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (User)
-FIXME Refactor: migrado completamente a idioma inglés User
+FIXME Refactor: migrado completamente al idioma inglés User
 
 
 
@@ -73,6 +73,14 @@ DONE
 #15 Feat: Implementado el GETALL de UserRoleLevel en Level
 #16 Feat: Implementado el GETALL de UserRoleOrganization en Organization
 
-- Commit
+- Commit 8d1d926
 #12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Reference entero)
-#13 Refactor: migrado completamente a idioma inglés Reference
+#13 Refactor: migrado completamente al idioma inglés Reference
+
+- Commit 5a50f91
+#12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Role entero)
+#13 Refactor: migrado completamente al idioma inglés Role
+
+- Commit
+#12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (User)
+#13 Refactor: migrado completamente al idioma inglés User
