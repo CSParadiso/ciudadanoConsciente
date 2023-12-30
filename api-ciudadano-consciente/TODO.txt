@@ -29,7 +29,11 @@ FIXME Refactor: Corroborar si las verificaciones de identificadores en los recur
 
 DOING
 FIXME Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (User)
+<<<<<<< HEAD
 FIXME Refactor: migrado completamente al idioma inglés User
+=======
+FIXME Refactor: migrado completamente a idioma inglés User
+>>>>>>> 5a50f919b5fd157474ce02ce7f567d3f607f4406
 
 
 
@@ -81,6 +85,6 @@ DONE
 #12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (Role entero)
 #13 Refactor: migrado completamente al idioma inglés Role
 
-- Commit
+- Commit 411462f
 #12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (User)
 #13 Refactor: migrado completamente al idioma inglés User
