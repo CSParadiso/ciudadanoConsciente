@@ -1,5 +1,6 @@
 package ciudadano.consciente.mapper;
 
+import ciudadano.consciente.access.AccessUser;
 import ciudadano.consciente.dto.DTOCreateUser;
 import ciudadano.consciente.dto.DTOUser;
 import ciudadano.consciente.model.User;

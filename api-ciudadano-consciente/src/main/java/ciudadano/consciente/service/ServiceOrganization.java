@@ -93,6 +93,7 @@ public class ServiceOrganization {
         audit.debug("Mapping DTO into Entity.");
         Organization organization = mapperOrganization.dtoToEntity(email, name);
 
+        // TODO Quizás se pueda asignar directamente el DTO en las creaciones
         String description = dtoCreateOrganization.getDescription();
         if(utilityVerifyRequestField.isValidField(description)) {
             organization.setDescription(description);

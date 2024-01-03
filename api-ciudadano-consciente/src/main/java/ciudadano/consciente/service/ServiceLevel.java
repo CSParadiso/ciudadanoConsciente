@@ -75,7 +75,7 @@ public class ServiceLevel {
             throw new HttpBadRequestException("The name is required.");
         }
 
-        if(accessLevel.existName(name)) { // TODO Se debería poder tener niveles con el mismo nombre. Lo que lo diferenciaría sería el padre. O se podría agregar un alias que no sea único, que se usaría en la app.
+        if(accessLevel.existName(name)) { // TODO Se podría agregar un alias que no sea único, que se usaría en la app.
             throw new HttpBadRequestException("The name already exists.");
         }
 
