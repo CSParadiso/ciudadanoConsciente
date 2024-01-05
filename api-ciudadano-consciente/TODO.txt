@@ -1,20 +1,23 @@
 TODO Generar Votos
 TODO Generar Preguntas
+TODO Generar Respuestas
+
 
 TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en USUARIO
 TODO Asignar Rol a Usuario en Organización(TABLA users_roles_organizations) en ROL
 TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en USUARIO
 TODO Asignar Rol a Usuario en Nivel(TABLA users_roles_levels) en ROL
 
-TODO Generar Respuestas
+TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
 
+CUESTIONES DE DISEÑO
+
+TODO implementar arquitectura entera de UserRoleOrganization en si misma (y no en Organizacion)
+TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 
 YA SE PODRÍA
-TODO Terminar Arquitectura entera de UserRoleLevel
-TODO Terminar Arquitectura entera de UserRoleOrganization
 
-TODO GET, PATCH, DELETE de UserRoleLevel en Level
 TODO GET, PATCH, DELETE de UserRoleOrganization en Organization
 
 
@@ -29,11 +32,7 @@ FIXME Refactor: Corroborar si las verificaciones de identificadores en los recur
 FIXME Refactor Quizás sea necesario agregar la anotacion @MappingTarget en arguemento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
 
 DOING
-
-
-
-
-
+TODO Implementar en Level (para manipular UserRoleLevel) GET /levels/{id}/users, DELETE /levels/{id}/users/{user}, GET /levels/{id}/users/{user}/roles/{role}, POST /levels/{id}/users/{user}/roles/{role} y DELETE /levels/{id}/users/{user}/roles/{role}
 
 DONE
 #0 Pasar argumentos como TransferiblesRequest en el POST y PATCH
@@ -84,5 +83,5 @@ DONE
 #12 Refactor: PATCH (las verificaciones deben ser exhaustivas en el servicio) (User)
 #13 Refactor: migrado completamente al idioma inglés User
 
-- Commit
-#13 feat: Generar funcionalidad Actividades (CRUD completo)
+- Commit db9b6a8
+#14 feat: Generar funcionalidad Actividades (CRUD completo)

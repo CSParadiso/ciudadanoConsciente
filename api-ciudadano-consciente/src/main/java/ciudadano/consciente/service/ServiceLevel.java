@@ -18,6 +18,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequestScoped
 public class ServiceLevel {
@@ -161,18 +162,15 @@ public class ServiceLevel {
 
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
-    public DTOUserRoleLevel assignRole(DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel) {
+    // ROLE HANDLING IN LEVEL
 
-    audit.debug("Assigning Role to User in Level.");
-    Integer user = dtoAssignRoleToUserLevel.getUser();
-    Integer level = dtoAssignRoleToUserLevel.getLevel();
-    Integer role = dtoAssignRoleToUserLevel.getRole();
-    if(!utilityVerifyRequestField.isValidField(user) ||
-            !utilityVerifyRequestField.isValidField(level) ||
-            !utilityVerifyRequestField.isValidField(role)) {
-        throw new HttpBadRequestException("All fields required.");
-    }
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOUserRoleLevel assignRole(Integer level, Integer user, Integer role) {
+
+    audit.debug("Verify if UserRoleLevel already exists.");
+    if(accessUserRoleLevel.exists(user, role, level)) {
+        throw new HttpBadRequestException("UserRoleLevel already exists.");
+    };
 
     audit.debug("Creating Role of User in Level.");
     UserRoleLevel userRoleLevel = new UserRoleLevel();
@@ -187,12 +185,8 @@ public class ServiceLevel {
             .orElseThrow( ()-> new HttpNotFoundException("Role not found.")));
 
     audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
-    try {
-        accessUserRoleLevel.save(userRoleLevel)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist UserRoleLevel."));
-    } catch (ConstraintViolationException e) {
-        throw new HttpBadRequestException("Already exists Role for User in Level.");
-    }
+    accessUserRoleLevel.save(userRoleLevel)
+            .orElseThrow( ()-> new HttpBadRequestException("Already exists Role for User in Level.") );
 
     audit.debug("Mapping Entity into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevel);
@@ -216,4 +210,46 @@ public class ServiceLevel {
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<DTOUserRoleLevel> deleteUserRoleLevel(Integer idLevel, Integer idUser) {
+
+        audit.debug("Deleting User(" + idUser + ")RoleLevel(" + idUser + ") " + idLevel + ".");
+        List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser);
+        if(userRoleLevelList.isEmpty()) {
+            throw new HttpNotFoundException("User don't have Roles in Level.");
+        } else {
+            for(UserRoleLevel userRoleLevel : userRoleLevelList) {
+                accessUserRoleLevel.remove(userRoleLevel.getUrlId());
+            }
+        }
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUserRoleLevel.entityToDto(userRoleLevelList);
+
+    }
+
+    public DTOUserRoleLevel getUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole) {
+
+        audit.debug("Retrieving UserRoleLevel");
+        UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
+                .orElseThrow( ()-> new HttpNotFoundException("UserRoleLevel not found") );
+
+        return mapperUserRoleLevel.entityToDto(userRoleLevel);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole) {
+
+        audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + ".");
+        UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
+                .orElseThrow( ()-> new HttpNotFoundException("UserRoleLevel not found."));
+
+        accessUserRoleLevel.remove(userRoleLevel.getUrlId());
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUserRoleLevel.entityToDto(userRoleLevel);
+
+    }
+
 }

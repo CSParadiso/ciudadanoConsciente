@@ -35,7 +35,7 @@ public class AccessUser implements PanacheRepositoryBase<User, Integer> {
 
     }
 
-    public boolean delete(Integer id) {
+    public boolean remove(Integer id) {
 
         audit.debug("Trying to delete User " + id + ".");
         return deleteById(id);

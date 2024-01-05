@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(schema = "app", name = "users_roles_levels", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id", "level_id"}))
+@NamedQuery(name = "UserRoleLevel", query = "from UserRoleLevel as u where u.user = :user and u.role = :role and u.level = :level")
 public class UserRoleLevel {
 
     //@JoinColumn (nombreEnTablaPropia, nombreEnTablaAjena)

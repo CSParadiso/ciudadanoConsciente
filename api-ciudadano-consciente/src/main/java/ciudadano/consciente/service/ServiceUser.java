@@ -132,7 +132,7 @@ public class ServiceUser {
     public void delete(Integer id) {
 
         audit.debug("Deleting User " + id + ".");
-        if (!accessUser.delete(id)) {
+        if (!accessUser.remove(id)) {
             throw new HttpNoContentException("User not found.");
         };
 
