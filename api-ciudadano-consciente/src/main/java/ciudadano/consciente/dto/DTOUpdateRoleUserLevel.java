@@ -4,25 +4,14 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOUpdateRoleUserLevel {
 
-    @Schema
-    private Integer urlId;
-
-    @Schema
+    @Schema(defaultValue = "")
     private Integer user;
 
-    @Schema
+    @Schema(defaultValue = "")
     private Integer role;
 
-    @Schema
+    @Schema(defaultValue = "")
     private Integer level;
-
-    public Integer getUrlId() {
-        return urlId;
-    }
-
-    public void setUrlId(Integer urlId) {
-        this.urlId = urlId;
-    }
 
     public Integer getUser() {
         return user;

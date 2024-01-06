@@ -4,12 +4,14 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceLevel;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.smallrye.common.constraint.NotNull;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
@@ -139,13 +141,102 @@ public class ResourceLevel {
     public Response delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Level " + id + "...");
+        // FIXME refactorear el DELETE de Level para que retorne la entidad eliminada
         serviceLevel.delete(id);
 
         return Response.ok().build();
 
     }
 
-    // ROLE HANDLING IN LEVEL
+    // USER-ROLE HANDLING IN LEVEL
+
+    @GET
+    @Path("{id}/users")
+    @Operation(summary = "Retrieve all the Users and Roles in a  Level.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Roles of User in Level successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header."
+    )
+    public Response getAll(@PathParam("id") Integer id) {
+
+        audit.debug("Getting all the UserRole of Level " + id + "...");
+        return Response.ok(serviceLevel.getUserRoleLevel(id)).build();
+
+    }
+
+    @GET
+    @Path("{id}/users/{user}")
+    @Operation(summary = "Retrieve all the Roles of User in a  Level.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Roles of User in Level successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header."
+    )
+    public Response getAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
+                                             @PathParam("user") Integer idUser) {
+
+        audit.debug("Getting all the Roles of User (" + idUser + ") in Level " + idLevel + "...");
+        return Response.ok(serviceLevel.getAllRolesOfUserInLevel(idLevel, idUser)).build();
+
+    }
+
+    @GET
+    @Path("{id}/roles/{role}")
+    @Operation(summary = "Retrieve all the Users with a Role in Level.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Users in Level with Role successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve User with Role in Level. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve User with Role in Level. Verify 'Warning' Header."
+    )
+    public Response getAllUsersWithRole(@PathParam("id") Integer idLevel,
+                                        @PathParam("role") Integer idRole) {
+
+        audit.debug("Getting all the Users with Role(" + idRole + ") in Level " + idLevel + "...");
+        return Response.ok(serviceLevel.getAllUsersWithRole(idLevel, idRole)).build();
+
+    }
+
+    @GET
+    @Path("/{id}/users/{user}/roles/{role}")
+    @Operation( summary = "Retrieve a User Role in Level.")
+    @APIResponse(
+            responseCode = "200",
+            description = "UserRoleLevel successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "User doesn't have that Role in Level."
+    )
+    public Response getUserRoleLevel(@PathParam("id") Integer idLevel,
+                                     @PathParam("user") Integer idUser,
+                                     @PathParam("role") Integer idRole) {
+
+        audit.debug("Getting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + "...");
+        return Response.ok(serviceLevel.getUserRoleLevel(idLevel, idUser, idRole)).build();
+
+    }
 
     @POST
     @Path("{id}/users/{user}/roles/{role}")
@@ -195,7 +286,7 @@ public class ResourceLevel {
         audit.debug("Assigning Role" + idRole
                 + " to User " + idUser
                 + " in Level " + idLevel + "...");
-        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRole(idLevel, idUser, idRole);
+        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRoleToUserInLevel(idLevel, idUser, idRole);
 
         audit.debug("Creating URI...");
         URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleLevel.getLevel() +
@@ -206,45 +297,57 @@ public class ResourceLevel {
 
     }
 
-    @GET
-    @Path("{id}/users")
-    @Operation(summary = "Retrieve all the Users and Roles in a  Level.")
+    @PATCH
+    @Path("{id}/users/{user}/roles/{role}")
+    @Operation(summary = "Update Role of User in Level.")
     @APIResponse(
             responseCode = "200",
-            description = "Roles of User in Level successfully retrieved."
+            description = "Role successfully updated to User in Level."
     )
     @APIResponse(
-            responseCode = "204",
-            description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header."
+            responseCode = "400",
+            description = "Failed to update Role to User in Level. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header."
-    )
-    public Response getAll(@PathParam("id") Integer id) {
-
-        audit.debug("Getting all the UserRole of Level " + id + "...");
-        return Response.ok(serviceLevel.getUserRoleLevel(id)).build();
-
-    }
-
-    @GET
-    @Path("/{id}/users/{user}/roles/{role}")
-    @Operation( summary = "Retrieve a User Role in Level.")
-    @APIResponse(
-            responseCode = "200",
-            description = "UserRoleLevel successfully retrieved."
+            description = "Failed to update Role to User in Level. Verify 'Warning' Header."
     )
     @APIResponse(
-            responseCode = "404",
-            description = "User doesn't have that Role in Level."
+            responseCode = "500",
+            description = "Failed to update Role to User in Level. Verify 'Warning' Header."
     )
-    public Response get(@PathParam("id") Integer idLevel,
-                        @PathParam("user") Integer idUser,
-                        @PathParam("role") Integer idRole) {
+    public Response updateRoleOfUserInLevel(@PathParam("id") Integer idLevel,
+                               @PathParam("user") Integer idUser,
+                               @PathParam("role") Integer idRole,
+                               DTOUpdateRoleUserLevel dtoUpdateRoleUserLevel) {
 
-        audit.debug("Getting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + "...");
-        return Response.ok(serviceLevel.getUserRoleLevel(idLevel, idUser, idRole)).build();
+        audit.debug("Verifying request variables...");
+        Integer user = dtoUpdateRoleUserLevel.getUser();
+        Integer level = dtoUpdateRoleUserLevel.getLevel();
+        Integer newRole = dtoUpdateRoleUserLevel.getRole();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(level) ||
+                !utilityVerifyRequestField.isValidField(newRole)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idLevel != level) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Level.");
+        }
+        if(idUser != user) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
+        }
+        if(idRole == newRole) {
+            throw new HttpBadRequestException("Body ID and Path ID must reflect reflect the change for Role.");
+        }
+
+        audit.debug("Updating Role" + idRole
+                + " of User " + idUser
+                + " in Level " + idLevel + "...");
+        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.updateRoleOfUserInLevel(idLevel, idUser, idRole, newRole);
+
+        return Response.ok(dtoUserRoleLevel).build();
 
     }
 
@@ -259,11 +362,11 @@ public class ResourceLevel {
             responseCode = "404",
             description = "Failed to delete Roles of User in Level. Verify 'Warning' Header."
     )
-    public Response deleteUserRoleLevel(@PathParam("id") Integer idLevel,
+    public Response deleteAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
                                         @PathParam("user") Integer idUser) {
 
         audit.debug("Deleting all Roles of User(" + idUser + ") in Level (" + idLevel + ")...");
-        return Response.ok(serviceLevel.deleteUserRoleLevel(idLevel, idUser)).build();
+        return Response.ok(serviceLevel.deleteAllRolesOfUserInLevel(idLevel, idUser)).build();
 
     }
 

@@ -62,41 +62,4 @@ public class ResourceUserRoleLevel {
 
     }
 
-    @Deprecated
-    @PATCH
-    @Path("{id}/")
-    @Operation(summary = "Update RoleUserLevel.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Role successfully updated to User in Level."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to update Role to User in Level. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to update Role to User in Level. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to update Role to User in Level. Verify 'Warning' Header."
-    )
-    public Response updateRole(@PathParam("id") Integer id,
-                               DTOUpdateRoleUserLevel dtoUpdateRoleUserLevel) {
-
-        audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateRoleUserLevel.getUrlId()) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
-        }
-
-        audit.debug("Update Role" + dtoUpdateRoleUserLevel.getRole()
-                + " to User " + dtoUpdateRoleUserLevel.getUser()
-                + " in Level " + dtoUpdateRoleUserLevel.getLevel() + "...");
-        DTOUserRoleLevel dtoUserRoleLevel = serviceUserRoleLevel.updateRol(id, dtoUpdateRoleUserLevel);
-
-        return Response.ok(dtoUserRoleLevel).build();
-
-    }
-
 }
