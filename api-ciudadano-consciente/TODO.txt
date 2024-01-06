@@ -19,13 +19,13 @@ FIXME Refactor: Corroborar si las verificaciones de identificadores en los recur
 FIXME Refactor Quizás sea necesario agregar la anotacion @MappingTarget en arguemento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
 
 FIXME Refactor el DELETE de todas las entidades para que retorne la entidad eliminada
+FIXME Refactor de las verificaciones de campos, deben suceder en el recurso
 FIXME Refactor del PATCH de las entidades para que utilizacen el GET especifico como corroboración de que la entidad no existe (si debiera ser única)
 
 DOING
-TODO feat: obtener roles de un usuario en el nivel GET level/{id}/user{user}
-TODO feat: obtener usuarios de un nivel con cierto rol GET level/{id}/roles{role}/
-TODO feat: actualización de rol de usuario en nivel level/{id}/users/{user}/roles/{role}
-FIXME refactorear el DELETE de Level para que retorne la entidad eliminada
+
+
+
 
 DONE
 #0 Pasar argumentos como TransferiblesRequest en el POST y PATCH
@@ -87,5 +87,10 @@ DONE
     - DELETE /levels/{id}/users/{user} y             --> elimina todos los roles de usuario en nivel
     - DELETE /levels/{id}/users/{user}/roles/{role}  --> elimina un de usuario en nivel
 
+- Commit 0a6e51a
+#16 feat: GET level/{id}/user{user} --> obtener roles de un usuario en el nivel ,
+          GET level/{id}/roles{role} --> obtener usuarios de un nivel con cierto rol  y
+          PATCH level/{id}/users/{user}/roles/{role} --> actualización de rol de usuario en nivel
+
 - Commit
-#16
+#17 refactor: DELETE de LEVEL, ACTIVITY, ACTIVITY-TYPE, ORGANIZATION, REFERENCE, ROLE, USER para que retorne la entidad eliminada

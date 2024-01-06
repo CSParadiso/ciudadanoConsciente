@@ -104,8 +104,7 @@ public class ResourceActivity {
     public Response delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Activity " + id + "...");
-        serviceActivity.delete(id);
-        return Response.ok().build();
+        return Response.ok(serviceActivity.delete(id)).build();
 
     }
 

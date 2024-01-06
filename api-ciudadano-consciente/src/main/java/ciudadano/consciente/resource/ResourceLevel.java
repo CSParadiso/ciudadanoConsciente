@@ -141,10 +141,7 @@ public class ResourceLevel {
     public Response delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Level " + id + "...");
-        // FIXME refactorear el DELETE de Level para que retorne la entidad eliminada
-        serviceLevel.delete(id);
-
-        return Response.ok().build();
+        return Response.ok(serviceLevel.delete(id)).build();
 
     }
 

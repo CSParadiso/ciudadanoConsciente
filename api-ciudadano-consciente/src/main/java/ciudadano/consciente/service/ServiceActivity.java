@@ -142,12 +142,18 @@ public class ServiceActivity {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void delete(Integer id) {
+    public DTOActivity delete(Integer id) {
 
         audit.debug("Deleting Activity " + id + ".");
-        if(!accessActivity.remove(id)) {
-            throw new HttpNotFoundException("Activity not found.");
-        }
+        Activity activity = accessActivity.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
+
+        if(!accessActivity.remove(activity.getActivityId())) {
+            throw new HttpInternalServerException("Failed to remove Activity");
+        };
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperActivity.entityToDto(activity);
 
     }
 }

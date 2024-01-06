@@ -134,9 +134,7 @@ public class ResourceRole {
     public Response delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Role " + id + "...");
-        serviceRole.delete(id);
-
-        return Response.ok().build();
+        return Response.ok(serviceRole.delete(id)).build();
 
     }
 

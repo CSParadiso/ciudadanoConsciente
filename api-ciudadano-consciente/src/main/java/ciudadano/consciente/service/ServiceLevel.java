@@ -154,11 +154,18 @@ public class ServiceLevel {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void delete(Integer identificador) {
+    public DTOLevel delete(Integer id) {
 
-        if(!accessLevel.remove(identificador)) {
-            throw new HttpNoContentException("Nivel no existe.");
-        }
+        audit.debug("Deleting Level " + id + ".");
+        Level level = accessLevel.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Level not found."));
+
+        if(!accessLevel.remove(level.getLevelId())) {
+            throw new HttpInternalServerException("Failed to delete Level");
+        };
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperLevel.entityToDto(level);
 
     }
 
@@ -242,11 +249,13 @@ public class ServiceLevel {
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole) {
 
-        audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + ".");
+        audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idLevel + ".");
         UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
                 .orElseThrow( ()-> new HttpNotFoundException("UserRoleLevel not found."));
 
-        accessUserRoleLevel.remove(userRoleLevel.getUrlId());
+        if(!accessUserRoleLevel.remove(userRoleLevel.getUrlId())) {
+            throw new HttpInternalServerException("Failed to remove UserRoleLevel.");
+        };
 
         audit.debug("Mapping Entity into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);

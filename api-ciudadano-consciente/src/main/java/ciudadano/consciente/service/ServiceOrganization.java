@@ -152,12 +152,18 @@ public class ServiceOrganization {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void delete(Integer id) {
+    public DTOOrganization delete(Integer id) {
 
         audit.debug("Deleting Organization " + id);
-        if(!accessOrganization.remove(id)) {
+        Organization organization = accessOrganization.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Organization not found") );
+
+        if(!accessOrganization.remove(organization.getOrganizationId())) {
             throw new HttpInternalServerException("Failed to delete Organization.");
         }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperOrganization.entityToDto(organization) ;
 
     }
 

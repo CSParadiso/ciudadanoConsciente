@@ -6,6 +6,7 @@ import ciudadano.consciente.dto.DTORole;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.model.Role;
 import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;
@@ -80,12 +81,18 @@ public class ServiceRole {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void delete(Integer id) {
+    public DTORole delete(Integer id) {
 
         audit.debug("Deleting Role " + id + ".");
-        if(!accessRole.remove(id)) {
-            throw new HttpNoContentException("Role not found.");
+        Role role = accessRole.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Role not found."));
+
+        if(!accessRole.remove(role.getRoleId())) {
+            throw new HttpInternalServerException("Failed to dalete Role.");
         }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperRole.entityToDto(role);
 
     }
 

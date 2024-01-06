@@ -140,9 +140,7 @@ public class ResourceReference {
     public Response delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Reference " + id + "...");
-        serviceReference.delete(id);
-
-        return Response.ok().build();
+        return Response.ok(serviceReference.delete(id)).build();
 
     }
 

@@ -1,8 +1,5 @@
 package ciudadano.consciente.resource;
 
-import ciudadano.consciente.dto.DTOUpdateRoleUserLevel;
-import ciudadano.consciente.dto.DTOUserRoleLevel;
-import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceUserRoleLevel;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -20,8 +17,6 @@ import org.jboss.logging.Logger;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ResourceUserRoleLevel {
-
-    final String BASE_PATH_RESOURCE = "/activities/";
 
     @Inject
     Logger audit;

@@ -141,12 +141,18 @@ public class ServiceReference {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void delete(Integer id) {
+    public DTOReference delete(Integer id) {
 
         audit.debug("Deleting Reference " + id + ".");
-        if(!accessReference.remove(id)) {
-            throw new HttpNotFoundException("Reference not found");
+        Reference reference = accessReference.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Reference not found.") );
+
+        if(!accessReference.remove(reference.getReferenceId())) {
+            throw new HttpInternalServerException("Failed to delete Reference");
         };
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperReference.entityToDto(reference);
 
     }
 

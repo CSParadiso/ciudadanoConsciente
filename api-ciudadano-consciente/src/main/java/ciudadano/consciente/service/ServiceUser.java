@@ -5,8 +5,8 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperUser;
-import ciudadano.consciente.model.Role;
 import ciudadano.consciente.model.User;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -129,12 +129,18 @@ public class ServiceUser {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void delete(Integer id) {
+    public DTOUser delete(Integer id) {
 
         audit.debug("Deleting User " + id + ".");
-        if (!accessUser.remove(id)) {
-            throw new HttpNoContentException("User not found.");
-        };
+        User user = accessUser.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+
+        if (!accessUser.remove(user.getUserId())) {
+            throw new HttpInternalServerException("Failed to delete User.");
+        }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUser.entityToDto(user);
 
     }
 

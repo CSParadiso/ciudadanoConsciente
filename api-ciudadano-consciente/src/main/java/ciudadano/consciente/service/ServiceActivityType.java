@@ -79,12 +79,18 @@ public class ServiceActivityType {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public void delete(Integer id) {
+    public DTOActivityType delete(Integer id) {
 
         audit.debug("Deleting Activity Type " + id + ".");
-        if(!accessActivityType.remove(id)) {
-            throw new HttpNotFoundException("Activity Type not found.");
+        ActivityType activityType = accessActivityType.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found.") );
+
+        if(!accessActivityType.remove(activityType.getActivityTypeId())) {
+            throw new HttpInternalServerException("Failed to delete Activity Type.");
         }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperActivityType.entityToDto(activityType);
 
     }
 
