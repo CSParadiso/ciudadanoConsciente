@@ -168,6 +168,7 @@ public class ResourceOrganization {
 
     // ROLE HANDLING IN ORGANIZATIONS
 
+    @Deprecated
     @POST
     @Path("{id}/roles")
     @Operation(summary = "Assign Role to User in Organization.")
@@ -187,7 +188,7 @@ public class ResourceOrganization {
             responseCode = "500",
             description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header."
     )
-    public Response assignRole(@PathParam("id") Integer id,
+    public Response assignRoleToUserInLevel(@PathParam("id") Integer id,
                                DTOAssingRoleToUserOrganization dtoAssingRoleToUserOrganization) {
 
         final String PATH_BASE_USER_ROL_ORGANIZATION = "/user-rol-organization/";
@@ -210,20 +211,200 @@ public class ResourceOrganization {
     }
 
     @GET
-    @Path("{id}/roles")
-    @Operation(summary = "Retrieve all the UserRole in Organization.")
+    @Path("{id}/users/roles")
+    @Operation(summary = "Retrieve Users with Role in Organization.")
     @APIResponse(
             responseCode = "200",
-            description = "Roles of User in Organization successfully retrieved."
+            description = "Users in Organization with Role successfully retrieved."
     )
     @APIResponse(
             responseCode = "204",
-            description = "Failed to retrieve Roles of User in Organization. Verify 'Warning' Header."
+            description = "Failed to retrieve User with Role in Organization. Verify 'Warning' Header."
     )
-    public Response getAll(@PathParam("id") Integer id) {
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve User with Role in Organization. Verify 'Warning' Header."
+    )
+    public Response getUsersWithRole(@PathParam("id") Integer idOrganization,
+                                     @QueryParam("role") Integer idRole,
+                                     @QueryParam("user") Integer idUser) {
 
-        audit.debug("Getting all the UserRole of Organization " + id + "...");
-        return Response.ok(serviceOrganization.getUserRoleOrganization(id)).build();
+        if(idRole == null && idUser == null) {
+            audit.debug("Getting all the Users with Roles in Organization " + idOrganization + "...");
+            return Response.ok(serviceOrganization.getAllUsersWithRoleByOrganization(idOrganization)).build();
+        }
+
+        if(idRole == null) {
+            audit.debug("Getting all Roles of User(" + idUser + ") in Organization " + idOrganization + "...");
+            return Response.ok(serviceOrganization.getAllRolesInOrganizationByUser(idOrganization, idUser)).build();
+        }
+
+        if(idUser == null) {
+            audit.debug("Getting all the Users with Role(" + idRole + ") in Organization " + idOrganization + "...");
+            return Response.ok(serviceOrganization.getAllUsersWithRoleInOrganization(idOrganization, idRole)).build();
+        }
+
+        audit.debug("Getting User(" + idUser + ") with Role (" + idRole + ") in Organization " + idOrganization + "...");
+        return Response.ok(serviceOrganization.getUserRoleOrganization(idOrganization, idUser, idRole)).build();
+
+    }
+
+    @POST
+    @Path("{id}/users/roles") // /{user}/roles/{role}")
+    @Operation(summary = "Assign Role to User in Organization.")
+    @APIResponse(
+            responseCode = "201",
+            description = "Role successfully assign to User in Organization."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header."
+    )
+    public Response assignRole(@PathParam("id") Integer idOrganization,
+                               //@PathParam("user") Integer idUser,
+                               //@PathParam("role") Integer idRole,
+                               DTOAssingRoleToUserOrganization dtoAssignRoleToUserOrganization) {
+
+        if(dtoAssignRoleToUserOrganization == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoAssignRoleToUserOrganization.getUser();
+        Integer Organization = dtoAssignRoleToUserOrganization.getOrganization();
+        Integer role = dtoAssignRoleToUserOrganization.getRole();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(Organization) ||
+                !utilityVerifyRequestField.isValidField(role)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idOrganization != dtoAssignRoleToUserOrganization.getOrganization()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Organization.");
+        }
+        /*if(idUser != dtoAssignRoleToUserOrganization.getUser()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
+        }
+        if(idRole != dtoAssignRoleToUserOrganization.getRole()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Role.");
+        }*/
+
+        audit.debug("Assigning Role" + role
+                + " to User " + user
+                + " in Organization " + idOrganization + "...");
+        DTOUserRoleOrganization dtoUserRoleOrganization = serviceOrganization.assignRoleToUserInOrganization(idOrganization, user, role);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleOrganization.getOrganization() +
+                "?users=" + dtoUserRoleOrganization.getUser() +
+                "&roles=" + dtoUserRoleOrganization.getRole());
+
+        return Response.created(uri).entity(dtoUserRoleOrganization).build();
+
+    }
+
+    @PATCH
+    @Path("{id}/users/roles") // {user}/roles/{role}")
+    @Operation(summary = "Update Role of User in Organization.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Role successfully updated to User in Organization."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to update Role to User in Organization. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to update Role to User in Organization. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to update Role to User in Organization. Verify 'Warning' Header."
+    )
+    public Response updateRoleOfUserInOrganization(@PathParam("id") Integer idOrganization,
+                                            //@PathParam("user") Integer idUser,
+                                            //@PathParam("role") Integer idRole,
+                                            DTOUpdateRoleUserOrganization dtoUpdateRoleUserOrganization) {
+
+        if(dtoUpdateRoleUserOrganization == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoUpdateRoleUserOrganization.getUser();
+        Integer Organization = dtoUpdateRoleUserOrganization.getOrganization();
+        Integer role = dtoUpdateRoleUserOrganization.getRole();
+        Integer newRole = dtoUpdateRoleUserOrganization.getRole();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(Organization) ||
+                !utilityVerifyRequestField.isValidField(newRole)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idOrganization != Organization) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Organization.");
+        }
+        /*if(idUser != user) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
+        }
+        if(idRole == newRole) {
+            throw new HttpBadRequestException("Body ID and Path ID must reflect reflect the change for Role.");
+        }*/
+
+        audit.debug("Updating Role" + newRole
+                + " of User " + user
+                + " in Organization " + idOrganization + "...");
+        DTOUserRoleOrganization dtoUserRoleOrganization = serviceOrganization.updateRoleOfUserInOrganization(idOrganization, user, role, newRole);
+
+        return Response.ok(dtoUserRoleOrganization).build();
+
+    }
+
+    @DELETE
+    @Path("{id}/users/{user}")
+    @Operation( summary = "Delete all Roles of a User in a Organization.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Roles of User successfully deleted in Organization."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to delete Roles of User in Organization. Verify 'Warning' Header."
+    )
+    public Response deleteAllRolesOfUserInOrganization(@PathParam("id") Integer idOrganization,
+                                                       @PathParam("user") Integer idUser) {
+
+        audit.debug("Deleting all Roles of User(" + idUser + ") in Organization (" + idOrganization + ")...");
+        return Response.ok(serviceOrganization.deleteAllRolesOfUserInOrganization(idOrganization, idUser)).build();
+
+    }
+
+    @DELETE
+    @Path("{id}/users/{user}/roles/{role}")
+    @Operation( summary = "Delete a Role of a User in a Organization.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Role of User successfully deleted in Organization."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to delete Role of User in Organization. Verify 'Warning' Header."
+    )
+    public Response deleteUserRoleOrganization(@PathParam("id") Integer idOrganization,
+                                        @PathParam("user") Integer idUser,
+                                        @PathParam("role") Integer idRole) {
+
+        audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Organization(" + idUser + ") " + idOrganization + "...");
+        return Response.ok(serviceOrganization.deleteUserRoleOrganization(idOrganization, idUser, idRole)).build();
 
     }
 

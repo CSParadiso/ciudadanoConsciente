@@ -331,8 +331,8 @@ public class ResourceLevel {
 
         audit.debug("Creating URI...");
         URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleLevel.getLevel() +
-                "/users/" + dtoUserRoleLevel.getUser() +
-                "/roles/" + dtoUserRoleLevel.getRole());
+                "?users=" + dtoUserRoleLevel.getUser() +
+                "&roles=" + dtoUserRoleLevel.getRole());
 
         return Response.created(uri).entity(dtoUserRoleLevel).build();
 

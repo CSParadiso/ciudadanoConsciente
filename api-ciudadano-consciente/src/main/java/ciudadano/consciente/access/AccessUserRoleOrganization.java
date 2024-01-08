@@ -30,4 +30,32 @@ public class AccessUserRoleOrganization implements PanacheRepositoryBase<UserRol
         return list("organization", organization);
 
     }
+
+    public List<UserRolOrganization> getByOrganizationAndUser(Integer idOrganization, Integer idUser) {
+
+        audit.debug("Trying to retrieve User(" + idUser + ") Roles in Organization(" + idOrganization + ".");
+        return find("organization.organizationId = ?1 and user.userId = ?2", idOrganization, idUser).stream().toList();
+        
+    }
+
+    public List<UserRolOrganization> getByOrganizationAndRole(Integer idOrganization, Integer idRole) {
+
+        audit.debug("Trying to retrieve all Users with Role(" + idRole + ") in Organization(" + idOrganization + ").");
+        return find("organization.organizationId = ?1 and role.roleId = ?2", idOrganization, idRole).stream().toList();
+        
+    }
+
+    public Optional<UserRolOrganization> get(Integer idOrganization, Integer idUser, Integer idRole) {
+
+        audit.debug("Trying to retrieve User(" + idUser + ")Role(" + idRole + ")Organization(" + idUser + ") " + idOrganization + ".");
+        return find("organization.organizationId = ?1 and user.userId = ?2 and role.roleId = ?3", idOrganization, idUser, idRole).firstResultOptional();
+        
+    }
+
+    public boolean remove(Integer uroId) {
+
+        audit.debug("Trying to delete UserRoleLevel " + uroId + ".");
+        return deleteById(uroId);
+
+    }
 }

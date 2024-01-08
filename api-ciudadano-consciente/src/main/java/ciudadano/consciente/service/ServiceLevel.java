@@ -5,9 +5,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
-import ciudadano.consciente.model.Level;
-import ciudadano.consciente.model.Role;
-import ciudadano.consciente.model.UserRoleLevel;
+import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.mapper.MapperLevel;
 import ciudadano.consciente.mapper.MapperUserRoleLevel;
@@ -165,31 +163,34 @@ public class ServiceLevel {
     // ROLE HANDLING IN LEVEL
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOUserRoleLevel assignRoleToUserInLevel(Integer level, Integer user, Integer role) {
+    public DTOUserRoleLevel assignRoleToUserInLevel(Integer idLevel, Integer idUser, Integer idRole) {
 
-    audit.debug("Verify if UserRoleLevel already exists.");
-    if(accessUserRoleLevel.exists(user, role, level)) {
-        throw new HttpBadRequestException("UserRoleLevel already exists.");
-    }
+        audit.debug("Verify if UserRoleLevel already exists.");
+        if(accessUserRoleLevel.get(idLevel, idUser, idRole).isPresent()) {
+            throw new HttpBadRequestException("UserRoleLevel already exists.");
+        }
 
-    audit.debug("Creating Role of User in Level.");
-    UserRoleLevel userRoleLevel = new UserRoleLevel();
+        User user = accessUser.get(idUser)
+                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
 
-    userRoleLevel.setUser(accessUser.get(user)
-            .orElseThrow( ()-> new HttpNotFoundException("User not found.")));
+        Level level = accessLevel.get(idLevel)
+                .orElseThrow( ()-> new HttpNotFoundException("Level not found."));
 
-    userRoleLevel.setLevel(accessLevel.get(level)
-            .orElseThrow( ()-> new HttpNotFoundException("Level not found.")));
+        Role role = accessRole.get(idRole)
+                .orElseThrow( ()-> new HttpNotFoundException("Role not found."));
 
-    userRoleLevel.setRole(accessRole.get(role)
-            .orElseThrow( ()-> new HttpNotFoundException("Role not found.")));
+        audit.debug("Creating Role of User in Level.");
+        UserRoleLevel userRoleLevel = new UserRoleLevel();
+        userRoleLevel.setUser(user);
+        userRoleLevel.setLevel(level);
+        userRoleLevel.setRole(role);
 
-    audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
-    accessUserRoleLevel.save(userRoleLevel)
-            .orElseThrow( ()-> new HttpBadRequestException("Already exists Role for User in Level.") );
+        audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
+        accessUserRoleLevel.save(userRoleLevel)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new UserRoleLevel.") );
 
-    audit.debug("Mapping Entity into DTO.");
-    return mapperUserRoleLevel.entityToDto(userRoleLevel);
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
 

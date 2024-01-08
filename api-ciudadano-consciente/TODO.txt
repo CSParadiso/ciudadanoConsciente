@@ -8,7 +8,6 @@ CUESTIONES DE DISEÑO
 TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 YA SE PODRÍA
-TODO GET, PATCH, DELETE de UserRoleOrganization en Organization
 
 IMPLEMENTACIONES
 FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
@@ -18,17 +17,11 @@ FIXME Refactor: Corroborar si las verificaciones de identificadores en los recur
 
 FIXME Refactor Quizás sea necesario agregar la anotacion @MappingTarget en arguemento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
 
-FIXME Refactor de las verificaciones de campos, deben suceder en el recurso
-FIXME Refactor del PATCH de las entidades para que utilizacen el GET especifico como corroboración de que la entidad no existe (si debiera ser única)
+FIXME refactor: los URI creados por los post de Level y Organizacion debeberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
+FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
 
 DOING
-FIXME refactor: - GET /levels/{id}/roles/{role} --> /levels/{id}/users/roles con {role} y {user} como QueryParams (porque modifica el resultado. Un rol específico.)
-                - DEPRECATED (merged en otros):
-                                    - GET /levels/{id}/users
-                                    - GET /levels/{id}/users/{user}
-                                    - GET /levels/{id}/users/{user}/roles/{role}
-                - POST /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
-                - PATCH /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
+
 
 
 
@@ -104,4 +97,14 @@ DONE
 - Commit b38286b
 #18 refactor: verificaciones de campos (migradas al recurso) de todas las entidades
 
+- Commit 8fa4344
+#19 refactor: - GET /levels/{id}/roles/{role} --> /levels/{id}/users/roles con {role} y {user} como QueryParams (porque modifica el resultado. Un rol específico.)
+                - DEPRECATED (merged en otros):
+                                    - GET /levels/{id}/users
+                                    - GET /levels/{id}/users/{user}
+                                    - GET /levels/{id}/users/{user}/roles/{role}
+                - POST /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
+                - PATCH /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
+
 - Commit
+#20 feat: GET, PATCH, DELETE de UserRoleOrganization en Organization
