@@ -5,6 +5,7 @@ import ciudadano.consciente.service.ServiceRole;
 import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;
 import ciudadano.consciente.dto.DTORole;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -31,6 +32,9 @@ public class ResourceRole {
 
     @Inject
     ServiceRole serviceRole;
+
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
 
     @GET
     @Operation( summary = "Retrieve all Roles." )
@@ -79,6 +83,15 @@ public class ResourceRole {
     )
     public Response create(DTOCreateRole dtoCreateRole) {
 
+        if(dtoCreateRole == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String name = dtoCreateRole.getName();
+        if(!utilityVerifyRequestField.isValidField(name)) {
+            throw new HttpBadRequestException("Name field required.");
+        }
+
         audit.debug("Creating Role...");
         DTORole rol = serviceRole.create(dtoCreateRole);
 
@@ -109,6 +122,15 @@ public class ResourceRole {
             description = "Failed to update Role. Verify 'Warning' Header."
     )
     public Response update(@PathParam("id") Integer id, DTOUpdateRole dtoUpdateRole) {
+
+        if(dtoUpdateRole == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String name = dtoUpdateRole.getName();
+        if(!utilityVerifyRequestField.isValidField(name)) {
+            throw new HttpBadRequestException("No updates to make.");
+        }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
         if(id.compareTo(dtoUpdateRole.getRoleId()) != 0 )  {

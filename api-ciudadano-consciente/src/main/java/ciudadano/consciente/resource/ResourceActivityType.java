@@ -5,6 +5,7 @@ import ciudadano.consciente.dto.DTOUpdateActivityType;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceActivityType;
 import ciudadano.consciente.dto.DTOCreateActivityType;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -32,33 +33,8 @@ public class ResourceActivityType {
     @Inject
     Logger audit;
 
-    @POST
-    @Operation(summary = "Create an Activity Type.")
-    @APIResponse(
-            responseCode = "201",
-            description = "Activity Type successfully created."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to create Activity Type. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to create Activity Type. Verify 'Warning' Header."
-    )
-    public Response create(DTOCreateActivityType dtoCreateActivityType) {
-
-        audit.debug("Creating Activity Type...");
-        DTOActivityType activityType = serviceActivityType.create(dtoCreateActivityType);
-
-        audit.debug("Creating URI...");
-        URI uri = URI.create(BASE_PATH_RESOURCE + activityType.getActivityTypeId());
-
-        return Response.created(uri)
-                .entity(activityType)
-                .build();
-
-    }
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
 
     @GET
     @Operation(summary = "Retrieve all Activity Types.")
@@ -91,21 +67,44 @@ public class ResourceActivityType {
 
     }
 
-    @DELETE
-    @Path("{id}")
-    @Operation(summary = "Delete a specific Activity Type by its ID.")
+    @POST
+    @Operation(summary = "Create an Activity Type.")
     @APIResponse(
-            responseCode = "200",
-            description = "Activity Types successfully deleted."
+            responseCode = "201",
+            description = "Activity Type successfully created."
     )
     @APIResponse(
-            responseCode = "404",
-            description = "Failed to delete Activity Type. Verify 'Warning' Header."
+            responseCode = "400",
+            description = "Failed to create Activity Type. Verify 'Warning' Header."
     )
-    public Response delete(@PathParam("id") Integer id) {
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to create Activity Type. Verify 'Warning' Header."
+    )
+    public Response create(DTOCreateActivityType dtoCreateActivityType) {
 
-        audit.debug("Deleting Activity Type " + id + "...");
-        return Response.ok(serviceActivityType.delete(id)).build();
+        if(dtoCreateActivityType == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String name = dtoCreateActivityType.getName();
+        String description = dtoCreateActivityType.getDescription();
+        String functionalTemplateUrl = dtoCreateActivityType.getFunctionalTemplateUrl();
+        if(!utilityVerifyRequestField.isValidField(name) ||
+                !utilityVerifyRequestField.isValidField(description) ||
+                !utilityVerifyRequestField.isValidField(functionalTemplateUrl)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Creating Activity Type...");
+        DTOActivityType activityType = serviceActivityType.create(dtoCreateActivityType);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(BASE_PATH_RESOURCE + activityType.getActivityTypeId());
+
+        return Response.created(uri)
+                .entity(activityType)
+                .build();
 
     }
 
@@ -125,17 +124,47 @@ public class ResourceActivityType {
             description = "Failed to delete Activity Type. Verify 'Warning' Header."
     )
     public Response update(@PathParam("id") Integer id,
-                               DTOUpdateActivityType dTOUpdateActivityType) {
+                           DTOUpdateActivityType dtoUpdateActivityType) {
+
+        if(dtoUpdateActivityType == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String name = dtoUpdateActivityType.getName();
+        String description = dtoUpdateActivityType.getDescription();
+        String functionalTemplate = dtoUpdateActivityType.getFunctionalTemplateUrl();
+        if(!utilityVerifyRequestField.isValidField(name) &&
+                !utilityVerifyRequestField.isValidField(description) &&
+                !utilityVerifyRequestField.isValidField(functionalTemplate)) {
+            throw new HttpBadRequestException("No updates to make.");
+        }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dTOUpdateActivityType.getActivityTypeId()) {
+        if(id != dtoUpdateActivityType.getActivityTypeId()) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
         audit.debug("Updating Activity Type " + id + "...");
-        return Response.ok(serviceActivityType.update(id, dTOUpdateActivityType)).build();
+        return Response.ok(serviceActivityType.update(id, dtoUpdateActivityType)).build();
 
     }
 
+    @DELETE
+    @Path("{id}")
+    @Operation(summary = "Delete a specific Activity Type by its ID.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Activity Types successfully deleted."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to delete Activity Type. Verify 'Warning' Header."
+    )
+    public Response delete(@PathParam("id") Integer id) {
+
+        audit.debug("Deleting Activity Type " + id + "...");
+        return Response.ok(serviceActivityType.delete(id)).build();
+
+    }
 
 }

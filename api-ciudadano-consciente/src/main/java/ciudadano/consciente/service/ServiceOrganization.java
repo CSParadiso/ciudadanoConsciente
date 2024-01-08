@@ -74,13 +74,8 @@ public class ServiceOrganization {
     public DTOOrganization create(DTOCreateOrganization dtoCreateOrganization) {
 
         audit.debug("Creating Organization.");
-
         String email = dtoCreateOrganization.getEmail();
         String name = dtoCreateOrganization.getName();
-        if(!utilityVerifyRequestField.isValidField(email) ||
-                !utilityVerifyRequestField.isValidField(name)) {
-            throw new HttpBadRequestException("Email and name required.");
-        }
 
         if(accessOrganization.existEmail(email)) {
             throw new HttpBadRequestException("Email already exists.");
@@ -118,12 +113,6 @@ public class ServiceOrganization {
         String email = dtoUpdateOrganization.getEmail();
         String name = dtoUpdateOrganization.getName();
         String description = dtoUpdateOrganization.getDescription();
-        if(!utilityVerifyRequestField.isValidField(email) &&
-                !utilityVerifyRequestField.isValidField(name) &&
-                !utilityVerifyRequestField.isValidField(description)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
-
         if (utilityVerifyRequestField.isValidField(name)) {
             if(accessOrganization.existName(name)) {
                 throw new HttpBadRequestException("The name already exists.");

@@ -39,11 +39,6 @@ public class ServiceActivityType {
         String name = dtoCreateActivityType.getName();
         String description = dtoCreateActivityType.getDescription();
         String functionalTemplateUrl = dtoCreateActivityType.getFunctionalTemplateUrl();
-        if(!utilityVerifyRequestField.isValidField(name) ||
-                !utilityVerifyRequestField.isValidField(description) ||
-                !utilityVerifyRequestField.isValidField(functionalTemplateUrl)) {
-            throw new HttpBadRequestException("All fields required.");
-        }
 
         if(accessActivityType.existsName(name)) {
             throw new HttpBadRequestException("The name of the Activity Type already exists.");
@@ -52,7 +47,8 @@ public class ServiceActivityType {
         audit.debug("Mapping DTO into Entity.");
         ActivityType activityType = mapperActivityType.dtoToEntity(name, description, functionalTemplateUrl);
 
-        activityType = accessActivityType.save(activityType)
+        audit.debug("Saving Activity Type " + activityType.getActivityTypeId() + ".");
+        accessActivityType.save(activityType)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity Type."));
 
         audit.debug("Mapping Entity into DTO.");
@@ -101,11 +97,6 @@ public class ServiceActivityType {
         String name = dtoUpdateActivityType.getName();
         String description = dtoUpdateActivityType.getDescription();
         String functionalTemplate = dtoUpdateActivityType.getFunctionalTemplateUrl();
-        if(!utilityVerifyRequestField.isValidField(name) &&
-            !utilityVerifyRequestField.isValidField(description) &&
-            !utilityVerifyRequestField.isValidField(functionalTemplate)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
 
         ActivityType activityType = accessActivityType.get(id)
                 .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found."));
@@ -125,6 +116,7 @@ public class ServiceActivityType {
             activityType.setFunctionalTemplateUrl(functionalTemplate);
         }
 
+        audit.debug("Saving Activity Type " + activityType.getActivityTypeId() + ".");
         accessActivityType.save(activityType)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Activity Type.") );
 

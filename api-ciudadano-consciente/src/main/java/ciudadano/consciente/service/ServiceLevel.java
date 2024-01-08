@@ -72,10 +72,6 @@ public class ServiceLevel {
     public DTOLevel create(DTOCreateLevel dtoCreateLevel) {
 
         String name = dtoCreateLevel.getName();
-        if(!utilityVerifyRequestField.isValidField(name)) {
-            throw new HttpBadRequestException("The name is required.");
-        }
-
         if(accessLevel.existName(name)) { // TODO Se podría agregar un alias que no sea único, que se usaría en la app.
             throw new HttpBadRequestException("The name already exists.");
         }
@@ -117,12 +113,6 @@ public class ServiceLevel {
         Integer organization = dtoUpdateLevel.getOrganization();
         Integer parent = dtoUpdateLevel.getParent();
         String description = dtoUpdateLevel.getDescription();
-        if(!utilityVerifyRequestField.isValidField(name) &&
-                !utilityVerifyRequestField.isValidField(parent) &&
-                !utilityVerifyRequestField.isValidField(organization) &&
-                !utilityVerifyRequestField.isValidField(description)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
 
         Level level = accessLevel.get(id)
                 .orElseThrow( () -> new HttpNoContentException("Level not found."));
@@ -142,6 +132,10 @@ public class ServiceLevel {
         if(utilityVerifyRequestField.isValidField(parent)) {
             level.setParent(accessLevel.get(parent)
                     .orElseThrow( ()-> new HttpNotFoundException("Parent Level not found.")) );
+        }
+
+        if(utilityVerifyRequestField.isValidField(description)) {
+            level.setDescription(description);
         }
 
         audit.debug("Saving Level " + level.getLevelId() + ".");

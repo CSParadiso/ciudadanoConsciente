@@ -58,22 +58,40 @@ public class ServiceRole {
     @Transactional(Transactional.TxType.REQUIRED)
     public DTORole create(DTOCreateRole dtoCreateRole) {
 
-        audit.debug("Creating new Role.");
         String name = dtoCreateRole.getName();
-        if(!utilityVerifyRequestField.isValidField(name)) {
-            throw new HttpBadRequestException("Name field required.");
-        }
-
         if(accessRole.existsName(name)) {
             throw new HttpBadRequestException("The name of the Role already exists.");
         }
 
+        audit.debug("Creating new Role.");
         audit.debug("Mapping DTO into Entity");
         Role role = mapperRole.dtoToEntity(name);
 
         audit.debug("Saving new Role " + role.getRoleId() + ".");
         accessRole.save(role)
                 .orElseThrow(()-> new HttpInternalServerException("Failed to persist new Role."));
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperRole.entityToDto(role);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTORole update(Integer id, DTOUpdateRole dtoUpdateRole) {
+
+        audit.debug("Updating Role " + id + ".");
+        Role role = accessRole.get(id)
+                .orElseThrow( ()-> new HttpNoContentException("Role not found."));
+
+        String name = dtoUpdateRole.getName();
+        if(accessRole.existsName(name)) {
+            throw new HttpBadRequestException("The name of the Role already exists.");
+        }
+        role.setName(name);
+
+        audit.debug("Saving Role " + role.getRoleId() + ".");
+        accessRole.save(role)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Role.") );
 
         audit.debug("Mapping Entity into DTO.");
         return mapperRole.entityToDto(role);
@@ -90,32 +108,6 @@ public class ServiceRole {
         if(!accessRole.remove(role.getRoleId())) {
             throw new HttpInternalServerException("Failed to dalete Role.");
         }
-
-        audit.debug("Mapping Entity into DTO.");
-        return mapperRole.entityToDto(role);
-
-    }
-
-    @Transactional(Transactional.TxType.REQUIRED)
-    public DTORole update(Integer id, DTOUpdateRole dtoUpdateRole) {
-
-        audit.debug("Updating Role " + id + ".");
-        Role role = accessRole.get(id)
-                .orElseThrow( ()-> new HttpNoContentException("Role not found."));
-
-        String name = dtoUpdateRole.getName();
-        if(!utilityVerifyRequestField.isValidField(name)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
-
-        if(accessRole.existsName(name)) {
-            throw new HttpBadRequestException("The name of the Role already exists.");
-        }
-        role.setName(name);
-
-        audit.debug("Saving Role " + role.getRoleId() + ".");
-        accessRole.save(role)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Role.") );
 
         audit.debug("Mapping Entity into DTO.");
         return mapperRole.entityToDto(role);

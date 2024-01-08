@@ -4,6 +4,7 @@ package ciudadano.consciente.resource;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -30,6 +31,9 @@ public class ResourceOrganization {
 
     @Inject
     Logger audit;
+
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
 
     @GET
     @Operation( summary = "Retrieve all Organizations.")
@@ -78,6 +82,17 @@ public class ResourceOrganization {
     )
     public Response create(DTOCreateOrganization dtoCreateOrganization) {
 
+        if(dtoCreateOrganization == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String email = dtoCreateOrganization.getEmail();
+        String name = dtoCreateOrganization.getName();
+        if(!utilityVerifyRequestField.isValidField(email) ||
+                !utilityVerifyRequestField.isValidField(name)) {
+            throw new HttpBadRequestException("Email and name required.");
+        }
+
         audit.debug("Creating Organization...");
         DTOOrganization organization = serviceOrganization.create(dtoCreateOrganization);
 
@@ -109,6 +124,19 @@ public class ResourceOrganization {
     )
     public Response update(@PathParam("id") Integer id,
                            DTOUpdateOrganization dtoUpdateOrganization) {
+
+        if(dtoUpdateOrganization == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String email = dtoUpdateOrganization.getEmail();
+        String name = dtoUpdateOrganization.getName();
+        String description = dtoUpdateOrganization.getDescription();
+        if(!utilityVerifyRequestField.isValidField(email) &&
+                !utilityVerifyRequestField.isValidField(name) &&
+                !utilityVerifyRequestField.isValidField(description)) {
+            throw new HttpBadRequestException("No updates to make.");
+        }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
         if(id != dtoUpdateOrganization.getOrganizationId()) {

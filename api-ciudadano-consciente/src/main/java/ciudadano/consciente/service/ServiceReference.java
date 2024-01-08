@@ -57,32 +57,18 @@ public class ServiceReference {
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOReference create(DTOCreateReference dtoCreateReference) {
 
-        audit.debug("Creating Reference.");
-
-        String title = dtoCreateReference.getTitle();
-        String url = dtoCreateReference.getUrl();
         Integer levelDto = dtoCreateReference.getLevel();
-        if(!utilityVerifyRequestField.isValidField(title) ||
-                !utilityVerifyRequestField.isValidField(url) ||
-                !utilityVerifyRequestField.isValidField(levelDto)) {
-            throw new HttpBadRequestException("Title, URL and Level required.");
-        }
-
         Level level = accessLevel.get(levelDto)
                 .orElseThrow(()-> new HttpNotFoundException("Level not found."));
 
+        String title = dtoCreateReference.getTitle();
         audit.debug("Verifying if title " + title + " of Reference already exists in Level " + levelDto);
         if(accessReference.existsTitleInLevel(level, title)) {
             throw new HttpBadRequestException("Already exists a Reference with that title in Level.");
         }
 
+        audit.debug("Creating Reference.");
         Reference reference = mapperReference.dtoToEntity(dtoCreateReference);
-
-        // Esto quizás es innecesario, ya se mapea antes
-        String description = dtoCreateReference.getDescription();
-        if(utilityVerifyRequestField.isValidField(description)) {
-            reference.setDescription(description);
-        }
 
         audit.debug("Saving Reference " + reference.getReferenceId() + ".");
         accessReference.save(reference)
@@ -96,32 +82,26 @@ public class ServiceReference {
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOReference update(Integer id, DTOUpdateReference dtoUpdateReference) {
 
-        audit.debug("Updating Reference " + id + ".");
         Reference reference = accessReference.get(id)
                 .orElseThrow(()-> new HttpNotFoundException("Reference not found."));
 
         Integer level = dtoUpdateReference.getLevel();
-        String title = dtoUpdateReference.getTitle();
-        String url = dtoUpdateReference.getUrl();
-        String description = dtoUpdateReference.getDescription();
-        if(!utilityVerifyRequestField.isValidField(level) &&
-                !utilityVerifyRequestField.isValidField(title) &&
-                !utilityVerifyRequestField.isValidField(url) &&
-                !utilityVerifyRequestField.isValidField(description)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
-
         if(utilityVerifyRequestField.isValidField(level)) {
             reference.setLevel(accessLevel.get(level)
                     .orElseThrow( ()-> new HttpNotFoundException("Level not found.") ));
         }
 
+        String title = dtoUpdateReference.getTitle();
         if(utilityVerifyRequestField.isValidField(title)) {
             if(accessReference.existsTitleInLevel(reference.getLevel(), title)) {
                 throw new HttpBadRequestException("Already exists a Reference with that title in Level.");
             }
             reference.setTitle(title);
         }
+
+        audit.debug("Updating Reference " + id + ".");
+        String url = dtoUpdateReference.getUrl();
+        String description = dtoUpdateReference.getDescription();
 
         if(utilityVerifyRequestField.isValidField(url)) {
             reference.setUrl(url);

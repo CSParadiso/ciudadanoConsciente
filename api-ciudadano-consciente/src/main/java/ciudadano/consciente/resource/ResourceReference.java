@@ -6,6 +6,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceReference;
 import ciudadano.consciente.dto.DTOUpdateReference;
 import ciudadano.consciente.dto.DTOCreateReference;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -32,6 +33,9 @@ public class ResourceReference {
 
     @Inject
     Logger audit;
+
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
 
     @GET
     @Operation(summary = "Retrieve all References.")
@@ -84,6 +88,19 @@ public class ResourceReference {
     )
     public Response create(DTOCreateReference dtoCreateReference) {
 
+        if(dtoCreateReference == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String title = dtoCreateReference.getTitle();
+        String url = dtoCreateReference.getUrl();
+        Integer levelDto = dtoCreateReference.getLevel();
+        if(!utilityVerifyRequestField.isValidField(title) ||
+                !utilityVerifyRequestField.isValidField(url) ||
+                !utilityVerifyRequestField.isValidField(levelDto)) {
+            throw new HttpBadRequestException("Title, URL and Level required.");
+        }
+
         audit.debug("Creating Reference...");
         DTOReference reference = serviceReference.create(dtoCreateReference);
 
@@ -115,6 +132,21 @@ public class ResourceReference {
     )
     public Response update(@PathParam("id") Integer id,
                            DTOUpdateReference dtoUpdateReference) {
+
+        if(dtoUpdateReference == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer level = dtoUpdateReference.getLevel();
+        String title = dtoUpdateReference.getTitle();
+        String url = dtoUpdateReference.getUrl();
+        String description = dtoUpdateReference.getDescription();
+        if(!utilityVerifyRequestField.isValidField(level) &&
+                !utilityVerifyRequestField.isValidField(title) &&
+                !utilityVerifyRequestField.isValidField(url) &&
+                !utilityVerifyRequestField.isValidField(description)) {
+            throw new HttpBadRequestException("No updates to make.");
+        }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
         if(id != dtoUpdateReference.getReferenceId()) {

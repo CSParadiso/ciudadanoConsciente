@@ -58,13 +58,6 @@ public class ServiceUser {
         audit.debug("Creating new User.");
         String email = dtoCreateUser.getEmail();
         String username = dtoCreateUser.getUsername();
-        String password = dtoCreateUser.getPassword();
-        if(!utilityVerifyRequestField.isValidField(email) ||
-                !utilityVerifyRequestField.isValidField(username) ||
-                !utilityVerifyRequestField.isValidField(password)) {
-            throw new HttpBadRequestException("All fields required.");
-        }
-
         if(accessUser.existsEmail(email)) {
             throw new HttpBadRequestException("Email already exists.");
         }
@@ -95,11 +88,6 @@ public class ServiceUser {
         String email = dtoUpdateUser.getEmail();
         String username = dtoUpdateUser.getUsername();
         String password = dtoUpdateUser.getPassword();
-        if(!utilityVerifyRequestField.isValidField(email) &&
-                !utilityVerifyRequestField.isValidField(username) &&
-                !utilityVerifyRequestField.isValidField(password)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
 
         if(utilityVerifyRequestField.isValidField(username)) {
             if(accessUser.existsUsername(username)) {

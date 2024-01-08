@@ -56,23 +56,15 @@ public class ServiceActivity {
         audit.debug("Creating Activity.");
         String description = dtoCreateActivity.getDescription();
         Integer levelDTO = dtoCreateActivity.getLevel();
-        if(!utilityVerifyRequestField.isValidField(description) ||
-                !utilityVerifyRequestField.isValidField(levelDTO)) {
-            throw new HttpBadRequestException("Description and Level required.");
-        }
-
         Level level = accessLevel.get(levelDTO)
                 .orElseThrow( ()-> new HttpNotFoundException("Level not found.") );
-
-        audit.debug(level.getName());
 
         audit.debug("Mapping DTO into Entity.");
         Activity activity = mapperActivity.dtoToEntity(level, description);
 
-        ActivityType activityType;
         Integer activityTypeDTO = dtoCreateActivity.getActivityType();
         if(utilityVerifyRequestField.isValidField(activityTypeDTO)) {
-            activityType = accessActivityType.get(activityTypeDTO)
+            ActivityType activityType = accessActivityType.get(activityTypeDTO)
                     .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found"));
             activity.setActivityType(activityType);
         }
@@ -101,21 +93,12 @@ public class ServiceActivity {
     public DTOActivity update(Integer id, DTOUpdateActivity dtoUpdateActivity) {
 
         audit.debug("Updating Activity.");
-        Integer levelDTO = dtoUpdateActivity.getLevel();
-        String description = dtoUpdateActivity.getDescription();
-        Integer activityTypeDTO = dtoUpdateActivity.getActivityType();
-
-        if(!utilityVerifyRequestField.isValidField(levelDTO) &&
-                !utilityVerifyRequestField.isValidField(description) &&
-                !utilityVerifyRequestField.isValidField(activityTypeDTO)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
-
         Activity activity = accessActivity.get(id)
                 .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
 
-        //mapperActivity.updateActivity(activity, dtoUpdateActivity);
-
+        Integer levelDTO = dtoUpdateActivity.getLevel();
+        String description = dtoUpdateActivity.getDescription();
+        Integer activityTypeDTO = dtoUpdateActivity.getActivityType();
         if(utilityVerifyRequestField.isValidField(levelDTO)) {
             Level level = accessLevel.get(levelDTO)
                     .orElseThrow( ()-> new HttpNotFoundException("Level not found.") );

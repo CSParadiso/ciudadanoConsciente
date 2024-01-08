@@ -5,6 +5,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceUser;
 import ciudadano.consciente.dto.DTOUpdateUser;
 import ciudadano.consciente.dto.DTOCreateUser;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -33,6 +34,9 @@ public class ResourceUser {
 
     @Inject
     Logger audit;
+
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
 
     @GET
     @Operation( summary = "Retrieve all users.")
@@ -81,6 +85,19 @@ public class ResourceUser {
     )
     public Response create(DTOCreateUser dtoCreateUser) {
 
+        if(dtoCreateUser == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String email = dtoCreateUser.getEmail();
+        String username = dtoCreateUser.getUsername();
+        String password = dtoCreateUser.getPassword();
+        if(!utilityVerifyRequestField.isValidField(email) ||
+                !utilityVerifyRequestField.isValidField(username) ||
+                !utilityVerifyRequestField.isValidField(password)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
         audit.debug("Creating User...");
         DTOUser user = serviceUser.create(dtoCreateUser);
 
@@ -112,7 +129,19 @@ public class ResourceUser {
     )
     public Response update(@PathParam("id") Integer id, DTOUpdateUser dtoUpdateUser) {
 
-        // TODO Corroborar que existan antes de comprobar
+        if(dtoUpdateUser == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String email = dtoUpdateUser.getEmail();
+        String username = dtoUpdateUser.getUsername();
+        String password = dtoUpdateUser.getPassword();
+        if(!utilityVerifyRequestField.isValidField(email) &&
+                !utilityVerifyRequestField.isValidField(username) &&
+                !utilityVerifyRequestField.isValidField(password)) {
+            throw new HttpBadRequestException("No updates to make.");
+        }
+
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
         if(id.compareTo(dtoUpdateUser.getUserId()) != 0 )  {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");

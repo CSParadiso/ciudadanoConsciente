@@ -87,6 +87,15 @@ public class ResourceLevel {
     )
     public Response create(DTOCreateLevel dtoCreateLevel) {
 
+        if(dtoCreateLevel == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        String name = dtoCreateLevel.getName();
+        if(!utilityVerifyRequestField.isValidField(name)) {
+            throw new HttpBadRequestException("The name is required.");
+        }
+
         audit.debug("Creating Level...");
         DTOLevel level = serviceLevel.create(dtoCreateLevel);
 
@@ -117,9 +126,24 @@ public class ResourceLevel {
     public Response update(@PathParam("id") Integer id,
                                DTOUpdateLevel dtoUpdateLevel) {
 
+        if(dtoUpdateLevel == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
         if(id != dtoUpdateLevel.getLevelId()) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+        }
+
+        String name = dtoUpdateLevel.getName();
+        Integer organization = dtoUpdateLevel.getOrganization();
+        Integer parent = dtoUpdateLevel.getParent();
+        String description = dtoUpdateLevel.getDescription();
+        if(!utilityVerifyRequestField.isValidField(name) &&
+                !utilityVerifyRequestField.isValidField(parent) &&
+                !utilityVerifyRequestField.isValidField(organization) &&
+                !utilityVerifyRequestField.isValidField(description)) {
+            throw new HttpBadRequestException("No updates to make.");
         }
 
         audit.debug("Updating Level" + id + "...");
@@ -259,7 +283,10 @@ public class ResourceLevel {
                                @PathParam("role") Integer idRole,
                                DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel) {
 
-        audit.debug("Verifying request variables...");
+        if(dtoAssignRoleToUserLevel == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
         Integer user = dtoAssignRoleToUserLevel.getUser();
         Integer level = dtoAssignRoleToUserLevel.getLevel();
         Integer role = dtoAssignRoleToUserLevel.getRole();
@@ -318,7 +345,10 @@ public class ResourceLevel {
                                @PathParam("role") Integer idRole,
                                DTOUpdateRoleUserLevel dtoUpdateRoleUserLevel) {
 
-        audit.debug("Verifying request variables...");
+        if(dtoUpdateRoleUserLevel == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
         Integer user = dtoUpdateRoleUserLevel.getUser();
         Integer level = dtoUpdateRoleUserLevel.getLevel();
         Integer newRole = dtoUpdateRoleUserLevel.getRole();
