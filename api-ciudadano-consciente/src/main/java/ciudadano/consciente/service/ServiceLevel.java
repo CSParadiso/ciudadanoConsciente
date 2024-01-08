@@ -18,7 +18,6 @@ import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequestScoped
 public class ServiceLevel {
@@ -156,7 +155,7 @@ public class ServiceLevel {
 
         if(!accessLevel.remove(level.getLevelId())) {
             throw new HttpInternalServerException("Failed to delete Level");
-        };
+        }
 
         audit.debug("Mapping Entity into DTO.");
         return mapperLevel.entityToDto(level);
@@ -171,7 +170,7 @@ public class ServiceLevel {
     audit.debug("Verify if UserRoleLevel already exists.");
     if(accessUserRoleLevel.exists(user, role, level)) {
         throw new HttpBadRequestException("UserRoleLevel already exists.");
-    };
+    }
 
     audit.debug("Creating Role of User in Level.");
     UserRoleLevel userRoleLevel = new UserRoleLevel();
@@ -194,6 +193,7 @@ public class ServiceLevel {
 
     }
 
+    @Deprecated
     public List<DTOUserRoleLevel> getUserRoleLevel(Integer id) {
 
         audit.debug("Getting Level " + id + ".");
@@ -249,14 +249,14 @@ public class ServiceLevel {
 
         if(!accessUserRoleLevel.remove(userRoleLevel.getUrlId())) {
             throw new HttpInternalServerException("Failed to remove UserRoleLevel.");
-        };
+        }
 
         audit.debug("Mapping Entity into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
 
-    public List<DTOUserRoleLevel> getAllRolesOfUserInLevel(Integer idLevel, Integer idUser) {
+    public List<DTOUserRoleLevel> getAllRolesInLevelByUser(Integer idLevel, Integer idUser) {
 
         audit.debug("Retrieving all Roles of User(" + idUser + ") in Level(" + idLevel + ").");
         List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser);
@@ -270,7 +270,24 @@ public class ServiceLevel {
 
     }
 
-    public List<DTOUserRoleLevel> getAllUsersWithRole(Integer idLevel, Integer idRole) {
+    public List<DTOUserRoleLevel> getAllUsersWithRoleByLevel(Integer idLevel) {
+
+        Level level = accessLevel.get(idLevel)
+                        .orElseThrow( ()-> new HttpNotFoundException("Level not found.") );
+
+        audit.debug("Retrieving all Users with Roles in Level(" + idLevel + ").");
+        List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevel(level);
+
+        if(userRoleLevelList.isEmpty()) {
+            throw new HttpNotFoundException("Level without Roles assigned.");
+        }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperUserRoleLevel.entityToDto(userRoleLevelList);
+
+    }
+
+    public List<DTOUserRoleLevel> getAllUsersWithRoleInLevel(Integer idLevel, Integer idRole) {
 
         audit.debug("Retrieving all Users with Role(" + idRole + ") in Level(" + idLevel + ").");
         List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndRole(idLevel, idRole);
@@ -311,4 +328,5 @@ public class ServiceLevel {
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
+
 }

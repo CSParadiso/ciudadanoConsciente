@@ -4,14 +4,12 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceLevel;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
-import io.smallrye.common.constraint.NotNull;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
@@ -171,6 +169,7 @@ public class ResourceLevel {
 
     // USER-ROLE HANDLING IN LEVEL
 
+    @Deprecated
     @GET
     @Path("{id}/users")
     @Operation(summary = "Retrieve all the Users and Roles in a  Level.")
@@ -193,6 +192,7 @@ public class ResourceLevel {
 
     }
 
+    @Deprecated
     @GET
     @Path("{id}/users/{user}")
     @Operation(summary = "Retrieve all the Roles of User in a  Level.")
@@ -212,13 +212,13 @@ public class ResourceLevel {
                                              @PathParam("user") Integer idUser) {
 
         audit.debug("Getting all the Roles of User (" + idUser + ") in Level " + idLevel + "...");
-        return Response.ok(serviceLevel.getAllRolesOfUserInLevel(idLevel, idUser)).build();
+        return Response.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
 
     }
 
     @GET
-    @Path("{id}/roles/{role}")
-    @Operation(summary = "Retrieve all the Users with a Role in Level.")
+    @Path("{id}/users/roles")
+    @Operation(summary = "Retrieve Users with Role in Level.")
     @APIResponse(
             responseCode = "200",
             description = "Users in Level with Role successfully retrieved."
@@ -231,14 +231,31 @@ public class ResourceLevel {
             responseCode = "404",
             description = "Failed to retrieve User with Role in Level. Verify 'Warning' Header."
     )
-    public Response getAllUsersWithRole(@PathParam("id") Integer idLevel,
-                                        @PathParam("role") Integer idRole) {
+    public Response getUsersWithRole(@PathParam("id") Integer idLevel,
+                                        @QueryParam("role") Integer idRole,
+                                        @QueryParam("user") Integer idUser) {
 
-        audit.debug("Getting all the Users with Role(" + idRole + ") in Level " + idLevel + "...");
-        return Response.ok(serviceLevel.getAllUsersWithRole(idLevel, idRole)).build();
+        if(idRole == null && idUser == null) {
+            audit.debug("Getting all the Users with Roles in Level " + idLevel + "...");
+            return Response.ok(serviceLevel.getAllUsersWithRoleByLevel(idLevel)).build();
+        }
+
+        if(idRole == null) {
+            audit.debug("Getting all Roles of User(" + idUser + ") in Level " + idLevel + "...");
+            return Response.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
+        }
+
+        if(idUser == null) {
+            audit.debug("Getting all the Users with Role(" + idRole + ") in Level " + idLevel + "...");
+            return Response.ok(serviceLevel.getAllUsersWithRoleInLevel(idLevel, idRole)).build();
+        }
+
+        audit.debug("Getting User(" + idUser + ") with Role (" + idRole + ") in Level " + idLevel + "...");
+        return Response.ok(serviceLevel.getUserRoleLevel(idLevel, idUser, idRole)).build();
 
     }
 
+    @Deprecated
     @GET
     @Path("/{id}/users/{user}/roles/{role}")
     @Operation( summary = "Retrieve a User Role in Level.")
@@ -260,7 +277,7 @@ public class ResourceLevel {
     }
 
     @POST
-    @Path("{id}/users/{user}/roles/{role}")
+    @Path("{id}/users/roles") // /{user}/roles/{role}")
     @Operation(summary = "Assign Role to User in Level.")
     @APIResponse(
             responseCode = "201",
@@ -279,8 +296,8 @@ public class ResourceLevel {
             description = "Failed to Assign Role to User in Level. Verify 'Warning' Header."
     )
     public Response assignRole(@PathParam("id") Integer idLevel,
-                               @PathParam("user") Integer idUser,
-                               @PathParam("role") Integer idRole,
+                               //@PathParam("user") Integer idUser,
+                               //@PathParam("role") Integer idRole,
                                DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel) {
 
         if(dtoAssignRoleToUserLevel == null) {
@@ -300,17 +317,17 @@ public class ResourceLevel {
         if(idLevel != dtoAssignRoleToUserLevel.getLevel()) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Level.");
         }
-        if(idUser != dtoAssignRoleToUserLevel.getUser()) {
+        /*if(idUser != dtoAssignRoleToUserLevel.getUser()) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
         }
         if(idRole != dtoAssignRoleToUserLevel.getRole()) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Role.");
-        }
+        }*/
 
-        audit.debug("Assigning Role" + idRole
-                + " to User " + idUser
+        audit.debug("Assigning Role" + role
+                + " to User " + user
                 + " in Level " + idLevel + "...");
-        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRoleToUserInLevel(idLevel, idUser, idRole);
+        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRoleToUserInLevel(idLevel, user, role);
 
         audit.debug("Creating URI...");
         URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleLevel.getLevel() +
@@ -322,7 +339,7 @@ public class ResourceLevel {
     }
 
     @PATCH
-    @Path("{id}/users/{user}/roles/{role}")
+    @Path("{id}/users/roles") // {user}/roles/{role}")
     @Operation(summary = "Update Role of User in Level.")
     @APIResponse(
             responseCode = "200",
@@ -341,8 +358,8 @@ public class ResourceLevel {
             description = "Failed to update Role to User in Level. Verify 'Warning' Header."
     )
     public Response updateRoleOfUserInLevel(@PathParam("id") Integer idLevel,
-                               @PathParam("user") Integer idUser,
-                               @PathParam("role") Integer idRole,
+                               //@PathParam("user") Integer idUser,
+                               //@PathParam("role") Integer idRole,
                                DTOUpdateRoleUserLevel dtoUpdateRoleUserLevel) {
 
         if(dtoUpdateRoleUserLevel == null) {
@@ -351,6 +368,7 @@ public class ResourceLevel {
 
         Integer user = dtoUpdateRoleUserLevel.getUser();
         Integer level = dtoUpdateRoleUserLevel.getLevel();
+        Integer role = dtoUpdateRoleUserLevel.getRole();
         Integer newRole = dtoUpdateRoleUserLevel.getRole();
         if(!utilityVerifyRequestField.isValidField(user) ||
                 !utilityVerifyRequestField.isValidField(level) ||
@@ -362,17 +380,17 @@ public class ResourceLevel {
         if(idLevel != level) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Level.");
         }
-        if(idUser != user) {
+        /*if(idUser != user) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
         }
         if(idRole == newRole) {
             throw new HttpBadRequestException("Body ID and Path ID must reflect reflect the change for Role.");
-        }
+        }*/
 
-        audit.debug("Updating Role" + idRole
-                + " of User " + idUser
+        audit.debug("Updating Role" + newRole
+                + " of User " + user
                 + " in Level " + idLevel + "...");
-        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.updateRoleOfUserInLevel(idLevel, idUser, idRole, newRole);
+        DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.updateRoleOfUserInLevel(idLevel, user, role, newRole);
 
         return Response.ok(dtoUserRoleLevel).build();
 

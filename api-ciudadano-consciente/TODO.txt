@@ -22,7 +22,14 @@ FIXME Refactor de las verificaciones de campos, deben suceder en el recurso
 FIXME Refactor del PATCH de las entidades para que utilizacen el GET especifico como corroboración de que la entidad no existe (si debiera ser única)
 
 DOING
-FIXME Refactor de las verificaciones de campos (deben suceder en el recurso) (ACTIVITY, ACTIVITY TYPE, LEVEL)
+FIXME refactor: - GET /levels/{id}/roles/{role} --> /levels/{id}/users/roles con {role} y {user} como QueryParams (porque modifica el resultado. Un rol específico.)
+                - DEPRECATED (merged en otros):
+                                    - GET /levels/{id}/users
+                                    - GET /levels/{id}/users/{user}
+                                    - GET /levels/{id}/users/{user}/roles/{role}
+                - POST /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
+                - PATCH /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
+
 
 
 
@@ -93,3 +100,8 @@ DONE
 
 - Commit a85abf0
 #17 refactor: DELETE de LEVEL, ACTIVITY, ACTIVITY-TYPE, ORGANIZATION, REFERENCE, ROLE, USER para que retorne la entidad eliminada
+
+- Commit b38286b
+#18 refactor: verificaciones de campos (migradas al recurso) de todas las entidades
+
+- Commit
