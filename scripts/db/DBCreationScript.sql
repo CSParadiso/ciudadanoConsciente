@@ -109,8 +109,15 @@ create table app.answers(
 	answer_id integer generated always as identity primary key, 
 	date date default CURRENT_DATE,
 	activity integer default 0 references app.activities on delete set default, 
-	status varchar(50), -- cambiar luego a una nueva entidad categorizada quizás 
+	status integer default 1 references app.answers_status(answers_status_id) on delete set default, 
 	user_id integer default 0 references app.users on delete set default  
+);
+
+	-- Tabla app.answers_status
+create table app.answers_status(
+	answers_status_id integer generated always as identity primary key,
+	title varchar(50) not null unique,
+	description varchar(500) not null
 );
 
 	-- Tabla Intermedia URO (users, roles, organizations)
@@ -148,4 +155,6 @@ create table app.questions_tags (
 	tag integer references app.tags on delete cascade not null, 
 	unique(question, tag)
 ); 
+
+
 

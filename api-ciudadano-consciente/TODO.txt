@@ -1,6 +1,8 @@
-TODO Generar Votos
-TODO Generar Preguntas
-TODO Generar Respuestas
+TODO feat: Generar Votos
+TODO feat: Generar Preguntas
+TODO feat: Generar Respuestas
+TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
+
 
 TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
 
@@ -21,8 +23,7 @@ FIXME refactor: los URI creados por los post de Level y Organizacion debeberían
 FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
 
 DOING
-
-
+TODO feat: Generar Status de Respuestas (constantes estandarizadas del estado de la respuesta. Categorización nominal.)
 
 
 
@@ -106,5 +107,5 @@ DONE
                 - POST /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
                 - PATCH /levels/{id}/users/{user}/roles/{role} --> /levels/{id}/user/roles con {user} y {role} como BodyParam
 
-- Commit
-#20 feat: GET, PATCH, DELETE de UserRoleOrganization en Organization
+- Commit b897396
+#20 feat: GET, POST, PATCH, DELETE de UserRoleOrganization en Organization
