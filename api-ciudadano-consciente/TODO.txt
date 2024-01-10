@@ -1,8 +1,7 @@
 TODO feat: Generar Votos
 TODO feat: Generar Preguntas
-TODO feat: Generar Respuestas
-TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
 
+TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
 
 TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
 
@@ -16,15 +15,11 @@ FIXME Considerar responder con la clase Java WebResponseException en lugar de la
 FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
 FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 FIXME Refactor: Corroborar si las verificaciones de identificadores en los recursos de los PATCH es mejor hacerlas con el compareTo que con el !=
-
-FIXME Refactor Quizás sea necesario agregar la anotacion @MappingTarget en arguemento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
-
-FIXME refactor: los URI creados por los post de Level y Organizacion debeberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
+FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
+FIXME refactor: los URI creados por los post de Level y Organizacion deberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
 FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
 
 DOING
-TODO feat: Generar Status de Respuestas (constantes estandarizadas del estado de la respuesta. Categorización nominal.)
-
 
 
 DONE
@@ -109,3 +104,9 @@ DONE
 
 - Commit b897396
 #20 feat: GET, POST, PATCH, DELETE de UserRoleOrganization en Organization
+
+- Commit 931eea3
+#21 feat: Generar Status de Respuestas (constantes estandarizadas del estado de la respuesta. Categorización nominal.)
+
+- Commit
+#22 feat: Generar Respuestas

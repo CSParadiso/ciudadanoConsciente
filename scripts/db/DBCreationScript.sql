@@ -107,10 +107,11 @@ create table app.activities (
 	-- Tabla answers
 create table app.answers(
 	answer_id integer generated always as identity primary key, 
-	date date default CURRENT_DATE,
-	activity integer default 0 references app.activities on delete set default, 
-	status integer default 1 references app.answers_status(answers_status_id) on delete set default, 
-	user_id integer default 0 references app.users on delete set default  
+	created date default CURRENT_DATE not null,
+	last_modified date default CURRENT_DATE null,
+	activity integer default 1 references app.activities on delete set default not null, 
+	status integer default 1 references app.answers_status(answers_status_id) on delete set default not null, 
+	user_id integer default 1 references app.users on delete set default not null  
 );
 
 	-- Tabla app.answers_status

@@ -1,0 +1,41 @@
+package ciudadano.consciente.access;
+
+import ciudadano.consciente.model.Answer;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import io.quarkus.panache.common.Sort;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
+
+import java.util.List;
+import java.util.Optional;
+
+@RequestScoped
+public class AccessAnswer implements PanacheRepositoryBase<Answer, Integer> {
+
+    @Inject
+    Logger audit;
+
+    public List<Answer> getAll() {
+
+        audit.debug("Trying to retrieve all Answers.");
+        return findAll(Sort.by("answerId")).stream().toList();
+        
+    }
+
+    public Optional<Answer> get(Integer id) {
+
+        audit.debug("Trying to retrieve Answer " + id + ".");
+        return findByIdOptional(id);
+
+    }
+
+    public Optional<Answer> save(Answer answer) {
+
+        audit.debug("Trying to persist Answer" + answer.getAnswerId() + ".");
+        persist(answer);
+        return findByIdOptional(answer.getAnswerId());
+
+    }
+
+}
