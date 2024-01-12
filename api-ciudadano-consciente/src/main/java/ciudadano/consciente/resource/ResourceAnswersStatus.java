@@ -16,7 +16,7 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Resource Answers Status")
+@Tag(name = "Answers Status Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

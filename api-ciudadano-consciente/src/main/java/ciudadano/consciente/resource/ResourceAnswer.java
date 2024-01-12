@@ -112,7 +112,7 @@ public class ResourceAnswer {
     }
 
     @PATCH
-    @Path("{id}")
+    @Path("{id}/status")
     @Operation(summary = "Update Status of Answer.")
     @APIResponse(
             responseCode = "200",

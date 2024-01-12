@@ -61,11 +61,12 @@ create table app.tags (
 	name varchar(50) not null unique 
 );
 
-	-- Tabla questions
-create table app.questions (
-	question_id integer generated always as identity primary key, 
+	-- Tabla concerns
+create table app.concerns (
+	concern_id integer generated always as identity primary key, 
 	description varchar(140) not null, 
-	date date default CURRENT_DATE -- siempre entre comillas simples
+	date date default CURRENT_DATE, -- siempre entre comillas simples
+	user_id integer default 0 references app.users on delete set default not null
 );
 
 	-- Tabla activity_types
@@ -107,8 +108,8 @@ create table app.activities (
 	-- Tabla answers
 create table app.answers(
 	answer_id integer generated always as identity primary key, 
-	created date default CURRENT_DATE not null,
-	last_modified date default CURRENT_DATE null,
+	created date default CURRENT_DATE not null, 	-- Puede ser localDateTime
+	last_modified date default CURRENT_DATE null,	-- Puede ser localDateTime 
 	activity integer default 1 references app.activities on delete set default not null, 
 	status integer default 1 references app.answers_status(answers_status_id) on delete set default not null, 
 	user_id integer default 1 references app.users on delete set default not null  

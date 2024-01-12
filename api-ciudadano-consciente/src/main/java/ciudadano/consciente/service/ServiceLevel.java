@@ -112,7 +112,7 @@ public class ServiceLevel {
         String description = dtoUpdateLevel.getDescription();
 
         Level level = accessLevel.get(id)
-                .orElseThrow( () -> new HttpNoContentException("Level not found."));
+                .orElseThrow( () -> new HttpNotFoundException("Level not found."));
 
         if(utilityVerifyRequestField.isValidField(name)) {
             if(accessLevel.existName(name)) {
