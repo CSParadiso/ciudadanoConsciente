@@ -35,10 +35,10 @@ public class ResourceConcern {
     ServiceConcern serviceConcern;
 
     @GET
-    @Operation(summary = "Retrieve all Concenrs")
+    @Operation(summary = "Retrieve all Concerns")
     @APIResponse(
             responseCode = "200",
-            description = "All Concerns succesfully retrieved."
+            description = "All Concerns successfully retrieved."
     )
     public Response getAll() {
 
@@ -90,7 +90,7 @@ public class ResourceConcern {
         Integer user  = dtoCreateConcern.getUser();
         if(!utilityVerifyRequestField.isValidField(description) &&
                 !utilityVerifyRequestField.isValidField(user)) {
-            throw new HttpBadRequestException("All fields required.");
+            throw new HttpBadRequestException("Description and user fields required.");
         }
 
         audit.debug("Creating Concern...");
@@ -139,7 +139,9 @@ public class ResourceConcern {
         }
 
         String description = dtoUpdateConcern.getDescription();
-        if(!utilityVerifyRequestField.isValidField(description) ) {
+        String explanation = dtoUpdateConcern.getExplanation();
+        if(!utilityVerifyRequestField.isValidField(description) &&
+                !utilityVerifyRequestField.isValidField(explanation)) {
             throw new HttpBadRequestException("No updates to make.");
         }
 

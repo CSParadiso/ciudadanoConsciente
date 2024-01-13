@@ -3,7 +3,6 @@ TODO feat: Generar Votos Level
 TODO feat: Generar Votos Question
 TODO feat: Generar Votos Organization
 
-TODO feat: quizás la Concern podría tener una Referencia asociada para explayar o ejemplificar (solo haría falta un campo en la entidad)
 
 TODO feat: generar Tags (etiquetas)
 
@@ -11,9 +10,14 @@ TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar datase
 TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
 
 CUESTIONES DE DISEÑO
+TODO Si usáramos UUID como identifiador de todas las entidades, se podría tener una tabla votos, una tabla creator y asi.. para relaciones vinculadas a usuarios con distintas entidades. De esta manera nos evitamos tener el usuario en cada instancia de un registro o mejor dicho estarían centralizados los votos y las creaciones.
 TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
+
 YA SE PODRÍA
+TODO refactor: añadir creator(user) a ActivityType y url (propia de la plataforma) a explicación de cómo funciona.
+
+
 
 IMPLEMENTACIONES
 FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
@@ -121,5 +125,8 @@ DONE
 - Commit 19a7261
 #22 feat: Generar Respuestas
 
-- Commit
+- Commit 5d90406
 #23 feat: Generar Concerns (antes denominadas Questions)
+
+- Commit
+#24 feat: añadida a Concern una url asociada para explayar o ejemplificar (solo haría falta un campo en la entidad)

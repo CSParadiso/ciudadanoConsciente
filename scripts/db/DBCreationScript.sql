@@ -65,6 +65,7 @@ create table app.tags (
 create table app.concerns (
 	concern_id integer generated always as identity primary key, 
 	description varchar(140) not null, 
+	url varchar(500), 
 	date date default CURRENT_DATE, -- siempre entre comillas simples
 	user_id integer default 0 references app.users on delete set default not null
 );

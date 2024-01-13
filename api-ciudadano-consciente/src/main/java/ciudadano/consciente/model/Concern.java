@@ -15,6 +15,8 @@ public class Concern {
 
     private String description;
 
+    private String explanation;
+
     private LocalDate date;
 
     // @JoinColumn(name = nombreClaveForanea, referencedColumnName = nombreClavePrimaria referenciada)
@@ -46,6 +48,14 @@ public class Concern {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 
     public LocalDate getDate() {

@@ -17,6 +17,9 @@ public class DTOConcern {
     private String description;
 
     @Schema(defaultValue = "")
+    private String explanation;
+
+    @Schema(defaultValue = "")
     private LocalDate date;
 
     @Schema(defaultValue = "")
@@ -36,6 +39,14 @@ public class DTOConcern {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 
     public LocalDate getDate() {

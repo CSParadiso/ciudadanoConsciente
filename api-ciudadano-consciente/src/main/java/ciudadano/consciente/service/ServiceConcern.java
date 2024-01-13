@@ -11,8 +11,8 @@ import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperConcern;
 import ciudadano.consciente.model.Concern;
-import ciudadano.consciente.model.Level;
 import ciudadano.consciente.model.User;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -35,6 +35,9 @@ public class ServiceConcern {
 
     @Inject
     AccessUser accessUser;
+
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
 
     public List<DTOConcern> getAll() {
 
@@ -66,6 +69,11 @@ public class ServiceConcern {
         audit.debug("Creating Concern.");
         Concern concern = new Concern(description, LocalDate.now(), user);
 
+        String explanation = dtoCreateConcern.getExplanation();
+        if(utilityVerifyRequestField.isValidField(explanation)) {
+            concern.setExplanation(explanation);
+        }
+
         audit.debug("Saving Concern " + concern.getConcernId() + ".");
         accessConcern.save(concern)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Concern.") );
@@ -92,7 +100,15 @@ public class ServiceConcern {
         }
 
         audit.debug("Updating Concern " + id + ".");
-        concern.setDescription(dtoUpdateConcern.getDescription());
+        String description = dtoUpdateConcern.getDescription();;
+        if(utilityVerifyRequestField.isValidField(description)) {
+            concern.setDescription(description);
+        };
+
+        String explanation = dtoUpdateConcern.getExplanation();;
+        if(utilityVerifyRequestField.isValidField(explanation)) {
+            concern.setExplanation(explanation);
+        };
 
         audit.debug("Saving Concern " + concern.getConcernId() + ".");
         accessConcern.save(concern)

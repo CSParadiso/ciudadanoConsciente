@@ -2,8 +2,6 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.time.LocalDate;
-
 public class DTOUpdateConcern {
 
     @Schema(defaultValue = "")
@@ -11,6 +9,9 @@ public class DTOUpdateConcern {
 
     @Schema(defaultValue = "")
     private String description;
+
+    @Schema(defaultValue = "")
+    private String explanation;
 
     @Schema(defaultValue = "")
     private Integer user;
@@ -29,6 +30,14 @@ public class DTOUpdateConcern {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
     }
 
     public Integer getUser() {
