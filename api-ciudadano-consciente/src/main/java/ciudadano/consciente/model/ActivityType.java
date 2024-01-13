@@ -15,6 +15,10 @@ public class ActivityType {
 
     private String description;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "creator", referencedColumnName = "user_id")
+    private User creator;
+
     @Column(name = "functional_template_url")
     private String functionalTemplateUrl;
 
@@ -40,6 +44,14 @@ public class ActivityType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
     public String getFunctionalTemplateUrl() {

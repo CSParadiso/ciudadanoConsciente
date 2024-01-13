@@ -15,7 +15,8 @@ TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 
 YA SE PODRÍA
-TODO refactor: añadir creator(user) a ActivityType y url (propia de la plataforma) a explicación de cómo funciona.
+TODO Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
+
 
 
 
@@ -128,5 +129,5 @@ DONE
 - Commit 5d90406
 #23 feat: Generar Concerns (antes denominadas Questions)
 
-- Commit
+- Commit b43d052
 #24 feat: añadida a Concern una url asociada para explayar o ejemplificar (solo haría falta un campo en la entidad)

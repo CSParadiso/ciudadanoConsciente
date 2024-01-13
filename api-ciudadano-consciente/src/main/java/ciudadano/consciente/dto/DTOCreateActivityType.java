@@ -11,6 +11,9 @@ public class DTOCreateActivityType {
     private String description;
 
     @Schema(defaultValue = "")
+    private Integer creator;
+
+    @Schema(defaultValue = "")
     private String functionalTemplateUrl;
 
     public String getName() {
@@ -27,6 +30,14 @@ public class DTOCreateActivityType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Integer creator) {
+        this.creator = creator;
     }
 
     public String getFunctionalTemplateUrl() {

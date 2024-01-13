@@ -90,9 +90,11 @@ public class ResourceActivityType {
         String name = dtoCreateActivityType.getName();
         String description = dtoCreateActivityType.getDescription();
         String functionalTemplateUrl = dtoCreateActivityType.getFunctionalTemplateUrl();
+        Integer creator = dtoCreateActivityType.getCreator();
         if(!utilityVerifyRequestField.isValidField(name) ||
                 !utilityVerifyRequestField.isValidField(description) ||
-                !utilityVerifyRequestField.isValidField(functionalTemplateUrl)) {
+                !utilityVerifyRequestField.isValidField(functionalTemplateUrl) ||
+                !utilityVerifyRequestField.isValidField(creator)) {
             throw new HttpBadRequestException("All fields required.");
         }
 
