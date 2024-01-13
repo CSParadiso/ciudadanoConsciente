@@ -6,11 +6,13 @@ TODO feat: Generar Votos Organization
 
 TODO feat: generar Tags (etiquetas)
 
+TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.
+
 TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
 TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
 
 CUESTIONES DE DISEÑO
-TODO Si usáramos UUID como identifiador de todas las entidades, se podría tener una tabla votos, una tabla creator y asi.. para relaciones vinculadas a usuarios con distintas entidades. De esta manera nos evitamos tener el usuario en cada instancia de un registro o mejor dicho estarían centralizados los votos y las creaciones.
+TODO Si usáramos UUID como identificador de todas las entidades, se podría tener una tabla votos, una tabla creator y asi.. para relaciones vinculadas a usuarios con distintas entidades. De esta manera nos evitamos tener el usuario en cada instancia de un registro o mejor dicho estarían centralizados los votos y las creaciones.
 TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 
@@ -31,11 +33,9 @@ FIXME refactor: los URI creados por los post de Level y Organizacion deberían r
 FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
 
 FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
-
 FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
 
 DOING
-
 
 DONE
 #0 Pasar argumentos como TransferiblesRequest en el POST y PATCH
@@ -131,3 +131,10 @@ DONE
 
 - Commit b43d052
 #24 feat: añadida a Concern una url asociada para explayar o ejemplificar (solo haría falta un campo en la entidad)
+
+- Commit 51d2a4e
+#25 feat: añadido creator(user) a ActivityType.
+
+- Commit
+
+docs: actualizar documentación DER(cuarta iteración)

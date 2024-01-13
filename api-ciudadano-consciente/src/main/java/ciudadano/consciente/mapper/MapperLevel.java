@@ -1,11 +1,10 @@
 package ciudadano.consciente.mapper;
 
-import ciudadano.consciente.dto.DTOUpdateLevel;
 import ciudadano.consciente.model.Level;
 import ciudadano.consciente.dto.DTOLevel;
+import ciudadano.consciente.model.Organization;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -18,6 +17,8 @@ public interface MapperLevel {
 
     List<DTOLevel> entityToDto(List<Level> niveles);
 
-    Level dtoToEntity(String name);
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "organization", source = "organization")
+    Level dtoToEntity(String name, Organization organization);
 
 }

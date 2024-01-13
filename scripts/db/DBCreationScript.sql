@@ -22,7 +22,7 @@ create table app.levels (
 	level_id integer generated always as identity primary key, 
 	name varchar(100) not null unique,
 	description varchar (140), 
-	organization integer default 0 references app.organizations on delete set default
+	organization integer default 0 references app.organizations on delete set 1 not null
 );
 	-- Es necesario hacerlo en dos pasos porque si no se puede referenciar algo que no existe (father)
 alter table app.levels add column parent integer default 0 references app.levels on delete set default;
@@ -67,7 +67,7 @@ create table app.concerns (
 	description varchar(140) not null, 
 	url varchar(500), 
 	date date default CURRENT_DATE, -- siempre entre comillas simples
-	user_id integer default 0 references app.users on delete set default not null
+	user_id integer default 1 references app.users on delete set 1 not null
 );
 
 	-- Tabla activity_types

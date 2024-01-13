@@ -73,14 +73,12 @@ public class ServiceLevel {
             throw new HttpBadRequestException("The name already exists.");
         }
 
-        audit.debug("Creating Level.");
-        Level level = mapperLevel.dtoToEntity(name);
+        Integer organizationDto = dtoCreateLevel.getOrganization();
+        Organization organization = accessOrganization.get(organizationDto)
+                        .orElseThrow( ()-> new HttpNotFoundException("Organization not found.") );
 
-        Integer organization = dtoCreateLevel.getOrganization();
-        if(utilityVerifyRequestField.isValidField(organization)) {
-            level.setOrganization(accessOrganization.get(dtoCreateLevel.getOrganization())
-                    .orElse(null));
-        }
+        audit.debug("Creating Level.");
+        Level level = mapperLevel.dtoToEntity(name, organization);
 
         Integer parent = dtoCreateLevel.getParent();
         if(utilityVerifyRequestField.isValidField(parent)) {
@@ -94,7 +92,7 @@ public class ServiceLevel {
         }
 
         audit.debug("Saving Level " + level.getLevelId() + ".");
-        level = accessLevel.save(level)
+        accessLevel.save(level)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Level.") );
 
         audit.debug("Mapping Entity into DTO.");

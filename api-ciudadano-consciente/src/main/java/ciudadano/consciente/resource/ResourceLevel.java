@@ -90,8 +90,10 @@ public class ResourceLevel {
         }
 
         String name = dtoCreateLevel.getName();
-        if(!utilityVerifyRequestField.isValidField(name)) {
-            throw new HttpBadRequestException("The name is required.");
+        Integer organization = dtoCreateLevel.getOrganization();
+        if(!utilityVerifyRequestField.isValidField(name) ||
+                !utilityVerifyRequestField.isValidField(organization)) {
+            throw new HttpBadRequestException("Name and organization fields required.");
         }
 
         audit.debug("Creating Level...");
