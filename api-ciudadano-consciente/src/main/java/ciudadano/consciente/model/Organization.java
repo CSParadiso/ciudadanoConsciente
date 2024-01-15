@@ -1,6 +1,7 @@
 package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 
 @Entity
 @Table(schema = "app", name = "organizations")

@@ -44,7 +44,7 @@ public class ServiceAnswersStatus {
 
         audit.debug("Getting AnswersStatus " + id + ".");
         AnswersStatus answersStatus = accessAnswersStatus.get(id)
-                .orElseThrow( () -> new HttpNoContentException("AnswersStatus not found."));
+                .orElseThrow( () -> new HttpNotFoundException("AnswersStatus not found."));
 
         audit.debug("Mapping Entity into DTO.");
         return  mapperAnswersStatus.entityToDto(answersStatus);
@@ -79,7 +79,7 @@ public class ServiceAnswersStatus {
         String description = dtoUpdateAnswersStatus.getDescription();
 
         AnswersStatus answersStatus = accessAnswersStatus.get(id)
-                .orElseThrow( () -> new HttpNoContentException("Category of Answer Status not found."));
+                .orElseThrow( () -> new HttpNotFoundException("Category of Answer Status not found."));
 
         if(utilityVerifyRequestField.isValidField(title)) {
             if(accessAnswersStatus.existTitle(title)) {

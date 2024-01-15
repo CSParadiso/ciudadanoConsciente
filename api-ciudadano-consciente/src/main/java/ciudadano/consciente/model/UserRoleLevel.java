@@ -1,6 +1,7 @@
 package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 
 @Entity
 @Table(schema = "app", name = "users_roles_levels", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id", "level_id"}))

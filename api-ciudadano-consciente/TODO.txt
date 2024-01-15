@@ -2,6 +2,7 @@ TODO feat: Generar Votos ActivityType
 TODO feat: Generar Votos Level
 TODO feat: Generar Votos Question
 TODO feat: Generar Votos Organization
+TODO feat: Generar Votos
 
 
 TODO feat: generar Tags (etiquetas)
@@ -36,6 +37,7 @@ FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-
 FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
 
 DOING
+
 
 DONE
 #0 Pasar argumentos como TransferiblesRequest en el POST y PATCH
@@ -135,6 +137,8 @@ DONE
 - Commit 51d2a4e
 #25 feat: añadido creator(user) a ActivityType.
 
-- Commit
-
+- Commit 67e7498
 docs: actualizar documentación DER(cuarta iteración)
+
+- Commit
+#26 feat: Generar Entidades

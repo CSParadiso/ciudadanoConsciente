@@ -2,6 +2,7 @@ package ciudadano.consciente.model;
 
 import jakarta.enterprise.inject.Default;
 import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 
 import java.time.LocalDate;
 

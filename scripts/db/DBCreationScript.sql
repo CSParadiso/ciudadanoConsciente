@@ -117,18 +117,24 @@ create table app.answers(
 	user_id integer default 1 references app.users on delete set default not null  
 );
 
-	-- Tabla app.answers_status
+	-- Tabla app.answers_status (CATEGORíA NOMINAL)
 create table app.answers_status(
 	answers_status_id integer generated always as identity primary key,
 	title varchar(50) not null unique,
 	description varchar(500) not null
 );
 
+-- Tabla app.entities (CATEGORíA NOMINAL)
+create table app.entities(
+	entity_id integer generated always as identity primary key,
+	title varchar(50) not null unique
+);
+
 	-- Tabla Intermedia URO (users, roles, organizations)
 create table app.users_roles_organizations(
 	uro_id integer generated always as identity primary key, 
 	user_id integer references app.users on delete cascade not null, 
-	role_id integer default 0 references app.roles on delete set default not null, 
+	role_id integer default 1 references app.roles on delete set cascade not null, 
 	organization_id integer references app.organizations on delete cascade not null, 
 	unique(user_id, role_id, organization)
 );
