@@ -125,7 +125,7 @@ create table app.answers_status(
 );
 
 -- Tabla app.entities (CATEGORíA NOMINAL)
-create table app.entities(
+create table app.entity_types(
 	entity_id integer generated always as identity primary key,
 	title varchar(50) not null unique
 );
@@ -148,14 +148,15 @@ create table app.users_roles_levels (
 	unique(user_id, role_id, level_id)
 );
 
-	-- Tabla Intermedia votes (users, questions)
+	-- Tabla Intermedia votes (users, entity, entity_type)
 create table app.votes (
 	vote_id integer generated always as identity primary key, 
 	user_id integer references app.users on delete cascade not null, 
-	question integer references app.questions on delete cascade not null, 
+	entity_id integer, 
+	entity_type integer references app.entity_types on delete cascade not null, 
 	active boolean default true not null, -- por si cambia de opinion varias veces
 	date date default CURRENT_DATE, 
-	unique(user_id, question)
+	unique(user_id, entity_id, entity_type)
 );
 
 	-- Tabla Intermedia question_tag

@@ -74,7 +74,7 @@ public class ServiceReference {
         accessReference.save(reference)
                 .orElseThrow(()-> new HttpInternalServerException("Failed to persist new Reference."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperReference.entityToDto(reference);
 
     }
@@ -115,7 +115,7 @@ public class ServiceReference {
         accessReference.save(reference)
                 .orElseThrow(()-> new HttpInternalServerException("Failed to persist updated Reference."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperReference.entityToDto(reference);
 
     }
@@ -131,7 +131,7 @@ public class ServiceReference {
             throw new HttpInternalServerException("Failed to delete Reference");
         };
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperReference.entityToDto(reference);
 
     }

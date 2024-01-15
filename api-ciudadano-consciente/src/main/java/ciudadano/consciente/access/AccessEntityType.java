@@ -1,6 +1,6 @@
 package ciudadano.consciente.access;
 
-import ciudadano.consciente.model.Entity;
+import ciudadano.consciente.model.EntityType;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -10,21 +10,21 @@ import java.util.List;
 import java.util.Optional;
 
 @RequestScoped
-public class AccessEntity implements PanacheRepositoryBase<Entity, Integer> {
+public class AccessEntityType implements PanacheRepositoryBase<EntityType, Integer> {
 
     @Inject
     Logger audit;
 
-    public List<Entity> getAll() {
+    public List<EntityType> getAll() {
 
-        audit.debug("Trying to retrieve all categories of Entities");
+        audit.debug("Trying to retrieve all types of Entity");
         return findAll().stream().toList();
 
     }
 
-    public Optional<Entity> get(Integer id) {
+    public Optional<EntityType> get(Integer id) {
 
-        audit.debug("Trying to retrieve category of Entity " + id + ".");
+        audit.debug("Trying to retrieve category of EntityType " + id + ".");
         return findByIdOptional(id);
 
     }
@@ -36,17 +36,17 @@ public class AccessEntity implements PanacheRepositoryBase<Entity, Integer> {
 
     }
 
-    public Optional<Entity> save(Entity entity) {
+    public Optional<EntityType> save(EntityType entityType) {
 
-        audit.debug("Trying to persist Entity" + entity.getEntityId() + ".");
-        persist(entity);
-        return findByIdOptional(entity.getEntityId());
+        audit.debug("Trying to persist EntityType" + entityType.getEntityTypeId() + ".");
+        persist(entityType);
+        return findByIdOptional(entityType.getEntityTypeId());
         
     }
 
     public boolean remove(Integer entityId) {
 
-        audit.debug("Trying to delete Entity  " + entityId  + ".");
+        audit.debug("Trying to delete EntityType  " + entityId  + ".");
         return deleteById(entityId);
 
     }

@@ -37,7 +37,7 @@ public class ServiceUser {
         User user = accessUser.get(id)
                 .orElseThrow(() -> new HttpNoContentException("User not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUser.entityToDto(user);
 
     }
@@ -47,7 +47,7 @@ public class ServiceUser {
         audit.debug("Retrieving all Users.");
         List<User> userList = accessUser.getAll();
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUser.entityToDto(userList);
 
     }
@@ -66,14 +66,14 @@ public class ServiceUser {
             throw new HttpBadRequestException("Username already exists.");
         }
 
-        audit.debug("Mapping DTO into Entity.");
+        audit.debug("Mapping DTO into EntityType.");
         User user = mapperUser.dtoToEntity(dtoCreateUser);
 
         audit.debug("Saving User " + user.getUserId() + ".");
         accessUser.save(user)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new User."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUser.entityToDto(user);
 
     }
@@ -111,7 +111,7 @@ public class ServiceUser {
         accessUser.save(user)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated User.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUser.entityToDto(user);
 
     }
@@ -127,7 +127,7 @@ public class ServiceUser {
             throw new HttpInternalServerException("Failed to delete User.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUser.entityToDto(user);
 
     }

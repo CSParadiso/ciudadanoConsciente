@@ -3,22 +3,22 @@ package ciudadano.consciente.model;
 import jakarta.persistence.*;
 
 @jakarta.persistence.Entity
-@Table(schema = "app", name = "entities")
-public class Entity {
+@Table(schema = "app", name = "entity_types")
+public class EntityType {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "entity_id")
+    @Column(name = "entity_type_id")
     @Id
-    private Integer entityId;
+    private Integer entityTypeId;
 
     private String title;
 
-    public Integer getEntityId() {
-        return entityId;
+    public Integer getEntityTypeId() {
+        return entityTypeId;
     }
 
-    public void setEntityId(Integer entityId) {
-        this.entityId = entityId;
+    public void setEntityTypeId(Integer entityTypeId) {
+        this.entityTypeId = entityTypeId;
     }
 
     public String getTitle() {

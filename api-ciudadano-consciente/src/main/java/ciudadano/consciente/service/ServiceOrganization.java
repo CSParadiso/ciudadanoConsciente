@@ -62,7 +62,7 @@ public class ServiceOrganization {
         Organization organization = accessOrganization.get(id)
                 .orElseThrow( () -> new HttpNoContentException( "Organization not found." ));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperOrganization.entityToDto(organization);
 
     }
@@ -82,7 +82,7 @@ public class ServiceOrganization {
             throw new HttpBadRequestException("Name already exists.");
         }
 
-        audit.debug("Mapping DTO into Entity.");
+        audit.debug("Mapping DTO into EntityType.");
         Organization organization = mapperOrganization.dtoToEntity(email, name);
 
         // TODO Quizás se pueda asignar directamente el DTO en las creaciones
@@ -95,7 +95,7 @@ public class ServiceOrganization {
         accessOrganization.save(organization)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Organization.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperOrganization.entityToDto(organization);
 
     }
@@ -132,7 +132,7 @@ public class ServiceOrganization {
         organization = accessOrganization.save(organization)
                 .orElseThrow(()-> new HttpInternalServerException("Failed to persist updated Organization."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperOrganization.entityToDto(organization);
 
     }
@@ -148,7 +148,7 @@ public class ServiceOrganization {
             throw new HttpInternalServerException("Failed to delete Organization.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperOrganization.entityToDto(organization) ;
 
     }
@@ -187,7 +187,7 @@ public class ServiceOrganization {
             throw new HttpBadRequestException("Already exists Role for User in Organization.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRolOrganization);
 
     }
@@ -205,7 +205,7 @@ public class ServiceOrganization {
             throw new HttpNoContentException("No Roles assigned to User in Organization.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRolOrganizations);
 
     }
@@ -222,7 +222,7 @@ public class ServiceOrganization {
             throw new HttpNotFoundException("Organization without Roles assigned.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganizationList);
         
     }
@@ -236,7 +236,7 @@ public class ServiceOrganization {
             throw new HttpNotFoundException("User don't have Roles in Organization.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganizationList);
         
     }
@@ -250,7 +250,7 @@ public class ServiceOrganization {
             throw new HttpNotFoundException("Role don't have Users in Organization.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganizationList);
         
     }
@@ -261,7 +261,7 @@ public class ServiceOrganization {
         UserRolOrganization userRoleorganization = accessUserRoleOrganization.get(idOrganization, idUser, idRole)
                 .orElseThrow( ()-> new HttpNotFoundException("UserRoleOrganization not found") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleorganization);
         
     }
@@ -293,7 +293,7 @@ public class ServiceOrganization {
         accessUserRoleOrganization.save(userRoleOrganization)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new UserRoleOrganization.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
         
     }
@@ -321,7 +321,7 @@ public class ServiceOrganization {
         accessUserRoleOrganization.save(userRoleOrganization)
                 .orElseThrow(()-> new HttpNotFoundException("Failed to update Role of User in Organization."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
         
     }
@@ -338,7 +338,7 @@ public class ServiceOrganization {
                 accessUserRoleOrganization.remove(userRoleOrganization.getUroId());
             }
         }
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganizationList);
         
     }
@@ -354,7 +354,7 @@ public class ServiceOrganization {
             throw new HttpInternalServerException("Failed to remove UserRoleOrganization.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
         
     }

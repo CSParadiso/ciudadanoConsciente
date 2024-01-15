@@ -59,7 +59,7 @@ public class ServiceActivity {
         Level level = accessLevel.get(levelDTO)
                 .orElseThrow( ()-> new HttpNotFoundException("Level not found.") );
 
-        audit.debug("Mapping DTO into Entity.");
+        audit.debug("Mapping DTO into EntityType.");
         Activity activity = mapperActivity.dtoToEntity(level, description);
 
         Integer activityTypeDTO = dtoCreateActivity.getActivityType();
@@ -73,7 +73,7 @@ public class ServiceActivity {
         accessActivity.save(activity)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
 
     }
@@ -84,7 +84,7 @@ public class ServiceActivity {
         Activity activity = accessActivity.get(id)
                 .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
 
     }
@@ -119,7 +119,7 @@ public class ServiceActivity {
         accessActivity.save(activity)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Activity.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
        
     }
@@ -135,7 +135,7 @@ public class ServiceActivity {
             throw new HttpInternalServerException("Failed to remove Activity");
         };
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
 
     }

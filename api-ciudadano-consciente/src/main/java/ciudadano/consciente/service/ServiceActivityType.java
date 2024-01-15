@@ -53,14 +53,14 @@ public class ServiceActivityType {
         User user = accessUser.get(creator)
                 .orElseThrow( ()-> new HttpNotFoundException("User not found.") );
 
-        audit.debug("Mapping DTO into Entity.");
+        audit.debug("Mapping DTO into EntityType.");
         ActivityType activityType = mapperActivityType.dtoToEntity(name, description, functionalTemplateUrl, user);
 
         audit.debug("Saving Activity Type " + activityType.getActivityTypeId() + ".");
         accessActivityType.save(activityType)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity Type."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivityType.entityToDto(activityType);
 
     }
@@ -78,7 +78,7 @@ public class ServiceActivityType {
         ActivityType activityType = accessActivityType.get(id)
                 .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivityType.entityToDto(activityType);
 
     }
@@ -94,7 +94,7 @@ public class ServiceActivityType {
             throw new HttpInternalServerException("Failed to delete Activity Type.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivityType.entityToDto(activityType);
 
     }
@@ -129,7 +129,7 @@ public class ServiceActivityType {
         accessActivityType.save(activityType)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Activity Type.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperActivityType.entityToDto(activityType);
 
     }

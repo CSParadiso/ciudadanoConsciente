@@ -102,7 +102,7 @@ public class ServiceUserRoleLevel {
         accessUserRoleLevel.save(userRoleLevel)
                 .orElseThrow( ()-> new HttpInternalServerException( "Failed to persist updated UserRoleLevel." ));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
@@ -113,7 +113,7 @@ public class ServiceUserRoleLevel {
         UserRoleLevel userRoleLevel = accessUserRoleLevel.get(id)
                 .orElseThrow(() -> new HttpNoContentException("UserRoleLevel not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }

@@ -2,20 +2,20 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOEntity {
+public class DTOUpdateEntityType {
 
     @Schema(defaultValue = "")
-    private Integer entityId;
+    private Integer entityTypeId;
 
     @Schema(defaultValue = "")
     private String title;
 
-    public Integer getEntityId() {
-        return entityId;
+    public Integer getEntityTypeId() {
+        return entityTypeId;
     }
 
-    public void setEntityId(Integer entityId) {
-        this.entityId = entityId;
+    public void setEntityTypeId(Integer entityTypeId) {
+        this.entityTypeId = entityTypeId;
     }
 
     public String getTitle() {
@@ -25,5 +25,4 @@ public class DTOEntity {
     public void setTitle(String title) {
         this.title = title;
     }
-
 }

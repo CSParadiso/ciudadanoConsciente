@@ -46,7 +46,7 @@ public class ServiceAnswersStatus {
         AnswersStatus answersStatus = accessAnswersStatus.get(id)
                 .orElseThrow( () -> new HttpNotFoundException("AnswersStatus not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return  mapperAnswersStatus.entityToDto(answersStatus);
         
     }
@@ -66,7 +66,7 @@ public class ServiceAnswersStatus {
         accessAnswersStatus.save(answersStatus)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new category of AnswersStatus") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperAnswersStatus.entityToDto(answersStatus);
 
     }
@@ -96,7 +96,7 @@ public class ServiceAnswersStatus {
         accessAnswersStatus.save(answersStatus)
                 .orElseThrow(() -> new HttpInternalServerException("Failed to persist updated category of Answer Status."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperAnswersStatus.entityToDto(answersStatus);
 
     }
@@ -112,7 +112,7 @@ public class ServiceAnswersStatus {
             throw new HttpInternalServerException("Failed to delete Answer Status");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperAnswersStatus.entityToDto(answersStatus);
 
     }

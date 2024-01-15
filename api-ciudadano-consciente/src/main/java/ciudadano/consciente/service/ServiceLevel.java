@@ -60,7 +60,7 @@ public class ServiceLevel {
         Level level = accessLevel.get(id)
                 .orElseThrow( () -> new HttpNoContentException("Level not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return  mapperLevel.entityToDto(level);
 
     }
@@ -95,7 +95,7 @@ public class ServiceLevel {
         accessLevel.save(level)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Level.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperLevel.entityToDto(level);
 
     }
@@ -137,7 +137,7 @@ public class ServiceLevel {
         accessLevel.save(level)
                 .orElseThrow(() -> new HttpInternalServerException("Failed to persist updated Level."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperLevel.entityToDto(level);
 
     }
@@ -153,7 +153,7 @@ public class ServiceLevel {
             throw new HttpInternalServerException("Failed to delete Level");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperLevel.entityToDto(level);
 
     }
@@ -187,7 +187,7 @@ public class ServiceLevel {
         accessUserRoleLevel.save(userRoleLevel)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new UserRoleLevel.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
@@ -206,7 +206,7 @@ public class ServiceLevel {
             throw new HttpNoContentException("No Roles assigned to User in Level.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
@@ -223,7 +223,7 @@ public class ServiceLevel {
                 accessUserRoleLevel.remove(userRoleLevel.getUrlId());
             }
         }
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevelList);
 
     }
@@ -234,7 +234,7 @@ public class ServiceLevel {
         UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
                 .orElseThrow( ()-> new HttpNotFoundException("UserRoleLevel not found") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
@@ -250,7 +250,7 @@ public class ServiceLevel {
             throw new HttpInternalServerException("Failed to remove UserRoleLevel.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }
@@ -264,7 +264,7 @@ public class ServiceLevel {
             throw new HttpNotFoundException("User don't have Roles in Level.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevelList);
 
     }
@@ -281,7 +281,7 @@ public class ServiceLevel {
             throw new HttpNotFoundException("Level without Roles assigned.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevelList);
 
     }
@@ -295,7 +295,7 @@ public class ServiceLevel {
             throw new HttpNotFoundException("Role don't have Users in Level.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevelList);
 
     }
@@ -323,7 +323,7 @@ public class ServiceLevel {
         accessUserRoleLevel.save(userRoleLevel)
                 .orElseThrow(()-> new HttpNotFoundException("Failed to update Role of User in Level."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
     }

@@ -54,7 +54,7 @@ public class ServiceAnswer {
         Answer answer = accessAnswer.get(id)
                 .orElseThrow( () -> new HttpNoContentException("Answer not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return  mapperAnswer.entityToDto(answer);
         
     }
@@ -82,7 +82,7 @@ public class ServiceAnswer {
         accessAnswer.save(answer)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Answer.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperAnswer.entityToDto(answer);
 
     }
@@ -104,7 +104,7 @@ public class ServiceAnswer {
         accessAnswer.save(answer)
                 .orElseThrow(() -> new HttpInternalServerException("Failed to persist updated Answer."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperAnswer.entityToDto(answer);
 
     }

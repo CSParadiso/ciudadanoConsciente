@@ -2,7 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOCreateEntity {
+public class DTOCreateEntityType {
 
     @Schema(defaultValue = "")
     private String title;

@@ -1,10 +1,10 @@
 package ciudadano.consciente.resource;
 
-import ciudadano.consciente.dto.DTOCreateEntity;
-import ciudadano.consciente.dto.DTOEntity;
-import ciudadano.consciente.dto.DTOUpdateEntity;
+import ciudadano.consciente.dto.DTOCreateEntityType;
+import ciudadano.consciente.dto.DTOEntityType;
+import ciudadano.consciente.dto.DTOUpdateEntityType;
 import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.service.ServiceEntity;
+import ciudadano.consciente.service.ServiceEntityType;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -18,12 +18,12 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Entity Resource")
-@Path("entities")
+@Tag(name = "Entity Types Resource")
+@Path("entity-types")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestScoped
-public class ResourceEntity {
+public class ResourceEntityType {
 
     final String PATH_BASE_RESOURCE = "/entities/";
 
@@ -31,7 +31,7 @@ public class ResourceEntity {
     Logger audit;
 
     @Inject
-    ServiceEntity serviceEntity;
+    ServiceEntityType serviceEntityType;
 
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
@@ -45,16 +45,16 @@ public class ResourceEntity {
     public Response getAll() {
 
         audit.debug("Retrieving all categories of Entities...");
-        return Response.ok(serviceEntity.getAll()).build();
+        return Response.ok(serviceEntityType.getAll()).build();
 
     }
 
     @GET
     @Path("{id}")
-    @Operation(summary = "Retrieve a category of Entity.")
+    @Operation(summary = "Retrieve a category of EntityType.")
     @APIResponse(
             responseCode = "200",
-            description = "Category of Entity successfully retrieved."
+            description = "Category of EntityType successfully retrieved."
     )
     @APIResponse(
             responseCode = "204",
@@ -63,53 +63,53 @@ public class ResourceEntity {
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Level " + id + "...");
-        return Response.ok(serviceEntity.get(id)).build();
+        return Response.ok(serviceEntityType.get(id)).build();
 
     }
 
     @POST
-    @Operation(summary = "Create a category of Entity.")
+    @Operation(summary = "Create a category of EntityType.")
     @APIResponse(
             responseCode = "201",
-            description = "Category of Entity successfully created."
+            description = "Category of EntityType successfully created."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Failed to create category of Entity. Verify 'Warning' Header."
+            description = "Failed to create category of EntityType. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "500",
-            description = "Failed to create category of Entity. Verify 'Warning' Header."
+            description = "Failed to create category of EntityType. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateEntity dtoCreateEntity) {
+    public Response create(DTOCreateEntityType dtoCreateEntityType) {
 
-        if(dtoCreateEntity == null) {
+        if(dtoCreateEntityType == null) {
             throw new HttpBadRequestException("Body of request required.");
         }
 
-        String title = dtoCreateEntity.getTitle();
+        String title = dtoCreateEntityType.getTitle();
         if(!utilityVerifyRequestField.isValidField(title)) {
             throw new HttpBadRequestException("Title field required.");
         }
 
-        audit.debug("Creating category of Entity...");
-        DTOEntity dtoEntity = serviceEntity.create(dtoCreateEntity);
+        audit.debug("Creating category of EntityType...");
+        DTOEntityType dtoEntityType = serviceEntityType.create(dtoCreateEntityType);
 
         audit.debug("Creating URI...");
-        URI uri = URI.create(PATH_BASE_RESOURCE + dtoEntity.getEntityId());
+        URI uri = URI.create(PATH_BASE_RESOURCE + dtoEntityType.getEntityTypeId());
 
         return Response.created(uri)
-                .entity(dtoEntity)
+                .entity(dtoEntityType)
                 .build();
 
     }
 
     @PATCH
     @Path("{id}")
-    @Operation(summary = "Update a category of Entity.")
+    @Operation(summary = "Update a category of EntityType.")
     @APIResponse(
             responseCode = "200",
-            description = "Category of Entity successfully updated."
+            description = "Category of EntityType successfully updated."
     )
     @APIResponse(
             responseCode = "400",
@@ -120,24 +120,24 @@ public class ResourceEntity {
             description = "Failed to update category of Entities. Verify 'Warning' Header."
     )
     public Response update(@PathParam("id") Integer id,
-                           DTOUpdateEntity dtoUpdateEntity) {
+                           DTOUpdateEntityType dtoUpdateEntityType) {
 
-        if(dtoUpdateEntity == null) {
+        if(dtoUpdateEntityType == null) {
             throw new HttpBadRequestException("Body of request required.");
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateEntity.getEntityId()) {
+        if(id != dtoUpdateEntityType.getEntityTypeId()) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
-        String title = dtoUpdateEntity.getTitle();
+        String title = dtoUpdateEntityType.getTitle();
         if(!utilityVerifyRequestField.isValidField(title)) {
             throw new HttpBadRequestException("No updates to make.");
         }
 
-        audit.debug("Updating category of Entity" + id + "...");
-        return Response.ok(serviceEntity.update(id, dtoUpdateEntity)).build();
+        audit.debug("Updating category of EntityType" + id + "...");
+        return Response.ok(serviceEntityType.update(id, dtoUpdateEntityType)).build();
 
     }
 
@@ -155,7 +155,7 @@ public class ResourceEntity {
     public Response delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Level " + id + "...");
-        return Response.ok(serviceEntity.delete(id)).build();
+        return Response.ok(serviceEntityType.delete(id)).build();
 
     }
     

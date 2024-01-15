@@ -50,7 +50,7 @@ public class ServiceRole {
         Role role = accessRole.get(id)
                 .orElseThrow( ()-> new HttpNoContentException("Role not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperRole.entityToDto(role);
 
     }
@@ -64,14 +64,14 @@ public class ServiceRole {
         }
 
         audit.debug("Creating new Role.");
-        audit.debug("Mapping DTO into Entity");
+        audit.debug("Mapping DTO into EntityType");
         Role role = mapperRole.dtoToEntity(name);
 
         audit.debug("Saving new Role " + role.getRoleId() + ".");
         accessRole.save(role)
                 .orElseThrow(()-> new HttpInternalServerException("Failed to persist new Role."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperRole.entityToDto(role);
 
     }
@@ -93,7 +93,7 @@ public class ServiceRole {
         accessRole.save(role)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Role.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperRole.entityToDto(role);
 
     }
@@ -109,7 +109,7 @@ public class ServiceRole {
             throw new HttpInternalServerException("Failed to dalete Role.");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperRole.entityToDto(role);
 
     }

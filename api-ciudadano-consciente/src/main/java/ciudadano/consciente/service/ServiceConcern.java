@@ -52,7 +52,7 @@ public class ServiceConcern {
         Concern concern = accessConcern.get(id)
                 .orElseThrow( () -> new HttpNoContentException("Concern not found."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return  mapperConcern.entityToDto(concern);
         
     }
@@ -78,7 +78,7 @@ public class ServiceConcern {
         accessConcern.save(concern)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Concern.") );
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperConcern.entityToDto(concern);
         
     }
@@ -114,7 +114,7 @@ public class ServiceConcern {
         accessConcern.save(concern)
                 .orElseThrow(() -> new HttpInternalServerException("Failed to persist updated Concern."));
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperConcern.entityToDto(concern);
 
     }
@@ -130,7 +130,7 @@ public class ServiceConcern {
             throw new HttpInternalServerException("Failed to delete Concern");
         }
 
-        audit.debug("Mapping Entity into DTO.");
+        audit.debug("Mapping EntityType into DTO.");
         return mapperConcern.entityToDto(loncern);
         
     }
