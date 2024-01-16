@@ -1,5 +1,4 @@
 
-
 TODO feat: generar Tags (etiquetas)
 
 TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.
@@ -14,7 +13,7 @@ TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 YA SE PODRÍA
 TODO Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
-
+TODO Generar GET votos en User y entidades
 
 
 
@@ -32,7 +31,8 @@ FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-
 FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
 
 DOING
-TODO feat: Generar Votos
+
+
 
 
 DONE
@@ -139,5 +139,9 @@ docs: actualizar documentación DER(cuarta iteración)
 - Commit 89cdefb
 #26 feat: Generar Entidades
 
-- Commit
+- Commite 9ac671
 Migrar de Entity a EntityType
+
+- Commit
+#27 feat: Generada entidad en Votos (GETall, GET, PATCH en Vote)
+#28 feat: Generada POST de votos en entidades con User como Body Param (Organization)

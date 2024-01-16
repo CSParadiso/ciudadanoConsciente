@@ -27,11 +27,11 @@ public class Concern {
 
     public Concern() {}
 
-    public Concern(String description, LocalDate now, User user) {
+    public Concern(String description, User user) {
 
         this.description = description;
         this.user = user;
-        this.date = now;
+        this.date = LocalDate.now();
 
     }
 

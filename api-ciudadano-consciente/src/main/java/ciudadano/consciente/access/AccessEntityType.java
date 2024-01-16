@@ -50,4 +50,11 @@ public class AccessEntityType implements PanacheRepositoryBase<EntityType, Integ
         return deleteById(entityId);
 
     }
+
+    public Optional<EntityType> getByName(String organization) {
+
+        audit.debug("Trying to retrieve title " + organization + ".");
+        return find("title", organization).firstResultOptional();
+
+    }
 }

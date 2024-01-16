@@ -52,9 +52,9 @@ public class ServiceAnswer {
 
         audit.debug("Getting Answer " + id + ".");
         Answer answer = accessAnswer.get(id)
-                .orElseThrow( () -> new HttpNoContentException("Answer not found."));
+                .orElseThrow( () -> new HttpNotFoundException("Answer not found."));
 
-        audit.debug("Mapping EntityType into DTO.");
+        audit.debug("Mapping Answer into DTO.");
         return  mapperAnswer.entityToDto(answer);
         
     }
@@ -91,10 +91,10 @@ public class ServiceAnswer {
     public DTOAnswer updateStatus(Integer id, DTOUpdateAnswerStatus dtoUpdateAnswerStatus) {
 
         Answer answer = accessAnswer.get(id)
-                .orElseThrow( () -> new HttpNoContentException("Answer not found."));
+                .orElseThrow( () -> new HttpNotFoundException("Answer not found."));
 
         AnswersStatus answersStatus = accessAnswersStatus.get(id)
-                .orElseThrow( () -> new HttpNoContentException("Answer Status not found."));
+                .orElseThrow( () -> new HttpNotFoundException("Answer Status not found."));
 
         audit.debug("Updating Answer " + id + ".");
         answer.setAnswersStatus(answersStatus);

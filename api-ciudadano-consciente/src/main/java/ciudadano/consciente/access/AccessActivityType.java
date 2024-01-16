@@ -1,6 +1,7 @@
 package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.ActivityType;
+import ciudadano.consciente.model.EntityType;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -50,4 +51,5 @@ public class AccessActivityType implements PanacheRepositoryBase<ActivityType, I
         return count("name", name) > 0;
 
     }
+
 }

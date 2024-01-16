@@ -1,15 +1,13 @@
 package ciudadano.consciente.service;
 
-import ciudadano.consciente.access.AccessOrganization;
-import ciudadano.consciente.access.AccessRole;
-import ciudadano.consciente.access.AccessUser;
-import ciudadano.consciente.access.AccessUserRoleOrganization;
+import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperUserRoleOrganization;
+import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.mapper.MapperOrganization;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
@@ -47,6 +45,15 @@ public class ServiceOrganization {
 
     @Inject
     Logger audit;
+
+    @Inject
+    AccessVote accessVote;
+
+    @Inject
+    AccessEntityType accessEntityType;
+
+    @Inject
+    MapperVote mapperVote;
 
     public List<DTOOrganization> getAll() {
 
@@ -357,5 +364,35 @@ public class ServiceOrganization {
         audit.debug("Mapping EntityType into DTO.");
         return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
         
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOVote vote(Integer idOrganization, Integer idUser) {
+
+        audit.debug("Retrieving Entity Type");
+        EntityType entityType = accessEntityType.getByName("Organization")
+                .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
+
+        Organization organization = accessOrganization.get(idOrganization)
+                .orElseThrow( ()-> new HttpNotFoundException("Organization not found."));
+
+        User user = accessUser.get(idUser)
+                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+
+        audit.debug("Verify if Vote already exists.");
+        if(accessVote.getByKeys(user, organization.getOrganizationId(), entityType).isPresent()) {
+            throw new HttpBadRequestException("Vote already exists.");
+        }
+
+        audit.debug("Creating Vote for Organization.");
+        Vote vote = new Vote(user, organization.getOrganizationId(), entityType);
+
+        audit.debug("Saving Vote " + vote.getVoteId() + ".");
+        accessVote.save(vote)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Vote.") );
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperVote.entityToDto(vote);
+
     }
 }

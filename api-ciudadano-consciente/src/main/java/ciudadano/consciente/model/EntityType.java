@@ -2,6 +2,7 @@ package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
 
+
 @jakarta.persistence.Entity
 @Table(schema = "app", name = "entity_types")
 public class EntityType {
@@ -28,4 +29,6 @@ public class EntityType {
     public void setTitle(String title) {
         this.title = title;
     }
+
+
 }

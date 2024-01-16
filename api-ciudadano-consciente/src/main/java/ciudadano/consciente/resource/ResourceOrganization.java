@@ -278,10 +278,10 @@ public class ResourceOrganization {
         }
 
         Integer user = dtoAssignRoleToUserOrganization.getUser();
-        Integer Organization = dtoAssignRoleToUserOrganization.getOrganization();
+        Integer organization = dtoAssignRoleToUserOrganization.getOrganization();
         Integer role = dtoAssignRoleToUserOrganization.getRole();
         if(!utilityVerifyRequestField.isValidField(user) ||
-                !utilityVerifyRequestField.isValidField(Organization) ||
+                !utilityVerifyRequestField.isValidField(organization) ||
                 !utilityVerifyRequestField.isValidField(role)) {
             throw new HttpBadRequestException("All fields required.");
         }
@@ -405,6 +405,56 @@ public class ResourceOrganization {
 
         audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Organization(" + idUser + ") " + idOrganization + "...");
         return Response.ok(serviceOrganization.deleteUserRoleOrganization(idOrganization, idUser, idRole)).build();
+
+    }
+
+    // VOTES HANDLING IN ORGANIZATIONS
+    @POST
+    @Path("{id}/votes") // /{user}/roles/{role}")
+    @Operation(summary = "Vote Organization.")
+    @APIResponse(
+            responseCode = "201",
+            description = "Organization successfully voted."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed vote Organization. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to vote Organization. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to vote Organization. Verify 'Warning' Header."
+    )
+    public Response vote(@PathParam("id") Integer idOrganization,
+                               DTOCreateVote dtoCreateVote) {
+
+        if(dtoCreateVote == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoCreateVote.getUser();
+        Integer organization = dtoCreateVote.getEntity();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(organization)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idOrganization != dtoCreateVote.getEntity()) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Organization.");
+        }
+        audit.debug("Vote of User " + user
+                + " in Organization " + idOrganization + "...");
+        DTOVote dtoVote = serviceOrganization.vote(idOrganization, user);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE + dtoVote.getVoteId() +
+                "?votes=" + dtoVote.getVoteId());
+
+        return Response.created(uri).entity(dtoVote).build();
 
     }
 

@@ -18,7 +18,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RequestScoped
@@ -67,7 +66,7 @@ public class ServiceConcern {
                 .orElseThrow( ()-> new HttpNotFoundException("User not found."));
 
         audit.debug("Creating Concern.");
-        Concern concern = new Concern(description, LocalDate.now(), user);
+        Concern concern = new Concern(description, user);
 
         String explanation = dtoCreateConcern.getExplanation();
         if(utilityVerifyRequestField.isValidField(explanation)) {
@@ -100,15 +99,15 @@ public class ServiceConcern {
         }
 
         audit.debug("Updating Concern " + id + ".");
-        String description = dtoUpdateConcern.getDescription();;
+        String description = dtoUpdateConcern.getDescription();
         if(utilityVerifyRequestField.isValidField(description)) {
             concern.setDescription(description);
-        };
+        }
 
-        String explanation = dtoUpdateConcern.getExplanation();;
+        String explanation = dtoUpdateConcern.getExplanation();
         if(utilityVerifyRequestField.isValidField(explanation)) {
             concern.setExplanation(explanation);
-        };
+        }
 
         audit.debug("Saving Concern " + concern.getConcernId() + ".");
         accessConcern.save(concern)
@@ -123,15 +122,15 @@ public class ServiceConcern {
     public DTOConcern delete(Integer id) {
 
         audit.debug("Deleting Concern " + id + ".");
-        Concern loncern = accessConcern.get(id)
+        Concern concern = accessConcern.get(id)
                 .orElseThrow( ()-> new HttpNotFoundException("Concern not found."));
 
-        if(!accessConcern.remove(loncern.getConcernId())) {
+        if(!accessConcern.remove(concern.getConcernId())) {
             throw new HttpInternalServerException("Failed to delete Concern");
         }
 
         audit.debug("Mapping EntityType into DTO.");
-        return mapperConcern.entityToDto(loncern);
+        return mapperConcern.entityToDto(concern);
         
     }
 }
