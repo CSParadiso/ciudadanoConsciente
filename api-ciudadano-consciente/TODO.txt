@@ -12,9 +12,9 @@ TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 
 YA SE PODRÍA
-TODO Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
-TODO Generar GET votos en User y entidades
-
+TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
+TODO feat: Generar GET votos en User y entidades (Organization, Level, ActivityType, Concern, Reference, User)
+TODO feat: Generada POST de votos en entidades con User como Body Param (Level, ActivityType, Concern, Reference)
 
 
 IMPLEMENTACIONES
@@ -142,6 +142,10 @@ docs: actualizar documentación DER(cuarta iteración)
 - Commite 9ac671
 Migrar de Entity a EntityType
 
-- Commit
+- Commit d24f60d
 #27 feat: Generada entidad en Votos (GETall, GET, PATCH en Vote)
 #28 feat: Generada POST de votos en entidades con User como Body Param (Organization)
+
+- Commit
+#29 feat: Generar GET votos en Entidades (Organization)
+#30 feat: Generar POST de votos en entidades con User como Body Param (Level, ActivityType, Concern, Reference)

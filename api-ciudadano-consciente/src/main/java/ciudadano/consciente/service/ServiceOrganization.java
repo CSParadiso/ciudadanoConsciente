@@ -366,6 +366,8 @@ public class ServiceOrganization {
         
     }
 
+    // HANDLING VOTES IN ORGANIZATION
+
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOVote vote(Integer idOrganization, Integer idUser) {
 
@@ -387,7 +389,7 @@ public class ServiceOrganization {
         audit.debug("Creating Vote for Organization.");
         Vote vote = new Vote(user, organization.getOrganizationId(), entityType);
 
-        audit.debug("Saving Vote " + vote.getVoteId() + ".");
+        audit.debug("Saving Vote.");
         accessVote.save(vote)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Vote.") );
 
@@ -395,4 +397,14 @@ public class ServiceOrganization {
         return mapperVote.entityToDto(vote);
 
     }
+
+    public List<DTOVote> getVotes(Integer id) {
+
+        EntityType entityType = accessEntityType.getByName("Organization")
+                .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
+
+        return mapperVote.entityToDto(accessVote.getByKeys(entityType, id));
+
+    }
+
 }

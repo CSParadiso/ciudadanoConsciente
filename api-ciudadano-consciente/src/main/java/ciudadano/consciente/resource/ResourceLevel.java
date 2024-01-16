@@ -24,6 +24,7 @@ import java.net.URI;
 public class ResourceLevel {
 
     final String PATH_BASE_RESOURCE = "/levels/";
+    final String PATH_BASE_RESOURCE_VOTE = "/votes/";
 
     @Inject
     ServiceLevel serviceLevel;
@@ -131,7 +132,7 @@ public class ResourceLevel {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateLevel.getLevelId()) {
+        if(id.compareTo(dtoUpdateLevel.getLevelId()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
@@ -316,15 +317,9 @@ public class ResourceLevel {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(idLevel != dtoAssignRoleToUserLevel.getLevel()) {
+        if(idLevel.compareTo(dtoAssignRoleToUserLevel.getLevel()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Level.");
         }
-        /*if(idUser != dtoAssignRoleToUserLevel.getUser()) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
-        }
-        if(idRole != dtoAssignRoleToUserLevel.getRole()) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for Role.");
-        }*/
 
         audit.debug("Assigning Role" + role
                 + " to User " + user
@@ -379,15 +374,9 @@ public class ResourceLevel {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(idLevel != level) {
+        if(idLevel.compareTo(level) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Level.");
         }
-        /*if(idUser != user) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
-        }
-        if(idRole == newRole) {
-            throw new HttpBadRequestException("Body ID and Path ID must reflect reflect the change for Role.");
-        }*/
 
         audit.debug("Updating Role" + newRole
                 + " of User " + user
@@ -434,6 +423,55 @@ public class ResourceLevel {
 
         audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + "...");
         return Response.ok(serviceLevel.deleteUserRoleLevel(idLevel, idUser, idRole)).build();
+
+    }
+
+    // VOTES HANDLING IN LEVEL
+    @POST
+    @Path("{id}/votes")
+    @Operation(summary = "Vote Level.")
+    @APIResponse(
+            responseCode = "201",
+            description = "Level successfully voted."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to Vote Level. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to Vote Level. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to Vote Level. Verify 'Warning' Header."
+    )
+    public Response vote(@PathParam("id") Integer idLevel,
+                         DTOCreateVote dtoCreateVote) {
+
+        if(dtoCreateVote == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoCreateVote.getUser();
+        Integer level = dtoCreateVote.getEntity();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(level)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idLevel.compareTo(dtoCreateVote.getEntity()) != 0) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Level.");
+        }
+        audit.debug("Vote of User " + user
+                + " in Level " + idLevel + "...");
+        DTOVote dtoVote = serviceLevel.vote(idLevel, user);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE_VOTE + dtoVote.getVoteId());
+
+        return Response.created(uri).entity(dtoVote).build();
 
     }
 

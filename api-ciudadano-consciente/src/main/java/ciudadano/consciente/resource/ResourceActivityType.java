@@ -1,10 +1,8 @@
 package ciudadano.consciente.resource;
 
-import ciudadano.consciente.dto.DTOActivityType;
-import ciudadano.consciente.dto.DTOUpdateActivityType;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceActivityType;
-import ciudadano.consciente.dto.DTOCreateActivityType;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -26,6 +24,7 @@ import java.net.URI;
 public class ResourceActivityType {
 
     final String BASE_PATH_RESOURCE = "/activity-type/";
+    final String BASE_PATH_RESOURCE_VOTE = "/votes/";
 
     @Inject
     ServiceActivityType serviceActivityType;
@@ -142,7 +141,7 @@ public class ResourceActivityType {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateActivityType.getActivityTypeId()) {
+        if(id.compareTo(dtoUpdateActivityType.getActivityTypeId()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
@@ -166,6 +165,55 @@ public class ResourceActivityType {
 
         audit.debug("Deleting Activity Type " + id + "...");
         return Response.ok(serviceActivityType.delete(id)).build();
+
+    }
+
+    // VOTES HANDLING IN ACTIVITY TYPE
+    @POST
+    @Path("{id}/votes")
+    @Operation(summary = "Vote Activity Type.")
+    @APIResponse(
+            responseCode = "201",
+            description = "Activity Type successfully voted."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to Vote Activity Type. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to Vote Activity Type. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to Vote Activity Type. Verify 'Warning' Header."
+    )
+    public Response vote(@PathParam("id") Integer idActivityType,
+                         DTOCreateVote dtoCreateVote) {
+
+        if(dtoCreateVote == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoCreateVote.getUser();
+        Integer activityType = dtoCreateVote.getEntity();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(activityType)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idActivityType.compareTo(dtoCreateVote.getEntity()) != 0) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for ActivityType.");
+        }
+        audit.debug("Vote of User " + user
+                + " in ActivityType " + idActivityType + "...");
+        DTOVote dtoVote = serviceActivityType.vote(idActivityType, user);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(BASE_PATH_RESOURCE_VOTE + dtoVote.getVoteId());
+
+        return Response.created(uri).entity(dtoVote).build();
 
     }
 

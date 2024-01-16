@@ -25,6 +25,7 @@ import java.net.URI;
 public class ResourceOrganization {
 
     final String PATH_BASE_RESOURCE = "/organizations/";
+    final String PATH_BASE_RESOURCE_VOTE = "/votes/";
 
     @Inject
     ServiceOrganization serviceOrganization;
@@ -139,7 +140,7 @@ public class ResourceOrganization {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateOrganization.getOrganizationId()) {
+        if(id.compareTo(dtoUpdateOrganization.getOrganizationId()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
@@ -194,7 +195,7 @@ public class ResourceOrganization {
         final String PATH_BASE_USER_ROL_ORGANIZATION = "/user-rol-organization/";
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoAssingRoleToUserOrganization.getOrganization()) {
+        if(id.compareTo(dtoAssingRoleToUserOrganization.getOrganization()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
@@ -287,15 +288,9 @@ public class ResourceOrganization {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(idOrganization != dtoAssignRoleToUserOrganization.getOrganization()) {
+        if(idOrganization.compareTo(dtoAssignRoleToUserOrganization.getOrganization()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Organization.");
         }
-        /*if(idUser != dtoAssignRoleToUserOrganization.getUser()) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
-        }
-        if(idRole != dtoAssignRoleToUserOrganization.getRole()) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for Role.");
-        }*/
 
         audit.debug("Assigning Role" + role
                 + " to User " + user
@@ -340,25 +335,19 @@ public class ResourceOrganization {
         }
 
         Integer user = dtoUpdateRoleUserOrganization.getUser();
-        Integer Organization = dtoUpdateRoleUserOrganization.getOrganization();
+        Integer organization = dtoUpdateRoleUserOrganization.getOrganization();
         Integer role = dtoUpdateRoleUserOrganization.getRole();
         Integer newRole = dtoUpdateRoleUserOrganization.getRole();
         if(!utilityVerifyRequestField.isValidField(user) ||
-                !utilityVerifyRequestField.isValidField(Organization) ||
+                !utilityVerifyRequestField.isValidField(organization) ||
                 !utilityVerifyRequestField.isValidField(newRole)) {
             throw new HttpBadRequestException("All fields required.");
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(idOrganization != Organization) {
+        if(idOrganization.compareTo(organization) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Organization.");
         }
-        /*if(idUser != user) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
-        }
-        if(idRole == newRole) {
-            throw new HttpBadRequestException("Body ID and Path ID must reflect reflect the change for Role.");
-        }*/
 
         audit.debug("Updating Role" + newRole
                 + " of User " + user
@@ -410,7 +399,7 @@ public class ResourceOrganization {
 
     // VOTES HANDLING IN ORGANIZATIONS
     @POST
-    @Path("{id}/votes") // /{user}/roles/{role}")
+    @Path("{id}/votes")
     @Operation(summary = "Vote Organization.")
     @APIResponse(
             responseCode = "201",
@@ -443,7 +432,7 @@ public class ResourceOrganization {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(idOrganization != dtoCreateVote.getEntity()) {
+        if(idOrganization.compareTo(dtoCreateVote.getEntity()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same for Organization.");
         }
         audit.debug("Vote of User " + user
@@ -451,10 +440,28 @@ public class ResourceOrganization {
         DTOVote dtoVote = serviceOrganization.vote(idOrganization, user);
 
         audit.debug("Creating URI...");
-        URI uri = URI.create(PATH_BASE_RESOURCE + dtoVote.getVoteId() +
-                "?votes=" + dtoVote.getVoteId());
+        URI uri = URI.create(PATH_BASE_RESOURCE_VOTE + dtoVote.getVoteId());
 
         return Response.created(uri).entity(dtoVote).build();
+
+    }
+
+    @Deprecated
+    @GET
+    @Path("{id}/votes")
+    @Operation( summary = "Retrieve votes of a Organization.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Votes of Organization successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Votes of Organization. Verify 'Warning' Header."
+    )
+    public Response getVotes(@PathParam("id") Integer id) {
+
+        audit.debug("Getting Organization " + id + " Votes...");
+        return Response.ok(serviceOrganization.getVotes(id)).build();
 
     }
 

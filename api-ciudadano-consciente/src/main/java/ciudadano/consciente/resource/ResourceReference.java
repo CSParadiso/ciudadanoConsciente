@@ -1,11 +1,8 @@
 package ciudadano.consciente.resource;
 
-import ciudadano.consciente.dto.DTOOrganization;
-import ciudadano.consciente.dto.DTOReference;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceReference;
-import ciudadano.consciente.dto.DTOUpdateReference;
-import ciudadano.consciente.dto.DTOCreateReference;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -27,6 +24,7 @@ import java.net.URI;
 public class ResourceReference {
 
     static final String PATH_BASE_RESOURCE = "/references/";
+    static final String PATH_BASE_RESOURCE_VOTES = "/votes/";
 
     @Inject
     ServiceReference serviceReference;
@@ -149,7 +147,7 @@ public class ResourceReference {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateReference.getReferenceId()) {
+        if(id.compareTo(dtoUpdateReference.getReferenceId()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
@@ -173,6 +171,55 @@ public class ResourceReference {
 
         audit.debug("Deleting Reference " + id + "...");
         return Response.ok(serviceReference.delete(id)).build();
+
+    }
+
+    // VOTES HANDLING IN CONCERN
+    @POST
+    @Path("{id}/votes")
+    @Operation(summary = "Vote Reference.")
+    @APIResponse(
+            responseCode = "201",
+            description = "Reference successfully voted."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to Vote Reference. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to Vote Reference. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to Vote Reference. Verify 'Warning' Header."
+    )
+    public Response vote(@PathParam("id") Integer idReference,
+                         DTOCreateVote dtoCreateVote) {
+
+        if(dtoCreateVote == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoCreateVote.getUser();
+        Integer reference = dtoCreateVote.getEntity();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(reference)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idReference.compareTo(dtoCreateVote.getEntity()) != 0) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Reference.");
+        }
+        audit.debug("Vote of User " + user
+                + " in Reference " + idReference + "...");
+        DTOVote dtoVote = serviceReference.vote(idReference, user);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE_VOTES + dtoVote.getVoteId());
+
+        return Response.created(uri).entity(dtoVote).build();
 
     }
 

@@ -51,10 +51,10 @@ public class AccessEntityType implements PanacheRepositoryBase<EntityType, Integ
 
     }
 
-    public Optional<EntityType> getByName(String organization) {
+    public Optional<EntityType> getByName(String entityTypeTitle) {
 
-        audit.debug("Trying to retrieve title " + organization + ".");
-        return find("title", organization).firstResultOptional();
+        audit.debug("Trying to retrieve title " + entityTypeTitle + ".");
+        return find("title", entityTypeTitle).firstResultOptional();
 
     }
 }

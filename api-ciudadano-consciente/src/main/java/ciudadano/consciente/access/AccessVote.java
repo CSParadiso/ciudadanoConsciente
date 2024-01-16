@@ -47,4 +47,12 @@ public class AccessVote implements PanacheRepositoryBase<Vote, Integer> {
                 user, entity, entityType).firstResultOptional();
 
     }
+
+    public List<Vote> getByKeys(EntityType entityType, Integer id) {
+
+        audit.debug("Trying to retrieve Votes of Entity " + entityType.getTitle() + ".");
+        return find("entityType = ?1 and entity = ?2", entityType, id).stream().toList();
+
+    }
+
 }

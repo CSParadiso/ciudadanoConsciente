@@ -5,6 +5,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.mapper.MapperLevel;
@@ -46,6 +47,15 @@ public class ServiceLevel {
 
     @Inject
     Logger audit;
+
+    @Inject
+    AccessVote accessVote;
+
+    @Inject
+    MapperVote mapperVote;
+
+    @Inject
+    AccessEntityType accessEntityType;
 
     public List<DTOLevel> getAll() {
 
@@ -328,4 +338,36 @@ public class ServiceLevel {
 
     }
 
+    // LEVEL HANDLING IN LEVEL
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOVote vote(Integer idLevel, Integer idUser) {
+
+        audit.debug("Retrieving Entity Type");
+        EntityType entityType = accessEntityType.getByName("Level")
+                .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
+
+        Level level = accessLevel.get(idLevel)
+                .orElseThrow( ()-> new HttpNotFoundException("Level not found."));
+
+        User user = accessUser.get(idUser)
+                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+
+        audit.debug("Verify if Vote already exists.");
+        if(accessVote.getByKeys(user, level.getLevelId(), entityType).isPresent()) {
+            throw new HttpBadRequestException("Vote already exists.");
+        }
+
+        audit.debug("Creating Vote for Level.");
+        Vote vote = new Vote(user, level.getLevelId(), entityType);
+
+        audit.debug("Saving Vote.");
+        accessVote.save(vote)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Vote.") );
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperVote.entityToDto(vote);    
+        
+    }
+    
 }

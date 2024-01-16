@@ -24,6 +24,7 @@ import java.net.URI;
 public class ResourceConcern {
 
     final String PATH_BASE_RESOURCE = "/concerns/";
+    final String PATH_BASE_RESOURCE_VOTE = "/votes/";
 
     @Inject
     Logger audit;
@@ -165,6 +166,55 @@ public class ResourceConcern {
 
         audit.debug("Deleting Concern " + id + "...");
         return Response.ok(serviceConcern.delete(id)).build();
+
+    }
+
+    // VOTES HANDLING IN CONCERN
+    @POST
+    @Path("{id}/votes")
+    @Operation(summary = "Vote Concern.")
+    @APIResponse(
+            responseCode = "201",
+            description = "Concern successfully voted."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to Vote Concern. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to Vote Concern. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to Vote Concern. Verify 'Warning' Header."
+    )
+    public Response vote(@PathParam("id") Integer idConcern,
+                         DTOCreateVote dtoCreateVote) {
+
+        if(dtoCreateVote == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoCreateVote.getUser();
+        Integer concern = dtoCreateVote.getEntity();
+        if(!utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(concern)) {
+            throw new HttpBadRequestException("All fields required.");
+        }
+
+        audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(idConcern.compareTo(dtoCreateVote.getEntity()) != 0) {
+            throw new HttpBadRequestException("Body ID and Path ID must be the same for Concern.");
+        }
+        audit.debug("Vote of User " + user
+                + " in Concern " + idConcern + "...");
+        DTOVote dtoVote = serviceConcern.vote(idConcern, user);
+
+        audit.debug("Creating URI...");
+        URI uri = URI.create(PATH_BASE_RESOURCE_VOTE + dtoVote.getVoteId());
+
+        return Response.created(uri).entity(dtoVote).build();
 
     }
     

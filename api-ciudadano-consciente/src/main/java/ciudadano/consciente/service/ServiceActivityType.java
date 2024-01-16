@@ -1,16 +1,19 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.AccessActivityType;
+import ciudadano.consciente.access.AccessEntityType;
 import ciudadano.consciente.access.AccessUser;
+import ciudadano.consciente.access.AccessVote;
 import ciudadano.consciente.dto.DTOActivityType;
 import ciudadano.consciente.dto.DTOUpdateActivityType;
+import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNotFoundException;
-import ciudadano.consciente.model.ActivityType;
+import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.DTOCreateActivityType;
 import ciudadano.consciente.mapper.MapperActivityType;
-import ciudadano.consciente.model.User;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -36,6 +39,15 @@ public class ServiceActivityType {
 
     @Inject
     AccessUser accessUser;
+
+    @Inject
+    AccessEntityType accessEntityType;
+
+    @Inject
+    AccessVote accessVote;
+
+    @Inject
+    MapperVote mapperVote;
 
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOActivityType create(DTOCreateActivityType dtoCreateActivityType) {
@@ -133,4 +145,35 @@ public class ServiceActivityType {
         return mapperActivityType.entityToDto(activityType);
 
     }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOVote vote(Integer idActivityType, Integer idUser) {
+
+        audit.debug("Retrieving Entity Type");
+        EntityType entityType = accessEntityType.getByName("ActivityType")
+                .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
+
+        ActivityType activityType = accessActivityType.get(idActivityType)
+                .orElseThrow( ()-> new HttpNotFoundException("ActivityType not found."));
+
+        User user = accessUser.get(idUser)
+                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+
+        audit.debug("Verify if Vote already exists.");
+        if(accessVote.getByKeys(user, activityType.getActivityTypeId(), entityType).isPresent()) {
+            throw new HttpBadRequestException("Vote already exists.");
+        }
+
+        audit.debug("Creating Vote for ActivityType.");
+        Vote vote = new Vote(user, activityType.getActivityTypeId(), entityType);
+
+        audit.debug("Saving Vote.");
+        accessVote.save(vote)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Vote.") );
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperVote.entityToDto(vote);
+
+    }
+
 }

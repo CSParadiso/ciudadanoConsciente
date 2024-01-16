@@ -1,13 +1,13 @@
 package ciudadano.consciente.service;
 
-import ciudadano.consciente.access.AccessLevel;
-import ciudadano.consciente.access.AccessReference;
+import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.DTOReference;
+import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNotFoundException;
-import ciudadano.consciente.model.Level;
-import ciudadano.consciente.model.Reference;
+import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.DTOUpdateReference;
 import ciudadano.consciente.dto.DTOCreateReference;
 import ciudadano.consciente.mapper.MapperReference;
@@ -36,6 +36,18 @@ public class ServiceReference {
 
     @Inject
     Logger audit;
+
+    @Inject
+    AccessEntityType accessEntityType;
+
+    @Inject
+    AccessVote accessVote;
+
+    @Inject
+    MapperVote mapperVote;
+
+    @Inject
+    AccessUser accessUser;
 
     public List<DTOReference> getAll() {
 
@@ -129,11 +141,41 @@ public class ServiceReference {
 
         if(!accessReference.remove(reference.getReferenceId())) {
             throw new HttpInternalServerException("Failed to delete Reference");
-        };
+        }
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperReference.entityToDto(reference);
 
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOVote vote(Integer idReference, Integer idUser) {
+
+        audit.debug("Retrieving Entity Type");
+        EntityType entityType = accessEntityType.getByName("Reference")
+                .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
+
+        Reference reference = accessReference.get(idReference)
+                .orElseThrow( ()-> new HttpNotFoundException("Reference not found."));
+
+        User user = accessUser.get(idUser)
+                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+
+        audit.debug("Verify if Vote already exists.");
+        if(accessVote.getByKeys(user, reference.getReferenceId(), entityType).isPresent()) {
+            throw new HttpBadRequestException("Vote already exists.");
+        }
+
+        audit.debug("Creating Vote for Reference.");
+        Vote vote = new Vote(user, reference.getReferenceId(), entityType);
+
+        audit.debug("Saving Vote.");
+        accessVote.save(vote)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Vote.") );
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperVote.entityToDto(vote);
+
+    }
+    
 }
