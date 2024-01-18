@@ -1,41 +1,6 @@
-
-TODO feat: generar Tags (etiquetas)
-
-TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.
-
-TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
-TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
-
-CUESTIONES DE DISEÑO
-TODO Si usáramos UUID como identificador de todas las entidades, se podría tener una tabla votos, una tabla creator y asi.. para relaciones vinculadas a usuarios con distintas entidades. De esta manera nos evitamos tener el usuario en cada instancia de un registro o mejor dicho estarían centralizados los votos y las creaciones.
-TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
-
-
-YA SE PODRÍA
-TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
-TODO feat: Generar GET votos en User y entidades (Organization, Level, ActivityType, Concern, Reference, User)
-TODO feat: Generada POST de votos en entidades con User como Body Param (Level, ActivityType, Concern, Reference)
-
-
-IMPLEMENTACIONES
-FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
-FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
-FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
-FIXME Refactor: Corroborar si las verificaciones de identificadores en los recursos de los PATCH es mejor hacerlas con el compareTo que con el !=
-FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
-
-FIXME refactor: los URI creados por los post de Level y Organizacion deberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
-FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
-
-FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
-FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
-
-DOING
-
-
-
-
-DONE
+-----------------------------------------
+-------------------- DONE ---------------
+-----------------------------------------
 #0 Pasar argumentos como TransferiblesRequest en el POST y PATCH
 
 - Commit fe565c2
@@ -146,6 +111,72 @@ Migrar de Entity a EntityType
 #27 feat: Generada entidad en Votos (GETall, GET, PATCH en Vote)
 #28 feat: Generada POST de votos en entidades con User como Body Param (Organization)
 
-- Commit
+- Commit fbf2af2
 #29 feat: Generar GET votos en Entidades (Organization)
 #30 feat: Generar POST de votos en entidades con User como Body Param (Level, ActivityType, Concern, Reference)
+
+- Commit
+#31 refactor: Corroborar si las verificaciones numéricas es mejor hacerlas con el compareTo que con el !=
+#32 feat: Generar GET votos en User
+
+-----------------------------------------
+---------------- FIXME? -----------------
+-----------------------------------------
+FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
+
+FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
+
+FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
+
+FIXME refactor: los URI creados por los post de Level y Organizacion deberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
+FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
+
+FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
+FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
+
+-----------------------------------------
+------- CUESTIONES DE DISEÑO ------------
+-----------------------------------------
+/* #1
+* Si usáramos UUID como identificador de todas las entidades, se podría tener una tabla votos,
+* una tabla creator y asi.. para relaciones vinculadas a usuarios con distintas entidades. De
+* esta manera nos evitamos tener el usuario en cada instancia de un registro o mejor dicho
+* estarían centralizados los votos y las creaciones. NO QUEDA CLARO EL PLANTEO
+*/
+
+/* #2
+* Al usar una tabla para los votos perdemos búsqueda directa por entidad,
+* siempre hay que vincularla a su tipo. Esto tiene que consderar que si crece en tamaño no
+* estamos duplicando información por todos lados, o mejor dicho en tablas separadas. Pero las
+* operaciones deben identificar el tipo de entidad y el id de entidad.
+*/
+
+/* #3
+* Si User tuviera una lista de Votos, quizás sería muy pesada la entidad en comunicación.
+* Se elige manejarlo como endpoint y que solo quede en la tabla votes. AVERIGUAR
+*/
+
+TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
+
+-----------------------------------------
+----------------- TODO ------------------
+-----------------------------------------
+TODO feat: generar Tags (etiquetas)
+
+TODO feat: resolver autenticación
+TODO feat: resolver logueo
+TODO feat: resolver verificación de permisos (roles en organización y level)
+TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
+FIXME Refactor de las excepciones creando el transferible de acuerdo a la Referencia (buscar en historial de navegación)
+
+TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.
+TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
+
+TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
+
+----------------------------------------
+------------------- DOING --------------
+----------------------------------------
+Leer sobre autentication y authorization.
+
+

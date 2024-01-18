@@ -1,12 +1,15 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.AccessUser;
+import ciudadano.consciente.access.AccessVote;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperUser;
+import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.model.EntityType;
 import ciudadano.consciente.model.User;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -30,6 +33,12 @@ public class ServiceUser {
 
     @Inject
     MapperUser mapperUser;
+
+    @Inject
+    AccessVote accessVote;
+
+    @Inject
+    MapperVote mapperVote;
 
     public DTOUser get(Integer id) {
 
@@ -133,5 +142,13 @@ public class ServiceUser {
     }
 
 
+    public List<DTOVote> getVotes(Integer id) {
+
+        User user = accessUser.get(id)
+                .orElseThrow( () -> new HttpNotFoundException("User not found."));
+
+        return mapperVote.entityToDto(accessVote.getByUser(user));
+
+    }
 
 }

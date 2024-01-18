@@ -55,4 +55,10 @@ public class AccessVote implements PanacheRepositoryBase<Vote, Integer> {
 
     }
 
+    public List<Vote> getByUser(User user) {
+
+        audit.debug("Trying to retrieve Votes of User " + user.getUserId() + ".");
+        return find("user", user).stream().toList();
+
+    }
 }

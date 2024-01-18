@@ -170,4 +170,22 @@ public class ResourceUser {
 
     }
 
+    @GET
+    @Path("{id}/votes")
+    @Operation( summary = "Retrieve votes of a User.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Votes of User successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Votes of User. Verify 'Warning' Header."
+    )
+    public Response getVotes(@PathParam("id") Integer id) {
+
+        audit.debug("Getting User " + id + " Votes...");
+        return Response.ok(serviceUser.getVotes(id)).build();
+
+    }
+
 }

@@ -137,7 +137,7 @@ public class ResourceActivity {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateActivity.getActivityId()) {
+        if(id.compareTo(dtoUpdateActivity.getActivityId()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 

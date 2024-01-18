@@ -127,7 +127,7 @@ public class ResourceEntityType {
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id != dtoUpdateEntityType.getEntityTypeId()) {
+        if(id.compareTo(dtoUpdateEntityType.getEntityTypeId()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 

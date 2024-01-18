@@ -3,6 +3,8 @@ package ciudadano.consciente.model;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
+import java.util.List;
+
 @Entity
 @Table(schema="app", name = "users")
 //@UserDefinition
