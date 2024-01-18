@@ -62,6 +62,10 @@ public class ResourceUser {
             responseCode = "204",
             description = "Failed to retrieve User. Verify 'Warning' Header."
     )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve User. Verify 'Warning' Header."
+    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting User " + id + "...");

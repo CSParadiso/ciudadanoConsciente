@@ -58,6 +58,10 @@ public class ResourceAnswersStatus {
             responseCode = "204",
             description = "Failed to retrieve Level. Verify 'Warning' Header."
     )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Level. Verify 'Warning' Header."
+    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Level " + id + "...");

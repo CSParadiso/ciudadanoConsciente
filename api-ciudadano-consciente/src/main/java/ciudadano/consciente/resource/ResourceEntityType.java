@@ -58,7 +58,11 @@ public class ResourceEntityType {
     )
     @APIResponse(
             responseCode = "204",
-            description = "Failed to retrieve Level. Verify 'Warning' Header."
+            description = "Failed to retrieve EntityType. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve EntityType. Verify 'Warning' Header."
     )
     public Response get(@PathParam("id") Integer id) {
 

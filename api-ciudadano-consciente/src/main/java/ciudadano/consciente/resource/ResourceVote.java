@@ -64,6 +64,10 @@ public class ResourceVote {
             responseCode = "204",
             description = "Failed to retrieve Vote. Verify 'Warning' Header."
     )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Vote. Verify 'Warning' Header."
+    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Vote " + id + "...");

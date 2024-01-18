@@ -60,6 +60,10 @@ public class ResourceRole {
             responseCode = "204",
             description = "Failed to retrieve Role. Verify 'Warning' Header."
     )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Role. Verify 'Warning' Header."
+    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Retrieving Role " + id + "...");

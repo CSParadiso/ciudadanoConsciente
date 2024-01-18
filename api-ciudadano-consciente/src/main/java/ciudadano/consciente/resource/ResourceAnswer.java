@@ -63,6 +63,10 @@ public class ResourceAnswer {
             responseCode = "204",
             description = "Failed to retrieve Answer. Verify 'Warning' Header."
     )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Answer. Verify 'Warning' Header."
+    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Answer " + id + "...");
