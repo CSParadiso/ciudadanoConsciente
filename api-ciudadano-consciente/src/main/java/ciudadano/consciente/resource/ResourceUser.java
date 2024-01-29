@@ -6,6 +6,7 @@ import ciudadano.consciente.service.ServiceUser;
 import ciudadano.consciente.dto.DTOUpdateUser;
 import ciudadano.consciente.dto.DTOCreateUser;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -20,6 +21,7 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 
+@Authenticated
 @Tag(name = "User Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)

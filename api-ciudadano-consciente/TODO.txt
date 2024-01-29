@@ -119,7 +119,7 @@ Migrar de Entity a EntityType
 #31 refactor: Corroborar si las verificaciones numéricas es mejor hacerlas con el compareTo que con el !=
 #32 feat: Generar GET votos en User
 
-- Commit
+- Commit 2bd66d5
 #33 refactor de las excepciones creando el transferible de acuerdo a 'problem details' RFC7807 (https://www.rfc-editor.org/rfc/rfc7807.html)
 
 -----------------------------------------
@@ -181,5 +181,6 @@ TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cas
 ------------------- DOING --------------
 ----------------------------------------
 Leer sobre autentication y authorization.
+# Levantar servidor Keyckloac
 
 

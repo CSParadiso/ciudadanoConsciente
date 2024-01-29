@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data Display</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+</head>
+<body>
+
+    <h2>Users</h2>
+    <button onclick="showUsersTable()">Show Users Table</button>
+    <table id="userTable" style="display:none">
+        <thead>
+            <tr>
+                <!-- Add your user table headers here -->
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <!-- ... Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- User table body will be populated dynamically -->
+        </tbody>
+    </table>
+
+    <br>
+
+    <h2>Votes</h2>
+    <button onclick="showVotesTable()">Show Votes Table</button>
+    <table id="voteTable" style="display:none">
+        <thead>
+            <tr>
+                <!-- Add your vote table headers here -->
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Entity ID</th>
+                <!-- ... Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Vote table body will be populated dynamically -->
+        </tbody>
+    </table>
+
+    <script src="main.js"></script>
+</body>
+</html>

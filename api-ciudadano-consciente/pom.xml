@@ -98,6 +98,12 @@
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
     </dependency>
 
+    <!-- Para autenticación -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>

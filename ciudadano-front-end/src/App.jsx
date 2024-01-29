@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
 import Home from "./pages/Home";
 import NoPage from "./pages/NoPage";
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Login from './pages/Login';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 function App() {
   const darkTheme = createTheme({

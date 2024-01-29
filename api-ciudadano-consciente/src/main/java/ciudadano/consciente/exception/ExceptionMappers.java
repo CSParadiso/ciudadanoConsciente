@@ -3,7 +3,6 @@ package ciudadano.consciente.exception;
 import ciudadano.consciente.dto.DTOException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;

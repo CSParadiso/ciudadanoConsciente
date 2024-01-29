@@ -1,12 +1,14 @@
 package ciudadano.consciente.resource;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.Logger;
 
 import java.net.URI;
 
@@ -14,6 +16,9 @@ import java.net.URI;
 @Tag(name = "App")
 @Path("app")
 public class App {
+
+    @Inject
+    Logger audit;
 
     @GET
     @Operation(summary = "Access Front End of the App")
@@ -27,8 +32,8 @@ public class App {
     )
     public Response app() {
 
-        return Response.temporaryRedirect(URI.create("http://localhost:5173"))
-                .build();
+        audit.debug("Redirecting to front-end");
+        return Response.temporaryRedirect(URI.create("http://localhost:5173")).build();
 
     }
 
