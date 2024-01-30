@@ -21,7 +21,7 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Authenticated
+
 @Tag(name = "User Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
