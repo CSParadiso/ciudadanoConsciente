@@ -1,0 +1,52 @@
+----- PUBLICAR CONTENIDO ------
+Los programadores pueden publicar sus templates (activity_types) simplemente subscribiendo la url(500 max) donde viven los archivos requeridos.
+El formato de la api permite algo así:
+	- curl -H "Accept: application/vnd.github.v3+json"  https://api.github.com/repos/CSParadiso/simuladorProcesos/contents/tandas.
+Esto nos retorna la info del repo:
+[
+  {
+    "name": "TandaDos.txt",
+    "path": "tandas/TandaDos.txt",
+    "sha": "ef3bb26260bef3e8d90342feee6de2452833f93f",
+    "size": 97,
+    "url": "https://api.github.com/repos/CSParadiso/simuladorProcesos/contents/tandas/TandaDos.txt?ref=main",
+    "html_url": "https://github.com/CSParadiso/simuladorProcesos/blob/main/tandas/TandaDos.txt",
+    "git_url": "https://api.github.com/repos/CSParadiso/simuladorProcesos/git/blobs/ef3bb26260bef3e8d90342feee6de2452833f93f",
+    "download_url": "https://raw.githubusercontent.com/CSParadiso/simuladorProcesos/main/tandas/TandaDos.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/CSParadiso/simuladorProcesos/contents/tandas/TandaDos.txt?ref=main",
+      "git": "https://api.github.com/repos/CSParadiso/simuladorProcesos/git/blobs/ef3bb26260bef3e8d90342feee6de2452833f93f",
+      "html": "https://github.com/CSParadiso/simuladorProcesos/blob/main/tandas/TandaDos.txt"
+    }
+  },
+  {
+    "name": "TandaTres.txt",
+    "path": "tandas/TandaTres.txt",
+    "sha": "5406d1b6c0e28933bace8edfb6a032f1abf0c2c7",
+    "size": 128,
+    "url": "https://api.github.com/repos/CSParadiso/simuladorProcesos/contents/tandas/TandaTres.txt?ref=main",
+    "html_url": "https://github.com/CSParadiso/simuladorProcesos/blob/main/tandas/TandaTres.txt",
+    "git_url": "https://api.github.com/repos/CSParadiso/simuladorProcesos/git/blobs/5406d1b6c0e28933bace8edfb6a032f1abf0c2c7",
+    "download_url": "https://raw.githubusercontent.com/CSParadiso/simuladorProcesos/main/tandas/TandaTres.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/CSParadiso/simuladorProcesos/contents/tandas/TandaTres.txt?ref=main",
+      "git": "https://api.github.com/repos/CSParadiso/simuladorProcesos/git/blobs/5406d1b6c0e28933bace8edfb6a032f1abf0c2c7",
+      "html": "https://github.com/CSParadiso/simuladorProcesos/blob/main/tandas/TandaTres.txt"
+    }
+]
+
+De esta manera somo capaces de descargarlos, verlos, comprobar id del commmit para verificar la version, el nombre y el peso (download_url, html_url, sha, name, size. Respectivamente)
+
+Luego, podemos descargar el contenido del archivo con:
+	- curl https://raw.githubusercontent.com/CSParadiso/simuladorProcesos/main/tandas/TandaTres.txt
+ 
+Con esta información somos capaces de verificar si dentro del enlace que introdujeron (activity_type.functional_template_url) dentro tiene:
+	- el archivo model.json --> con el modelo de datos que necesita (para poder modelarselo a la organización que lo va a poblar con su dataset).
+	- el archivo main.js o main.jsx --> con la funcionalidad deseada
+	- un archivo readme.md -->  que explique como funciona el template.
+	- una imagen con extensión .png que sirva como thumbnail (sería ideal que sea de un determinado tamaño).
+
+Ejemplo: deberán ingresar USERNAME_GITHUB y REPOSITORY_NAME y el PATH/TO/,del cual nosotros podremos inferir la URL y verificar que existen los tres archivos requeridos con el nombre y formato requeridos
+Por otra parte, en la web deberán especificar el nombre(100 max) y una breve descripción(255 max) del template.
