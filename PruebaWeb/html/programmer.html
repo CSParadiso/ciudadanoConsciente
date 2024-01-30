@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programador</title>
+</head>
+<body>
+  
+  <header class="header">
+    <nav class="nav"></nav>
+  </header>
+  
+  <section class="templates"></section>
+  <section class="subscribeTemplates">
+
+    <!-- subscription-form.html -->
+    <form id="template-subscription-form">
+
+      <fieldset id="ciuco-identifiers">
+        <legend>App</legend>
+        <label for="name">Titulo: </label>
+        <input type="text" id="title" name="title" placeholder="Ingresar titulo" maxlength="100">
+
+        <label for="description">Descripción: </label>
+        <input type="text" id="description" name="description" placeholder="Ingresar descripción" maxlength="255">
+
+        <label for="creator">Creador: </label>
+        <input type="text" id="creator" name="creator" placeholder="Usuario creador">
+      </fieldset>
+      
+      <fieldset id="github-identifiers"> 
+        <legend >Github</legend>
+        <label for="user">Usuario: </label>
+        <input type="text" id="user" name="user" placeholder="Ingresar username de Github">
+        <label for="repo">Repositorio: </label>
+        <input type="text" id="repo" name="repo" placeholder="Ingresar nombre de repositorio de Github">
+        <label for="path">Ruta: </label>
+        <input type="text" id="path" name="path" placeholder="Ingresar ruta/al/directorio de Github">
+      </fieldset>
+
+      <button type="submit">Subscribe</button>
+    </form>
+
+  </section>
+  
+  <footer class="footer"></footer>
+  
+  <script src="../js/programmer.js" defer></script>
+
+</body>
+</html>

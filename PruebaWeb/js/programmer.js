@@ -9,7 +9,7 @@ async function handleSubscriptionFormSubmission(form) {
   // For demonstration purposes, log the form data to the console
   console.log('Form Data:', jsonObject);
 
-  // Verify if the files exist in GitHub
+  // Try to retrieve the file from GitHub
   try {
     const response = await fetch(`https://api.github.com/repos/${jsonObject.user}/${jsonObject.repo}/contents/${jsonObject.path}`, {
       headers: {
@@ -20,6 +20,18 @@ async function handleSubscriptionFormSubmission(form) {
     if (response.ok) {
       const responseData = await response.json();
       console.log('Files exist:', responseData);
+
+      // Verify if files required are in the direcotory fetched
+      // Check if specific files exist in the repository
+      const requiredFiles = ["README.md", "model.json", "template.js", "thumbnail.png"];
+      const existingFiles = responseData.filter(file => requiredFiles.includes(file.name));
+
+      if (existingFiles.length === requiredFiles.length) {
+        console.log('All required files exist.');
+      } else {
+        console.log('Some required files are missing.');
+      }
+
     } else {
       console.error('Error checking files:', response.statusText);
     }
@@ -27,11 +39,13 @@ async function handleSubscriptionFormSubmission(form) {
     console.error('Error checking files:', error.message);
   }
 
+
+
 }
 
 // Attach the form submission event listener
 document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('subscription-form');
+  const form = document.getElementById('template-subscription-form');
   form.addEventListener('submit', function(event) {
     event.preventDefault();
     handleSubscriptionFormSubmission(form);

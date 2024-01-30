@@ -187,6 +187,7 @@ TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cas
 # Diseñando Subscripción de ActivityType por parte del DEV.
 // TODO Verificar que existan los archivos que requerimos en el repo fetcheado.
 // TODO Agregar estado ActivityType para que el desarrollador sepa si está bien, si está publicable, no revisado, etc.
+// TODO Agregar githubUser, githubRepo y githubPath en lugar de la URL. Además es necesario el hash de cada uno de los elementos.
 // TODO Determinar lógica de publicación y qué almacenamos.
 // TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no. AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
 
