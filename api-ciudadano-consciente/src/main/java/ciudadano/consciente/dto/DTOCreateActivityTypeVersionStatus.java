@@ -2,10 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOUpdateAnswersStatus {
-
-    @Schema(defaultValue = "")
-    private Integer answersStatusId;
+public class DTOCreateActivityTypeVersionStatus {
 
     @Schema(defaultValue = "")
     private String title;
@@ -13,13 +10,6 @@ public class DTOUpdateAnswersStatus {
     @Schema(defaultValue = "")
     private String description;
 
-    public Integer getAnswersStatusId() {
-        return answersStatusId;
-    }
-
-    public void setAnswersStatusId(Integer answersStatusId) {
-        this.answersStatusId = answersStatusId;
-    }
 
     public String getTitle() {
         return title;

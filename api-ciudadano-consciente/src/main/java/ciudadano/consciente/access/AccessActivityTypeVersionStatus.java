@@ -1,6 +1,6 @@
 package ciudadano.consciente.access;
 
-import ciudadano.consciente.model.AnswersStatus;
+import ciudadano.consciente.model.ActivityTypeVersionStatus;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RequestScoped
-public class AccessAnswersStatus implements PanacheRepositoryBase<AnswersStatus, Integer> {
+public class AccessActivityTypeVersionStatus implements PanacheRepositoryBase<ActivityTypeVersionStatus, Integer> {
 
     @Inject
     Logger audit;
 
-    public List<AnswersStatus> getAll() {
+    public List<ActivityTypeVersionStatus> getAll() {
 
         audit.debug("Trying to retrieve all categories of Answers Status");
         return findAll().stream().toList();
 
     }
 
-    public Optional<AnswersStatus> get(Integer id) {
+    public Optional<ActivityTypeVersionStatus> get(Integer id) {
 
         audit.debug("Trying to retrieve category of Answer Status " + id + ".");
         return findByIdOptional(id);
@@ -36,11 +36,11 @@ public class AccessAnswersStatus implements PanacheRepositoryBase<AnswersStatus,
 
     }
 
-    public Optional<AnswersStatus> save(AnswersStatus answersStatus) {
+    public Optional<ActivityTypeVersionStatus> save(ActivityTypeVersionStatus activityTypeVersionStatus) {
 
-        audit.debug("Trying to persist AnswersStatus" + answersStatus.getAnswersStatusId() + ".");
-        persist(answersStatus);
-        return findByIdOptional(answersStatus.getAnswersStatusId());
+        audit.debug("Trying to persist ActivityTypeVersionStatus" + activityTypeVersionStatus.getActivityTypeVersionStatusId() + ".");
+        persist(activityTypeVersionStatus);
+        return findByIdOptional(activityTypeVersionStatus.getActivityTypeVersionStatusId());
 
     }
 

@@ -119,13 +119,13 @@ create table app.answers(
 	created date default CURRENT_DATE not null, 	-- Puede ser localDateTime
 	last_modified date default CURRENT_DATE null,	-- Puede ser localDateTime 
 	activity integer default 1 references app.activities on delete set default not null, 
-	status integer default 1 references app.answers_status(answers_status_id) on delete set default not null, 
+	status boolean default false not null; 
 	user_id integer default 1 references app.users on delete set default not null  
 );
 
-	-- Tabla app.answers_status (CATEGORíA NOMINAL)
-create table app.answers_status(
-	answers_status_id integer generated always as identity primary key,
+	-- Tabla app.activity_type_version_status (CATEGORíA NOMINAL)
+create table app.activity_type_version_status(
+	activity_type_version_status_id integer generated always as identity primary key,
 	title varchar(50) not null unique,
 	description varchar(500) not null
 );

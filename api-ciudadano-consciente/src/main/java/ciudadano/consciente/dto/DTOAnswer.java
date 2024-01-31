@@ -22,7 +22,7 @@ public class DTOAnswer {
     private Integer userId;
 
     @Schema(description = "")
-    private Integer answersStatus;
+    private Boolean status;
 
     public Integer getAnswerId() {
         return answerId;
@@ -64,11 +64,11 @@ public class DTOAnswer {
         this.userId = userId;
     }
 
-    public Integer getAnswersStatus() {
-        return answersStatus;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setAnswersStatus(Integer answersStatus) {
-        this.answersStatus = answersStatus;
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

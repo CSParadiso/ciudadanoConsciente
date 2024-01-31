@@ -13,7 +13,7 @@ public class DTOCreateAnswer {
     private Integer userId;
 
     @Schema(description = "")
-    private Integer answersStatus;
+    private Boolean status;
 
     public Integer getActivity() {
         return activity;
@@ -31,11 +31,11 @@ public class DTOCreateAnswer {
         this.userId = userId;
     }
 
-    public Integer getAnswersStatus() {
-        return answersStatus;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setAnswersStatus(Integer answersStatus) {
-        this.answersStatus = answersStatus;
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

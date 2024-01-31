@@ -12,12 +12,10 @@ public interface MapperAnswer {
 
     @Mapping(target = "activity", source = "activity.activityId")
     @Mapping(target = "userId", source = "userId.userId")
-    @Mapping(target = "answersStatus", source = "answersStatus.answersStatusId")
     List<DTOAnswer> entityToDto(List<Answer> all);
 
     @Mapping(target = "activity", source = "activity.activityId")
     @Mapping(target = "userId", source = "userId.userId")
-    @Mapping(target = "answersStatus", source = "answersStatus.answersStatusId")
     DTOAnswer entityToDto(Answer answer);
 
 }

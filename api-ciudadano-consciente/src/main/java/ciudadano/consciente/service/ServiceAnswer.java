@@ -2,13 +2,12 @@ package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.AccessActivity;
 import ciudadano.consciente.access.AccessAnswer;
-import ciudadano.consciente.access.AccessAnswersStatus;
+import ciudadano.consciente.access.AccessActivityTypeVersionStatus;
 import ciudadano.consciente.access.AccessUser;
 import ciudadano.consciente.dto.DTOAnswer;
 import ciudadano.consciente.dto.DTOCreateAnswer;
 import ciudadano.consciente.dto.DTOUpdateAnswerStatus;
 import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperAnswer;
 import ciudadano.consciente.model.*;
@@ -39,7 +38,7 @@ public class ServiceAnswer {
     AccessUser accessUser;
 
     @Inject
-    AccessAnswersStatus accessAnswersStatus;
+    AccessActivityTypeVersionStatus accessActivityTypeVersionStatus;
 
     public List<DTOAnswer> getAll() {
 
@@ -64,7 +63,7 @@ public class ServiceAnswer {
 
         Integer activityDto = dtoCreateAnswer.getActivity();
         Integer userDto = dtoCreateAnswer.getUserId();
-        Integer statusDto = dtoCreateAnswer.getAnswersStatus();
+        Boolean statusDto = dtoCreateAnswer.getStatus();
 
         Activity activity = accessActivity.get(activityDto)
                         .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
@@ -72,11 +71,8 @@ public class ServiceAnswer {
         User user = accessUser.get(userDto)
                         .orElseThrow( ()-> new HttpNotFoundException("User not found."));
 
-        AnswersStatus answersStatus = accessAnswersStatus.get(statusDto)
-                        .orElseThrow( ()-> new HttpNotFoundException("Answer Status not found.") );
-
         audit.debug("Creating Answer.");
-        Answer answer = new Answer(activity, user, answersStatus);
+        Answer answer = new Answer(activity, user, statusDto);
 
         audit.debug("Saving Answer " + answer.getAnswerId() + ".");
         accessAnswer.save(answer)
@@ -93,11 +89,8 @@ public class ServiceAnswer {
         Answer answer = accessAnswer.get(id)
                 .orElseThrow( () -> new HttpNotFoundException("Answer not found."));
 
-        AnswersStatus answersStatus = accessAnswersStatus.get(id)
-                .orElseThrow( () -> new HttpNotFoundException("Answer Status not found."));
-
         audit.debug("Updating Answer " + id + ".");
-        answer.setAnswersStatus(answersStatus);
+        answer.setStatus(dtoUpdateAnswerStatus.getStatus());
         answer.setLastModified(LocalDate.now());
 
         audit.debug("Saving Answer " + answer.getAnswerId() + ".");

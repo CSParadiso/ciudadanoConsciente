@@ -2,7 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOAnswersStatus {
+public class DTOUpdateActivityTypeVersionStatus {
 
     @Schema(defaultValue = "")
     private Integer answersStatusId;

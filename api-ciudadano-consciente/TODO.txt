@@ -129,8 +129,18 @@ Migrar de Entity a EntityType
 - Commit 5152710
 # feat: Verificar que existan los archivos que requerimos (README.md, template.js, model.json y thumbnail.png) en el repo fetcheado.
 
-- Commit
+- Commit 42d302b
 # feat-refactor: Agregar githubUser, githubRepo y githubPath, githubShaModel, githubShaTemplate, githubShaReadme y githubShaThumbnail en  reemplazo de functionalTemplateUrl.
+
+- Commit 
+refactor: Modificar AnswerStatus a ActivityTypeVersionStatus en DB 
+ - 'staged': el programador suscribe o actualiza la versión
+ - 'approved': aprobada por CIUCO, programador debe aceptar publicarla 
+ - 'rejected': no aprobada por CIUCO.
+ - 'published': el programador expone al mundo su template
+refactor: Modificar columna status en tabla Answer para que sea solo booleano.
+refactor: Modificar atributo status en entidad Answer en API
+refactor: Cambiar entidad AnswerStatus a ActivityTypeVersionStatus en API
 
 -----------------------------------------
 ---------------- FIXME? -----------------
@@ -187,13 +197,20 @@ TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO EL
 
 TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
 
+TODO PUSHEAR IMAGEN A DOCKERHUB
+
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
 # Diseñando Subscripción de ActivityType por parte del DEV.
 // TODO Verificar endpoint del backend cuando se quiere subscibir a la DB el ActivityType.
-// TODO Agregar estado ActivityType para que el desarrollador sepa si está bien, si está publicable, no revisado, etc.
+
 // TODO Determinar lógica de publicación y qué almacenamos.
-// TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no. AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
+
+// TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no. 
+// AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
+
+// TODO Migrar a VERSION como entidad todos los campos de Github de ActivityType. Además, un Date para escala temporal además de la cronología) 
+// para que ser capaces de tener un histórico de las distintas variaciones de Github.
 
 

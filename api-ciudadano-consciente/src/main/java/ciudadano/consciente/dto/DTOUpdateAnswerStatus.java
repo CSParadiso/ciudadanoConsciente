@@ -8,7 +8,7 @@ public class DTOUpdateAnswerStatus {
     private Integer answerStatusId;
 
     @Schema
-    private Integer status;
+    private Boolean status;
 
     public Integer getAnswerStatusId() {
         return answerStatusId;
@@ -18,12 +18,11 @@ public class DTOUpdateAnswerStatus {
         this.answerStatusId = answerStatusId;
     }
 
-    public Integer getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
-
 }

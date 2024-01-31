@@ -96,7 +96,7 @@ public class ResourceAnswer {
 
         Integer activity = dtoCreateAnswer.getActivity();
         Integer user = dtoCreateAnswer.getUserId();
-        Integer status = dtoCreateAnswer.getAnswersStatus();
+        Boolean status = dtoCreateAnswer.getStatus();
         if(!utilityVerifyRequestField.isValidField(activity) &&
             !utilityVerifyRequestField.isValidField(user) &&
             !utilityVerifyRequestField.isValidField(status)) {
@@ -142,11 +142,11 @@ public class ResourceAnswer {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
-        Integer status = dtoUpdateAnswerStatus.getStatus();
+        Boolean status = dtoUpdateAnswerStatus.getStatus();
         if(!utilityVerifyRequestField.isValidField(status)) {
             throw new HttpBadRequestException("Status required.");
         }
-
+        // TODO Podría simplemente negar lo que ya estaba
         audit.debug("Updating Answer Status" + id + "...");
         return Response.ok(serviceAnswer.updateStatus(id, dtoUpdateAnswerStatus)).build();
 

@@ -13,4 +13,8 @@ public class UtilityVerifyRequestField {
         return field != null &&  !"null".equals(field) && !field.trim().isEmpty();
     }
 
+    public boolean isValidField(Boolean field) {
+        return field != null;
+    }
+
 }

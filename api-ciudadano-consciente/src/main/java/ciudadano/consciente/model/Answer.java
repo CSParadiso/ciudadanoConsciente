@@ -29,16 +29,14 @@ public class Answer {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User userId;
 
-    @OneToOne
-    @JoinColumn(name = "status", referencedColumnName = "answers_status_id")
-    private AnswersStatus answersStatus;
+    private Boolean status;
 
     public Answer() {}
 
-    public Answer(Activity activity, User userId, AnswersStatus answersStatus) {
+    public Answer(Activity activity, User userId, Boolean status) {
         this.activity = activity;
         this.userId = userId;
-        this.answersStatus = answersStatus;
+        this.status = status;
         this.created = LocalDate.now();
         this.lastModified = null;
     }
@@ -83,11 +81,11 @@ public class Answer {
         this.userId = userId;
     }
 
-    public AnswersStatus getAnswersStatus() {
-        return answersStatus;
+    public Boolean getStatus() {
+        return status;
     }
 
-    public void setAnswersStatus(AnswersStatus answersStatus) {
-        this.answersStatus = answersStatus;
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }
