@@ -54,19 +54,18 @@ public class ServiceActivityType {
 
         audit.debug("Creating Activity Type.");
         String name = dtoCreateActivityType.getName();
-        String description = dtoCreateActivityType.getDescription();
-        String functionalTemplateUrl = dtoCreateActivityType.getFunctionalTemplateUrl();
         Integer creator = dtoCreateActivityType.getCreator();
 
         if(accessActivityType.existsName(name)) {
             throw new HttpBadRequestException("The name of the Activity Type already exists.");
         }
 
-        User user = accessUser.get(creator)
+        // Verify if user exists
+        accessUser.get(creator)
                 .orElseThrow( ()-> new HttpNotFoundException("User not found.") );
 
         audit.debug("Mapping DTO into EntityType.");
-        ActivityType activityType = mapperActivityType.dtoToEntity(name, description, functionalTemplateUrl, user);
+        ActivityType activityType = mapperActivityType.dtoToEntity(dtoCreateActivityType);
 
         audit.debug("Saving Activity Type " + activityType.getActivityTypeId() + ".");
         accessActivityType.save(activityType)
@@ -114,13 +113,19 @@ public class ServiceActivityType {
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOActivityType update(Integer id, DTOUpdateActivityType dtoUpdateActivityType) {
 
+        ActivityType activityType = accessActivityType.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found."));
+
         audit.debug("Updating Activity Type.");
         String name = dtoUpdateActivityType.getName();
         String description = dtoUpdateActivityType.getDescription();
-        String functionalTemplate = dtoUpdateActivityType.getFunctionalTemplateUrl();
-
-        ActivityType activityType = accessActivityType.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found."));
+        String githubUser = dtoUpdateActivityType.getGithubUser();
+        String githubRepo = dtoUpdateActivityType.getGithubRepo();
+        String githubPath = dtoUpdateActivityType.getGithubPath();
+        String githubShaModel = dtoUpdateActivityType.getGithubShaModel();
+        String githubShaTemplate = dtoUpdateActivityType.getGithubShaTemplate();
+        String githubShaReadme = dtoUpdateActivityType.getGithubShaReadme();
+        String githubShaThumbnail = dtoUpdateActivityType.getGithubShaThumbnail();
 
         if(utilityVerifyRequestField.isValidField(name)) {
             if(accessActivityType.existsName(name)) {
@@ -133,8 +138,32 @@ public class ServiceActivityType {
             activityType.setDescription(description);
         }
 
-        if(utilityVerifyRequestField.isValidField(functionalTemplate)) {
-            activityType.setFunctionalTemplateUrl(functionalTemplate);
+        if(utilityVerifyRequestField.isValidField(githubUser)) {
+            activityType.setGithubUser(githubUser);
+        }
+
+        if(utilityVerifyRequestField.isValidField(githubRepo)) {
+            activityType.setGithubRepo(githubRepo);
+        }
+
+        if(utilityVerifyRequestField.isValidField(githubPath)) {
+            activityType.setGithubPath(githubPath);
+        }
+
+        if(utilityVerifyRequestField.isValidField(githubShaModel)) {
+            activityType.setGithubShaModel(githubShaModel);
+        }
+
+        if(utilityVerifyRequestField.isValidField(githubShaTemplate)) {
+            activityType.setGithubShaTemplate(githubShaTemplate);
+        }
+
+        if(utilityVerifyRequestField.isValidField(githubShaReadme)) {
+            activityType.setGithubShaReadme(githubShaReadme);
+        }
+
+        if(utilityVerifyRequestField.isValidField(githubShaThumbnail)) {
+            activityType.setGithubShaThumbnail(githubShaThumbnail);
         }
 
         audit.debug("Saving Activity Type " + activityType.getActivityTypeId() + ".");

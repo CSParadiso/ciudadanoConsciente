@@ -122,9 +122,15 @@ Migrar de Entity a EntityType
 - Commit 2bd66d5
 #33 refactor de las excepciones creando el transferible de acuerdo a 'problem details' RFC7807 (https://www.rfc-editor.org/rfc/rfc7807.html)
 
-- Commit 
+- Commit 9ab5e48,fdb96a9 
 # Leer sobre autentication y authorization.
 # Levantar servidor Keyckloac
+
+- Commit 5152710
+# feat: Verificar que existan los archivos que requerimos (README.md, template.js, model.json y thumbnail.png) en el repo fetcheado.
+
+- Commit
+# feat-refactor: Agregar githubUser, githubRepo y githubPath, githubShaModel, githubShaTemplate, githubShaReadme y githubShaThumbnail en  reemplazo de functionalTemplateUrl.
 
 -----------------------------------------
 ---------------- FIXME? -----------------
@@ -185,9 +191,8 @@ TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cas
 ------------------- DOING --------------
 ----------------------------------------
 # Diseñando Subscripción de ActivityType por parte del DEV.
-// TODO Verificar que existan los archivos que requerimos en el repo fetcheado.
+// TODO Verificar endpoint del backend cuando se quiere subscibir a la DB el ActivityType.
 // TODO Agregar estado ActivityType para que el desarrollador sepa si está bien, si está publicable, no revisado, etc.
-// TODO Agregar githubUser, githubRepo y githubPath en lugar de la URL. Además es necesario el hash de cada uno de los elementos.
 // TODO Determinar lógica de publicación y qué almacenamos.
 // TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no. AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
 

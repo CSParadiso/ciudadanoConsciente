@@ -88,12 +88,24 @@ public class ResourceActivityType {
 
         String name = dtoCreateActivityType.getName();
         String description = dtoCreateActivityType.getDescription();
-        String functionalTemplateUrl = dtoCreateActivityType.getFunctionalTemplateUrl();
         Integer creator = dtoCreateActivityType.getCreator();
+        String githubUser = dtoCreateActivityType.getGithubUser();
+        String githubRepo = dtoCreateActivityType.getGithubRepo();
+        String githubPath = dtoCreateActivityType.getGithubPath();
+        String githubShaModel = dtoCreateActivityType.getGithubShaModel();
+        String githubShaTemplate = dtoCreateActivityType.getGithubShaTemplate();
+        String githubShaReadme = dtoCreateActivityType.getGithubShaReadme();
+        String githubShaThumbnail = dtoCreateActivityType.getGithubShaThumbnail();
         if(!utilityVerifyRequestField.isValidField(name) ||
                 !utilityVerifyRequestField.isValidField(description) ||
-                !utilityVerifyRequestField.isValidField(functionalTemplateUrl) ||
-                !utilityVerifyRequestField.isValidField(creator)) {
+                !utilityVerifyRequestField.isValidField(creator) ||
+                !utilityVerifyRequestField.isValidField(githubUser) ||
+                !utilityVerifyRequestField.isValidField(githubRepo) ||
+                !utilityVerifyRequestField.isValidField(githubPath) ||
+                !utilityVerifyRequestField.isValidField(githubShaModel) ||
+                !utilityVerifyRequestField.isValidField(githubShaTemplate) ||
+                !utilityVerifyRequestField.isValidField(githubShaReadme) ||
+                !utilityVerifyRequestField.isValidField(githubShaThumbnail)) {
             throw new HttpBadRequestException("All fields required.");
         }
 
@@ -133,10 +145,22 @@ public class ResourceActivityType {
 
         String name = dtoUpdateActivityType.getName();
         String description = dtoUpdateActivityType.getDescription();
-        String functionalTemplate = dtoUpdateActivityType.getFunctionalTemplateUrl();
+        String githubUser = dtoUpdateActivityType.getGithubUser();
+        String githubRepo = dtoUpdateActivityType.getGithubRepo();
+        String githubPath = dtoUpdateActivityType.getGithubPath();
+        String githubShaModel = dtoUpdateActivityType.getGithubShaModel();
+        String githubShaTemplate = dtoUpdateActivityType.getGithubShaTemplate();
+        String githubShaReadme = dtoUpdateActivityType.getGithubShaReadme();
+        String githubShaThumbnail = dtoUpdateActivityType.getGithubShaThumbnail();
         if(!utilityVerifyRequestField.isValidField(name) &&
                 !utilityVerifyRequestField.isValidField(description) &&
-                !utilityVerifyRequestField.isValidField(functionalTemplate)) {
+                !utilityVerifyRequestField.isValidField(githubUser) &&
+                !utilityVerifyRequestField.isValidField(githubRepo) &&
+                !utilityVerifyRequestField.isValidField(githubPath) &&
+                !utilityVerifyRequestField.isValidField(githubShaModel) &&
+                !utilityVerifyRequestField.isValidField(githubShaTemplate) &&
+                !utilityVerifyRequestField.isValidField(githubShaReadme) &&
+                !utilityVerifyRequestField.isValidField(githubShaThumbnail)) {
             throw new HttpBadRequestException("No updates to make.");
         }
 

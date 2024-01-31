@@ -1,6 +1,7 @@
 package ciudadano.consciente.mapper;
 
 import ciudadano.consciente.dto.DTOActivityType;
+import ciudadano.consciente.dto.DTOCreateActivityType;
 import ciudadano.consciente.model.ActivityType;
 import ciudadano.consciente.model.User;
 import org.mapstruct.*;
@@ -16,5 +17,8 @@ public interface MapperActivityType {
     DTOActivityType entityToDto(ActivityType activityType);
 
     List<DTOActivityType> entityToDto(List<ActivityType> activityTypes);
+
+    @Mapping(target = "creator.userId", source = "creator")
+    ActivityType dtoToEntity(DTOCreateActivityType dtoCreateActivityType);
 
 }

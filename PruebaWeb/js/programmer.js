@@ -14,6 +14,7 @@ async function handleSubscriptionFormSubmission(form) {
     const response = await fetch(`https://api.github.com/repos/${jsonObject.user}/${jsonObject.repo}/contents/${jsonObject.path}`, {
       headers: {
         'Accept': 'application/vnd.github.v3+json',
+        'Authorization': 'Bearer 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' // TODO Borrar esto
       },
     });
 
@@ -22,8 +23,7 @@ async function handleSubscriptionFormSubmission(form) {
       console.log('Files exist:', responseData);
 
       // Verify if files required are in the direcotory fetched
-      // Check if specific files exist in the repository
-      const requiredFiles = ["README.md", "model.json", "template.js", "thumbnail.png"];
+      const requiredFiles = ["readme.md", "model.json", "template.js", "thumbnail.png"];
       const existingFiles = responseData.filter(file => requiredFiles.includes(file.name));
 
       if (existingFiles.length === requiredFiles.length) {

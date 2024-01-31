@@ -76,7 +76,13 @@ create table app.activity_types (
 	name varchar(100) not null unique,
 	description varchar(255) not null, 
 	creator integer default 1 references app.users on delete set default not null,
-	functional_template_url varchar(500) not null, -- donde viven index.js/jsx  y model.json
+	github_user varchar(100) not null,
+	github_repo varchar(100) not null,
+	github_path varchar(255) not null, -- a las carpeta donde viven los archivos
+	github_sha_model varchar(100) not null, -- SHA de model.json
+	github_sha_template varchar(100) not null, -- SHA de template.js
+	github_sha_readme varchar(100) not null, -- SHA de README.md
+	github_sha_thumbnail varchar(100) not null -- SHA de thumbnail.png
 );
 
 ----------------------
