@@ -76,6 +76,16 @@ create table app.activity_types (
 	name varchar(100) not null unique,
 	description varchar(255) not null, 
 	creator integer default 1 references app.users on delete set default not null,
+);
+
+	-- Tabla activity_type_version
+create table app.activity_types_version (
+	activity_type_version_id integer generated always as identity primary key, 
+	activity_type_id integer default 1 references app.activity_types on delete set default not null,
+	activity_type_version_status_id integer default 7 references app.activity_type_version_status on delete set default not null,
+	version_number integer not null, -- disparado por trigger 
+	staged_date date default CURRENT_DATE not null, -- cuando es posteado por vez primera
+	last_modified_status_date date default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
 	github_user varchar(100) not null,
 	github_repo varchar(100) not null,
 	github_path varchar(255) not null, -- a las carpeta donde viven los archivos
@@ -84,6 +94,7 @@ create table app.activity_types (
 	github_sha_readme varchar(100) not null, -- SHA de README.md
 	github_sha_thumbnail varchar(100) not null -- SHA de thumbnail.png
 );
+
 
 ----------------------
 --| EJEMPLO BITEA  |--
@@ -174,4 +185,29 @@ create table app.questions_tags (
 ); 
 
 
+----------------------
+-----| TRIGGERS |-----
+----------------------
 
+CREATE OR REPLACE FUNCTION increment_activity_type_version()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Calculate the next version number based on the number of existing versions for the same activity type.
+    NEW.version_number = ( -- the new version_number
+        SELECT COALESCE(MAX(version_number), 0) + 1 -- is equal to the max version number + 1
+        FROM app.activity_types_version
+        WHERE activity_type_id = NEW.activity_type_id -- when the activity_type is the same
+    );
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+----------------------
+-----| FUNCTIONS |----
+----------------------
+
+create trigger autoincrement_of_activity_type_version 
+before insert on app.activity_type_version 
+for each row 
+execute function increment_activity_type_version();

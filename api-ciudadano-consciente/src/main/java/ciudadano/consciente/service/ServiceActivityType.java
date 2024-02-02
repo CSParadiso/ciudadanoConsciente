@@ -119,13 +119,6 @@ public class ServiceActivityType {
         audit.debug("Updating Activity Type.");
         String name = dtoUpdateActivityType.getName();
         String description = dtoUpdateActivityType.getDescription();
-        String githubUser = dtoUpdateActivityType.getGithubUser();
-        String githubRepo = dtoUpdateActivityType.getGithubRepo();
-        String githubPath = dtoUpdateActivityType.getGithubPath();
-        String githubShaModel = dtoUpdateActivityType.getGithubShaModel();
-        String githubShaTemplate = dtoUpdateActivityType.getGithubShaTemplate();
-        String githubShaReadme = dtoUpdateActivityType.getGithubShaReadme();
-        String githubShaThumbnail = dtoUpdateActivityType.getGithubShaThumbnail();
 
         if(utilityVerifyRequestField.isValidField(name)) {
             if(accessActivityType.existsName(name)) {
@@ -136,34 +129,6 @@ public class ServiceActivityType {
 
         if(utilityVerifyRequestField.isValidField(description)) {
             activityType.setDescription(description);
-        }
-
-        if(utilityVerifyRequestField.isValidField(githubUser)) {
-            activityType.setGithubUser(githubUser);
-        }
-
-        if(utilityVerifyRequestField.isValidField(githubRepo)) {
-            activityType.setGithubRepo(githubRepo);
-        }
-
-        if(utilityVerifyRequestField.isValidField(githubPath)) {
-            activityType.setGithubPath(githubPath);
-        }
-
-        if(utilityVerifyRequestField.isValidField(githubShaModel)) {
-            activityType.setGithubShaModel(githubShaModel);
-        }
-
-        if(utilityVerifyRequestField.isValidField(githubShaTemplate)) {
-            activityType.setGithubShaTemplate(githubShaTemplate);
-        }
-
-        if(utilityVerifyRequestField.isValidField(githubShaReadme)) {
-            activityType.setGithubShaReadme(githubShaReadme);
-        }
-
-        if(utilityVerifyRequestField.isValidField(githubShaThumbnail)) {
-            activityType.setGithubShaThumbnail(githubShaThumbnail);
         }
 
         audit.debug("Saving Activity Type " + activityType.getActivityTypeId() + ".");
