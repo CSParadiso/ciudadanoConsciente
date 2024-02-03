@@ -142,11 +142,14 @@ refactor: Modificar columna status en tabla Answer para que sea solo booleano.
 refactor: Modificar atributo status en entidad Answer en API
 refactor: Cambiar entidad AnswerStatus a ActivityTypeVersionStatus en API
 
-- Commit
+- Commit 6923337
 feat: Añadir activity_type_version a la BD (con trigger a función de autoincremento para versiones del mismo nivel).
 feat: Añadir version a lógica de entidades Votables (DB y API)
 refactor: Migrar a VERSION como entidad todos los campos de Github de ActivityType. Además, un Date de creado y un Date de última modificación de estado.
 
+- Commit 
+feat: Añadida restricción de unique para el conjunto de los campos de github de una versión (en la DB y en la API).
+refactor: Modificar endpoints de ActivityType y ActivityTypeVersion para corroborar coherencia con DB y modelo.
 
 -----------------------------------------
 ---------------- FIXME? -----------------
@@ -162,6 +165,8 @@ FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quiz
 
 FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
 FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
+
+FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -219,3 +224,8 @@ TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 
 // Chusmear TYNYPNG extension en vscode (es una pavada creo)
 
+
+
+
+TODO Chusmear Api de GitHub para recuperar archivos a partir de los SHA.
+Esto va de la mano de consumir la api desde el backend para abstraer al front.

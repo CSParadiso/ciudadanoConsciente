@@ -92,7 +92,9 @@ create table app.activity_types_version (
 	github_sha_model varchar(100) not null, -- SHA de model.json
 	github_sha_template varchar(100) not null, -- SHA de template.js
 	github_sha_readme varchar(100) not null, -- SHA de README.md
-	github_sha_thumbnail varchar(100) not null -- SHA de thumbnail.png
+	github_sha_thumbnail varchar(100) not null, -- SHA de thumbnail.png
+	unique (github_user, github_repo, github_path, github_sha_model, github_sha_template, github_sha_readme, github_sha_thumbnail); -- todos los campos de Github deben serun conjunto único
+
 );
 
 

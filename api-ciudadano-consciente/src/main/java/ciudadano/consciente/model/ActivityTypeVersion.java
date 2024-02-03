@@ -6,7 +6,13 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(schema = "app", name = "activity_type_version")
+@Table(schema = "app", name = "activity_type_version",
+        uniqueConstraints = {
+                @UniqueConstraint( // We cant have a version with the same identifiers of Github
+                        name = "unique_github_info",
+                        columnNames = {"github_user", "github_repo", "github_path", "github_sha_model", "github_sha_template", "github_sha_readme", "github_sha_thumbnail"}
+                )
+        })
 public class ActivityTypeVersion {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +58,10 @@ public class ActivityTypeVersion {
     @Column(name = "github_sha_thumbnail")
     private String githubShaThumbnail;
 
-    public ActivityTypeVersion() {}
+    public ActivityTypeVersion() {
+        this.stagedDate = LocalDate.now();
+        this.lastModifiedStatusDate = LocalDate.now();
+    }
 
     public Integer getActivityTypeVersionId() {
         return activityTypeVersionId;

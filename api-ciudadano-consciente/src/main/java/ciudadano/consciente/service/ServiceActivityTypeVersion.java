@@ -14,6 +14,7 @@ import ciudadano.consciente.model.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.time.LocalDate;
@@ -86,8 +87,13 @@ public class ServiceActivityTypeVersion {
         ActivityTypeVersion activityTypeVersion = mapperActivityTypeVersion.dtoToEntity(dtoCreateActivityTypeVersion);
 
         audit.debug("Saving Version of Activity Type");
-        accessActivityTypeVersion.save(activityTypeVersion)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist Version of Activity Type."));
+        try {
+            accessActivityTypeVersion.save(activityTypeVersion);
+        } catch (ConstraintViolationException e) {
+            throw new HttpBadRequestException("Github version already exists.");
+        } catch (Exception e) {
+            throw new HttpInternalServerException("Failed to persist Version of Activity Type.");
+        }
 
         audit.debug("Mapping DTO into Entity.");
         return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
@@ -135,6 +141,7 @@ public class ServiceActivityTypeVersion {
 
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
     public DTOVote vote(Integer idActivityTypeVersion, Integer idUser) {
 
         audit.debug("Retrieving Entity Type");

@@ -10,25 +10,25 @@ public class DTOCreateActivityTypeVersion {
     @Schema(defaultValue = "")
     private Integer activityTypeVersionStatusId;
 
-    @Schema
+    @Schema(defaultValue = "")
     private String githubUser;
 
-    @Schema
+    @Schema(defaultValue = "")
     private String githubRepo;
 
-    @Schema
+    @Schema(defaultValue = "")
     private String githubPath;
 
-    @Schema
+    @Schema(defaultValue = "")
     private String githubShaModel;
 
-    @Schema
+    @Schema(defaultValue = "")
     private String githubShaTemplate;
 
-    @Schema
+    @Schema(defaultValue = "")
     private String githubShaReadme;
 
-    @Schema
+    @Schema(defaultValue = "")
     private String githubShaThumbnail;
 
     public Integer getActivityTypeId() {

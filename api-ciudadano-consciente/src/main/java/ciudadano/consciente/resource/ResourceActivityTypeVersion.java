@@ -11,10 +11,12 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
 import java.net.URI;
 
+@Tag(name = "Activity Type Version Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -34,7 +36,7 @@ public class ResourceActivityTypeVersion {
     UtilityVerifyRequestField utilityVerifyRequestField;
 
     @GET
-    @Path("{activity-type}")
+    @Path("activity-type/{activity-type}")
     @Operation(summary = "Retrieve all Versions of a Activity Type.")
     @APIResponse(
             responseCode = "200",
@@ -120,18 +122,18 @@ public class ResourceActivityTypeVersion {
 
     @PATCH
     @Path("{id}")
-    @Operation(summary = "Update an Activity Type Version.")
+    @Operation(summary = "Update the Status of an Activity Type Version.")
     @APIResponse(
             responseCode = "200",
-            description = "Activity Types Version successfully updated."
+            description = "Status of Activity Types Version successfully updated."
     )
     @APIResponse(
             responseCode = "400",
-            description = "Failed to update Activity Type Version. Verify 'Warning' Header."
+            description = "Failed to update Status of Activity Type Version. Verify 'Warning' Header."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Failed to delete Activity Type Version. Verify 'Warning' Header."
+            description = "Failed to update Status Activity Type Version. Verify 'Warning' Header."
     )
     public Response update(@PathParam("id") Integer id,
                            DTOUpdateActivityTypeVersion dtoUpdateActivityTypeVersion) {
@@ -152,7 +154,7 @@ public class ResourceActivityTypeVersion {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
 
-        audit.debug("Updating Activity Type Version " + id + "...");
+        audit.debug("Updating Status of Activity Type Version " + id + "...");
         return Response.ok(serviceActivityTypeVersion.update(id, dtoUpdateActivityTypeVersion)).build();
 
     }
