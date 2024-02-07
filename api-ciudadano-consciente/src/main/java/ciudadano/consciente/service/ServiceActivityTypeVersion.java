@@ -1,16 +1,15 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
-import ciudadano.consciente.dto.DTOActivityTypeVersion;
-import ciudadano.consciente.dto.DTOCreateActivityTypeVersion;
-import ciudadano.consciente.dto.DTOUpdateActivityTypeVersion;
-import ciudadano.consciente.dto.DTOVote;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperActivityTypeVersion;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -50,13 +49,43 @@ public class ServiceActivityTypeVersion {
     @Inject
     MapperVote mapperVote;
 
-    public List<DTOActivityTypeVersion> getAllByActivityType(Integer activityTypeSearched) {
+    @Inject
+    ServiceVersionServer serviceVersionServer;
+
+    @Inject
+    UtilityVerifyRequestField utilityVerifyRequestField;
+
+    public List<DTOActivityTypeVersion> getAll(Integer status) {
+
+        audit.debug("Retrieving all Version...");
+        ActivityTypeVersionStatus activityTypeVersionStatus = null;
+        if(utilityVerifyRequestField.isValidField(status)) {
+            activityTypeVersionStatus = accessActivityTypeVersionStatus.get(status)
+                    .orElseThrow( ()-> new HttpNoContentException("Status of Version not found.") );
+        }
+
+
+        return (activityTypeVersionStatus == null)  ?
+                mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAll())
+                : mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAllByStatus(activityTypeVersionStatus));
+
+    }
+
+    public List<DTOActivityTypeVersion> getAllByActivityType(Integer activityTypeSearched, Integer status) {
+
+        ActivityTypeVersionStatus activityTypeVersionStatus = null;
+        if(utilityVerifyRequestField.isValidField(status)) {
+             activityTypeVersionStatus = accessActivityTypeVersionStatus.get(status)
+                    .orElseThrow( ()-> new HttpNoContentException("Status of Activity Type Version not found."));
+        }
 
         ActivityType activityType = accessActivityType.get(activityTypeSearched)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found"));
+                .orElseThrow( ()-> new HttpNoContentException("Activity Type not found"));
 
         audit.debug("Getting all Activity Type Versions");
-        return mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAllByActivityType(activityType));
+        return (activityTypeVersionStatus == null)  ?
+                mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAllByActivityType(activityType))
+                : mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAllByActivityTypeAndStatus(activityType, activityTypeVersionStatus));
 
     }
 
@@ -71,7 +100,7 @@ public class ServiceActivityTypeVersion {
 
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
+    /*@Transactional(Transactional.TxType.REQUIRED)
     public DTOActivityTypeVersion create(DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
 
         Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
@@ -90,7 +119,7 @@ public class ServiceActivityTypeVersion {
         try {
             accessActivityTypeVersion.save(activityTypeVersion);
         } catch (ConstraintViolationException e) {
-            throw new HttpBadRequestException("Github version already exists.");
+            throw new HttpBadRequestException("GithubMetadata version already exists.");
         } catch (Exception e) {
             throw new HttpInternalServerException("Failed to persist Version of Activity Type.");
         }
@@ -98,7 +127,7 @@ public class ServiceActivityTypeVersion {
         audit.debug("Mapping DTO into Entity.");
         return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
 
-    }
+    }*/
 
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOActivityTypeVersion update(Integer id, DTOUpdateActivityTypeVersion dtoUpdateActivityTypeVersion) {
@@ -171,7 +200,33 @@ public class ServiceActivityTypeVersion {
 
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOActivityTypeVersion create(String serverProvider, DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
 
+        audit.debug("Retrieving Activity Type.");
+        Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
+        ActivityType activityType = accessActivityType.get(activityTypeId)
+                    .orElseThrow(() -> new HttpNoContentException("No content for ActivityType."));
 
+        audit.debug("Sending parameters to version server.");
+        ActivityTypeVersion activityTypeVersion = serviceVersionServer.create(serverProvider, dtoCreateActivityTypeVersion);
+
+        audit.debug("Setting version values not related to server.");
+        activityTypeVersion.setActivityTypeVersionStatusId(accessActivityTypeVersionStatus.get(1)
+                .orElseThrow(()-> new HttpNoContentException("No content for Status of Activity Type Version.")));
+        activityTypeVersion.setActivityTypeId(activityType);
+
+        audit.debug("Saving new Activity Type Version");
+        try {
+            accessActivityTypeVersion.save(activityTypeVersion)
+                    .orElseThrow( ()-> new HttpInternalServerException("Failed to create new Activity Type Version.") );
+        } catch (ConstraintViolationException e) {
+            audit.debug("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
+            throw new HttpBadRequestException("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
+        }
+
+        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
+
+    }
 
 }

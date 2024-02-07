@@ -17,14 +17,14 @@ public class AccessActivityTypeVersionStatus implements PanacheRepositoryBase<Ac
 
     public List<ActivityTypeVersionStatus> getAll() {
 
-        audit.debug("Trying to retrieve all categories of Answers Status");
+        audit.debug("Trying to retrieve all categories of Version Status");
         return findAll().stream().toList();
 
     }
 
     public Optional<ActivityTypeVersionStatus> get(Integer id) {
 
-        audit.debug("Trying to retrieve category of Answer Status " + id + ".");
+        audit.debug("Trying to retrieve category of Version Status " + id + ".");
         return findByIdOptional(id);
 
     }
@@ -46,7 +46,7 @@ public class AccessActivityTypeVersionStatus implements PanacheRepositoryBase<Ac
 
     public boolean remove(Integer answersStatusId) {
 
-        audit.debug("Trying to delete Answer Status  " + answersStatusId  + ".");
+        audit.debug("Trying to delete Version Status  " + answersStatusId  + ".");
         return deleteById(answersStatusId);
 
     }

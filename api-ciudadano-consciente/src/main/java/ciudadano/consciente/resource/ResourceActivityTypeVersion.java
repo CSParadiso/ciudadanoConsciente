@@ -42,10 +42,24 @@ public class ResourceActivityTypeVersion {
             responseCode = "200",
             description = "Versions of Activity Type successfully retrieved."
     )
-    public Response getAllByActivityType(@PathParam("activity-type") Integer activityType) {
+    public Response getAllByActivityType(@PathParam("activity-type") Integer activityType,
+                                         @QueryParam("status") Integer status) {
 
         audit.debug("Getting all the Versions of a Activity Type...");
-        return Response.ok(serviceActivityTypeVersion.getAllByActivityType(activityType)).build();
+        return Response.ok(serviceActivityTypeVersion.getAllByActivityType(activityType, status)).build();
+
+    }
+
+    @GET
+    @Operation(summary = "Retrieve all Versions (optional: status)")
+    @APIResponse(
+            responseCode = "200",
+            description = "Status of Versions successfully retrieved."
+    )
+    public Response getAllByStatus(@QueryParam("status") Integer status) {
+
+        audit.debug("Getting all the Versions...");
+        return Response.ok(serviceActivityTypeVersion.getAll(status)).build();
 
     }
 
@@ -68,7 +82,8 @@ public class ResourceActivityTypeVersion {
     }
 
     @POST
-    @Operation(summary = "Create an Activity Type Version.")
+    @Path("{serverProvider}")
+    @Operation(summary = "Create Activity Type Version.")
     @APIResponse(
             responseCode = "201",
             description = "Activity Type Version successfully created."
@@ -78,40 +93,39 @@ public class ResourceActivityTypeVersion {
             description = "Failed to create Activity Type Version. Verify 'Warning' Header."
     )
     @APIResponse(
-            responseCode = "500",
+            responseCode = "404",
             description = "Failed to create Activity Type Version. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
+    @APIResponse(
+            responseCode = "502",
+            description = "Failed to retrieve files from version server. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to create new Activity Type Version. Verify 'Warning' Header."
+    )
+    public Response create(@PathParam("serverProvider") String serverProvider,
+                           DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
 
         if(dtoCreateActivityTypeVersion == null) {
             throw new HttpBadRequestException("Body of request required.");
         }
 
-        Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
-        Integer activityTypeVersionStatusId = dtoCreateActivityTypeVersion.getActivityTypeVersionStatusId();
-        String githubUser = dtoCreateActivityTypeVersion.getGithubUser();
-        String githubRepo = dtoCreateActivityTypeVersion.getGithubRepo();
-        String githubPath = dtoCreateActivityTypeVersion.getGithubPath();
-        String githubShaModel = dtoCreateActivityTypeVersion.getGithubShaModel();
-        String githubShaTemplate = dtoCreateActivityTypeVersion.getGithubShaTemplate();
-        String githubShaReadme = dtoCreateActivityTypeVersion.getGithubShaReadme();
-        String githubShaThumbnail = dtoCreateActivityTypeVersion.getGithubShaThumbnail();
-        if(!utilityVerifyRequestField.isValidField(activityTypeId) ||
-                !utilityVerifyRequestField.isValidField(activityTypeVersionStatusId) ||
-                !utilityVerifyRequestField.isValidField(githubUser) ||
-                !utilityVerifyRequestField.isValidField(githubRepo) ||
-                !utilityVerifyRequestField.isValidField(githubPath) ||
-                !utilityVerifyRequestField.isValidField(githubShaModel) ||
-                !utilityVerifyRequestField.isValidField(githubShaTemplate) ||
-                !utilityVerifyRequestField.isValidField(githubShaReadme) ||
-                !utilityVerifyRequestField.isValidField(githubShaThumbnail)) {
+        Integer activityType = dtoCreateActivityTypeVersion.getActivityTypeId();
+        String user = dtoCreateActivityTypeVersion.getUser();
+        String repo = dtoCreateActivityTypeVersion.getRepo();
+        String path = dtoCreateActivityTypeVersion.getPath();
+        if(!utilityVerifyRequestField.isValidField(activityType) ||
+                !utilityVerifyRequestField.isValidField(user) ||
+                !utilityVerifyRequestField.isValidField(repo) ||
+                !utilityVerifyRequestField.isValidField(path)) {
             throw new HttpBadRequestException("All fields required.");
         }
 
-        audit.debug("Creating Activity Type Version...");
-        DTOActivityTypeVersion activityTypeVersion = serviceActivityTypeVersion.create(dtoCreateActivityTypeVersion);
+        audit.debug("Verifying files for new version...");
+        DTOActivityTypeVersion activityTypeVersion = serviceActivityTypeVersion.create(serverProvider, dtoCreateActivityTypeVersion);
 
-        audit.debug("Creating URI...");
+        audit.debug("Creating URI for new Activity Type Version");
         URI uri = URI.create(BASE_PATH_RESOURCE + activityTypeVersion.getActivityTypeVersionId());
 
         return Response.created(uri)

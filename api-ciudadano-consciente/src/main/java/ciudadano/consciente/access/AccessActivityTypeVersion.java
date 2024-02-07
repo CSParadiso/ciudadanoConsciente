@@ -2,6 +2,7 @@ package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.ActivityType;
 import ciudadano.consciente.model.ActivityTypeVersion;
+import ciudadano.consciente.model.ActivityTypeVersionStatus;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -24,6 +25,11 @@ public class AccessActivityTypeVersion implements PanacheRepositoryBase<Activity
         audit.debug("Trying to retrieve all versions of Activity Type");
         return find("activityTypeId", activityType).list();
 
+    }
+
+    public List<ActivityTypeVersion> getAllByActivityTypeAndStatus(ActivityType activityType, ActivityTypeVersionStatus status) {
+        audit.debug("Trying to retrieve all versions of certain Status of an Activity Type.");
+        return find("activityTypeId = ?1 and activityTypeVersionStatusId = ?2", activityType, status).list();
     }
 
     public Optional<ActivityTypeVersion> get(Integer id) {
@@ -52,6 +58,20 @@ public class AccessActivityTypeVersion implements PanacheRepositoryBase<Activity
 
         audit.debug("Trying to delete Version of Activty Type");
         return deleteById(activityTypeVersionId);
+
+    }
+
+    public List<ActivityTypeVersion> getAllByStatus(ActivityTypeVersionStatus activityTypeVersionStatus) {
+
+        audit.debug("Trying to retrieve all Versions of a certain Status.");
+        return find("activityTypeVersionStatusId", activityTypeVersionStatus).stream().toList();
+
+    }
+
+    public List<ActivityTypeVersion> getAll() {
+
+        audit.debug("Trying to retrieve all Versions.");
+        return findAll().stream().toList();
 
     }
 

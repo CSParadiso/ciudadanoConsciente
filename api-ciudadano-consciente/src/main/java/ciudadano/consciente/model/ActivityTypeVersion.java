@@ -8,9 +8,9 @@ import java.time.LocalDate;
 @Entity
 @Table(schema = "app", name = "activity_type_version",
         uniqueConstraints = {
-                @UniqueConstraint( // We cant have a version with the same identifiers of Github
-                        name = "unique_github_info",
-                        columnNames = {"github_user", "github_repo", "github_path", "github_sha_model", "github_sha_template", "github_sha_readme", "github_sha_thumbnail"}
+                @UniqueConstraint( // We cant have a version with the same identifiers of GithubMetadata
+                        name = "unique_info",
+                        columnNames = {"username", "repo", "directory_path", "sha_model", "sha_template", "sha_readme", "sha_thumbnail"}
                 )
         })
 public class ActivityTypeVersion {
@@ -37,26 +37,26 @@ public class ActivityTypeVersion {
     @Column(name = "last_modified_status_date")
     private LocalDate lastModifiedStatusDate;
 
-    @Column(name = "github_user")
-    private String githubUser;
+    @Column(name = "username")
+    private String user;
 
-    @Column(name = "github_repo")
-    private String githubRepo;
+    @Column()
+    private String repo;
 
-    @Column(name = "github_path")
-    private String githubPath;
+    @Column(name = "directory_path")
+    private String path;
 
-    @Column(name = "github_sha_model")
-    private String githubShaModel;
+    @Column(name = "sha_model")
+    private String shaModel;
 
-    @Column(name = "github_sha_template")
-    private String githubShaTemplate;
+    @Column(name = "sha_template")
+    private String shaTemplate;
 
-    @Column(name = "github_sha_readme")
-    private String githubShaReadme;
+    @Column(name = "sha_readme")
+    private String shaReadme;
 
-    @Column(name = "github_sha_thumbnail")
-    private String githubShaThumbnail;
+    @Column(name = "sha_thumbnail")
+    private String shaThumbnail;
 
     public ActivityTypeVersion() {
         this.stagedDate = LocalDate.now();
@@ -111,60 +111,59 @@ public class ActivityTypeVersion {
         this.lastModifiedStatusDate = lastModifiedStatusDate;
     }
 
-    public String getGithubUser() {
-        return githubUser;
+    public String getUser() {
+        return user;
     }
 
-    public void setGithubUser(String githubUser) {
-        this.githubUser = githubUser;
+    public void setUser(String user) {
+        this.user = user;
     }
 
-    public String getGithubRepo() {
-        return githubRepo;
+    public String getRepo() {
+        return repo;
     }
 
-    public void setGithubRepo(String githubRepo) {
-        this.githubRepo = githubRepo;
+    public void setRepo(String repo) {
+        this.repo = repo;
     }
 
-    public String getGithubPath() {
-        return githubPath;
+    public String getPath() {
+        return path;
     }
 
-    public void setGithubPath(String githubPath) {
-        this.githubPath = githubPath;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public String getGithubShaModel() {
-        return githubShaModel;
+    public String getShaModel() {
+        return shaModel;
     }
 
-    public void setGithubShaModel(String githubShaModel) {
-        this.githubShaModel = githubShaModel;
+    public void setShaModel(String shaModel) {
+        this.shaModel = shaModel;
     }
 
-    public String getGithubShaTemplate() {
-        return githubShaTemplate;
+    public String getShaTemplate() {
+        return shaTemplate;
     }
 
-    public void setGithubShaTemplate(String githubShaTemplate) {
-        this.githubShaTemplate = githubShaTemplate;
+    public void setShaTemplate(String shaTemplate) {
+        this.shaTemplate = shaTemplate;
     }
 
-    public String getGithubShaReadme() {
-        return githubShaReadme;
+    public String getShaReadme() {
+        return shaReadme;
     }
 
-    public void setGithubShaReadme(String githubShaReadme) {
-        this.githubShaReadme = githubShaReadme;
+    public void setShaReadme(String shaReadme) {
+        this.shaReadme = shaReadme;
     }
 
-    public String getGithubShaThumbnail() {
-        return githubShaThumbnail;
+    public String getShaThumbnail() {
+        return shaThumbnail;
     }
 
-    public void setGithubShaThumbnail(String githubShaThumbnail) {
-        this.githubShaThumbnail = githubShaThumbnail;
+    public void setShaThumbnail(String shaThumbnail) {
+        this.shaThumbnail = shaThumbnail;
     }
-
 }

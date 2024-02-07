@@ -50,3 +50,10 @@ Con esta información somos capaces de verificar si dentro del enlace que introd
 
 Ejemplo: deberán ingresar USERNAME_GITHUB y REPOSITORY_NAME y el PATH/TO/,del cual nosotros podremos inferir la URL y verificar que existen los tres archivos requeridos con el nombre y formato requeridos
 Por otra parte, en la web deberán especificar el nombre(100 max) y una breve descripción(255 max) del template.
+
+
+
+
+PARA PODER VERIFICAR EL SHA LOCAL DE UN ARCHIVO PUNTUAL SE PUEDE USAR EL COMANDO
+git hash-object <filename>
+

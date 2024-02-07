@@ -11,14 +11,13 @@ import java.util.List;
 @Mapper
 public interface MapperActivityTypeVersion {
 
-    @Mapping(target = "activityTypeId", source = "activityTypeId.activityTypeId")
-    @Mapping(target = "activityTypeVersionStatusId", source = "activityTypeVersionStatusId.activityTypeVersionStatusId")
+    @Mapping(target = "activityTypeId", source = "activityTypeVersion.activityTypeId.activityTypeId")
+    @Mapping(target = "activityTypeVersionStatusId", source = "activityTypeVersion.activityTypeVersionStatusId.activityTypeVersionStatusId")
     DTOActivityTypeVersion entityToDto(ActivityTypeVersion activityTypeVersion);
 
     List<DTOActivityTypeVersion> entityToDto(List<ActivityTypeVersion> allByActivityType);
 
     @Mapping(target = "activityTypeId.activityTypeId", source = "activityTypeId")
-    @Mapping(target = "activityTypeVersionStatusId.activityTypeVersionStatusId", source = "activityTypeVersionStatusId")
     ActivityTypeVersion dtoToEntity(DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion);
 
 }

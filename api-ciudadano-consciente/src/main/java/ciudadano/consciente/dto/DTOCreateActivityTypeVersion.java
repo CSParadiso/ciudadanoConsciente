@@ -8,28 +8,13 @@ public class DTOCreateActivityTypeVersion {
     private Integer activityTypeId;
 
     @Schema(defaultValue = "")
-    private Integer activityTypeVersionStatusId;
+    private String user;
 
     @Schema(defaultValue = "")
-    private String githubUser;
+    private String repo;
 
     @Schema(defaultValue = "")
-    private String githubRepo;
-
-    @Schema(defaultValue = "")
-    private String githubPath;
-
-    @Schema(defaultValue = "")
-    private String githubShaModel;
-
-    @Schema(defaultValue = "")
-    private String githubShaTemplate;
-
-    @Schema(defaultValue = "")
-    private String githubShaReadme;
-
-    @Schema(defaultValue = "")
-    private String githubShaThumbnail;
+    private String path;
 
     public Integer getActivityTypeId() {
         return activityTypeId;
@@ -39,67 +24,27 @@ public class DTOCreateActivityTypeVersion {
         this.activityTypeId = activityTypeId;
     }
 
-    public Integer getActivityTypeVersionStatusId() {
-        return activityTypeVersionStatusId;
+    public String getUser() {
+        return user;
     }
 
-    public void setActivityTypeVersionStatusId(Integer activityTypeVersionStatusId) {
-        this.activityTypeVersionStatusId = activityTypeVersionStatusId;
+    public void setUser(String user) {
+        this.user = user;
     }
 
-    public String getGithubUser() {
-        return githubUser;
+    public String getRepo() {
+        return repo;
     }
 
-    public void setGithubUser(String githubUser) {
-        this.githubUser = githubUser;
+    public void setRepo(String repo) {
+        this.repo = repo;
     }
 
-    public String getGithubRepo() {
-        return githubRepo;
+    public String getPath() {
+        return path;
     }
 
-    public void setGithubRepo(String githubRepo) {
-        this.githubRepo = githubRepo;
-    }
-
-    public String getGithubPath() {
-        return githubPath;
-    }
-
-    public void setGithubPath(String githubPath) {
-        this.githubPath = githubPath;
-    }
-
-    public String getGithubShaModel() {
-        return githubShaModel;
-    }
-
-    public void setGithubShaModel(String githubShaModel) {
-        this.githubShaModel = githubShaModel;
-    }
-
-    public String getGithubShaTemplate() {
-        return githubShaTemplate;
-    }
-
-    public void setGithubShaTemplate(String githubShaTemplate) {
-        this.githubShaTemplate = githubShaTemplate;
-    }
-
-    public String getGithubShaReadme() {
-        return githubShaReadme;
-    }
-
-    public void setGithubShaReadme(String githubShaReadme) {
-        this.githubShaReadme = githubShaReadme;
-    }
-
-    public String getGithubShaThumbnail() {
-        return githubShaThumbnail;
-    }
-
-    public void setGithubShaThumbnail(String githubShaThumbnail) {
-        this.githubShaThumbnail = githubShaThumbnail;
+    public void setPath(String path) {
+        this.path = path;
     }
 }

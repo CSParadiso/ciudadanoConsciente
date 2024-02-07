@@ -147,14 +147,23 @@ feat: Añadir activity_type_version a la BD (con trigger a función de autoincre
 feat: Añadir version a lógica de entidades Votables (DB y API)
 refactor: Migrar a VERSION como entidad todos los campos de Github de ActivityType. Además, un Date de creado y un Date de última modificación de estado.
 
-- Commit 
+- Commit a035353
 feat: Añadida restricción de unique para el conjunto de los campos de github de una versión (en la DB y en la API).
 refactor: Modificar endpoints de ActivityType y ActivityTypeVersion para corroborar coherencia con DB y modelo.
+
+- Commit 
+feat: Agregado un estado NOT_PUBLISHED que se dá cuando la versión ha sido aprobada pero por alguna razón no ha sido publicada.
+feat: Agregado fetch a metadata de VersionServer desde la API (backend). Ahora las verificaciones de los archivos necesarios para crear una nueva versión de ActivityType suceden en el back.
+feat: Agregadas entidades VersionServer y FileNameRequired (tanto en la DB como en la API). Esto permite abstraer aún más las peticiones del front y permitir nuevos servidores de versiones.
+feat: Verificada la creación de versiones únicas desde Github a partir de la metadata.
+feat: Agregado recurso para recuperar todas las versiones con status como opcional.
+feat: Desacoplado a su propio directorio el uso de apis externas para mantener un orden más coherente en los directorios y poder modularizar con mayor granularidad.
 
 -----------------------------------------
 ---------------- FIXME? -----------------
 -----------------------------------------
 FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
+FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
 
 FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 
@@ -166,7 +175,8 @@ FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quiz
 FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
 FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
 
-FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
+FIXME refactor: quizás se pueda usar las restricciones UNIQUE de la DB para atrapar las excepciones cuando se quiere crear o actualizar una entidad y no andar comprobando antes si existe ese campo único.
+FIXME refactor: cambiar los 404(el recurso no existe) por 204(no existe la entidad en el recurso)
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -212,6 +222,7 @@ TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cas
 ------------------- DOING --------------
 ----------------------------------------
 # Diseñando Subscripción de ActivityType por parte del DEV.
+
 // TODO Verificar endpoint del backend cuando se quiere subscibir a la DB el ActivityType.
 // TODO Determinar lógica de publicación y qué almacenamos.
 // TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no.
@@ -225,7 +236,10 @@ TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 // Chusmear TYNYPNG extension en vscode (es una pavada creo)
 
 
+// Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
 
-
+TODO Probar API de Github desde el back.
 TODO Chusmear Api de GitHub para recuperar archivos a partir de los SHA.
 Esto va de la mano de consumir la api desde el backend para abstraer al front.
+
+

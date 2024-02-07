@@ -1,5 +1,6 @@
 package ciudadano.consciente.dto;
 
+import jakarta.persistence.GeneratedValue;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ public class DTOActivityTypeVersion {
     @Schema(defaultValue = "")
     private Integer activityTypeVersionStatusId;
 
+    @GeneratedValue
     @Schema(defaultValue = "")
     private Integer versionNumber;
 
@@ -25,25 +27,25 @@ public class DTOActivityTypeVersion {
     private LocalDate lastModifiedStatusDate;
 
     @Schema(defaultValue = "")
-    private String githubUser;
+    private String user;
 
     @Schema(defaultValue = "")
-    private String githubRepo;
+    private String repo;
 
     @Schema(defaultValue = "")
-    private String githubPath;
+    private String path;
 
     @Schema(defaultValue = "")
-    private String githubShaModel;
+    private String shaModel;
 
     @Schema(defaultValue = "")
-    private String githubShaTemplate;
+    private String shaTemplate;
 
     @Schema(defaultValue = "")
-    private String githubShaReadme;
+    private String shaReadme;
 
     @Schema(defaultValue = "")
-    private String githubShaThumbnail;
+    private String shaThumbnail;
 
     public Integer getActivityTypeVersionId() {
         return activityTypeVersionId;
@@ -93,59 +95,59 @@ public class DTOActivityTypeVersion {
         this.lastModifiedStatusDate = lastModifiedStatusDate;
     }
 
-    public String getGithubUser() {
-        return githubUser;
+    public String getUser() {
+        return user;
     }
 
-    public void setGithubUser(String githubUser) {
-        this.githubUser = githubUser;
+    public void setUser(String user) {
+        this.user = user;
     }
 
-    public String getGithubRepo() {
-        return githubRepo;
+    public String getRepo() {
+        return repo;
     }
 
-    public void setGithubRepo(String githubRepo) {
-        this.githubRepo = githubRepo;
+    public void setRepo(String repo) {
+        this.repo = repo;
     }
 
-    public String getGithubPath() {
-        return githubPath;
+    public String getPath() {
+        return path;
     }
 
-    public void setGithubPath(String githubPath) {
-        this.githubPath = githubPath;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public String getGithubShaModel() {
-        return githubShaModel;
+    public String getShaModel() {
+        return shaModel;
     }
 
-    public void setGithubShaModel(String githubShaModel) {
-        this.githubShaModel = githubShaModel;
+    public void setShaModel(String shaModel) {
+        this.shaModel = shaModel;
     }
 
-    public String getGithubShaTemplate() {
-        return githubShaTemplate;
+    public String getShaTemplate() {
+        return shaTemplate;
     }
 
-    public void setGithubShaTemplate(String githubShaTemplate) {
-        this.githubShaTemplate = githubShaTemplate;
+    public void setShaTemplate(String shaTemplate) {
+        this.shaTemplate = shaTemplate;
     }
 
-    public String getGithubShaReadme() {
-        return githubShaReadme;
+    public String getShaReadme() {
+        return shaReadme;
     }
 
-    public void setGithubShaReadme(String githubShaReadme) {
-        this.githubShaReadme = githubShaReadme;
+    public void setShaReadme(String shaReadme) {
+        this.shaReadme = shaReadme;
     }
 
-    public String getGithubShaThumbnail() {
-        return githubShaThumbnail;
+    public String getShaThumbnail() {
+        return shaThumbnail;
     }
 
-    public void setGithubShaThumbnail(String githubShaThumbnail) {
-        this.githubShaThumbnail = githubShaThumbnail;
+    public void setShaThumbnail(String shaThumbnail) {
+        this.shaThumbnail = shaThumbnail;
     }
 }

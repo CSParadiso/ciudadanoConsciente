@@ -86,17 +86,30 @@ create table app.activity_types_version (
 	version_number integer not null, -- disparado por trigger 
 	staged_date date default CURRENT_DATE not null, -- cuando es posteado por vez primera
 	last_modified_status_date date default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
-	github_user varchar(100) not null,
-	github_repo varchar(100) not null,
-	github_path varchar(255) not null, -- a las carpeta donde viven los archivos
-	github_sha_model varchar(100) not null, -- SHA de model.json
-	github_sha_template varchar(100) not null, -- SHA de template.js
-	github_sha_readme varchar(100) not null, -- SHA de README.md
-	github_sha_thumbnail varchar(100) not null, -- SHA de thumbnail.png
-	unique (github_user, github_repo, github_path, github_sha_model, github_sha_template, github_sha_readme, github_sha_thumbnail); -- todos los campos de Github deben serun conjunto único
+	username varchar(100) not null,
+	repo varchar(100) not null,
+	directory_path varchar(255) not null, -- a las carpeta donde viven los archivos
+	sha_model varchar(100) not null, -- SHA de model.json
+	sha_template varchar(100) not null, -- SHA de template.js
+	sha_readme varchar(100) not null, -- SHA de README.md
+	sha_thumbnail varchar(100) not null, -- SHA de thumbnail.png
+	unique (username, repo, directory_path, sha_model, sha_template, sha_readme, sha_thumbnail, activity_type_id); -- todos los campos de Github deben serun conjunto único
 
 );
 
+	-- Tabla file_name_required
+create table app.file_name_required(
+	file_name_required_id integer generated always as identity primary key,
+	file_name varchar(100) unique not null
+);
+
+	-- Tabla version_server
+create table app.version_servers (
+	version_server_id integer generated always as identity primary key,
+	name varchar(50) unique not null,
+	metadata_url varchar(500) not null,
+	content_url varchar(500) not null
+);
 
 ----------------------
 --| EJEMPLO BITEA  |--
@@ -186,6 +199,14 @@ create table app.questions_tags (
 	unique(question, tag)
 ); 
 
+	-- Tabla intermedia file_names_required_version_server
+create table app.file_names_required_version_server (
+	fnrvs_id integer generated always as identity primary key,
+	file_name_required integer references app.file_name_required on delete cascade not null,
+	version_server integer references app.version_servers on delete cascade not null,
+	purpose varchar(140) not null, -- why is the file needed in the version_server
+	UNIQUE(file_name_required, version_server)
+);
 
 ----------------------
 -----| TRIGGERS |-----
