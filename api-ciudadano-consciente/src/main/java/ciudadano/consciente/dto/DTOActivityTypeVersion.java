@@ -21,6 +21,9 @@ public class DTOActivityTypeVersion {
     private Integer versionNumber;
 
     @Schema(defaultValue = "")
+    private Integer versionServer;
+
+    @Schema(defaultValue = "")
     private LocalDate stagedDate;
 
     @Schema(defaultValue ="")
@@ -33,19 +36,25 @@ public class DTOActivityTypeVersion {
     private String repo;
 
     @Schema(defaultValue = "")
+    private String branch;
+
+    @Schema(defaultValue = "")
     private String path;
 
     @Schema(defaultValue = "")
-    private String shaModel;
+    private String shaCommit;
 
     @Schema(defaultValue = "")
-    private String shaTemplate;
+    private String modelDownloadUrl;
 
     @Schema(defaultValue = "")
-    private String shaReadme;
+    private String templateDownloadUrl;
 
     @Schema(defaultValue = "")
-    private String shaThumbnail;
+    private String readmeDownloadUrl;
+
+    @Schema(defaultValue = "")
+    private String thumbnailDownloadUrl;
 
     public Integer getActivityTypeVersionId() {
         return activityTypeVersionId;
@@ -77,6 +86,14 @@ public class DTOActivityTypeVersion {
 
     public void setVersionNumber(Integer versionNumber) {
         this.versionNumber = versionNumber;
+    }
+
+    public Integer getVersionServer() {
+        return versionServer;
+    }
+
+    public void setVersionServer(Integer versionServer) {
+        this.versionServer = versionServer;
     }
 
     public LocalDate getStagedDate() {
@@ -111,6 +128,14 @@ public class DTOActivityTypeVersion {
         this.repo = repo;
     }
 
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
     public String getPath() {
         return path;
     }
@@ -119,35 +144,43 @@ public class DTOActivityTypeVersion {
         this.path = path;
     }
 
-    public String getShaModel() {
-        return shaModel;
+    public String getShaCommit() {
+        return shaCommit;
     }
 
-    public void setShaModel(String shaModel) {
-        this.shaModel = shaModel;
+    public void setShaCommit(String shaCommit) {
+        this.shaCommit = shaCommit;
     }
 
-    public String getShaTemplate() {
-        return shaTemplate;
+    public String getModelDownloadUrl() {
+        return modelDownloadUrl;
     }
 
-    public void setShaTemplate(String shaTemplate) {
-        this.shaTemplate = shaTemplate;
+    public void setModelDownloadUrl(String modelDownloadUrl) {
+        this.modelDownloadUrl = modelDownloadUrl;
     }
 
-    public String getShaReadme() {
-        return shaReadme;
+    public String getTemplateDownloadUrl() {
+        return templateDownloadUrl;
     }
 
-    public void setShaReadme(String shaReadme) {
-        this.shaReadme = shaReadme;
+    public void setTemplateDownloadUrl(String templateDownloadUrl) {
+        this.templateDownloadUrl = templateDownloadUrl;
     }
 
-    public String getShaThumbnail() {
-        return shaThumbnail;
+    public String getReadmeDownloadUrl() {
+        return readmeDownloadUrl;
     }
 
-    public void setShaThumbnail(String shaThumbnail) {
-        this.shaThumbnail = shaThumbnail;
+    public void setReadmeDownloadUrl(String readmeDownloadUrl) {
+        this.readmeDownloadUrl = readmeDownloadUrl;
+    }
+
+    public String getThumbnailDownloadUrl() {
+        return thumbnailDownloadUrl;
+    }
+
+    public void setThumbnailDownloadUrl(String thumbnailDownloadUrl) {
+        this.thumbnailDownloadUrl = thumbnailDownloadUrl;
     }
 }

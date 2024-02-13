@@ -20,7 +20,7 @@ public class AccessFileNameRequiredVersionServer implements PanacheRepositoryBas
 
         audit.debug("Trying to retrieve al File Names Required for Version Server " + versionServer.getName());
         return find("versionServer", versionServer).stream()
-                .map(fileNameRequiredVersionServer -> fileNameRequiredVersionServer.getFileNameRequired())
+                .map(FileNameRequiredVersionServer::getFileNameRequired)
                 .toList();
     }
 

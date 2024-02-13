@@ -1,7 +1,6 @@
 package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
-import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 
 @Entity
 @Table(schema = "app", name = "file_names_required_version_server")
@@ -38,11 +37,11 @@ public class FileNameRequiredVersionServer {
         this.fileNameRequired = fileNameRequired;
     }
 
-    public ciudadano.consciente.model.VersionServer getVersionServer() {
+    public VersionServer getVersionServer() {
         return versionServer;
     }
 
-    public void setVersionServer(ciudadano.consciente.model.VersionServer versionServer) {
+    public void setVersionServer(VersionServer versionServer) {
         this.versionServer = versionServer;
     }
 

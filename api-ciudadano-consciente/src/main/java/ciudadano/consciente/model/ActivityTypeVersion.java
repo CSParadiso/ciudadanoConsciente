@@ -1,16 +1,15 @@
 package ciudadano.consciente.model;
 
-import jakarta.enterprise.inject.Default;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(schema = "app", name = "activity_type_version",
+@Table(schema = "app", name = "activity_types_version",
         uniqueConstraints = {
                 @UniqueConstraint( // We cant have a version with the same identifiers of GithubMetadata
-                        name = "unique_info",
-                        columnNames = {"username", "repo", "directory_path", "sha_model", "sha_template", "sha_readme", "sha_thumbnail"}
+                        name = "activity_types_version_username_repo_branch_directory_path__key",
+                        columnNames = {"username", "repo", "branch", "directory_path", "sha_commit", "activity_type_id"}
                 )
         })
 public class ActivityTypeVersion {
@@ -31,6 +30,10 @@ public class ActivityTypeVersion {
     @Column(name = "version_number")
     private Integer versionNumber;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "version_server", referencedColumnName = "version_server_id")
+    private VersionServer versionServer;
+
     @Column(name = "staged_date")
     private LocalDate stagedDate;
 
@@ -40,23 +43,27 @@ public class ActivityTypeVersion {
     @Column(name = "username")
     private String user;
 
-    @Column()
     private String repo;
+
+    private String branch;
 
     @Column(name = "directory_path")
     private String path;
 
-    @Column(name = "sha_model")
-    private String shaModel;
+    @Column(name = "sha_commit")
+    private String shaCommit;
 
-    @Column(name = "sha_template")
-    private String shaTemplate;
+    @Column(name = "model_download_url")
+    private String modelDownloadUrl;
 
-    @Column(name = "sha_readme")
-    private String shaReadme;
+    @Column(name = "template_download_url")
+    private String templateDownloadUrl;
 
-    @Column(name = "sha_thumbnail")
-    private String shaThumbnail;
+    @Column(name = "readme_download_url")
+    private String readmeDownloadUrl;
+
+    @Column(name = "thumbnail_download_url")
+    private String thumbnailDownloadUrl;
 
     public ActivityTypeVersion() {
         this.stagedDate = LocalDate.now();
@@ -93,6 +100,14 @@ public class ActivityTypeVersion {
 
     public void setVersionNumber(Integer versionNumber) {
         this.versionNumber = versionNumber;
+    }
+
+    public VersionServer getVersionServer() {
+        return versionServer;
+    }
+
+    public void setVersionServer(VersionServer versionServer) {
+        this.versionServer = versionServer;
     }
 
     public LocalDate getStagedDate() {
@@ -135,35 +150,51 @@ public class ActivityTypeVersion {
         this.path = path;
     }
 
-    public String getShaModel() {
-        return shaModel;
+    public String getBranch() {
+        return branch;
     }
 
-    public void setShaModel(String shaModel) {
-        this.shaModel = shaModel;
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 
-    public String getShaTemplate() {
-        return shaTemplate;
+    public String getShaCommit() {
+        return shaCommit;
     }
 
-    public void setShaTemplate(String shaTemplate) {
-        this.shaTemplate = shaTemplate;
+    public void setShaCommit(String shaCommit) {
+        this.shaCommit = shaCommit;
     }
 
-    public String getShaReadme() {
-        return shaReadme;
+    public String getModelDownloadUrl() {
+        return modelDownloadUrl;
     }
 
-    public void setShaReadme(String shaReadme) {
-        this.shaReadme = shaReadme;
+    public void setModelDownloadUrl(String modelDownloadUrl) {
+        this.modelDownloadUrl = modelDownloadUrl;
     }
 
-    public String getShaThumbnail() {
-        return shaThumbnail;
+    public String getTemplateDownloadUrl() {
+        return templateDownloadUrl;
     }
 
-    public void setShaThumbnail(String shaThumbnail) {
-        this.shaThumbnail = shaThumbnail;
+    public void setTemplateDownloadUrl(String templateDownloadUrl) {
+        this.templateDownloadUrl = templateDownloadUrl;
+    }
+
+    public String getReadmeDownloadUrl() {
+        return readmeDownloadUrl;
+    }
+
+    public void setReadmeDownloadUrl(String readmeDownloadUrl) {
+        this.readmeDownloadUrl = readmeDownloadUrl;
+    }
+
+    public String getThumbnailDownloadUrl() {
+        return thumbnailDownloadUrl;
+    }
+
+    public void setThumbnailDownloadUrl(String thumbnailDownloadUrl) {
+        this.thumbnailDownloadUrl = thumbnailDownloadUrl;
     }
 }

@@ -3,30 +3,28 @@ package ciudadano.consciente.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(schema = "app", name = "version_servers")
+@Table(schema ="app", name = "version_servers")
 public class VersionServer {
 
-    @Id // TODO Añadir anotación de UNIQUE CONSTRAINT
-    private String name;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "version_server_id")
-    private Integer versionServerId;
+    Integer versionServerId;
+
+    // No usar @Id sinó UNIQUEConstra
+    String name;
 
     @Column(name = "metadata_url")
-    private String metadataUrl;
+    String metadataUrl;
+
+    @Column(name = "commits_url")
+    String commitsUrl;
 
     @Column(name = "content_url")
-    private String contentUrl;
+    String contentUrl;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public VersionServer() { }
 
     public Integer getVersionServerId() {
         return versionServerId;
@@ -34,6 +32,14 @@ public class VersionServer {
 
     public void setVersionServerId(Integer versionServerId) {
         this.versionServerId = versionServerId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getMetadataUrl() {
@@ -44,6 +50,14 @@ public class VersionServer {
         this.metadataUrl = metadataUrl;
     }
 
+    public String getCommitsUrl() {
+        return commitsUrl;
+    }
+
+    public void setCommitsUrl(String commitsUrl) {
+        this.commitsUrl = commitsUrl;
+    }
+
     public String getContentUrl() {
         return contentUrl;
     }
@@ -52,4 +66,4 @@ public class VersionServer {
         this.contentUrl = contentUrl;
     }
 
-}
+ }

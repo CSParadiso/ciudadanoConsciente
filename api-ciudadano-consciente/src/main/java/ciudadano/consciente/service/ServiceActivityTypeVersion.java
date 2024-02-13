@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -93,41 +94,24 @@ public class ServiceActivityTypeVersion {
 
         audit.debug("Getting Activity Type Version " + id + ".");
         ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity Type Version not found.") );
+                .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found.") );
 
         audit.debug("Mapping entity into DTO.");
         return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
 
     }
 
-    /*@Transactional(Transactional.TxType.REQUIRED)
-    public DTOActivityTypeVersion create(DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
+    public DTOVersionContent getContent(Integer id) {
 
-        Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
-        Integer activityTypeVersionStatusId = dtoCreateActivityTypeVersion.getActivityTypeVersionStatusId();
+        audit.debug("Getting Activity Type Version " + id + ".");
+        ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
+                .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found.") );
 
-        ActivityType activityType = accessActivityType.get(activityTypeId)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found.") );
+        // Recuperar archivos desde la api
+        audit.debug("Sending parameters to Version Server.");
+        return serviceVersionServer.getContent(activityTypeVersion);
 
-        ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(activityTypeVersionStatusId)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity Type Status not found.") );
-
-        audit.debug("Creating Version of Activity Type.");
-        ActivityTypeVersion activityTypeVersion = mapperActivityTypeVersion.dtoToEntity(dtoCreateActivityTypeVersion);
-
-        audit.debug("Saving Version of Activity Type");
-        try {
-            accessActivityTypeVersion.save(activityTypeVersion);
-        } catch (ConstraintViolationException e) {
-            throw new HttpBadRequestException("GithubMetadata version already exists.");
-        } catch (Exception e) {
-            throw new HttpInternalServerException("Failed to persist Version of Activity Type.");
-        }
-
-        audit.debug("Mapping DTO into Entity.");
-        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
-
-    }*/
+    }
 
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOActivityTypeVersion update(Integer id, DTOUpdateActivityTypeVersion dtoUpdateActivityTypeVersion) {
@@ -206,14 +190,14 @@ public class ServiceActivityTypeVersion {
         audit.debug("Retrieving Activity Type.");
         Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
         ActivityType activityType = accessActivityType.get(activityTypeId)
-                    .orElseThrow(() -> new HttpNoContentException("No content for ActivityType."));
+                    .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
 
         audit.debug("Sending parameters to version server.");
-        ActivityTypeVersion activityTypeVersion = serviceVersionServer.create(serverProvider, dtoCreateActivityTypeVersion);
+        ActivityTypeVersion activityTypeVersion = serviceVersionServer.createVersion(serverProvider, dtoCreateActivityTypeVersion);
 
         audit.debug("Setting version values not related to server.");
-        activityTypeVersion.setActivityTypeVersionStatusId(accessActivityTypeVersionStatus.get(1)
-                .orElseThrow(()-> new HttpNoContentException("No content for Status of Activity Type Version.")));
+        activityTypeVersion.setActivityTypeVersionStatusId(accessActivityTypeVersionStatus.get(1) // By default STAGED
+                .orElseThrow(()-> new HttpNoContentException("Status of Activity Type Version not found.")));
         activityTypeVersion.setActivityTypeId(activityType);
 
         audit.debug("Saving new Activity Type Version");
@@ -225,6 +209,7 @@ public class ServiceActivityTypeVersion {
             throw new HttpBadRequestException("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
         }
 
+        audit.debug("Mapping Entity into DTO.");
         return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
 
     }

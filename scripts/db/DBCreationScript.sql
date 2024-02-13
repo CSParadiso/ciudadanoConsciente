@@ -83,17 +83,20 @@ create table app.activity_types_version (
 	activity_type_version_id integer generated always as identity primary key, 
 	activity_type_id integer default 1 references app.activity_types on delete set default not null,
 	activity_type_version_status_id integer default 7 references app.activity_type_version_status on delete set default not null,
-	version_number integer not null, -- disparado por trigger 
+	version_number integer not null, -- disparado por trigger
+    version_server integer default 1 references app.version_servers on delete set default not null,	
 	staged_date date default CURRENT_DATE not null, -- cuando es posteado por vez primera
 	last_modified_status_date date default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
 	username varchar(100) not null,
 	repo varchar(100) not null,
+	branch varchar(100) not null,
 	directory_path varchar(255) not null, -- a las carpeta donde viven los archivos
-	sha_model varchar(100) not null, -- SHA de model.json
-	sha_template varchar(100) not null, -- SHA de template.js
-	sha_readme varchar(100) not null, -- SHA de README.md
-	sha_thumbnail varchar(100) not null, -- SHA de thumbnail.png
-	unique (username, repo, directory_path, sha_model, sha_template, sha_readme, sha_thumbnail, activity_type_id); -- todos los campos de Github deben serun conjunto único
+	sha_commit varchar(50) not null, -- el sha específico del commmit que identifica inequívocamnte el contenido de los archivos commiteados de la version
+	model_download_url varchar(255) not null, -- url de decarga del model.json de este commit puntual
+	template_download_url varchar(255) not null, -- url de decarga del template.js de este commit puntual
+	readme_download_url varchar(255) not null, -- url de decarga del README.md de este commit puntual
+	thumbnail_download_url varchar(255) not null, -- url de descarga del thumbnail.png de este commit puntual
+	unique (username, repo, branch, directory_path, sha_commit, activity_type_id) -- todos los campos de Github deben serun conjunto único
 
 );
 
@@ -108,6 +111,7 @@ create table app.version_servers (
 	version_server_id integer generated always as identity primary key,
 	name varchar(50) unique not null,
 	metadata_url varchar(500) not null,
+	commit_url varchar(500) not null,
 	content_url varchar(500) not null
 );
 
@@ -231,6 +235,6 @@ $$ LANGUAGE plpgsql;
 ----------------------
 
 create trigger autoincrement_of_activity_type_version 
-before insert on app.activity_type_version 
+before insert on app.activity_types_version 
 for each row 
 execute function increment_activity_type_version();

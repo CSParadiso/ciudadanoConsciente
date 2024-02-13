@@ -17,7 +17,7 @@ public class AccessVersionServer implements PanacheRepositoryBase<VersionServer,
 
     public Optional<VersionServer> getByName(String serverProvider) {
 
-        audit.debug("Trying to retrieve Version Server " + serverProvider);
+        audit.debug("Trying to retrieve Version Server: " + serverProvider);
         return find("name", serverProvider).firstResultOptional();
 
     }

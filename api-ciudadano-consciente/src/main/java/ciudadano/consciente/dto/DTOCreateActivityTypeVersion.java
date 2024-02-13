@@ -4,17 +4,20 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOCreateActivityTypeVersion {
 
-    @Schema(defaultValue = "")
+    @Schema(defaultValue = "", required = true)
     private Integer activityTypeId;
 
-    @Schema(defaultValue = "")
+    @Schema(defaultValue = "", required = true)
     private String user;
 
-    @Schema(defaultValue = "")
+    @Schema(defaultValue = "", required = true)
     private String repo;
 
-    @Schema(defaultValue = "")
+    @Schema(defaultValue = "", required = true)
     private String path;
+
+    @Schema(defaultValue = "main", required = true)
+    private String branch;
 
     public Integer getActivityTypeId() {
         return activityTypeId;
@@ -44,7 +47,16 @@ public class DTOCreateActivityTypeVersion {
         return path;
     }
 
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
     public void setPath(String path) {
         this.path = path;
     }
+
 }

@@ -65,25 +65,44 @@ public class ResourceActivityTypeVersion {
 
     @GET
     @Path("{id}")
-    @Operation(summary = "Retrieve a specific Activity Type by its ID.")
+    @Operation(summary = "Retrieve a specific Version of an Activity Type by its ID.")
     @APIResponse(
             responseCode = "200",
             description = "Activity Types Version successfully retrieved."
     )
     @APIResponse(
             responseCode = "404",
-            description = "Failed to retrieve Activity Type. Verify 'Warning' Header."
+            description = "Failed to retrieve Version of an Activity Type. Verify 'Warning' Header."
     )
     public Response get(@PathParam("id") Integer id) {
 
-        audit.debug("Getting Activity Type " + id + "...");
+        audit.debug("Getting Activity Type Version " + id + "...");
         return Response.ok(serviceActivityTypeVersion.get(id)).build();
 
     }
 
+    @Deprecated
+    @GET
+    @Path("content/{id}")
+    @Operation(summary = "Retrieve the content of a specific Activity Type Version. THIS WILL BE MADE IN THE FRONT END, IN THE APP. Basically it will fetch the download url of the files and get the content.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Content of Activity Types Version successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Content of Activity Type Version. Verify 'Warning' Header."
+    )
+    public Response getContent(@PathParam("id") Integer id) {
+
+        audit.debug("Getting Content of Activity Type Version " + id + "...");
+        return Response.ok(serviceActivityTypeVersion.getContent(id)).build();
+
+    }
+
     @POST
-    @Path("{serverProvider}")
-    @Operation(summary = "Create Activity Type Version.")
+    @Path("{version-server-provider}")
+    @Operation(summary = "Create Activity Type Version. Require a version server provider (only github support initially).")
     @APIResponse(
             responseCode = "201",
             description = "Activity Type Version successfully created."
@@ -104,7 +123,7 @@ public class ResourceActivityTypeVersion {
             responseCode = "500",
             description = "Failed to create new Activity Type Version. Verify 'Warning' Header."
     )
-    public Response create(@PathParam("serverProvider") String serverProvider,
+    public Response create(@PathParam("version-server-provider") @DefaultValue("github") String versionServerProvider,
                            DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
 
         if(dtoCreateActivityTypeVersion == null) {
@@ -123,7 +142,7 @@ public class ResourceActivityTypeVersion {
         }
 
         audit.debug("Verifying files for new version...");
-        DTOActivityTypeVersion activityTypeVersion = serviceActivityTypeVersion.create(serverProvider, dtoCreateActivityTypeVersion);
+        DTOActivityTypeVersion activityTypeVersion = serviceActivityTypeVersion.create(versionServerProvider, dtoCreateActivityTypeVersion);
 
         audit.debug("Creating URI for new Activity Type Version");
         URI uri = URI.create(BASE_PATH_RESOURCE + activityTypeVersion.getActivityTypeVersionId());
