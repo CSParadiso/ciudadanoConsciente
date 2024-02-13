@@ -15,11 +15,11 @@ public class VersionServer {
     // No usar @Id sinó UNIQUEConstra
     String name;
 
-    @Column(name = "metadata_url")
-    String metadataUrl;
+    //@Column(name = "metadata_url")
+    //String metadataUrl;
 
-    @Column(name = "commits_url")
-    String commitsUrl;
+    //@Column(name = "commits_url")
+    //String commitsUrl;
 
     @Column(name = "content_url")
     String contentUrl;
@@ -42,21 +42,21 @@ public class VersionServer {
         this.name = name;
     }
 
-    public String getMetadataUrl() {
-        return metadataUrl;
-    }
-
-    public void setMetadataUrl(String metadataUrl) {
-        this.metadataUrl = metadataUrl;
-    }
-
-    public String getCommitsUrl() {
-        return commitsUrl;
-    }
-
-    public void setCommitsUrl(String commitsUrl) {
-        this.commitsUrl = commitsUrl;
-    }
+//    public String getMetadataUrl() {
+//        return metadataUrl;
+//    }
+//
+//    public void setMetadataUrl(String metadataUrl) {
+//        this.metadataUrl = metadataUrl;
+//    }
+//
+//    public String getCommitsUrl() {
+//        return commitsUrl;
+//    }
+//
+//    public void setCommitsUrl(String commitsUrl) {
+//        this.commitsUrl = commitsUrl;
+//    }
 
     public String getContentUrl() {
         return contentUrl;

@@ -81,27 +81,28 @@ public class ResourceActivityTypeVersion {
 
     }
 
-    @Deprecated
     @GET
-    @Path("content/{id}")
+    @Path("{id}/{filename}")
     @Operation(summary = "Retrieve the content of a specific Activity Type Version. THIS WILL BE MADE IN THE FRONT END, IN THE APP. Basically it will fetch the download url of the files and get the content.")
     @APIResponse(
-            responseCode = "200",
+            responseCode = "201",
             description = "Content of Activity Types Version successfully retrieved."
     )
     @APIResponse(
             responseCode = "204",
             description = "Failed to retrieve Content of Activity Type Version. Verify 'Warning' Header."
     )
-    public Response getContent(@PathParam("id") Integer id) {
+    public Response getContent(@PathParam("id") Integer id,
+                               @PathParam("filename") @DefaultValue("template.js") String filename) {
 
         audit.debug("Getting Content of Activity Type Version " + id + "...");
-        return Response.ok(serviceActivityTypeVersion.getContent(id)).build();
+        return Response.temporaryRedirect(serviceActivityTypeVersion.getContent(id, filename)).build();
 
     }
 
+
     @POST
-    @Path("{version-server-provider}")
+    @Path("{server}")
     @Operation(summary = "Create Activity Type Version. Require a version server provider (only github support initially).")
     @APIResponse(
             responseCode = "201",
@@ -123,7 +124,7 @@ public class ResourceActivityTypeVersion {
             responseCode = "500",
             description = "Failed to create new Activity Type Version. Verify 'Warning' Header."
     )
-    public Response create(@PathParam("version-server-provider") @DefaultValue("github") String versionServerProvider,
+    public Response createVersion(@PathParam("server") @DefaultValue("github") String versionServerProvider,
                            DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
 
         if(dtoCreateActivityTypeVersion == null) {
@@ -134,10 +135,12 @@ public class ResourceActivityTypeVersion {
         String user = dtoCreateActivityTypeVersion.getUser();
         String repo = dtoCreateActivityTypeVersion.getRepo();
         String path = dtoCreateActivityTypeVersion.getPath();
+        String commit = dtoCreateActivityTypeVersion.getCommit();
         if(!utilityVerifyRequestField.isValidField(activityType) ||
                 !utilityVerifyRequestField.isValidField(user) ||
                 !utilityVerifyRequestField.isValidField(repo) ||
-                !utilityVerifyRequestField.isValidField(path)) {
+                !utilityVerifyRequestField.isValidField(path) ||
+                !utilityVerifyRequestField.isValidField(commit)) {
             throw new HttpBadRequestException("All fields required.");
         }
 

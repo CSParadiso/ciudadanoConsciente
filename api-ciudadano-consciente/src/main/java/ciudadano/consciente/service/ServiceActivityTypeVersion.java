@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
-import java.io.File;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -55,6 +55,12 @@ public class ServiceActivityTypeVersion {
 
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
+
+    @Inject
+    AccessVersionServer accessVersionServer;
+
+    @Inject
+    AccessFileNameRequiredVersionServer accessFileNameRequiredVersionServer;
 
     public List<DTOActivityTypeVersion> getAll(Integer status) {
 
@@ -101,15 +107,29 @@ public class ServiceActivityTypeVersion {
 
     }
 
-    public DTOVersionContent getContent(Integer id) {
+    public URI getContent(Integer id, String filename) {
 
         audit.debug("Getting Activity Type Version " + id + ".");
         ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
                 .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found.") );
 
-        // Recuperar archivos desde la api
-        audit.debug("Sending parameters to Version Server.");
-        return serviceVersionServer.getContent(activityTypeVersion);
+        audit.debug("Getting Filenames allowed");
+        List<String> fileNameList =
+                accessFileNameRequiredVersionServer.getByVersionServer(activityTypeVersion.getVersionServer()).stream().map(FileNameRequired::getFileName).toList();
+
+        if(fileNameList.contains(filename)) {
+            audit.debug("Getting download url for " + filename + " .");
+            // THIS NEEDS TO BE MADE PROGRAMATICALLY
+            switch (filename) {
+                case "model.json" : return URI.create(activityTypeVersion.getModelDownloadUrl());
+                case "template.js" : return URI.create(activityTypeVersion.getTemplateDownloadUrl());
+                case "README.md" : return URI.create(activityTypeVersion.getReadmeDownloadUrl());
+                case "thumbnail.png" : return URI.create(activityTypeVersion.getThumbnailDownloadUrl());
+            }
+
+        }
+
+        throw new HttpBadRequestException("Unable to retieve filename " + filename + " from version server.");
 
     }
 
@@ -185,15 +205,19 @@ public class ServiceActivityTypeVersion {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOActivityTypeVersion create(String serverProvider, DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
+    public DTOActivityTypeVersion create(String versionServerProvider, DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
 
         audit.debug("Retrieving Activity Type.");
         Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
         ActivityType activityType = accessActivityType.get(activityTypeId)
-                    .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
+                .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
+
+        audit.debug("Retrieving Version Server " + versionServerProvider + ".");
+        VersionServer versionServer = accessVersionServer.getByName(versionServerProvider)
+                .orElseThrow(() -> new HttpNotFoundException("Version Server Not Found or Not Supported yet."));
 
         audit.debug("Sending parameters to version server.");
-        ActivityTypeVersion activityTypeVersion = serviceVersionServer.createVersion(serverProvider, dtoCreateActivityTypeVersion);
+        ActivityTypeVersion activityTypeVersion = serviceVersionServer.createVersion(versionServer, dtoCreateActivityTypeVersion);
 
         audit.debug("Setting version values not related to server.");
         activityTypeVersion.setActivityTypeVersionStatusId(accessActivityTypeVersionStatus.get(1) // By default STAGED

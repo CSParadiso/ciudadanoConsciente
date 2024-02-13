@@ -13,12 +13,12 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface APIGithubRawContent {
 
     @GET
-    @Path("{user}/{repo}/{shaCommit}/{path}/{filename}")
+    @Path("{user}/{repo}/{commit}/{path}/{filename}")
     @Produces(MediaType.APPLICATION_JSON)
     @ClientHeaderParam(name = "Accept", value = "application/vnd.github.v3+json")
     Response fetchFile(@PathParam("user") String user,
                        @PathParam("repo") String repo,
-                       @PathParam("shaCommit") String shaCommit,
+                       @PathParam("commit") String commit,
                        @PathParam("path") String path,
                        @PathParam("filename") String filename);
 

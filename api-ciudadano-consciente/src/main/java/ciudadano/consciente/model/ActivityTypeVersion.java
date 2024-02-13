@@ -9,7 +9,7 @@ import java.time.LocalDate;
         uniqueConstraints = {
                 @UniqueConstraint( // We cant have a version with the same identifiers of GithubMetadata
                         name = "activity_types_version_username_repo_branch_directory_path__key",
-                        columnNames = {"username", "repo", "branch", "directory_path", "sha_commit", "activity_type_id"}
+                        columnNames = {"username", "repo", "directory_path", "commit", "activity_type_id"}
                 )
         })
 public class ActivityTypeVersion {
@@ -45,13 +45,11 @@ public class ActivityTypeVersion {
 
     private String repo;
 
-    private String branch;
-
     @Column(name = "directory_path")
     private String path;
 
-    @Column(name = "sha_commit")
-    private String shaCommit;
+    @Column(name = "commit")
+    private String commit;
 
     @Column(name = "model_download_url")
     private String modelDownloadUrl;
@@ -150,20 +148,12 @@ public class ActivityTypeVersion {
         this.path = path;
     }
 
-    public String getBranch() {
-        return branch;
+    public String getCommit() {
+        return commit;
     }
 
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
-    public String getShaCommit() {
-        return shaCommit;
-    }
-
-    public void setShaCommit(String shaCommit) {
-        this.shaCommit = shaCommit;
+    public void setCommit(String commit) {
+        this.commit = commit;
     }
 
     public String getModelDownloadUrl() {

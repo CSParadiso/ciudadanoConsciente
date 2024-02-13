@@ -89,14 +89,13 @@ create table app.activity_types_version (
 	last_modified_status_date date default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
 	username varchar(100) not null,
 	repo varchar(100) not null,
-	branch varchar(100) not null,
 	directory_path varchar(255) not null, -- a las carpeta donde viven los archivos
-	sha_commit varchar(50) not null, -- el sha específico del commmit que identifica inequívocamnte el contenido de los archivos commiteados de la version
+	'commit' varchar(50) not null, -- el sha específico del commmit que identifica inequívocamnte el contenido de los archivos commiteados de la version
 	model_download_url varchar(255) not null, -- url de decarga del model.json de este commit puntual
 	template_download_url varchar(255) not null, -- url de decarga del template.js de este commit puntual
 	readme_download_url varchar(255) not null, -- url de decarga del README.md de este commit puntual
 	thumbnail_download_url varchar(255) not null, -- url de descarga del thumbnail.png de este commit puntual
-	unique (username, repo, branch, directory_path, sha_commit, activity_type_id) -- todos los campos de Github deben serun conjunto único
+	unique (username, repo, directory_path, commit, activity_type_id) -- todos los campos de Github deben serun conjunto único
 
 );
 
@@ -110,8 +109,6 @@ create table app.file_name_required(
 create table app.version_servers (
 	version_server_id integer generated always as identity primary key,
 	name varchar(50) unique not null,
-	metadata_url varchar(500) not null,
-	commit_url varchar(500) not null,
 	content_url varchar(500) not null
 );
 

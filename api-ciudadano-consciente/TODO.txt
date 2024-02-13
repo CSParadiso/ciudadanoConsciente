@@ -159,8 +159,13 @@ feat: Verificada la creación de versiones únicas desde Github a partir de la m
 feat: Agregado recurso para recuperar todas las versiones con status como opcional.
 feat: Desacoplado a su propio directorio el uso de apis externas para mantener un orden más coherente en los directorios y poder modularizar con mayor granularidad.
 
-- Commit
+- Commit 792dba5
 feat: Recuperar archivos puntuales de una versión (ESTO SE REALIZA DESDE EL FRONT IGUAL) a partir del commit de la version y otros datos.
+
+- Commit
+refactor: Verificación de archivos necesarios y recupero de los mismos en un solo endpoint (por lo menos para Github). Eliminados los campos metadata_url y download_url de VersionServer.
+refactor: eliminada la columna branch de Activity Type Version.
+
 -----------------------------------------
 ---------------- FIXME? -----------------
 -----------------------------------------

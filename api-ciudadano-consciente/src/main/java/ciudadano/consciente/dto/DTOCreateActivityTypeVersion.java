@@ -16,8 +16,12 @@ public class DTOCreateActivityTypeVersion {
     @Schema(defaultValue = "", required = true)
     private String path;
 
-    @Schema(defaultValue = "main", required = true)
-    private String branch;
+    @Schema(defaultValue = "", required = true)
+    private String commit;
+
+    @Deprecated // Esto quizás puede generar inconvenientes porque deberíamos almacenarlo. FEATURE PAGA, ya que el repo es privado.
+    @Schema(defaultValue = "")
+    private String token;
 
     public Integer getActivityTypeId() {
         return activityTypeId;
@@ -47,16 +51,25 @@ public class DTOCreateActivityTypeVersion {
         return path;
     }
 
-    public String getBranch() {
-        return branch;
-    }
-
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
     public void setPath(String path) {
         this.path = path;
     }
 
+    public String getCommit() {
+        return commit;
+    }
+
+    public void setCommit(String commit) {
+        this.commit = commit;
+    }
+
+    @Deprecated
+    public String getToken() {
+        return token;
+    }
+
+    @Deprecated
+    public void setToken(String token) {
+        this.token = token;
+    }
 }
