@@ -14,7 +14,6 @@ async function handleSubscriptionFormSubmission(form) {
     const response = await fetch(`https://api.github.com/repos/${jsonObject.user}/${jsonObject.repo}/contents/${jsonObject.path}`, {
       headers: {
         'Accept': 'application/vnd.github.v3+json',
-        'Authorization': 'Bearer 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' // TODO Borrar esto
       },
     });
 

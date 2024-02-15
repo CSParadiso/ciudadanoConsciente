@@ -162,28 +162,15 @@ feat: Desacoplado a su propio directorio el uso de apis externas para mantener u
 - Commit 792dba5
 feat: Recuperar archivos puntuales de una versión (ESTO SE REALIZA DESDE EL FRONT IGUAL) a partir del commit de la version y otros datos.
 
-- Commit
+- Commit 51a0e56
 refactor: Verificación de archivos necesarios y recupero de los mismos en un solo endpoint (por lo menos para Github). Eliminados los campos metadata_url y download_url de VersionServer.
 refactor: eliminada la columna branch de Activity Type Version.
 
------------------------------------------
----------------- FIXME? -----------------
------------------------------------------
-FIXME Considerar responder con la clase Java WebResponseException en lugar de las excepciones de Quarkus
-FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
-
-FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
-
-FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
-
-FIXME refactor: los URI creados por los post de Level y Organizacion deberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
-FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
-
-FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
-FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
-
-FIXME refactor: quizás se pueda usar las restricciones UNIQUE de la DB para atrapar las excepciones cuando se quiere crear o actualizar una entidad y no andar comprobando antes si existe ese campo único. (Esto incrementa en uno cada el id de la entidad, incluso los fallidos)
-FIXME refactor: cambiar los 404(el recurso no existe) por 204(no existe la entidad en el recurso)
+- Commit
+feat: Creada en DB las tablas:
+    - Content(model jsonb, activity_type_version ActivityType)
+    - Images(imageName String, imageBlob bytea y content Content)
+feat: Creada en db la fila ActivityTypeVersion con id 1 para que sirva de fallback cuando se hace el default si se borra en Content.
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -207,44 +194,75 @@ FIXME refactor: cambiar los 404(el recurso no existe) por 204(no existe la entid
 * Se elige manejarlo como endpoint y que solo quede en la tabla votes. AVERIGUAR
 */
 
-TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
-
 -----------------------------------------
 ----------------- TODO ------------------
 -----------------------------------------
-TODO feat: generar Tags (etiquetas)
 
-TODO feat: resolver autenticación
-TODO feat: resolver logueo
-TODO feat: resolver verificación de permisos (roles en organización y level)
-TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
+CORE
+// TODO feat: generar Tags (etiquetas)
 
-
-TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.
-TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
-
-TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
+MANEJO DE USUARIOS Y ROLES
+// TODO feat: resolver autenticación
+// TODO feat: resolver logueo
+// TODO feat: resolver verificación de permisos (roles en organización y level)
+// TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
-# Diseñando Subscripción de ActivityType por parte del DEV.
+# Diseñando Subscripción de ActivityType por parte de LA ORGANIZACIÓN.
+// TODO Añadir DTOCreateContent con:
+    - Integer activityTypeVersion
+    - List<byte[]> images
+    - String model
+// TODO Añadir Recurso GET, POST, UPDATE y DELETE, Servicio y Accesores para el Content (además de los mapeadores y el DTO de update y de la entidad)
 
-// TODO Verificar endpoint del backend cuando se quiere subscibir a la DB el ActivityType.
+
+// TODO Activity debe tener la version del Activity Type y el contenido (quizás el contenido puede ser el model.json y las imágenes que se usan eventualmente)
 // TODO Determinar lógica de publicación y qué almacenamos.
+// TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
+// TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
+
+# Diseñando Subscripción de ActivityType por parte del Dev.
+// TODO refactor: retornar el contenido cuando se crea la version del activityType.
+// TODO feat: Anunciar los archivos que la versión del activity type no encuentra.
 // TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no.
 // AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
 
-
+// BUILD
 TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 
-// Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
+-----------------------------------------
+---------------- FIXME? -----------------
+-----------------------------------------
 
-// TODO actualizar url de los versionServers (con los 4 endpoints soportados por ahora)
-// TODO Probar servidor de versiones local
+OPTIMIZACIONES
+// FIXME Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
+// FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
+// FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
+// FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
+// FIXME refactor: los URI creados por los post de Level y Organizacion deberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
+// FIXME refactor: de la mano del anterior. El recurso /levels/{id}/user/roles quizás no debería aceptar los query como identificadores, sinó como seleccionadores.
+// FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
+// FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
+// FIXME refactor: quizás se pueda usar las restricciones UNIQUE de la DB para atrapar las excepciones cuando se quiere crear o actualizar una entidad y no andar comprobando antes si existe ese campo único. (Esto incrementa en uno cada el id de la entidad, incluso los fallidos)
+// FIXME refactor: cambiar los 404(el recurso no existe) por 204(no existe la entidad en el recurso)
+
+// TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.
+// TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
+
+EXTRA FEATURES
+// TODO Repositorios privados (simplemente deberían crear un fine graned token que permite acceso al contenido del repo.
+// No se puede hacer por carpeta creo, que sería lo ideal). Esto conlleva que debamos almacenar el token
+// (que tiene fecha de expiración). https://github.com/settings/personal-access-tokens/new
+
+// TODO Servidor de versiones local
 
 
+ENTREGA FINAL
+// TODO Ir haciendo la presentación con cosas que hicimos y no están en la especificación de requerimientos y cosas a futuro que se podrían implementar.
+// TODO Corregir documentación en google docs
 
 

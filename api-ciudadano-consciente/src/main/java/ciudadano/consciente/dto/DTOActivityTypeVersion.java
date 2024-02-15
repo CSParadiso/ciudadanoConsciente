@@ -36,13 +36,10 @@ public class DTOActivityTypeVersion {
     private String repo;
 
     @Schema(defaultValue = "")
-    private String branch;
-
-    @Schema(defaultValue = "")
     private String path;
 
     @Schema(defaultValue = "")
-    private String shaCommit;
+    private String commit;
 
     @Schema(defaultValue = "")
     private String modelDownloadUrl;
@@ -128,14 +125,6 @@ public class DTOActivityTypeVersion {
         this.repo = repo;
     }
 
-    public String getBranch() {
-        return branch;
-    }
-
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
     public String getPath() {
         return path;
     }
@@ -144,12 +133,12 @@ public class DTOActivityTypeVersion {
         this.path = path;
     }
 
-    public String getShaCommit() {
-        return shaCommit;
+    public String getCommit() {
+        return commit;
     }
 
-    public void setShaCommit(String shaCommit) {
-        this.shaCommit = shaCommit;
+    public void setCommit(String shaCommit) {
+        this.commit = shaCommit;
     }
 
     public String getModelDownloadUrl() {

@@ -78,7 +78,7 @@ create table app.activity_types (
 	creator integer default 1 references app.users on delete set default not null,
 );
 
-	-- Tabla activity_type_version
+	-- Tabla activity_types_version
 create table app.activity_types_version (
 	activity_type_version_id integer generated always as identity primary key, 
 	activity_type_id integer default 1 references app.activity_types on delete set default not null,
@@ -112,25 +112,22 @@ create table app.version_servers (
 	content_url varchar(500) not null
 );
 
-----------------------
---| EJEMPLO BITEA  |--
-----------------------
---CREATE TABLE stored_files (
-  --  id SERIAL PRIMARY KEY,
-    --file_name VARCHAR(255) NOT NULL,
-    --content BYTEA
---);
+	-- Tabla contents
+create table app.contents (
+   content_id integer generated always as identity primary key,
+   activity_type_version integer default 1 references app.activity_types_version on delete set default not null,
+   model jsonb not null 
+);
 
--- Insert a file
---INSERT INTO stored_files (file_name, content)
---VALUES ('example.js', pg_read_binary_file('path/to/your/example.js'));
 
--- Retrieve the content of a file
---SELECT file_name, content FROM stored_files WHERE file_name = 'example.js';
-
-----------------------
---| EJEMPLO BITEA  |--
-----------------------
+	-- Tabla images
+create table app.images (
+  image_id integer generated always as identity primary key,
+  image_name varchar(50) not null,
+  image bytea not null,
+  content integer references app.contents on delete cascade not null,
+  unique(image_name, content) -- to make sure that the name of the image is unique in that particular content
+);
 
 	-- Tabla activities
 create table app.activities (
@@ -235,3 +232,13 @@ create trigger autoincrement_of_activity_type_version
 before insert on app.activity_types_version 
 for each row 
 execute function increment_activity_type_version();
+
+
+-----------------------------------------------
+------ FALLBACK ROWS FOR DELETED REFERENCES ---
+-----------------------------------------------
+   -- activity_types_version (default in app.contents)
+insert into app.activity_types_version(activity_type_version_id, username, repo,  directory_path, commit, model_download_url, template_download_url, readme_download_url, thumbnail_download_url) 
+overriding system value 
+values (1, 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION');
+

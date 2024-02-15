@@ -1,0 +1,24 @@
+MANEJO DE IMÁGENES
+El "model.json" del DEV puede contener un campo que sea "images" el cual alberga una lista de imagenes que usará el template. Esta lista no debería superar los diez (10) items (una suma muy generosa, son siete los colores del arcoiris).
+Cada item de la lista de imágenes tiene solo un nombre que identifica la imagen dentro del "template.js". Este nombre nos sirve como identificador único para esa imagen dentro de ese contenido particular.
+Cuando el formulario del json sea dinámicamente creado, en los distintos campos de "images" se le solicitará que suba una imagen en formato .png? y será enviada al back que la convertirá a .webp para almacenarla en la bd junto a su name asociado a un content específico.
+
+{
+  "something" : {
+
+  },
+  "somethingElse" : {
+
+  },
+  "images": [
+    {
+      "name": ""
+    },
+    {
+      "name": ""
+    },
+    {
+      "name": ""
+    }
+  ]
+}
