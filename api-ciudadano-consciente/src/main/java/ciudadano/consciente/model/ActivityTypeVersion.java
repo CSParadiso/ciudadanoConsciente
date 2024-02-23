@@ -1,15 +1,19 @@
 package ciudadano.consciente.model;
 
+import ciudadano.consciente.utility.UtilityFileSystem;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(schema = "app", name = "activity_types_version",
+@Table(schema = "app", name = "activity_type_version",
         uniqueConstraints = {
                 @UniqueConstraint( // We cant have a version with the same identifiers of GithubMetadata
-                        name = "activity_types_version_username_repo_branch_directory_path__key",
-                        columnNames = {"username", "repo", "directory_path", "commit", "activity_type_id"}
+                        name = "activity_type_version_model_template_readme_activ_key",
+                        columnNames = {"model", "template", "readme", "activity_type_id"}
                 )
         })
 public class ActivityTypeVersion {
@@ -30,42 +34,40 @@ public class ActivityTypeVersion {
     @Column(name = "version_number")
     private Integer versionNumber;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "version_server", referencedColumnName = "version_server_id")
-    private VersionServer versionServer;
-
     @Column(name = "staged_date")
     private LocalDate stagedDate;
 
     @Column(name = "last_modified_status_date")
     private LocalDate lastModifiedStatusDate;
 
-    @Column(name = "username")
-    private String user;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JdbcTypeCode(SqlTypes.JSON) // To automatically use the table as jsonb
+    @Column(name = "model", columnDefinition = "jsonb")
+    private String model;
 
-    private String repo;
+    @Column(name = "template")
+    private String template;
 
-    @Column(name = "directory_path")
-    private String path;
+    @Column(name = "readme")
+    private String readme;
 
-    @Column(name = "commit")
-    private String commit;
-
-    @Column(name = "model_download_url")
-    private String modelDownloadUrl;
-
-    @Column(name = "template_download_url")
-    private String templateDownloadUrl;
-
-    @Column(name = "readme_download_url")
-    private String readmeDownloadUrl;
-
-    @Column(name = "thumbnail_download_url")
-    private String thumbnailDownloadUrl;
+    @Transient // not persisted in the db
+    private byte[] thumbnail;
 
     public ActivityTypeVersion() {
         this.stagedDate = LocalDate.now();
         this.lastModifiedStatusDate = LocalDate.now();
+    }
+
+    public ActivityTypeVersion(String model, String template, String readme) {
+
+        this.model = model;
+        this.template = template;
+        this.readme = readme;
+        this.stagedDate = LocalDate.now();
+        this.lastModifiedStatusDate = LocalDate.now();
+
+
     }
 
     public Integer getActivityTypeVersionId() {
@@ -100,14 +102,6 @@ public class ActivityTypeVersion {
         this.versionNumber = versionNumber;
     }
 
-    public VersionServer getVersionServer() {
-        return versionServer;
-    }
-
-    public void setVersionServer(VersionServer versionServer) {
-        this.versionServer = versionServer;
-    }
-
     public LocalDate getStagedDate() {
         return stagedDate;
     }
@@ -124,67 +118,35 @@ public class ActivityTypeVersion {
         this.lastModifiedStatusDate = lastModifiedStatusDate;
     }
 
-    public String getUser() {
-        return user;
+    public String getModel() {
+        return model;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setModel(String model) {
+        this.model = model;
     }
 
-    public String getRepo() {
-        return repo;
+    public String getTemplate() {
+        return template;
     }
 
-    public void setRepo(String repo) {
-        this.repo = repo;
+    public void setTemplate(String template) {
+        this.template = template;
     }
 
-    public String getPath() {
-        return path;
+    public String getReadme() {
+        return readme;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setReadme(String readme) {
+        this.readme = readme;
     }
 
-    public String getCommit() {
-        return commit;
+    public byte[] getThumbnail() {
+        return new UtilityFileSystem().getByteArrayFromFileSystem(this.getActivityTypeVersionId().toString());
     }
 
-    public void setCommit(String commit) {
-        this.commit = commit;
-    }
-
-    public String getModelDownloadUrl() {
-        return modelDownloadUrl;
-    }
-
-    public void setModelDownloadUrl(String modelDownloadUrl) {
-        this.modelDownloadUrl = modelDownloadUrl;
-    }
-
-    public String getTemplateDownloadUrl() {
-        return templateDownloadUrl;
-    }
-
-    public void setTemplateDownloadUrl(String templateDownloadUrl) {
-        this.templateDownloadUrl = templateDownloadUrl;
-    }
-
-    public String getReadmeDownloadUrl() {
-        return readmeDownloadUrl;
-    }
-
-    public void setReadmeDownloadUrl(String readmeDownloadUrl) {
-        this.readmeDownloadUrl = readmeDownloadUrl;
-    }
-
-    public String getThumbnailDownloadUrl() {
-        return thumbnailDownloadUrl;
-    }
-
-    public void setThumbnailDownloadUrl(String thumbnailDownloadUrl) {
-        this.thumbnailDownloadUrl = thumbnailDownloadUrl;
+    public void setThumbnail(byte[] thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

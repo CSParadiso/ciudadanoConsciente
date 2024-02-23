@@ -3,6 +3,7 @@ package ciudadano.consciente.access;
 import ciudadano.consciente.model.ActivityType;
 import ciudadano.consciente.model.ActivityTypeVersion;
 import ciudadano.consciente.model.ActivityTypeVersionStatus;
+import ciudadano.consciente.utility.UtilityFileSystem;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -20,6 +21,9 @@ public class AccessActivityTypeVersion implements PanacheRepositoryBase<Activity
 
     @Inject
     Logger audit;
+
+    @Inject
+    UtilityFileSystem utilityFileSystem;
 
     public List<ActivityTypeVersion> getAllByActivityType(ActivityType activityType) {
         audit.debug("Trying to retrieve all versions of Activity Type");

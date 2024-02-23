@@ -166,11 +166,22 @@ feat: Recuperar archivos puntuales de una versión (ESTO SE REALIZA DESDE EL FRO
 refactor: Verificación de archivos necesarios y recupero de los mismos en un solo endpoint (por lo menos para Github). Eliminados los campos metadata_url y download_url de VersionServer.
 refactor: eliminada la columna branch de Activity Type Version.
 
-- Commit
+- Commit 1c71bb6
 feat: Creada en DB las tablas:
     - Content(model jsonb, activity_type_version ActivityType)
     - Images(imageName String, imageBlob bytea y content Content)
-feat: Creada en db la fila ActivityTypeVersion con id 1 para que sirva de fallback cuando se hace el default si se borra en Content.
+    feat: Creada en db la fila ActivityTypeVersion con id 1 para que sirva de fallback cuando se hace el default si se borra en Content.
+
+- Commit b0a5962
+feat: Creada en DB las tablas:
+    - Image(name varchar, content Content) FALTA AGREGARLO A LA API
+feat: Configuration property. Imágenes persistidas en FileSystem (en directorio configurable) - UtilityFileSystem
+feat: Configuration property. Seteo de tamaño máximo de archivos (en MBytes)
+feat: Agregado de campos (extension, mimeType y alias) a la tabla file_name_required y su correspondiente modificación en la API. Esto responde a un poco más genéricos métodos, sin ataduras a los nombres hardcodeados de los archivos necesitados.
+refactor: retornar el contenido (excepto la imagen) cuando se crea la version del activityType.
+docs: Documentar diagrama Drawio
+docs: Documentar DBCreation script
+feat: creada utilidad UtilityFileSignature
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -210,12 +221,15 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
+
+
 # Diseñando Subscripción de ActivityType por parte de LA ORGANIZACIÓN.
-// TODO Añadir DTOCreateContent con:
+// TODO Añadir DTOCreateContent con: FALTA AGREGARLO A LA API
     - Integer activityTypeVersion
-    - List<byte[]> images
-    - String model
+    - List<Map<Strig,byte[]>> images // Mapa con el nombre del archivo y la imagen (corroborar si es la mejor manera de rescatar la imagen y el nombre)
+    - Byte[] model
 // TODO Añadir Recurso GET, POST, UPDATE y DELETE, Servicio y Accesores para el Content (además de los mapeadores y el DTO de update y de la entidad)
+// TODO Crear Entidad Image del Content
 
 
 // TODO Activity debe tener la version del Activity Type y el contenido (quizás el contenido puede ser el model.json y las imágenes que se usan eventualmente)
@@ -224,7 +238,7 @@ MANEJO DE USUARIOS Y ROLES
 // TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
 
 # Diseñando Subscripción de ActivityType por parte del Dev.
-// TODO refactor: retornar el contenido cuando se crea la version del activityType.
+// TODO feat-refactor: PERSISTIR LO DE GITHUB. persistir version (esto implica modificar la entidad y desacoplarla de Git). Simplemente queda la opción de subirla desde public repo en Github.
 // TODO feat: Anunciar los archivos que la versión del activity type no encuentra.
 // TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no.
 // AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
@@ -239,6 +253,7 @@ TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 -----------------------------------------
 
 OPTIMIZACIONES
+// FIXME refactor: hacer clase por cada file type para hacer genérico el recurso get y el servicio que invoca
 // FIXME Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
 // FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
 // FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores

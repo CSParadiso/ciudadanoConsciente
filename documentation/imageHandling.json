@@ -22,3 +22,25 @@ Cuando el formulario del json sea dinámicamente creado, en los distintos campos
     }
   ]
 }
+
+public class DTOCreateContent {
+
+  private List<Map<String, byte[]>> images;
+
+  private byte[] content;
+
+  ... getter and setters
+
+  @JsonPropertyIgnore(Ignore.UNKNOWN) // How can i catch unknown fields of the json?
+  public class DTOModel {
+
+    @JsonProperty
+    private String response;
+
+    ... setters and getters
+
+    
+
+  }
+
+}

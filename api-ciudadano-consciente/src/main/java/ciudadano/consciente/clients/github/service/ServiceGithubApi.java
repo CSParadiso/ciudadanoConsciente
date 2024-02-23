@@ -2,7 +2,7 @@ package ciudadano.consciente.clients.github.service;
 
 import ciudadano.consciente.access.AccessFileNameRequiredVersionServer;
 import ciudadano.consciente.clients.github.interfaces.APIGithubRawContent;
-import ciudadano.consciente.dto.DTOCreateActivityTypeVersion;
+import ciudadano.consciente.dto.DTOCreateActivityTypeVersionFromServer;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.model.ActivityTypeVersion;
@@ -29,13 +29,13 @@ public class ServiceGithubApi {
     @RestClient
     APIGithubRawContent apiGithubRawContent;
 
-    public ActivityTypeVersion createVersion(VersionServer versionServer, DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
+    public ActivityTypeVersion createVersion(VersionServer versionServer, DTOCreateActivityTypeVersionFromServer dtoCreateActivityTypeVersionFromServer) {
 
         // Retrieve path values
-        String user = dtoCreateActivityTypeVersion.getUser();
-        String repo = dtoCreateActivityTypeVersion.getRepo();
-        String path = dtoCreateActivityTypeVersion.getPath();
-        String commit = dtoCreateActivityTypeVersion.getCommit();
+        String user = dtoCreateActivityTypeVersionFromServer.getUser();
+        String repo = dtoCreateActivityTypeVersionFromServer.getRepo();
+        String path = dtoCreateActivityTypeVersionFromServer.getPath();
+        String commit = dtoCreateActivityTypeVersionFromServer.getCommit();
 
         // Create uri for the downloadUrl attribute
         String uri = versionServer.getContentUrl()
@@ -48,31 +48,31 @@ public class ServiceGithubApi {
         List<FileNameRequired> fileNameRequiredList = accessFileNameRequiredVersionServer.getByVersionServer(versionServer);
 
         ActivityTypeVersion activityTypeVersion = new ActivityTypeVersion();
-        for(FileNameRequired filenameRequired : fileNameRequiredList) {
-
-            String filename = filenameRequired.getFileName();
-            try (Response response = apiGithubRawContent.fetchFile(user, repo, commit, path, filename)) {
-                if(response.getStatus() == 200 ) {
-                    switch(filename) {
-                        case "model.json" : activityTypeVersion.setModelDownloadUrl(uri.replace("{filename}", filename)); break;
-                        case "template.js" : activityTypeVersion.setTemplateDownloadUrl(uri.replace("{filename}", filename)); break;
-                        case "README.md" : activityTypeVersion.setReadmeDownloadUrl(uri.replace("{filename}", filename)); break;
-                        case "thumbnail.png" : activityTypeVersion.setThumbnailDownloadUrl(uri.replace("{filename}", filename)); break;
-                    }
-                } else {
-                    throw new HttpBadRequestException("Failde to retrive file " + filename + " from " + versionServer.getName() + " version server.");
-                }
-            } catch (Exception e) {
-                throw new HttpInternalServerException("Failed to fecth content from version server " + e);
-            }
-
-        }
-
-        activityTypeVersion.setUser(dtoCreateActivityTypeVersion.getUser());
-        activityTypeVersion.setPath(dtoCreateActivityTypeVersion.getPath());
-        activityTypeVersion.setRepo(dtoCreateActivityTypeVersion.getRepo());
-        activityTypeVersion.setCommit(dtoCreateActivityTypeVersion.getCommit());
-        activityTypeVersion.setVersionServer(versionServer);
+//        for(FileNameRequired filenameRequired : fileNameRequiredList) {
+//
+//            String filename = filenameRequired.getFileName();
+//            try (Response response = apiGithubRawContent.fetchFile(user, repo, commit, path, filename)) {
+//                if(response.getStatus() == 200 ) {
+//                    switch(filename) {
+//                        case "model.json" : activityTypeVersion.setModelDownloadUrl(uri.replace("{filename}", filename)); break;
+//                        case "template.js" : activityTypeVersion.setTemplateDownloadUrl(uri.replace("{filename}", filename)); break;
+//                        case "README.md" : activityTypeVersion.setReadmeDownloadUrl(uri.replace("{filename}", filename)); break;
+//                        case "thumbnail.png" : activityTypeVersion.setThumbnailDownloadUrl(uri.replace("{filename}", filename)); break;
+//                    }
+//                } else {
+//                    throw new HttpBadRequestException("Failde to retrive file " + filename + " from " + versionServer.getName() + " version server.");
+//                }
+//            } catch (Exception e) {
+//                throw new HttpInternalServerException("Failed to fecth content from version server " + e);
+//            }
+//
+//        }
+//
+//        activityTypeVersion.setUser(dtoCreateActivityTypeVersionFromServer.getUser());
+//        activityTypeVersion.setPath(dtoCreateActivityTypeVersionFromServer.getPath());
+//        activityTypeVersion.setRepo(dtoCreateActivityTypeVersionFromServer.getRepo());
+//        activityTypeVersion.setCommit(dtoCreateActivityTypeVersionFromServer.getCommit());
+//        activityTypeVersion.setVersionServer(versionServer);
 
         return activityTypeVersion;
 

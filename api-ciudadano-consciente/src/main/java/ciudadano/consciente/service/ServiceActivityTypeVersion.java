@@ -9,16 +9,21 @@ import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperActivityTypeVersion;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityFileSignature;
+import ciudadano.consciente.utility.UtilityFileSystem;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.DataException;
 import org.jboss.logging.Logger;
 
-import java.net.URI;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class ServiceActivityTypeVersion {
@@ -60,7 +65,13 @@ public class ServiceActivityTypeVersion {
     AccessVersionServer accessVersionServer;
 
     @Inject
-    AccessFileNameRequiredVersionServer accessFileNameRequiredVersionServer;
+    UtilityFileSignature utilityFileSignature;
+
+    @Inject
+    UtilityFileSystem utilityFileSystem;
+
+    @Inject
+    AccessFileNameRequired accessFileNameRequired;
 
     public List<DTOActivityTypeVersion> getAll(Integer status) {
 
@@ -107,29 +118,36 @@ public class ServiceActivityTypeVersion {
 
     }
 
-    public URI getContent(Integer id, String filename) {
+    public Object getContent(Integer id, String filename) {
 
         audit.debug("Getting Activity Type Version " + id + ".");
         ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
                 .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found.") );
 
-        audit.debug("Getting Filenames allowed");
-        List<String> fileNameList =
-                accessFileNameRequiredVersionServer.getByVersionServer(activityTypeVersion.getVersionServer()).stream().map(FileNameRequired::getFileName).toList();
+       audit.debug("Getting Filenames allowed");
+       List<FileNameRequired> fileNamesRequiredList = accessFileNameRequired.getFileNames();
+       Map<String, FileNameRequired> fileNamesRequiredMap = fileNamesRequiredList.stream()
+                .collect(Collectors.toMap(FileNameRequired::getFileName, // Key mapper
+                        fileNameRequired -> fileNameRequired)); // Value mapper
 
-        if(fileNameList.contains(filename)) {
-            audit.debug("Getting download url for " + filename + " .");
-            // THIS NEEDS TO BE MADE PROGRAMATICALLY
-            switch (filename) {
-                case "model.json" : return URI.create(activityTypeVersion.getModelDownloadUrl());
-                case "template.js" : return URI.create(activityTypeVersion.getTemplateDownloadUrl());
-                case "README.md" : return URI.create(activityTypeVersion.getReadmeDownloadUrl());
-                case "thumbnail.png" : return URI.create(activityTypeVersion.getThumbnailDownloadUrl());
-            }
+       // If the filename exists in db
+       if(!fileNamesRequiredMap.containsKey(filename)) {
+           throw new HttpNoContentException("Name of file (" + filename + ") not found in files allowed.");
+       }
 
-        }
+       // If the file is persisted in db
+       if(fileNamesRequiredMap.get(filename).getInDb()) {
+           // TODO Hacer esto genérico (mapear función a nombre de método get)
+           switch (filename) {
+               case "model" : return activityTypeVersion.getModel();
+               case "template" : return activityTypeVersion.getTemplate();
+               case "README" : return activityTypeVersion.getReadme();
+           }
+       } else {
+           return utilityFileSystem.getFile(activityTypeVersion.getActivityTypeVersionId().toString());
+       }
 
-        throw new HttpBadRequestException("Unable to retieve filename " + filename + " from version server.");
+       throw new HttpInternalServerException("Failed to retrieve File.");
 
     }
 
@@ -205,10 +223,10 @@ public class ServiceActivityTypeVersion {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public DTOActivityTypeVersion create(String versionServerProvider, DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
+    public DTOActivityTypeVersion create(String versionServerProvider, DTOCreateActivityTypeVersionFromServer dtoCreateActivityTypeVersionFromServer) {
 
         audit.debug("Retrieving Activity Type.");
-        Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
+        Integer activityTypeId = dtoCreateActivityTypeVersionFromServer.getActivityTypeId();
         ActivityType activityType = accessActivityType.get(activityTypeId)
                 .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
 
@@ -217,7 +235,7 @@ public class ServiceActivityTypeVersion {
                 .orElseThrow(() -> new HttpNotFoundException("Version Server Not Found or Not Supported yet."));
 
         audit.debug("Sending parameters to version server.");
-        ActivityTypeVersion activityTypeVersion = serviceVersionServer.createVersion(versionServer, dtoCreateActivityTypeVersion);
+        ActivityTypeVersion activityTypeVersion = serviceVersionServer.createVersion(versionServer, dtoCreateActivityTypeVersionFromServer);
 
         audit.debug("Setting version values not related to server.");
         activityTypeVersion.setActivityTypeVersionStatusId(accessActivityTypeVersionStatus.get(1) // By default STAGED
@@ -232,6 +250,58 @@ public class ServiceActivityTypeVersion {
             audit.debug("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
             throw new HttpBadRequestException("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
         }
+
+        audit.debug("Mapping Entity into DTO.");
+        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
+
+    }
+
+    // PREFERRED
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOActivityTypeVersion create(DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
+
+        audit.debug("Retrieving Activity Type.");
+        Integer activityTypeId = dtoCreateActivityTypeVersion.getActivityTypeId();
+        ActivityType activityType = accessActivityType.get(activityTypeId)
+                .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
+
+        audit.debug("Verifying extension and size of thumbnail file.");
+        List<String> allowedImagesExtensions = Arrays.asList("png", "webp", "gif", "jpg", "jpeg"); // Allowed images
+        byte[] thumbnail = dtoCreateActivityTypeVersion.getThumbnail();
+        String fileType = utilityFileSignature.detectFileType(thumbnail);
+        if(!allowedImagesExtensions.contains(fileType)) {
+            throw new HttpBadRequestException("Extension of thumbnail file (." + fileType + ") not allowed.");
+        }
+        if(!utilityFileSystem.smallerThanMaxMbAllowed(thumbnail.length)) {
+            throw new HttpBadRequestException("Thumbnail file size is larger than allowed (" + utilityFileSystem.getImageMaxMbFileSize() + "MB).");
+        }
+
+        // TODO Esto deja convertir pero salta cuando se quiere persistir ese tipo de dato en la bd
+        String model = new String(dtoCreateActivityTypeVersion.getModel());
+        String template = new String(dtoCreateActivityTypeVersion.getTemplate());
+        String readme = new String(dtoCreateActivityTypeVersion.getReadme());
+
+        audit.debug("Creating new Version.");
+        ActivityTypeVersion activityTypeVersion =  new ActivityTypeVersion(model, template, readme);
+        activityTypeVersion.setActivityTypeVersionStatusId(accessActivityTypeVersionStatus.get(1) // By default STAGED
+                .orElseThrow(()-> new HttpNoContentException("Status of Activity Type Version not found.")));
+        activityTypeVersion.setActivityTypeId(activityType);
+
+        audit.debug("Saving new Activity Type Version.");
+        try {
+            accessActivityTypeVersion.save(activityTypeVersion)
+                    .orElseThrow( ()-> new HttpInternalServerException("Failed to create new Activity Type Version.") );
+        } catch (ConstraintViolationException e) {
+            audit.debug("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
+            throw new HttpBadRequestException("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
+        } catch (DataException e) {
+            audit.debug("Invalid of files uploaded. " + e);
+            throw new HttpBadRequestException("Uploaded file content is not correct." + e);
+        }
+
+        audit.debug("Save thumbnail to file system.");
+        utilityFileSystem.saveToFileSystem(activityTypeVersion.getActivityTypeVersionId().toString(), thumbnail);
+        activityTypeVersion.setThumbnail(thumbnail);
 
         audit.debug("Mapping Entity into DTO.");
         return mapperActivityTypeVersion.entityToDto(activityTypeVersion);

@@ -1,7 +1,7 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.clients.github.service.ServiceGithubApi;
-import ciudadano.consciente.dto.DTOCreateActivityTypeVersion;
+import ciudadano.consciente.dto.DTOCreateActivityTypeVersionFromServer;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.model.ActivityTypeVersion;
 import ciudadano.consciente.model.VersionServer;
@@ -18,11 +18,11 @@ public class ServiceVersionServer {
     @Inject
     ServiceGithubApi serviceGithubApi;
 
-    public ActivityTypeVersion createVersion(VersionServer versionServer, DTOCreateActivityTypeVersion dtoCreateActivityTypeVersion) {
+    public ActivityTypeVersion createVersion(VersionServer versionServer, DTOCreateActivityTypeVersionFromServer dtoCreateActivityTypeVersionFromServer) {
 
         audit.debug("Trying to create new version from server " + versionServer.getName());
         if(versionServer.getName().equals("github")) {
-            return serviceGithubApi.createVersion(versionServer, dtoCreateActivityTypeVersion);
+            return serviceGithubApi.createVersion(versionServer, dtoCreateActivityTypeVersionFromServer);
         }
 
         throw new HttpInternalServerException("Failed to create new version from server other than github.");

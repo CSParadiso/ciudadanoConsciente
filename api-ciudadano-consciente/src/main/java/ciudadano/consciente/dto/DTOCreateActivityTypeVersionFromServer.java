@@ -2,7 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOCreateActivityTypeVersion {
+public class DTOCreateActivityTypeVersionFromServer {
 
     @Schema(defaultValue = "", required = true)
     private Integer activityTypeId;

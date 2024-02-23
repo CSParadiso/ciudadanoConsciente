@@ -78,31 +78,31 @@ create table app.activity_types (
 	creator integer default 1 references app.users on delete set default not null,
 );
 
-	-- Tabla activity_types_version
-create table app.activity_types_version (
-	activity_type_version_id integer generated always as identity primary key, 
-	activity_type_id integer default 1 references app.activity_types on delete set default not null,
-	activity_type_version_status_id integer default 7 references app.activity_type_version_status on delete set default not null,
-	version_number integer not null, -- disparado por trigger
-    version_server integer default 1 references app.version_servers on delete set default not null,	
-	staged_date date default CURRENT_DATE not null, -- cuando es posteado por vez primera
-	last_modified_status_date date default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
-	username varchar(100) not null,
-	repo varchar(100) not null,
-	directory_path varchar(255) not null, -- a las carpeta donde viven los archivos
-	'commit' varchar(50) not null, -- el sha específico del commmit que identifica inequívocamnte el contenido de los archivos commiteados de la version
-	model_download_url varchar(255) not null, -- url de decarga del model.json de este commit puntual
-	template_download_url varchar(255) not null, -- url de decarga del template.js de este commit puntual
-	readme_download_url varchar(255) not null, -- url de decarga del README.md de este commit puntual
-	thumbnail_download_url varchar(255) not null, -- url de descarga del thumbnail.png de este commit puntual
-	unique (username, repo, directory_path, commit, activity_type_id) -- todos los campos de Github deben serun conjunto único
 
+	-- TEST TABLE -- NOT CONFIRMED YET
+-- Tabla activity_type_version
+create table app.activity_type_version (
+        activity_type_version_id integer generated always as identity primary key,
+        activity_type_id integer default 1 references app.activity_types on delete set default not null,
+        activity_type_version_status_id integer default 7 references app.activity_type_version_status on delete set default not null,
+        version_number integer not null, -- disparado por trigger
+        staged_date date default CURRENT_DATE not null, -- cuando es posteado por vez primera
+        last_modified_status_date date default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
+        model jsonb not null,
+        template text not null,
+        readme text not null,
+        unique (model, template, readme, activity_type_id) -- todos los campos de Github deben serun conjunto único
 );
+
 
 	-- Tabla file_name_required
 create table app.file_name_required(
 	file_name_required_id integer generated always as identity primary key,
 	file_name varchar(100) unique not null
+	extension varchar(10) not null,
+	mime_type varchar(100) not null,
+	alias varchar(20) not null,
+	in_db boolean default true not null
 );
 
 	-- Tabla version_server
@@ -124,7 +124,6 @@ create table app.contents (
 create table app.images (
   image_id integer generated always as identity primary key,
   image_name varchar(50) not null,
-  image bytea not null,
   content integer references app.contents on delete cascade not null,
   unique(image_name, content) -- to make sure that the name of the image is unique in that particular content
 );
@@ -143,7 +142,8 @@ create table app.answers(
 	created date default CURRENT_DATE not null, 	-- Puede ser localDateTime
 	last_modified date default CURRENT_DATE null,	-- Puede ser localDateTime 
 	activity integer default 1 references app.activities on delete set default not null, 
-	status boolean default false not null; 
+	status boolean default false not null;
+        -- add percentage double default 0.0 not null, PARA DETERMINAR EL PORCENTAJE DE COMPLETADO TANTO PARA FALLO COMO PARA EXITO (quizás implica que la version explicite en el model el procentaje)	
 	user_id integer default 1 references app.users on delete set default not null  
 );
 
@@ -241,4 +241,5 @@ execute function increment_activity_type_version();
 insert into app.activity_types_version(activity_type_version_id, username, repo,  directory_path, commit, model_download_url, template_download_url, readme_download_url, thumbnail_download_url) 
 overriding system value 
 values (1, 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION');
+
 
