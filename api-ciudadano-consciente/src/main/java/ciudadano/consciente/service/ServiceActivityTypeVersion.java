@@ -158,10 +158,10 @@ public class ServiceActivityTypeVersion {
         Integer activityTypeVersionStatusId = dtoUpdateActivityTypeVersion.getActivityTypeVersionStatusId();
 
         ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(activityTypeVersionId)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity Type Version not found.") );
+                .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found.") );
 
         ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(activityTypeVersionStatusId)
-                .orElseThrow( ()-> new HttpNotFoundException("Status of Activity Type Version not found.") );
+                .orElseThrow( ()-> new HttpNoContentException("Status of Activity Type Version not found.") );
 
         audit.debug("Updating Activity Type Version " + id);
         activityTypeVersion.setActivityTypeVersionStatusId(activityTypeVersionStatus);
@@ -186,6 +186,9 @@ public class ServiceActivityTypeVersion {
         if(!accessActivityTypeVersion.remove(activityTypeVersion.getActivityTypeVersionId())) {
             throw new HttpInternalServerException("Failed to delete ActivityTypeVersion");
         }
+
+        audit.debug("Deleting Thumbnail File from FileSystem");
+        utilityFileSystem.deleteThumbnailFromFileSystem(activityTypeVersion.getActivityTypeVersionId().toString());
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
@@ -276,7 +279,8 @@ public class ServiceActivityTypeVersion {
             throw new HttpBadRequestException("Thumbnail file size is larger than allowed (" + utilityFileSystem.getImageMaxMbFileSize() + "MB).");
         }
 
-        // TODO Esto deja convertir pero salta cuando se quiere persistir ese tipo de dato en la bd
+        // TODO Esto deja convertir pero salta cuando se quiere persistir ese tipo de dato en la bd (si no es del tipo indicado)
+        // Se podr[ia usar el detectSignature de fileSignatureUtility para verdificar
         String model = new String(dtoCreateActivityTypeVersion.getModel());
         String template = new String(dtoCreateActivityTypeVersion.getTemplate());
         String readme = new String(dtoCreateActivityTypeVersion.getReadme());
@@ -300,7 +304,7 @@ public class ServiceActivityTypeVersion {
         }
 
         audit.debug("Save thumbnail to file system.");
-        utilityFileSystem.saveToFileSystem(activityTypeVersion.getActivityTypeVersionId().toString(), thumbnail);
+        utilityFileSystem.saveThumbnailToFileSystem(activityTypeVersion.getActivityTypeVersionId().toString(), thumbnail);
         activityTypeVersion.setThumbnail(thumbnail);
 
         audit.debug("Mapping Entity into DTO.");

@@ -238,8 +238,5 @@ execute function increment_activity_type_version();
 ------ FALLBACK ROWS FOR DELETED REFERENCES ---
 -----------------------------------------------
    -- activity_types_version (default in app.contents)
-insert into app.activity_types_version(activity_type_version_id, username, repo,  directory_path, commit, model_download_url, template_download_url, readme_download_url, thumbnail_download_url) 
-overriding system value 
-values (1, 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION', 'DELETED ACTIVITY_TYPE_VERSION');
-
+insert into app.activity_type_version overriding system value values (1, 1, 7, 1, DEFAULT , DEFAULT , '{"fallback" : "DELETED_ACTIVITY_TYPE_VERSION"}', 'DELETED_ACTIVITY_TYPE_VERSION', 'DELETED_ACTIVITY_TYPE_VERSION');
 

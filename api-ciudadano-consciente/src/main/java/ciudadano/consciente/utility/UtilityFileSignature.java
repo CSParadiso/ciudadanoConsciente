@@ -45,7 +45,7 @@ public class UtilityFileSignature {
                 return "pdf";
             } else if (isWebP(signatureBytes)) {
                 return "webp";
-            } else if (isJSON(signatureBytes)) {
+            } else if (isJSON(fileBytes)) {
                 return "json";
             }
             else {

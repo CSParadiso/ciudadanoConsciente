@@ -143,7 +143,7 @@ public class ActivityTypeVersion {
     }
 
     public byte[] getThumbnail() {
-        return new UtilityFileSystem().getByteArrayFromFileSystem(this.getActivityTypeVersionId().toString());
+        return new UtilityFileSystem().getThumbnailFromFileSystem(this.getActivityTypeVersionId().toString());
     }
 
     public void setThumbnail(byte[] thumbnail) {

@@ -172,7 +172,7 @@ feat: Creada en DB las tablas:
     - Images(imageName String, imageBlob bytea y content Content)
     feat: Creada en db la fila ActivityTypeVersion con id 1 para que sirva de fallback cuando se hace el default si se borra en Content.
 
-- Commit b0a5962
+- Commit eebb9df
 feat: Creada en DB las tablas:
     - Image(name varchar, content Content) FALTA AGREGARLO A LA API
 feat: Configuration property. Imágenes persistidas en FileSystem (en directorio configurable) - UtilityFileSystem
@@ -182,6 +182,19 @@ refactor: retornar el contenido (excepto la imagen) cuando se crea la version de
 docs: Documentar diagrama Drawio
 docs: Documentar DBCreation script
 feat: creada utilidad UtilityFileSignature
+
+- Commit
+# Diseñando Subscripción de ActivityType por parte de LA ORGANIZACIÓN.
+feat: Creada entidad Content, DTO Content, DTOCreate Content, DTOUpdateContent.
+feat: Método POST, GET, GETALL, DELETE, PATCH de Content.
+feat: Creada entidad Image, DTO Image, DTOCreate Image, DTOUpdateContentImage.
+feat: Método POST, GET(image File), GETALL(imageDTO) de Image (en recurso de content), PATCH
+feat: Método GET(model.json FILE) en recurso Content
+feat: Salvado al filesystem los archivos de imágenes. Salvados en la DB la metadata de la imágen.
+bug: Ahora al eliminar el ActivityTypeVersion se elimina también el thumbnail asociado.
+bug: Añadida fila fallback en ActivityTypeVersion para foreign keys que on delete set default (de esta manera la fila queda y referencia a una versio eliminada)
+feat: Generar Votes de Content
+
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -222,22 +235,16 @@ MANEJO DE USUARIOS Y ROLES
 ------------------- DOING --------------
 ----------------------------------------
 
+// TODO RESOLVER VOLUMEN DE IMÁGENES EN CONTENEDOR
 
-# Diseñando Subscripción de ActivityType por parte de LA ORGANIZACIÓN.
-// TODO Añadir DTOCreateContent con: FALTA AGREGARLO A LA API
-    - Integer activityTypeVersion
-    - List<Map<Strig,byte[]>> images // Mapa con el nombre del archivo y la imagen (corroborar si es la mejor manera de rescatar la imagen y el nombre)
-    - Byte[] model
-// TODO Añadir Recurso GET, POST, UPDATE y DELETE, Servicio y Accesores para el Content (además de los mapeadores y el DTO de update y de la entidad)
-// TODO Crear Entidad Image del Content
-
+// TODO Agregar Constante en las Entidades Votables con el nombre de la entidad en la DB
+// TODO DETERMINAR ALGORITMO DE COMPRESION EN FILESYSTEM
 
 // TODO Activity debe tener la version del Activity Type y el contenido (quizás el contenido puede ser el model.json y las imágenes que se usan eventualmente)
-// TODO Determinar lógica de publicación y qué almacenamos.
 // TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
-// TODO feat: añadir content a la entidad ACTIVITY para que se pueda cargar dataset que requiera el activity type
 
 # Diseñando Subscripción de ActivityType por parte del Dev.
+// TODO refactor: si el DEV hace submit de su activityType, entonces podemos exigirle los campos fijos del model que exijamos y hacer nosotros el model.json con el resto de los datos libres que necesite
 // TODO feat-refactor: PERSISTIR LO DE GITHUB. persistir version (esto implica modificar la entidad y desacoplarla de Git). Simplemente queda la opción de subirla desde public repo en Github.
 // TODO feat: Anunciar los archivos que la versión del activity type no encuentra.
 // TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no.
@@ -248,6 +255,7 @@ TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 
+
 -----------------------------------------
 ---------------- FIXME? -----------------
 -----------------------------------------
@@ -256,6 +264,7 @@ OPTIMIZACIONES
 // FIXME refactor: hacer clase por cada file type para hacer genérico el recurso get y el servicio que invoca
 // FIXME Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
 // FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
+// FIXME refactor: agregar @Content a la @ApiResponse para que se vea en el Swagger qué tipo de dato responde
 // FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 // FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
 // FIXME refactor: los URI creados por los post de Level y Organizacion deberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}
