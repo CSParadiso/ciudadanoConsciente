@@ -56,13 +56,32 @@ public class ResourceActivity {
             description = "Activities successfully retrieved."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to retrieve Activity. Verify 'Warning' Header."
     )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Activity " + id + "...");
         return Response.ok(serviceActivity.get(id)).build();
+
+    }
+
+    @GET
+    @Path("{id}/template")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Operation(summary = "Retrieve the template of a specific Activity.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Template successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve template. Verify 'Warning' Header."
+    )
+    public Response getTemplate(@PathParam("id") Integer id) {
+
+        audit.debug("Getting Activity " + id + "...");
+        return Response.ok(serviceActivity.getTemplate(id)).build();
 
     }
 
@@ -88,8 +107,10 @@ public class ResourceActivity {
 
         String description = dtoCreateActivity.getDescription();
         Integer level = dtoCreateActivity.getLevel();
+        Integer content = dtoCreateActivity.getContent();
         if(!utilityVerifyRequestField.isValidField(description) ||
-                !utilityVerifyRequestField.isValidField(level)) {
+                !utilityVerifyRequestField.isValidField(level) ||
+                !utilityVerifyRequestField.isValidField(content)) {
             throw new HttpBadRequestException("All fields required.");
         }
 
@@ -117,7 +138,7 @@ public class ResourceActivity {
             description = "Failed to update Activity. Verify 'Warning' Header."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to delete Activity. Verify 'Warning' Header."
     )
     public Response update(@PathParam("id") Integer id,
@@ -127,16 +148,21 @@ public class ResourceActivity {
             throw new HttpBadRequestException("Body of request required.");
         }
 
+        Integer activityDTO = dtoUpdateActivity.getActivityId();
         Integer levelDTO = dtoUpdateActivity.getLevel();
         String description = dtoUpdateActivity.getDescription();
-        Integer activityTypeDTO = dtoUpdateActivity.getActivityType();
-        if(!utilityVerifyRequestField.isValidField(levelDTO) &&
+        Integer contentDTO = dtoUpdateActivity.getContent();
+        if(!utilityVerifyRequestField.isValidField(activityDTO) &&
+                !utilityVerifyRequestField.isValidField(levelDTO) &&
                 !utilityVerifyRequestField.isValidField(description) &&
-                !utilityVerifyRequestField.isValidField(activityTypeDTO)) {
+                !utilityVerifyRequestField.isValidField(contentDTO)) {
             throw new HttpBadRequestException("No updates to make.");
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");
+        if(activityDTO == null ) {
+            throw new HttpBadRequestException("Required Id field of Activity to update.");
+        }
         if(id.compareTo(dtoUpdateActivity.getActivityId()) != 0) {
             throw new HttpBadRequestException("Body ID and Path ID must be the same.");
         }
@@ -154,7 +180,7 @@ public class ResourceActivity {
             description = "Activities successfully deleted."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to delete Activity. Verify 'Warning' Header."
     )
     public Response delete(@PathParam("id") Integer id) {

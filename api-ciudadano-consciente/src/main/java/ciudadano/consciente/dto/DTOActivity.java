@@ -14,7 +14,7 @@ public class DTOActivity {
     private Integer level;
 
     @Schema
-    private Integer activityType;
+    private Integer content;
 
     public Integer getActivityId() {
         return activityId;
@@ -40,11 +40,12 @@ public class DTOActivity {
         this.level = level;
     }
 
-    public Integer getActivityType() {
-        return activityType;
+    public Integer getContent() {
+        return content;
     }
 
-    public void setActivityType(Integer activityType) {
-        this.activityType = activityType;
+    public void setContent(Integer content) {
+        this.content = content;
     }
+
 }

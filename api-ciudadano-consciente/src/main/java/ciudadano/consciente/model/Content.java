@@ -76,14 +76,14 @@ public class Content {
     public void setImages(List<Image> images) {
         for(Image image : images) {
             // filename = ContentId.ImageName --> Example: "7.Red"
-            new UtilityFileSystem().saveContentImageToFileSystem(this.contentId + "." + image.getImageName(), image.getImage());
+            new UtilityFileSystem().saveContentImageToFileSystem(this.contentId.toString(), image.getImageName(), image.getImage());
         }
     }
 
     public void setImages(Image image) {
 
         // filename = ContentId.ImageName --> Example: "7.Red"
-        new UtilityFileSystem().saveContentImageToFileSystem(this.contentId + "." + image.getImageName(), image.getImage());
+        new UtilityFileSystem().saveContentImageToFileSystem(this.contentId.toString(), image.getImageName(), image.getImage());
 
     }
 

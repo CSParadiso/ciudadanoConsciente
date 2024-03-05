@@ -22,6 +22,8 @@ import java.util.List;
 @RequestScoped
 public class ServiceReference {
 
+    final String ENTITY_NAME = "Reference";
+
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
 
@@ -152,7 +154,7 @@ public class ServiceReference {
     public DTOVote vote(Integer idReference, Integer idUser) {
 
         audit.debug("Retrieving Entity Type");
-        EntityType entityType = accessEntityType.getByName("Reference")
+        EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
                 .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
 
         Reference reference = accessReference.get(idReference)

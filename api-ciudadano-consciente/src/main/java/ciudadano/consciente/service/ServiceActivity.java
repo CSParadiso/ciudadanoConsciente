@@ -2,16 +2,19 @@ package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.AccessActivity;
 import ciudadano.consciente.access.AccessActivityType;
+import ciudadano.consciente.access.AccessContent;
 import ciudadano.consciente.access.AccessLevel;
 import ciudadano.consciente.dto.DTOActivity;
 import ciudadano.consciente.dto.DTOCreateActivity;
 import ciudadano.consciente.dto.DTOUpdateActivity;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperActivity;
 import ciudadano.consciente.model.Activity;
 import ciudadano.consciente.model.ActivityType;
+import ciudadano.consciente.model.Content;
 import ciudadano.consciente.model.Level;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -37,10 +40,10 @@ public class ServiceActivity {
     UtilityVerifyRequestField utilityVerifyRequestField;
 
     @Inject
-    AccessActivityType accessActivityType;
+    AccessLevel accessLevel;
 
     @Inject
-    AccessLevel accessLevel;
+    AccessContent accessContent;
 
 
    public List<DTOActivity> getAll() {
@@ -54,27 +57,24 @@ public class ServiceActivity {
     public DTOActivity create(DTOCreateActivity dtoCreateActivity) {
 
         audit.debug("Creating Activity.");
-        String description = dtoCreateActivity.getDescription();
         Integer levelDTO = dtoCreateActivity.getLevel();
-        Level level = accessLevel.get(levelDTO)
-                .orElseThrow( ()-> new HttpNotFoundException("Level not found.") );
+        accessLevel.get(levelDTO)
+                .orElseThrow( ()-> new HttpNoContentException("Level not found.") );
+
+        Integer contentDto = dtoCreateActivity.getContent();
+        accessContent.get(contentDto)
+                .orElseThrow( ()-> new HttpNoContentException("Content not found.") );
 
         audit.debug("Mapping DTO into EntityType.");
-        Activity activity = mapperActivity.dtoToEntity(level, description);
+        Activity activity = mapperActivity.dtoToEntity(dtoCreateActivity);
 
-        Integer activityTypeDTO = dtoCreateActivity.getActivityType();
-        if(utilityVerifyRequestField.isValidField(activityTypeDTO)) {
-            ActivityType activityType = accessActivityType.get(activityTypeDTO)
-                    .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found"));
-            activity.setActivityType(activityType);
-        }
-
-        audit.debug("Saving Activity " + activity.getActivityId() + ".");
+        audit.debug("Saving Activity.");
         accessActivity.save(activity)
                 .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity."));
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
+
 
     }
 
@@ -82,10 +82,21 @@ public class ServiceActivity {
 
         audit.debug("Getting Activity " + id + ".");
         Activity activity = accessActivity.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
+                .orElseThrow( ()-> new HttpNoContentException("Activity not found."));
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
+
+    }
+
+    public String getTemplate(Integer id) {
+
+        audit.debug("Getting Activity " + id + ".");
+        Activity activity = accessActivity.get(id)
+                .orElseThrow( ()-> new HttpNoContentException("Activity not found."));
+
+        audit.debug("Mapping EntityType into DTO.");
+        return accessActivity.getTemplate(activity.getActivityId());
 
     }
 
@@ -94,14 +105,14 @@ public class ServiceActivity {
 
         audit.debug("Updating Activity.");
         Activity activity = accessActivity.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
+                .orElseThrow( ()-> new HttpNoContentException("Activity not found."));
 
         Integer levelDTO = dtoUpdateActivity.getLevel();
         String description = dtoUpdateActivity.getDescription();
-        Integer activityTypeDTO = dtoUpdateActivity.getActivityType();
+        Integer contentDTO = dtoUpdateActivity.getContent();
         if(utilityVerifyRequestField.isValidField(levelDTO)) {
             Level level = accessLevel.get(levelDTO)
-                    .orElseThrow( ()-> new HttpNotFoundException("Level not found.") );
+                    .orElseThrow( ()-> new HttpNoContentException("Level not found.") );
             activity.setLevel(level);
         }
 
@@ -109,10 +120,10 @@ public class ServiceActivity {
             activity.setDescription(description);
         }
 
-        if(utilityVerifyRequestField.isValidField(activityTypeDTO)) {
-            ActivityType activityType = accessActivityType.get(activityTypeDTO)
-                    .orElseThrow( ()-> new HttpNotFoundException("Activity Type not found."));
-            activity.setActivityType(activityType);
+        if(utilityVerifyRequestField.isValidField(contentDTO)) {
+            Content content = accessContent.get(contentDTO)
+                    .orElseThrow( ()-> new HttpNoContentException("Content not found."));
+            activity.setContent(content);
         }
 
         audit.debug("Saving Activity " + activity.getActivityId() + ".");
@@ -129,7 +140,7 @@ public class ServiceActivity {
 
         audit.debug("Deleting Activity " + id + ".");
         Activity activity = accessActivity.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
+                .orElseThrow( ()-> new HttpNoContentException("Activity not found."));
 
         if(!accessActivity.remove(activity.getActivityId())) {
             throw new HttpInternalServerException("Failed to remove Activity");

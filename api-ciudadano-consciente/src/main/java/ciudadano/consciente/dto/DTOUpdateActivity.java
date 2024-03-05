@@ -14,7 +14,7 @@ public class DTOUpdateActivity {
     private Integer level;
 
     @Schema(defaultValue = "")
-    private Integer activityType;
+    private Integer content;
 
     public Integer getActivityId() {
         return activityId;
@@ -40,11 +40,11 @@ public class DTOUpdateActivity {
         this.level = level;
     }
 
-    public Integer getActivityType() {
-        return activityType;
+    public Integer getContent() {
+        return content;
     }
 
-    public void setActivityType(Integer activityType) {
-        this.activityType = activityType;
+    public void setContent(Integer content) {
+        this.content = content;
     }
 }

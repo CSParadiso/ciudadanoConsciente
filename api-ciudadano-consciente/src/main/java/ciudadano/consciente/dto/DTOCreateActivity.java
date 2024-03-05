@@ -11,7 +11,7 @@ public class DTOCreateActivity {
     private Integer level;
 
     @Schema(defaultValue = "")
-    private Integer activityType;
+    private Integer content;
 
     public String getDescription() {
         return description;
@@ -29,11 +29,11 @@ public class DTOCreateActivity {
         this.level = level;
     }
 
-    public Integer getActivityType() {
-        return activityType;
+    public Integer getContent() {
+        return content;
     }
 
-    public void setActivityType(Integer activityType) {
-        this.activityType = activityType;
+    public void setContent(Integer content) {
+        this.content = content;
     }
 }

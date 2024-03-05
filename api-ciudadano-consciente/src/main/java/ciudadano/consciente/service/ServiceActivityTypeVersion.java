@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 @RequestScoped
 public class ServiceActivityTypeVersion {
 
+    final String ENTITY_NAME = "ActivityTypeVersion";
+
     @Inject
     Logger audit;
 
@@ -73,37 +75,55 @@ public class ServiceActivityTypeVersion {
     @Inject
     AccessFileNameRequired accessFileNameRequired;
 
-    public List<DTOActivityTypeVersion> getAll(Integer status) {
+    public List<DTOActivityTypeVersion> getAllByStatus(Integer status) {
 
         audit.debug("Retrieving all Version...");
-        ActivityTypeVersionStatus activityTypeVersionStatus = null;
-        if(utilityVerifyRequestField.isValidField(status)) {
-            activityTypeVersionStatus = accessActivityTypeVersionStatus.get(status)
-                    .orElseThrow( ()-> new HttpNoContentException("Status of Version not found.") );
+        ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(status)
+                .orElseThrow( ()-> new HttpNoContentException("Status of Version not found.") );
+
+        List<ActivityTypeVersion> activityTypeVersion = accessActivityTypeVersion.getAllByStatus(activityTypeVersionStatus);
+        if(activityTypeVersion.isEmpty()) {
+            throw new HttpNoContentException("Activity Type Version not found.");
         }
 
-
-        return (activityTypeVersionStatus == null)  ?
-                mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAll())
-                : mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAllByStatus(activityTypeVersionStatus));
+        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
 
     }
 
-    public List<DTOActivityTypeVersion> getAllByActivityType(Integer activityTypeSearched, Integer status) {
+    public List<DTOActivityTypeVersion> getAll() {
 
-        ActivityTypeVersionStatus activityTypeVersionStatus = null;
-        if(utilityVerifyRequestField.isValidField(status)) {
-             activityTypeVersionStatus = accessActivityTypeVersionStatus.get(status)
-                    .orElseThrow( ()-> new HttpNoContentException("Status of Activity Type Version not found."));
+        List<ActivityTypeVersion> activityTypeVersion = accessActivityTypeVersion.getAll();
+        if(activityTypeVersion.isEmpty()) {
+            throw new HttpNoContentException("Activity Type Version not found.");
         }
+        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
+
+    }
+
+    public List<DTOActivityTypeVersion> getAllByActivityType(Integer activityTypeSearched) {
 
         ActivityType activityType = accessActivityType.get(activityTypeSearched)
                 .orElseThrow( ()-> new HttpNoContentException("Activity Type not found"));
 
         audit.debug("Getting all Activity Type Versions");
-        return (activityTypeVersionStatus == null)  ?
-                mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAllByActivityType(activityType))
-                : mapperActivityTypeVersion.entityToDto(accessActivityTypeVersion.getAllByActivityTypeAndStatus(activityType, activityTypeVersionStatus));
+        List<ActivityTypeVersion> activityTypeVersionList = accessActivityTypeVersion.getAllByActivityType(activityType);
+
+        return  mapperActivityTypeVersion.entityToDto(activityTypeVersionList);
+
+    }
+
+    public List<DTOActivityTypeVersion> getAllByActivityTypeAndStatus(Integer activityTypeSearched, Integer status) {
+
+        ActivityType activityType = accessActivityType.get(activityTypeSearched)
+                .orElseThrow( ()-> new HttpNoContentException("Activity Type not found"));
+
+        ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(status)
+                .orElseThrow( ()-> new HttpNoContentException("Status of Activity Type Version not found."));
+
+        audit.debug("Getting all Activity Type Versions");
+        List<ActivityTypeVersion> activityTypeVersionList = accessActivityTypeVersion.getAllByActivityTypeAndStatus(activityType, activityTypeVersionStatus);
+
+        return  mapperActivityTypeVersion.entityToDto(activityTypeVersionList);
 
     }
 
@@ -151,80 +171,7 @@ public class ServiceActivityTypeVersion {
 
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
-    public DTOActivityTypeVersion update(Integer id, DTOUpdateActivityTypeVersion dtoUpdateActivityTypeVersion) {
-
-        Integer activityTypeVersionId = dtoUpdateActivityTypeVersion.getActivityTypeVersionId();
-        Integer activityTypeVersionStatusId = dtoUpdateActivityTypeVersion.getActivityTypeVersionStatusId();
-
-        ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(activityTypeVersionId)
-                .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found.") );
-
-        ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(activityTypeVersionStatusId)
-                .orElseThrow( ()-> new HttpNoContentException("Status of Activity Type Version not found.") );
-
-        audit.debug("Updating Activity Type Version " + id);
-        activityTypeVersion.setActivityTypeVersionStatusId(activityTypeVersionStatus);
-        activityTypeVersion.setLastModifiedStatusDate(LocalDate.now());
-
-        audit.debug("Trying to persist updated Status of Activity Type Version.");
-        accessActivityTypeVersion.save(activityTypeVersion)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Status of Activity Type Version.") );
-
-        audit.debug("Mapping entity into DTO.");
-        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
-
-    }
-
-    @Transactional(Transactional.TxType.REQUIRED)
-    public DTOActivityTypeVersion delete(Integer id) {
-
-        audit.debug("Deleting ActivityTypeVersion " + id + ".");
-        ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("ActivityTypeVersion not found."));
-
-        if(!accessActivityTypeVersion.remove(activityTypeVersion.getActivityTypeVersionId())) {
-            throw new HttpInternalServerException("Failed to delete ActivityTypeVersion");
-        }
-
-        audit.debug("Deleting Thumbnail File from FileSystem");
-        utilityFileSystem.deleteThumbnailFromFileSystem(activityTypeVersion.getActivityTypeVersionId().toString());
-
-        audit.debug("Mapping EntityType into DTO.");
-        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
-
-    }
-
-    @Transactional(Transactional.TxType.REQUIRED)
-    public DTOVote vote(Integer idActivityTypeVersion, Integer idUser) {
-
-        audit.debug("Retrieving Entity Type");
-        EntityType entityType = accessEntityType.getByName("ActivityTypeVersion")
-                .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
-
-        ActivityTypeVersion ActivityTypeVersion = accessActivityTypeVersion.get(idActivityTypeVersion)
-                .orElseThrow( ()-> new HttpNotFoundException("ActivityTypeVersion not found."));
-
-        User user = accessUser.get(idUser)
-                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
-
-        audit.debug("Verify if Vote already exists.");
-        if(accessVote.getByKeys(user, ActivityTypeVersion.getActivityTypeVersionId(), entityType).isPresent()) {
-            throw new HttpBadRequestException("Vote already exists.");
-        }
-
-        audit.debug("Creating Vote for ActivityTypeVersion.");
-        Vote vote = new Vote(user, ActivityTypeVersion.getActivityTypeVersionId(), entityType);
-
-        audit.debug("Saving Vote.");
-        accessVote.save(vote)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Vote.") );
-
-        audit.debug("Mapping EntityType into DTO.");
-        return mapperVote.entityToDto(vote);
-
-    }
-
+    @Deprecated
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOActivityTypeVersion create(String versionServerProvider, DTOCreateActivityTypeVersionFromServer dtoCreateActivityTypeVersionFromServer) {
 
@@ -309,6 +256,89 @@ public class ServiceActivityTypeVersion {
 
         audit.debug("Mapping Entity into DTO.");
         return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOActivityTypeVersion update(Integer id, DTOUpdateActivityTypeVersion dtoUpdateActivityTypeVersion) {
+
+        Integer activityTypeVersionId = dtoUpdateActivityTypeVersion.getActivityTypeVersionId();
+        Integer activityTypeVersionStatusId = dtoUpdateActivityTypeVersion.getActivityTypeVersionStatusId();
+
+        ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(activityTypeVersionId)
+                .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found.") );
+
+        // TODO Perhaps we should deny the update if the status is 'DELETED'
+
+        ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(activityTypeVersionStatusId)
+                .orElseThrow( ()-> new HttpNoContentException("Status of Activity Type Version not found.") );
+
+        audit.debug("Updating Activity Type Version " + id);
+        activityTypeVersion.setActivityTypeVersionStatusId(activityTypeVersionStatus);
+        activityTypeVersion.setLastModifiedStatusDate(LocalDate.now());
+
+        audit.debug("Trying to persist updated Status of Activity Type Version.");
+        accessActivityTypeVersion.save(activityTypeVersion)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Status of Activity Type Version.") );
+
+        audit.debug("Mapping entity into DTO.");
+        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOActivityTypeVersion delete(Integer id) {
+
+        audit.debug("Deleting ActivityTypeVersion " + id + ".");
+        ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
+                .orElseThrow( ()-> new HttpNotFoundException("ActivityTypeVersion not found."));
+
+        // The version already has been deleted
+        if(activityTypeVersion.getActivityTypeVersionStatusId().getTitle().equals("DELETED")) {
+            throw new HttpNoContentException("The ActivityTypeVersion already has been deleted.");
+        }
+
+        // The activityTypeVersion is logically removed, not physically
+        activityTypeVersion.setActivityTypeVersionStatusId(accessActivityTypeVersionStatus.get(10) // DELETED Status
+                .orElseThrow(()-> new HttpNoContentException("Status of Activity Type Version not found.")));
+
+        audit.debug("Deleting Thumbnail File from FileSystem");
+        utilityFileSystem.deleteThumbnailFromFileSystem(activityTypeVersion.getActivityTypeVersionId().toString());
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
+
+    }
+
+    // VOTE HANDLING IN ACTIVITY TYPE VERSION
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public DTOVote vote(Integer idActivityTypeVersion, Integer idUser) {
+
+        audit.debug("Retrieving Entity Type");
+        EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
+                .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
+
+        ActivityTypeVersion ActivityTypeVersion = accessActivityTypeVersion.get(idActivityTypeVersion)
+                .orElseThrow( ()-> new HttpNotFoundException("ActivityTypeVersion not found."));
+
+        User user = accessUser.get(idUser)
+                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+
+        audit.debug("Verify if Vote already exists.");
+        if(accessVote.getByKeys(user, ActivityTypeVersion.getActivityTypeVersionId(), entityType).isPresent()) {
+            throw new HttpBadRequestException("Vote already exists.");
+        }
+
+        audit.debug("Creating Vote for ActivityTypeVersion.");
+        Vote vote = new Vote(user, ActivityTypeVersion.getActivityTypeVersionId(), entityType);
+
+        audit.debug("Saving Vote.");
+        accessVote.save(vote)
+                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Vote.") );
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperVote.entityToDto(vote);
 
     }
 

@@ -121,10 +121,10 @@ public class UtilityFileSystem {
 
     }
 
-    public byte[] getContentImages(String filename) {
+    public byte[] getContentImages(String content, String filename) {
 
         // Construct the absolute file path
-        String filePath = fileSystemContentImageDirectory + File.separator + filename;
+        String filePath = fileSystemContentImageDirectory + File.separator + content + File.separator + filename;
 
         System.out.println(fileSystemContentImageDirectory);
         System.out.println(File.separator);
@@ -227,9 +227,19 @@ public class UtilityFileSystem {
      * that injects the Utility, otherwise, the configProperty is not recognized
      * It won't work in the model
      */
-    public void saveContentImageToFileSystem(String filename, byte[] file) {
+    public void saveContentImageToFileSystem(String content, String filename, byte[] file) {
 
-        String filePath = fileSystemContentImageDirectory + File.separator + filename;
+        // Construct the directory path
+        File directory = new File(fileSystemContentImageDirectory, content);
+
+        // Create the directory if it doesn't exist
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                throw new HttpInternalServerException("Failed to create directory.");
+            }
+        }
+
+        String filePath = directory + File.separator + filename;
 
         System.out.println(fileSystemContentImageDirectory);
         System.out.println(File.separator);
@@ -255,9 +265,34 @@ public class UtilityFileSystem {
 
     }
 
-    public void deleteContentImageFromFileSystem(String filename) {
+    public void deleteContentDirectoryFromFileSystem(String content) {
         // Create a File object representing the image file
-        String filePath = fileSystemContentImageDirectory + File.separator + filename;
+        String filePath = fileSystemContentImageDirectory + File.separator + content;
+        File file = new File(filePath);
+
+        System.out.println(fileSystemContentImageDirectory);
+        System.out.println(File.separator);
+        System.out.println(content);
+        System.out.println(filePath);
+
+        // Check if the file exists before attempting to delete it
+        if (file.exists()) {
+            // Attempt to delete the file
+            boolean deleted = file.delete();
+
+            // Check if the deletion was successful
+            if (!deleted) {
+                throw new HttpInternalServerException("Failed to delete content directory.");
+            }
+        } else {
+            // If the file does not exist, throw an exception or log a message
+            throw new HttpInternalServerException("The directory does not exist.");
+        }
+    }
+
+    public void deleteContentImageFromFileSystem(String content, String filename) {
+        // Create a File object representing the image file
+        String filePath = fileSystemContentImageDirectory + File.separator + content + File.separator + filename;
         File file = new File(filePath);
 
         System.out.println(fileSystemContentImageDirectory);
@@ -272,11 +307,11 @@ public class UtilityFileSystem {
 
             // Check if the deletion was successful
             if (!deleted) {
-                throw new HttpInternalServerException("Failed to delete content image.");
+                throw new HttpInternalServerException("Failed to delete content directory.");
             }
         } else {
             // If the file does not exist, throw an exception or log a message
-            throw new HttpInternalServerException("The file does not exist.");
+            throw new HttpInternalServerException("The directory does not exist.");
         }
     }
 

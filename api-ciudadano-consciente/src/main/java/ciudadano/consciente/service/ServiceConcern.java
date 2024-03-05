@@ -26,6 +26,8 @@ import java.util.List;
 @RequestScoped
 public class ServiceConcern {
 
+    final String ENTITY_NAME = "Concern";
+
     @Inject
     Logger audit;
 
@@ -150,7 +152,7 @@ public class ServiceConcern {
     public DTOVote vote(Integer idConcern, Integer idUser) {
 
         audit.debug("Retrieving Entity Type");
-        EntityType entityType = accessEntityType.getByName("Concern")
+        EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
                 .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
 
         Concern concern = accessConcern.get(idConcern)

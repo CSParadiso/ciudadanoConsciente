@@ -40,7 +40,7 @@ public class ResourceActivityTypeVersion {
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
 
-    @GET
+    @GET // This should be in Activity Type
     @Path("activity-type/{activity-type}")
     @Operation(summary = "Retrieve all Versions of a Activity Type.")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -52,7 +52,12 @@ public class ResourceActivityTypeVersion {
                                          @QueryParam("status") Integer status) {
 
         audit.debug("Getting all the Versions of a Activity Type...");
-        return Response.ok(serviceActivityTypeVersion.getAllByActivityType(activityType, status)).build();
+
+        if(utilityVerifyRequestField.isValidField(status)) {
+            return Response.ok(serviceActivityTypeVersion.getAllByActivityTypeAndStatus(activityType, status)).build();
+        }
+
+        return Response.ok(serviceActivityTypeVersion.getAllByActivityType(activityType)).build();
 
     }
 
@@ -66,7 +71,12 @@ public class ResourceActivityTypeVersion {
     public Response getAllByStatus(@QueryParam("status") Integer status) {
 
         audit.debug("Getting all the Versions...");
-        return Response.ok(serviceActivityTypeVersion.getAll(status)).build();
+        if(utilityVerifyRequestField.isValidField(status)) {
+            return Response.ok(serviceActivityTypeVersion.getAllByStatus(status)).build();
+        }
+
+        return Response.ok(serviceActivityTypeVersion.getAll()).build();
+
 
     }
 
@@ -271,6 +281,13 @@ public class ResourceActivityTypeVersion {
 
     }
 
+    /**
+     *
+     * The status of the version turns into 'DELETED'. The 'Content' that already uses
+     * the version can keep making use of it.
+     * To revert a status after being deleted, the user must contact the developer team
+     * or pay a small fee.
+     * */
     @DELETE
     @Path("{id}")
     @Operation(summary = "Delete a specific Activity Type Version by its ID.")

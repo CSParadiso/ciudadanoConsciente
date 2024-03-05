@@ -25,6 +25,8 @@ import java.util.List;
 @RequestScoped
 public class ServiceContent {
 
+    final String ENTITY_NAME = "Content";
+
     @Inject
     Logger audit;
 
@@ -86,6 +88,10 @@ public class ServiceContent {
         Integer version = dtoCreateContent.getActivityTypeVersionId();
         ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(version)
                         .orElseThrow( ()-> new HttpNoContentException("Activity Type Version not found."));
+
+        if(activityTypeVersion.getActivityTypeVersionStatusId().getTitle().equals("DELETED")) {
+            throw new HttpNoContentException("Activity Type Version has been deleted.");
+        }
 
         audit.debug("Verifying files format.");
         byte[] modelFile = dtoCreateContent.getModel();
@@ -178,7 +184,7 @@ public class ServiceContent {
         }
 
         // Save to FileSystem (image)
-        utilityFileSystem.saveContentImageToFileSystem(content.getContentId() + "." + image.getImageName(), image.getImage());
+        utilityFileSystem.saveContentImageToFileSystem(content.getContentId().toString(), image.getImageName(), image.getImage());
 
         audit.debug("Mapping Entity into DTO.");
         return mapperImage.entityToDto(image);
@@ -195,7 +201,7 @@ public class ServiceContent {
         Image image = accessImage.get(imageId)
                         .orElseThrow( ()-> new HttpNoContentException("Image not found.") );
         // TODO Quizás se deba persistir el nombre compuesto y no normalizado para no hacer esta concatenación manual
-        return utilityFileSystem.getContentImages(content.getContentId() + "." + image.getImageName());
+        return utilityFileSystem.getContentImages(content.getContentId().toString(), image.getImageName());
 
     }
 
@@ -232,7 +238,7 @@ public class ServiceContent {
         List<Image> imageList = accessImage.getImageByContent(content);
         audit.debug("Deleting Content images from File System");
         for(Image image : imageList) {
-            utilityFileSystem.deleteContentImageFromFileSystem(content.getContentId() + "." +image.getImageName());
+            utilityFileSystem.deleteContentDirectoryFromFileSystem(content.getContentId().toString());
         }
 
         audit.debug("Deleting Content " + id + ".");
@@ -270,9 +276,9 @@ public class ServiceContent {
         }
 
         audit.debug("Deleting existing Image.");
-        utilityFileSystem.deleteContentImageFromFileSystem(content.getContentId() + "." + image.getImageName());
+        utilityFileSystem.deleteContentImageFromFileSystem(content.getContentId().toString(), image.getImageName());
         audit.debug("Saving new Image.");
-        utilityFileSystem.saveContentImageToFileSystem(content.getContentId() + "." + image.getImageName(), imageFile);
+        utilityFileSystem.saveContentImageToFileSystem(content.getContentId().toString(), image.getImageName(), imageFile);
 
         audit.debug("Mapping Entity into DTO.");
         return mapperImage.entityToDto(image);
@@ -284,7 +290,7 @@ public class ServiceContent {
     public DTOVote vote(Integer idContent, Integer idUser) {
 
         audit.debug("Retrieving Entity Type");
-        EntityType entityType = accessEntityType.getByName("Content")
+        EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
                 .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
 
         Content Content = accessContent.get(idContent)

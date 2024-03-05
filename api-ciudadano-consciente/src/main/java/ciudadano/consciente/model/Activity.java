@@ -5,6 +5,16 @@ import jakarta.persistence.Entity;
 
 @Entity
 @Table(schema = "app", name = "activities")
+@NamedNativeQueries(//{
+        //@NamedNativeQuery(name = "Activity.getModelFromActivityTypeVersion",
+        //        query = "select c.model from app.activities as A inner join app.contents as B on(a.content = b.content_id) inner join app.activity_type_version as C on(b.activity_type_version = c.activity_type_version_id)"),
+        @NamedNativeQuery(name = "Activity.getTemplateFromActivityTypeVersion",
+                query = "select c.template from app.activities as A inner join app.contents as B " +
+                        "on(a.content = b.content_id) inner join app.activity_type_version as C " +
+                        "on(b.activity_type_version = c.activity_type_version_id) AND a.activity_id = :activityId",
+                resultClass = String.class)
+//} TODO Se podría optimizar la consulta e incluso hacerla más granular
+)
 public class Activity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +29,8 @@ public class Activity {
     private Level level;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "activity_type", referencedColumnName = "activity_type_id")
-    private ActivityType activityType;
+    @JoinColumn(name = "content", referencedColumnName = "content_id")
+    private Content content;
 
     public Integer getActivityId() {
         return activityId;
@@ -46,11 +56,11 @@ public class Activity {
         this.level = level;
     }
 
-    public ActivityType getActivityType() {
-        return activityType;
+    public Content getContent() {
+        return content;
     }
 
-    public void setActivityType(ActivityType activityType) {
-        this.activityType = activityType;
+    public void setContent(Content content) {
+        this.content = content;
     }
 }

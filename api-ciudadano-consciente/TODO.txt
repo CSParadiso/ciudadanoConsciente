@@ -170,7 +170,7 @@ refactor: eliminada la columna branch de Activity Type Version.
 feat: Creada en DB las tablas:
     - Content(model jsonb, activity_type_version ActivityType)
     - Images(imageName String, imageBlob bytea y content Content)
-    feat: Creada en db la fila ActivityTypeVersion con id 1 para que sirva de fallback cuando se hace el default si se borra en Content.
+feat: Creada en db la fila ActivityTypeVersion con id 1 para que sirva de fallback cuando se hace el default si se borra en Content.
 
 - Commit eebb9df
 feat: Creada en DB las tablas:
@@ -183,7 +183,7 @@ docs: Documentar diagrama Drawio
 docs: Documentar DBCreation script
 feat: creada utilidad UtilityFileSignature
 
-- Commit
+- Commit 43ae315
 # Diseñando Subscripción de ActivityType por parte de LA ORGANIZACIÓN.
 feat: Creada entidad Content, DTO Content, DTOCreate Content, DTOUpdateContent.
 feat: Método POST, GET, GETALL, DELETE, PATCH de Content.
@@ -195,6 +195,14 @@ bug: Ahora al eliminar el ActivityTypeVersion se elimina también el thumbnail a
 bug: Añadida fila fallback en ActivityTypeVersion para foreign keys que on delete set default (de esta manera la fila queda y referencia a una versio eliminada)
 feat: Generar Votes de Content
 
+Commit
+- refactor: ActivityTypeVersion no se eliminan físicamente sinó que cambian su estado a DELETED (y no se pueden crear nuevos contenidos pero sobreviven los que ya están).
+- refactor del recurso y servicio del ActivityTypeVersion
+- bug: Resuelto el mapeo nulo del campo activityTypeVersion en el Content
+- feat: Crear distintos directorios para las imágenes de cada contenidos
+- refactor: Agregar Constante en las Entidades votables con el nombre de la entidad en la DB
+- feat: agregar Content a Activity
+- feat: recuperar template del content asociado a la Activity
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -235,19 +243,19 @@ MANEJO DE USUARIOS Y ROLES
 ------------------- DOING --------------
 ----------------------------------------
 
-// TODO RESOLVER VOLUMEN DE IMÁGENES EN CONTENEDOR
 
-// TODO Agregar Constante en las Entidades Votables con el nombre de la entidad en la DB
+// TODO Persistir volumen de imágenes en el Contenedor
+
+
+// TODO Verificar referencias eliminadas en cascade para ver si se pueden usar los estados en lugar de borrar
 // TODO DETERMINAR ALGORITMO DE COMPRESION EN FILESYSTEM
 
-// TODO Activity debe tener la version del Activity Type y el contenido (quizás el contenido puede ser el model.json y las imágenes que se usan eventualmente)
-// TODO ¿DATASET COMO SE ASIGNA, ELIGE PARA UNA ACTIVIDAD? PRIMERO ES NECESARIO ELEGIR EL TIPO DE ACTIVIDAD QUE NOS DA EL MODELO DE DATOS REQUERIDOS
 
 # Diseñando Subscripción de ActivityType por parte del Dev.
 // TODO refactor: si el DEV hace submit de su activityType, entonces podemos exigirle los campos fijos del model que exijamos y hacer nosotros el model.json con el resto de los datos libres que necesite
 // TODO feat-refactor: PERSISTIR LO DE GITHUB. persistir version (esto implica modificar la entidad y desacoplarla de Git). Simplemente queda la opción de subirla desde public repo en Github.
 // TODO feat: Anunciar los archivos que la versión del activity type no encuentra.
-// TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no.
+// TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no. Quizás un porcentaje de completado de la actividad.
 // AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
 
 // BUILD
@@ -261,6 +269,8 @@ TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 -----------------------------------------
 
 OPTIMIZACIONES
+// FIXME refactor: match up DB restrictions with api restriction anotations
+// FIXME refactor: hacer más genérico el voto de las entidades
 // FIXME refactor: hacer clase por cada file type para hacer genérico el recurso get y el servicio que invoca
 // FIXME Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
 // FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
@@ -273,9 +283,12 @@ OPTIMIZACIONES
 // FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
 // FIXME refactor: quizás se pueda usar las restricciones UNIQUE de la DB para atrapar las excepciones cuando se quiere crear o actualizar una entidad y no andar comprobando antes si existe ese campo único. (Esto incrementa en uno cada el id de la entidad, incluso los fallidos)
 // FIXME refactor: cambiar los 404(el recurso no existe) por 204(no existe la entidad en el recurso)
+// FIXME Verificar Recursos que aceptan DTOs que no haya campos vacios de ids u otros campos.
 
 // TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.
 // TODO feat: Crear registro id 0,1 hardcodeado para todas las entidades que en cascade se setean a su default 0,1
+
+// TODO feat: determinar entidades votable s programticamente
 
 EXTRA FEATURES
 // TODO Repositorios privados (simplemente deberían crear un fine graned token que permite acceso al contenido del repo.

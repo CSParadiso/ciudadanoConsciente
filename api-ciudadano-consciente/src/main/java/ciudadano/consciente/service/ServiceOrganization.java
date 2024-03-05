@@ -22,6 +22,8 @@ import java.util.List;
 @RequestScoped
 public class ServiceOrganization {
 
+    final String ENTITY_NAME = "Organization";
+
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
 
@@ -372,7 +374,7 @@ public class ServiceOrganization {
     public DTOVote vote(Integer idOrganization, Integer idUser) {
 
         audit.debug("Retrieving Entity Type");
-        EntityType entityType = accessEntityType.getByName("Organization")
+        EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
                 .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
 
         Organization organization = accessOrganization.get(idOrganization)

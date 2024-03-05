@@ -79,8 +79,8 @@ create table app.activity_types (
 );
 
 
-	-- TEST TABLE -- NOT CONFIRMED YET
--- Tabla activity_type_version
+	
+-- Tabla activity_type_version (it doesnt get deleted, just change its status to DELETED (10))
 create table app.activity_type_version (
         activity_type_version_id integer generated always as identity primary key,
         activity_type_id integer default 1 references app.activity_types on delete set default not null,
@@ -115,7 +115,7 @@ create table app.version_servers (
 	-- Tabla contents
 create table app.contents (
    content_id integer generated always as identity primary key,
-   activity_type_version integer default 1 references app.activity_types_version on delete set default not null,
+   activity_type_version integer default 1 references app.activity_types_version on delete set default not null,-- it doesnt get deleted, the version just changes its status to DELETED
    model jsonb not null 
 );
 
@@ -133,7 +133,8 @@ create table app.activities (
 	activity_id integer generated always as identity primary key, 
 	description varchar(140) not null,
 	level_id integer references app.levels on delete cascade not null, 
-	activity_type integer default 0 references app.activity_types on delete set default 
+	content integer references app.contents not null
+	-- activityTypeVersion is inferred from content
 );
 
 	-- Tabla answers
@@ -157,7 +158,8 @@ create table app.activity_type_version_status(
 -- Tabla app.entities (CATEGORíA NOMINAL)
 create table app.entity_types(
 	entity_id integer generated always as identity primary key,
-	title varchar(50) not null unique
+	title varchar(50) not null unique,
+	votable boolean default true not null -- could be determined programatically tru properties
 );
 
 	-- Tabla Intermedia URO (users, roles, organizations)
@@ -235,8 +237,16 @@ execute function increment_activity_type_version();
 
 
 -----------------------------------------------
------- FALLBACK ROWS FOR DELETED REFERENCES ---
+------ FALLBACK ROWS FOR DELETED REFERENCES --- This is not apropiated, it should pesist everything and just mark it as deleted
 -----------------------------------------------
    -- activity_types_version (default in app.contents)
 insert into app.activity_type_version overriding system value values (1, 1, 7, 1, DEFAULT , DEFAULT , '{"fallback" : "DELETED_ACTIVITY_TYPE_VERSION"}', 'DELETED_ACTIVITY_TYPE_VERSION', 'DELETED_ACTIVITY_TYPE_VERSION');
+
+
+----------------------------
+--- SOME HELPFULL QUERIES---
+----------------------------
+
+-- Recuperar 
+ciudadano_consciente=# select C.template from app.activities as A inner join app.contents as B on(a.content = b.content_id) inner join app.activity_type_version as C on(b.activity_type_version = c.activity_type_version_id);
 

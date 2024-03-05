@@ -21,6 +21,8 @@ import java.util.List;
 @RequestScoped
 public class ServiceLevel {
 
+    final String ENTITY_NAME = "Level";
+
     @Inject
     UtilityVerifyRequestField utilityVerifyRequestField;
 
@@ -344,7 +346,7 @@ public class ServiceLevel {
     public DTOVote vote(Integer idLevel, Integer idUser) {
 
         audit.debug("Retrieving Entity Type");
-        EntityType entityType = accessEntityType.getByName("Level")
+        EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
                 .orElseThrow( ()-> new HttpNotFoundException("Entity Type not found.") );
 
         Level level = accessLevel.get(idLevel)
