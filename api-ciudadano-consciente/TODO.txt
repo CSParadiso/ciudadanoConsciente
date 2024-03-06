@@ -195,7 +195,7 @@ bug: Ahora al eliminar el ActivityTypeVersion se elimina también el thumbnail a
 bug: Añadida fila fallback en ActivityTypeVersion para foreign keys que on delete set default (de esta manera la fila queda y referencia a una versio eliminada)
 feat: Generar Votes de Content
 
-Commit
+Commit 4717384
 - refactor: ActivityTypeVersion no se eliminan físicamente sinó que cambian su estado a DELETED (y no se pueden crear nuevos contenidos pero sobreviven los que ya están).
 - refactor del recurso y servicio del ActivityTypeVersion
 - bug: Resuelto el mapeo nulo del campo activityTypeVersion en el Content
@@ -203,6 +203,9 @@ Commit
 - refactor: Agregar Constante en las Entidades votables con el nombre de la entidad en la DB
 - feat: agregar Content a Activity
 - feat: recuperar template del content asociado a la Activity
+
+- Commit
+feat: Construir imagen de Postgres poblada con datos
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------

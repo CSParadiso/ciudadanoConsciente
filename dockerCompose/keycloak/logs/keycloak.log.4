@@ -1,8 +1,8 @@
-2024-02-29 23:18:25,649 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz
-2024-02-29 23:18:26,256 INFO  [org.keycloak.quarkus.runtime.hostname.DefaultHostnameProvider] (main) Hostname settings: Base URL: http://192.168.1.17:3704, Hostname: 192.168.1.17, Strict HTTPS: false, Path: /, Strict BackChannel: true, Admin URL: http://192.168.1.17:3704, Admin: 192.168.1.17, Port: 3704, Proxied: true
-2024-02-29 23:18:30,039 WARN  [io.quarkus.agroal.runtime.DataSources] (main) Datasource <default> enables XA but transaction recovery is not enabled. Please enable transaction recovery by setting quarkus.transaction-manager.enable-recovery=true, otherwise data may be lost if the application is terminated abruptly
-2024-02-29 23:18:30,582 WARN  [io.agroal.pool] (agroal-11) Datasource '<default>': Connection to 192.168.1.17:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
-2024-02-29 23:18:30,585 WARN  [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator] (JPA Startup Thread) HHH000342: Could not obtain connection to query metadata: java.lang.NullPointerException: Cannot invoke "org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(java.sql.SQLException, String)" because the return value of "org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.sqlExceptionHelper()" is null
+2024-03-05 22:48:26,258 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz
+2024-03-05 22:48:27,655 INFO  [org.keycloak.quarkus.runtime.hostname.DefaultHostnameProvider] (main) Hostname settings: Base URL: http://localhost:3704, Hostname: localhost, Strict HTTPS: false, Path: /, Strict BackChannel: true, Admin URL: http://localhost:3704, Admin: localhost, Port: 3704, Proxied: true
+2024-03-05 22:48:32,606 WARN  [io.quarkus.agroal.runtime.DataSources] (main) Datasource <default> enables XA but transaction recovery is not enabled. Please enable transaction recovery by setting quarkus.transaction-manager.enable-recovery=true, otherwise data may be lost if the application is terminated abruptly
+2024-03-05 22:48:33,233 WARN  [io.agroal.pool] (agroal-11) Datasource '<default>': FATAL: password authentication failed for user "saimon"
+2024-03-05 22:48:33,240 WARN  [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator] (JPA Startup Thread) HHH000342: Could not obtain connection to query metadata: java.lang.NullPointerException: Cannot invoke "org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(java.sql.SQLException, String)" because the return value of "org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.sqlExceptionHelper()" is null
 	at org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.doTheWork(JtaIsolationDelegate.java:186)
 	at org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.lambda$delegateWork$1(JtaIsolationDelegate.java:75)
 	at org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.doInSuspendedTransaction(JtaIsolationDelegate.java:107)
@@ -28,27 +28,24 @@
 	at io.quarkus.hibernate.orm.runtime.JPAConfig$1.run(JPAConfig.java:64)
 	at java.base/java.lang.Thread.run(Thread.java:840)
 
-2024-02-29 23:18:31,422 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
-2024-02-29 23:18:31,629 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
-2024-02-29 23:18:31,908 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000088: Unable to use any JGroups configuration mechanisms provided in properties {}. Using default JGroups configuration!
-2024-02-29 23:18:32,111 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN`
-2024-02-29 23:18:32,118 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: 6e90176e-c848-422f-818d-683eeafac506, name: a39e2d99c861-5496
-2024-02-29 23:18:32,133 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-02-29 23:18:32,134 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
-2024-02-29 23:18:32,135 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-02-29 23:18:32,136 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
-2024-02-29 23:18:32,151 INFO  [org.jgroups.protocols.FD_SOCK2] (keycloak-cache-init) server listening on *.34304
-2024-02-29 23:18:32,331 WARN  [io.quarkus.vertx.http.runtime.VertxHttpRecorder] (main) The X-Forwarded-* and Forwarded headers will be considered when determining the proxy address. This configuration can cause a security issue as clients can forge requests and send a forwarded header that is not overwritten by the proxy. Please consider use one of these headers just to forward the proxy address in requests.
-2024-02-29 23:18:34,159 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) a39e2d99c861-5496: no members discovered after 2003 ms: creating cluster as coordinator
-2024-02-29 23:18:34,171 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [a39e2d99c861-5496|0] (1) [a39e2d99c861-5496]
-2024-02-29 23:18:34,193 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `a39e2d99c861-5496`, physical addresses are `[172.17.0.2:49840]`
-2024-02-29 23:18:34,205 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
-2024-02-29 23:18:34,861 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: a39e2d99c861-5496, Site name: null
-2024-02-29 23:18:34,872 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
-2024-02-29 23:18:34,884 WARN  [io.agroal.pool] (agroal-11) Datasource '<default>': Connection to 192.168.1.17:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
-2024-02-29 23:18:34,923 INFO  [org.infinispan.CLUSTER] (main) ISPN000080: Disconnecting JGroups channel `ISPN`
-2024-02-29 23:18:34,975 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: Failed to start server in (production) mode
-2024-02-29 23:18:34,976 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: Failed to obtain JDBC connection
-2024-02-29 23:18:34,976 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: Connection to 192.168.1.17:5432 refused. Check that the hostname and port are correct and that the postmaster is accepting TCP/IP connections.
-2024-02-29 23:18:34,977 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: Connection refused
-2024-02-29 23:18:34,979 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) For more details run the same command passing the '--verbose' option. Also you can use '--help' to see the details about the usage of the particular command.
+2024-03-05 22:48:34,475 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
+2024-03-05 22:48:34,672 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
+2024-03-05 22:48:34,989 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000088: Unable to use any JGroups configuration mechanisms provided in properties {}. Using default JGroups configuration!
+2024-03-05 22:48:35,325 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN`
+2024-03-05 22:48:35,331 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: 2dc236c6-944e-4424-87de-c4e2dccc04dd, name: keycloak-4143
+2024-03-05 22:48:35,346 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-03-05 22:48:35,347 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
+2024-03-05 22:48:35,348 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-03-05 22:48:35,349 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
+2024-03-05 22:48:35,379 INFO  [org.jgroups.protocols.FD_SOCK2] (keycloak-cache-init) server listening on *.24101
+2024-03-05 22:48:35,914 WARN  [io.quarkus.vertx.http.runtime.VertxHttpRecorder] (main) The X-Forwarded-* and Forwarded headers will be considered when determining the proxy address. This configuration can cause a security issue as clients can forge requests and send a forwarded header that is not overwritten by the proxy. Please consider use one of these headers just to forward the proxy address in requests.
+2024-03-05 22:48:35,956 WARN  [io.agroal.pool] (agroal-11) Datasource '<default>': FATAL: password authentication failed for user "saimon"
+2024-03-05 22:48:37,397 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) keycloak-4143: no members discovered after 2006 ms: creating cluster as coordinator
+2024-03-05 22:48:37,424 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [keycloak-4143|0] (1) [keycloak-4143]
+2024-03-05 22:48:37,467 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `keycloak-4143`, physical addresses are `[172.19.0.3:39637]`
+2024-03-05 22:48:37,492 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
+2024-03-05 22:48:38,582 INFO  [org.infinispan.CLUSTER] (main) ISPN000080: Disconnecting JGroups channel `ISPN`
+2024-03-05 22:48:38,679 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: Failed to start server in (production) mode
+2024-03-05 22:48:38,680 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: Failed to obtain JDBC connection
+2024-03-05 22:48:38,682 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) ERROR: FATAL: password authentication failed for user "saimon"
+2024-03-05 22:48:38,682 ERROR [org.keycloak.quarkus.runtime.cli.ExecutionExceptionHandler] (main) For more details run the same command passing the '--verbose' option. Also you can use '--help' to see the details about the usage of the particular command.

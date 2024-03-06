@@ -212,7 +212,7 @@ create table app.file_names_required_version_server (
 -----| TRIGGERS |-----
 ----------------------
 
-CREATE OR REPLACE FUNCTION increment_activity_type_version()
+CREATE OR REPLACE FUNCTION app.increment_activity_type_version()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Calculate the next version number based on the number of existing versions for the same activity type.
@@ -230,7 +230,7 @@ $$ LANGUAGE plpgsql;
 -----| FUNCTIONS |----
 ----------------------
 
-create trigger autoincrement_of_activity_type_version 
+create trigger app.autoincrement_of_activity_type_version 
 before insert on app.activity_types_version 
 for each row 
 execute function increment_activity_type_version();

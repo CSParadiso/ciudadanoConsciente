@@ -16,6 +16,28 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+
+--
+-- ADDED MANUALLY TO MATCH THE ORIGINAL OWNER
+--
+
+-- Create the database
+CREATE DATABASE ciudadano_consciente;
+
+-- Connect to the database
+\c ciudadano_consciente;
+
+-- Crear usuario-role
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'saimon') THEN
+    CREATE ROLE saimon WITH LOGIN PASSWORD 'citizen';
+  END IF;
+END $$;
+
+-- Optionally, grant permissions to the role
+GRANT ALL PRIVILEGES ON DATABASE ciudadano_consciente TO saimon;
+
+
 --
 -- Name: app; Type: SCHEMA; Schema: -; Owner: saimon
 --
@@ -26,10 +48,10 @@ CREATE SCHEMA app;
 ALTER SCHEMA app OWNER TO saimon;
 
 --
--- Name: increment_activity_type_version(); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: increment_activity_type_version(); Type: FUNCTION; Schema: app; Owner: saimon
 --
 
-CREATE FUNCTION public.increment_activity_type_version() RETURNS trigger
+CREATE FUNCTION app.increment_activity_type_version() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -45,7 +67,7 @@ END;
 $$;
 
 
-ALTER FUNCTION public.increment_activity_type_version() OWNER TO postgres;
+ALTER FUNCTION app.increment_activity_type_version() OWNER TO saimon;
 
 SET default_tablespace = '';
 
@@ -59,7 +81,7 @@ CREATE TABLE app.activities (
     activity_id integer NOT NULL,
     description character varying(140) NOT NULL,
     level_id integer NOT NULL,
-    activity_type integer DEFAULT 0
+    content integer NOT NULL
 );
 
 
@@ -80,7 +102,7 @@ ALTER TABLE app.activities ALTER COLUMN activity_id ADD GENERATED ALWAYS AS IDEN
 
 
 --
--- Name: activity_type_version; Type: TABLE; Schema: app; Owner: postgres
+-- Name: activity_type_version; Type: TABLE; Schema: app; Owner: saimon
 --
 
 CREATE TABLE app.activity_type_version (
@@ -96,10 +118,10 @@ CREATE TABLE app.activity_type_version (
 );
 
 
-ALTER TABLE app.activity_type_version OWNER TO postgres;
+ALTER TABLE app.activity_type_version OWNER TO saimon;
 
 --
--- Name: activity_type_version_activity_type_version_id_seq; Type: SEQUENCE; Schema: app; Owner: postgres
+-- Name: activity_type_version_activity_type_version_id_seq; Type: SEQUENCE; Schema: app; Owner: saimon
 --
 
 ALTER TABLE app.activity_type_version ALTER COLUMN activity_type_version_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -213,7 +235,7 @@ CREATE TABLE app.concerns (
 ALTER TABLE app.concerns OWNER TO saimon;
 
 --
--- Name: contents; Type: TABLE; Schema: app; Owner: postgres
+-- Name: contents; Type: TABLE; Schema: app; Owner: saimon
 --
 
 CREATE TABLE app.contents (
@@ -223,10 +245,10 @@ CREATE TABLE app.contents (
 );
 
 
-ALTER TABLE app.contents OWNER TO postgres;
+ALTER TABLE app.contents OWNER TO saimon;
 
 --
--- Name: contents_content_id_seq; Type: SEQUENCE; Schema: app; Owner: postgres
+-- Name: contents_content_id_seq; Type: SEQUENCE; Schema: app; Owner: saimon
 --
 
 ALTER TABLE app.contents ALTER COLUMN content_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -245,7 +267,8 @@ ALTER TABLE app.contents ALTER COLUMN content_id ADD GENERATED ALWAYS AS IDENTIT
 
 CREATE TABLE app.entity_types (
     entity_type_id integer NOT NULL,
-    title character varying(50) NOT NULL
+    title character varying(50) NOT NULL,
+    votable boolean DEFAULT true NOT NULL
 );
 
 
@@ -266,7 +289,7 @@ ALTER TABLE app.entity_types ALTER COLUMN entity_type_id ADD GENERATED ALWAYS AS
 
 
 --
--- Name: file_name_required; Type: TABLE; Schema: app; Owner: postgres
+-- Name: file_name_required; Type: TABLE; Schema: app; Owner: saimon
 --
 
 CREATE TABLE app.file_name_required (
@@ -279,10 +302,10 @@ CREATE TABLE app.file_name_required (
 );
 
 
-ALTER TABLE app.file_name_required OWNER TO postgres;
+ALTER TABLE app.file_name_required OWNER TO saimon;
 
 --
--- Name: file_name_required_file_name_required_id_seq; Type: SEQUENCE; Schema: app; Owner: postgres
+-- Name: file_name_required_file_name_required_id_seq; Type: SEQUENCE; Schema: app; Owner: saimon
 --
 
 ALTER TABLE app.file_name_required ALTER COLUMN file_name_required_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -296,7 +319,7 @@ ALTER TABLE app.file_name_required ALTER COLUMN file_name_required_id ADD GENERA
 
 
 --
--- Name: file_names_required_version_server; Type: TABLE; Schema: app; Owner: postgres
+-- Name: file_names_required_version_server; Type: TABLE; Schema: app; Owner: saimon
 --
 
 CREATE TABLE app.file_names_required_version_server (
@@ -307,10 +330,10 @@ CREATE TABLE app.file_names_required_version_server (
 );
 
 
-ALTER TABLE app.file_names_required_version_server OWNER TO postgres;
+ALTER TABLE app.file_names_required_version_server OWNER TO saimon;
 
 --
--- Name: file_names_required_version_server_fnrvs_id_seq; Type: SEQUENCE; Schema: app; Owner: postgres
+-- Name: file_names_required_version_server_fnrvs_id_seq; Type: SEQUENCE; Schema: app; Owner: saimon
 --
 
 ALTER TABLE app.file_names_required_version_server ALTER COLUMN fnrvs_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -324,7 +347,7 @@ ALTER TABLE app.file_names_required_version_server ALTER COLUMN fnrvs_id ADD GEN
 
 
 --
--- Name: images; Type: TABLE; Schema: app; Owner: postgres
+-- Name: images; Type: TABLE; Schema: app; Owner: saimon
 --
 
 CREATE TABLE app.images (
@@ -334,10 +357,10 @@ CREATE TABLE app.images (
 );
 
 
-ALTER TABLE app.images OWNER TO postgres;
+ALTER TABLE app.images OWNER TO saimon;
 
 --
--- Name: images_image_id_seq; Type: SEQUENCE; Schema: app; Owner: postgres
+-- Name: images_image_id_seq; Type: SEQUENCE; Schema: app; Owner: saimon
 --
 
 ALTER TABLE app.images ALTER COLUMN image_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -614,7 +637,7 @@ ALTER TABLE app.users ALTER COLUMN user_id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- Name: version_servers; Type: TABLE; Schema: app; Owner: postgres
+-- Name: version_servers; Type: TABLE; Schema: app; Owner: saimon
 --
 
 CREATE TABLE app.version_servers (
@@ -624,10 +647,10 @@ CREATE TABLE app.version_servers (
 );
 
 
-ALTER TABLE app.version_servers OWNER TO postgres;
+ALTER TABLE app.version_servers OWNER TO saimon;
 
 --
--- Name: version_severs_version_server_id_seq; Type: SEQUENCE; Schema: app; Owner: postgres
+-- Name: version_severs_version_server_id_seq; Type: SEQUENCE; Schema: app; Owner: saimon
 --
 
 ALTER TABLE app.version_servers ALTER COLUMN version_server_id ADD GENERATED ALWAYS AS IDENTITY (
@@ -674,22 +697,25 @@ ALTER TABLE app.votes ALTER COLUMN vote_id ADD GENERATED ALWAYS AS IDENTITY (
 -- Data for Name: activities; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
-COPY app.activities (activity_id, description, level_id, activity_type) FROM stdin;
-6	Multiple Choice	12	9
-7	Prueba de Actividad	7	10
-9	Prueba de actividad	12	10
-5	Prueba de actualización	5	9
-1	FK DELETED	1	1
+COPY app.activities (activity_id, description, level_id, content) FROM stdin;
+6	Multiple Choice	12	7
+7	Prueba de Actividad	7	7
+9	Prueba de actividad	12	7
+5	Prueba de actualización	5	7
+1	FK DELETED	1	7
+11	Actividad base de un nuevo nivel	12	8
 \.
 
 
 --
--- Data for Name: activity_type_version; Type: TABLE DATA; Schema: app; Owner: postgres
+-- Data for Name: activity_type_version; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
 COPY app.activity_type_version (activity_type_version_id, activity_type_id, activity_type_version_status_id, version_number, staged_date, last_modified_status_date, model, template, readme) FROM stdin;
 40	14	1	4	2024-02-19	2024-02-19	{"body": {"name": "string", "size": 12345.12, "valid": true}, "response": {"status": false, "description": "Success"}}	{\n\t"body": {\n\t\t"name": "string",\n\t\t"size": 12345.12,\n\t\t"valid": true\n\t},\n\t"response": {\n\t\t"status": false,\n\t\t"description": "Success" \n\t}\n}\n	function play(){\n\tconsole.log("Playing activityType");\n}\n\nfunction end(){\n\tconsole.log("End of game");\n}\n
 1	1	7	1	2024-02-28	2024-02-28	{"fallback": "DELETED_ACTIVITY_TYPE_VERSION"}	DELETED_ACTIVITY_TYPE_VERSION	DELETED_ACTIVITY_TYPE_VERSION
+45	16	10	1	2024-03-03	2024-03-03	{"body": {"name": "string", "size": 12345.12, "valid": true}, "response": {"status": false, "description": "Success"}}	{\n  // Módulo #1 - Copiar al portapapeles\n  \n\n  // Copiar argumento al portapapeles,\n  // si hay error atraparlo y avisar por consola\n\n  function copiarAlPortapapeles(texto) {\n    navigator.clipboard.writeText(texto)\n      .then(() => {\n        // console.log("Código copiado al portapapeles: ", texto);\n      })\n      .catch((error) => {\n        console.error("Error al copiar el código: ", error);\n      });\n  }\n}\n\n{\n  // Módulo #2 - Los ejemplos de código se copian al portapapeles\n  //             al hacer click sobre ellos\n\n  // 1. Obtener todos los ejemplos de código\n  const ejemplosCodigo = document.getElementsByClassName("codigo-ejemplos");\n\n  // 2. Por cada uno de los ejemplos de código\n  for (let ejemplo of ejemplosCodigo) {\n    // Obtener el elemento de código\n    let codigoEjemplo = ejemplo.querySelector('code').textContent; \n    // Agregar un listener al clickear el ejemplo\n    ejemplo.addEventListener("click", function() {\n      // Enviar el código a la función correspondiente\n      copiarAlPortapapeles(codigoEjemplo);\n    });\n  }\n}	username="CSParadiso"\nreponame="ciudadanoConsciente"\ncommit_sha="e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"\nfile_path="PruebaWeb/templates/mutipleChoice/readme.md"\n\n# Use the GitHub API to get the raw content of the file at the specific commit\ncurl -H "Accept: application/vnd.github.v3+json" \\\n     -H "Authorization: Bearer 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" \\\n     "https://api.github.com/repos/$username/$reponame/contents/$file_path?ref=$commit_sha" \\\n     | jq -r .content | base64 -d > copia.md\n\n
+46	16	1	2	2024-03-03	2024-03-03	{"options": {"A": "", "B": "", "C": "", "D": ""}, "question": "", "correct_answer": ""}	{\n  // Módulo #1 - Copiar al portapapeles\n  \n\n  // Copiar argumento al portapapeles,\n  // si hay error atraparlo y avisar por consola\n\n  function copiarAlPortapapeles(texto) {\n    navigator.clipboard.writeText(texto)\n      .then(() => {\n        // console.log("Código copiado al portapapeles: ", texto);\n      })\n      .catch((error) => {\n        console.error("Error al copiar el código: ", error);\n      });\n  }\n}\n\n{\n  // Módulo #2 - Los ejemplos de código se copian al portapapeles\n  //             al hacer click sobre ellos\n\n  // 1. Obtener todos los ejemplos de código\n  const ejemplosCodigo = document.getElementsByClassName("codigo-ejemplos");\n\n  // 2. Por cada uno de los ejemplos de código\n  for (let ejemplo of ejemplosCodigo) {\n    // Obtener el elemento de código\n    let codigoEjemplo = ejemplo.querySelector('code').textContent; \n    // Agregar un listener al clickear el ejemplo\n    ejemplo.addEventListener("click", function() {\n      // Enviar el código a la función correspondiente\n      copiarAlPortapapeles(codigoEjemplo);\n    });\n  }\n}	username="CSParadiso"\nreponame="ciudadanoConsciente"\ncommit_sha="e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"\nfile_path="PruebaWeb/templates/mutipleChoice/readme.md"\n\n# Use the GitHub API to get the raw content of the file at the specific commit\ncurl -H "Accept: application/vnd.github.v3+json" \\\n     -H "Authorization: Bearer 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" \\\n     "https://api.github.com/repos/$username/$reponame/contents/$file_path?ref=$commit_sha" \\\n     | jq -r .content | base64 -d > copia.md\n\n
 \.
 
 
@@ -705,6 +731,7 @@ COPY app.activity_type_version_status (activity_type_version_status_id, title, d
 7	ACTIVITY_DELETED	The ActivityType corresponding to the version has been removed.
 9	NOT_PUBLISHED	The version has been APPROVED, but is not published.
 8	NOT_AVAILABLE	The files of the version are not reachable by fetching function.
+10	DELETED	The user has deleted the version. It will be only available for those contents that already use it.
 \.
 
 
@@ -746,12 +773,15 @@ COPY app.concerns (concern_id, description, date, user_id, explanation) FROM std
 
 
 --
--- Data for Name: contents; Type: TABLE DATA; Schema: app; Owner: postgres
+-- Data for Name: contents; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
 COPY app.contents (content_id, activity_type_version, model) FROM stdin;
 4	1	{"options": {"A": "", "B": "", "C": "", "D": ""}, "question": "", "correct_answer": ""}
 5	1	{"body": {"name": "string", "size": 12345.12, "valid": true}, "response": {"status": false, "description": "Success"}}
+7	45	{"options": {"A": "", "B": "", "C": "", "D": ""}, "question": "", "correct_answer": ""}
+8	45	{"options": {"A": "", "B": "", "C": "", "D": ""}, "question": "", "correct_answer": ""}
+9	40	{"options": {"A": "", "B": "", "C": "", "D": ""}, "question": "", "correct_answer": ""}
 \.
 
 
@@ -759,19 +789,19 @@ COPY app.contents (content_id, activity_type_version, model) FROM stdin;
 -- Data for Name: entity_types; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
-COPY app.entity_types (entity_type_id, title) FROM stdin;
-1	Organization
-4	Concern
-5	Reference
-2	Level
-3	ActivityType
-6	ActivityTypeVersion
-7	Content
+COPY app.entity_types (entity_type_id, title, votable) FROM stdin;
+1	Organization	t
+4	Concern	t
+5	Reference	t
+2	Level	t
+3	ActivityType	t
+6	ActivityTypeVersion	t
+7	Content	t
 \.
 
 
 --
--- Data for Name: file_name_required; Type: TABLE DATA; Schema: app; Owner: postgres
+-- Data for Name: file_name_required; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
 COPY app.file_name_required (file_name_required_id, file_name, extension, mime_type, alias, in_db) FROM stdin;
@@ -783,7 +813,7 @@ COPY app.file_name_required (file_name_required_id, file_name, extension, mime_t
 
 
 --
--- Data for Name: file_names_required_version_server; Type: TABLE DATA; Schema: app; Owner: postgres
+-- Data for Name: file_names_required_version_server; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
 COPY app.file_names_required_version_server (fnrvs_id, file_name_required, version_server, purpose) FROM stdin;
@@ -795,12 +825,15 @@ COPY app.file_names_required_version_server (fnrvs_id, file_name_required, versi
 
 
 --
--- Data for Name: images; Type: TABLE DATA; Schema: app; Owner: postgres
+-- Data for Name: images; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
 COPY app.images (image_id, image_name, content) FROM stdin;
 27	epep	5
 29	pepito	5
+30	imah	9
+32	imasad	9
+33	imasad	8
 \.
 
 
@@ -942,7 +975,7 @@ COPY app.users_roles_organizations (uro_id, user_id, role_id, organization_id) F
 
 
 --
--- Data for Name: version_servers; Type: TABLE DATA; Schema: app; Owner: postgres
+-- Data for Name: version_servers; Type: TABLE DATA; Schema: app; Owner: saimon
 --
 
 COPY app.version_servers (version_server_id, name, content_url) FROM stdin;
@@ -975,14 +1008,14 @@ COPY app.votes (vote_id, user_id, entity_id, entity_type, active, date) FROM std
 -- Name: activities_activity_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
-SELECT pg_catalog.setval('app.activities_activity_id_seq', 9, true);
+SELECT pg_catalog.setval('app.activities_activity_id_seq', 11, true);
 
 
 --
--- Name: activity_type_version_activity_type_version_id_seq; Type: SEQUENCE SET; Schema: app; Owner: postgres
+-- Name: activity_type_version_activity_type_version_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
-SELECT pg_catalog.setval('app.activity_type_version_activity_type_version_id_seq', 44, true);
+SELECT pg_catalog.setval('app.activity_type_version_activity_type_version_id_seq', 46, true);
 
 
 --
@@ -1003,14 +1036,14 @@ SELECT pg_catalog.setval('app.answers_answer_id_seq', 1, true);
 -- Name: answers_status_answers_status_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
-SELECT pg_catalog.setval('app.answers_status_answers_status_id_seq', 9, true);
+SELECT pg_catalog.setval('app.answers_status_answers_status_id_seq', 10, true);
 
 
 --
--- Name: contents_content_id_seq; Type: SEQUENCE SET; Schema: app; Owner: postgres
+-- Name: contents_content_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
-SELECT pg_catalog.setval('app.contents_content_id_seq', 6, true);
+SELECT pg_catalog.setval('app.contents_content_id_seq', 9, true);
 
 
 --
@@ -1021,24 +1054,24 @@ SELECT pg_catalog.setval('app.entities_allowed_votes_entities_allowed_votes_id_s
 
 
 --
--- Name: file_name_required_file_name_required_id_seq; Type: SEQUENCE SET; Schema: app; Owner: postgres
+-- Name: file_name_required_file_name_required_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
 SELECT pg_catalog.setval('app.file_name_required_file_name_required_id_seq', 4, true);
 
 
 --
--- Name: file_names_required_version_server_fnrvs_id_seq; Type: SEQUENCE SET; Schema: app; Owner: postgres
+-- Name: file_names_required_version_server_fnrvs_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
 SELECT pg_catalog.setval('app.file_names_required_version_server_fnrvs_id_seq', 4, true);
 
 
 --
--- Name: images_image_id_seq; Type: SEQUENCE SET; Schema: app; Owner: postgres
+-- Name: images_image_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
-SELECT pg_catalog.setval('app.images_image_id_seq', 29, true);
+SELECT pg_catalog.setval('app.images_image_id_seq', 33, true);
 
 
 --
@@ -1112,7 +1145,7 @@ SELECT pg_catalog.setval('app.users_user_id_seq', 18, true);
 
 
 --
--- Name: version_severs_version_server_id_seq; Type: SEQUENCE SET; Schema: app; Owner: postgres
+-- Name: version_severs_version_server_id_seq; Type: SEQUENCE SET; Schema: app; Owner: saimon
 --
 
 SELECT pg_catalog.setval('app.version_severs_version_server_id_seq', 2, true);
@@ -1134,7 +1167,7 @@ ALTER TABLE ONLY app.activities
 
 
 --
--- Name: activity_type_version activity_type_version_model_template_readme_activ_key; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: activity_type_version activity_type_version_model_template_readme_activ_key; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.activity_type_version
@@ -1142,7 +1175,7 @@ ALTER TABLE ONLY app.activity_type_version
 
 
 --
--- Name: activity_type_version activity_type_version_pkey; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: activity_type_version activity_type_version_pkey; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.activity_type_version
@@ -1182,7 +1215,7 @@ ALTER TABLE ONLY app.activity_type_version_status
 
 
 --
--- Name: contents contents_pkey; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: contents contents_pkey; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.contents
@@ -1206,7 +1239,7 @@ ALTER TABLE ONLY app.entity_types
 
 
 --
--- Name: file_name_required file_name_required_file_name_key; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: file_name_required file_name_required_file_name_key; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.file_name_required
@@ -1214,7 +1247,7 @@ ALTER TABLE ONLY app.file_name_required
 
 
 --
--- Name: file_name_required file_name_required_pkey; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: file_name_required file_name_required_pkey; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.file_name_required
@@ -1222,7 +1255,7 @@ ALTER TABLE ONLY app.file_name_required
 
 
 --
--- Name: file_names_required_version_server file_names_required_version_s_file_name_required_version_se_key; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: file_names_required_version_server file_names_required_version_s_file_name_required_version_se_key; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.file_names_required_version_server
@@ -1230,7 +1263,7 @@ ALTER TABLE ONLY app.file_names_required_version_server
 
 
 --
--- Name: file_names_required_version_server file_names_required_version_server_pkey; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: file_names_required_version_server file_names_required_version_server_pkey; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.file_names_required_version_server
@@ -1238,7 +1271,7 @@ ALTER TABLE ONLY app.file_names_required_version_server
 
 
 --
--- Name: images images_image_name_content_key; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: images images_image_name_content_key; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.images
@@ -1246,7 +1279,7 @@ ALTER TABLE ONLY app.images
 
 
 --
--- Name: images images_pkey; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: images images_pkey; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.images
@@ -1430,7 +1463,7 @@ ALTER TABLE ONLY app.users
 
 
 --
--- Name: version_servers version_severs_name_key; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: version_servers version_severs_name_key; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.version_servers
@@ -1438,7 +1471,7 @@ ALTER TABLE ONLY app.version_servers
 
 
 --
--- Name: version_servers version_severs_pkey; Type: CONSTRAINT; Schema: app; Owner: postgres
+-- Name: version_servers version_severs_pkey; Type: CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.version_servers
@@ -1462,18 +1495,18 @@ ALTER TABLE ONLY app.votes
 
 
 --
--- Name: activity_type_version autoincrement_of_activity_type_version; Type: TRIGGER; Schema: app; Owner: postgres
+-- Name: activity_type_version autoincrement_of_activity_type_version; Type: TRIGGER; Schema: app; Owner: saimon
 --
 
-CREATE TRIGGER autoincrement_of_activity_type_version BEFORE INSERT ON app.activity_type_version FOR EACH ROW EXECUTE FUNCTION public.increment_activity_type_version();
+CREATE TRIGGER autoincrement_of_activity_type_version BEFORE INSERT ON app.activity_type_version FOR EACH ROW EXECUTE FUNCTION app.increment_activity_type_version();
 
 
 --
--- Name: activities activities_activity_type_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
+-- Name: activities activities_content_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.activities
-    ADD CONSTRAINT activities_activity_type_fkey FOREIGN KEY (activity_type) REFERENCES app.activity_types(activity_type_id) ON DELETE SET DEFAULT;
+    ADD CONSTRAINT activities_content_fkey FOREIGN KEY (content) REFERENCES app.contents(content_id);
 
 
 --
@@ -1485,7 +1518,7 @@ ALTER TABLE ONLY app.activities
 
 
 --
--- Name: activity_type_version activity_type_version_activity_type_id_fkey; Type: FK CONSTRAINT; Schema: app; Owner: postgres
+-- Name: activity_type_version activity_type_version_activity_type_id_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.activity_type_version
@@ -1493,7 +1526,7 @@ ALTER TABLE ONLY app.activity_type_version
 
 
 --
--- Name: activity_type_version activity_type_version_activity_type_version_status_id_fkey; Type: FK CONSTRAINT; Schema: app; Owner: postgres
+-- Name: activity_type_version activity_type_version_activity_type_version_status_id_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.activity_type_version
@@ -1533,7 +1566,7 @@ ALTER TABLE ONLY app.concerns
 
 
 --
--- Name: contents contents_activity_type_version_fkey; Type: FK CONSTRAINT; Schema: app; Owner: postgres
+-- Name: contents contents_activity_type_version_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.contents
@@ -1541,7 +1574,7 @@ ALTER TABLE ONLY app.contents
 
 
 --
--- Name: file_names_required_version_server file_names_required_version_server_file_name_required_fkey; Type: FK CONSTRAINT; Schema: app; Owner: postgres
+-- Name: file_names_required_version_server file_names_required_version_server_file_name_required_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.file_names_required_version_server
@@ -1549,7 +1582,7 @@ ALTER TABLE ONLY app.file_names_required_version_server
 
 
 --
--- Name: file_names_required_version_server file_names_required_version_server_version_server_fkey; Type: FK CONSTRAINT; Schema: app; Owner: postgres
+-- Name: file_names_required_version_server file_names_required_version_server_version_server_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.file_names_required_version_server
@@ -1573,7 +1606,7 @@ ALTER TABLE ONLY app.users_roles_organizations
 
 
 --
--- Name: images images_content_fkey; Type: FK CONSTRAINT; Schema: app; Owner: postgres
+-- Name: images images_content_fkey; Type: FK CONSTRAINT; Schema: app; Owner: saimon
 --
 
 ALTER TABLE ONLY app.images
