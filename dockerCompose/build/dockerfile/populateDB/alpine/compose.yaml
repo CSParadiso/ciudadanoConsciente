@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: post_alpine
+    container_name: pop_db
+    deploy:
+      resources:
+        limits:
+          memory: 50M # Limita a 50MB máximo de RAM
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: citizen
+    ports:
+      - 3700:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+        # - ./init-scripts:/docker-entrypoint-initdb.d  # Montar los scripts de inicialización (solo sirve si no hay nada en el directorio de datos mencionados arriba).
+    hostname:
+      "postgres"
+
+volumes:
+  pg_data:
+
+

@@ -1,6 +1,7 @@
 package ciudadano.consciente.mapper;
 
 import ciudadano.consciente.dto.DTOConcern;
+import ciudadano.consciente.dto.DTOCreateConcern;
 import ciudadano.consciente.model.Concern;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,5 +15,8 @@ public interface MapperConcern {
 
     @Mapping(target = "user", source = "user.userId")
     DTOConcern entityToDto(Concern concern);
+
+    @Mapping(target = "user.userId", source = "user")
+    Concern dtoToEntity(DTOCreateConcern dtoCreateConcern);
 
 }

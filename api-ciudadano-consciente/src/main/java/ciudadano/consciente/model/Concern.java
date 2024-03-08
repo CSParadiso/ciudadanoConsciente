@@ -25,12 +25,8 @@ public class Concern {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 
-    public Concern() {}
+    public Concern() {
 
-    public Concern(String description, User user) {
-
-        this.description = description;
-        this.user = user;
         this.date = LocalDate.now();
 
     }

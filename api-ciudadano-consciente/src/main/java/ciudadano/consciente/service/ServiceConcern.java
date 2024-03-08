@@ -19,6 +19,7 @@ import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -73,23 +74,21 @@ public class ServiceConcern {
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOConcern create(DTOCreateConcern dtoCreateConcern) {
 
-        String description = dtoCreateConcern.getDescription();
-        Integer userDto  = dtoCreateConcern.getUser();
-
-        User user = accessUser.get(userDto)
-                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+        Integer userDto = dtoCreateConcern.getUser();
+        accessUser.get(userDto)
+                .orElseThrow( ()-> new HttpNoContentException("User not found."));
 
         audit.debug("Creating Concern.");
-        Concern concern = new Concern(description, user);
+        Concern concern = mapperConcern.dtoToEntity(dtoCreateConcern);
 
-        String explanation = dtoCreateConcern.getExplanation();
-        if(utilityVerifyRequestField.isValidField(explanation)) {
-            concern.setExplanation(explanation);
+        audit.debug("Saving Concern.");
+        try {
+            accessConcern.save(concern)
+                    .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Concern.") );
+        } catch (ConstraintViolationException e) {
+            audit.debug("Concern already exists.");
+            throw new HttpBadRequestException("Concern already exists.");
         }
-
-        audit.debug("Saving Concern " + concern.getConcernId() + ".");
-        accessConcern.save(concern)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Concern.") );
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperConcern.entityToDto(concern);
@@ -103,14 +102,14 @@ public class ServiceConcern {
         Concern concern = accessConcern.get(id)
                 .orElseThrow( () -> new HttpNotFoundException("Concern not found."));
 
-        audit.debug("Retrieving User.");
-        User user = accessUser.get(dtoUpdateConcern.getUser())
-                        .orElseThrow( ()-> new HttpNotFoundException("User not found.") );
-
-        audit.debug("Verifying if user updating is the same in DB");
-        if(user != concern.getUser()) {
-            throw new HttpBadRequestException("Only User related to Concern can update it.");
-        }
+//        audit.debug("Retrieving User.");
+//        User user = accessUser.get(dtoUpdateConcern.getUser())
+//                        .orElseThrow( ()-> new HttpNotFoundException("User not found.") );
+//
+//        audit.debug("Verifying if user updating is the same in DB");
+//        if(user != concern.getUser()) {
+//            throw new HttpBadRequestException("Only User related to Concern can update it.");
+//        }
 
         audit.debug("Updating Concern " + id + ".");
         String description = dtoUpdateConcern.getDescription();

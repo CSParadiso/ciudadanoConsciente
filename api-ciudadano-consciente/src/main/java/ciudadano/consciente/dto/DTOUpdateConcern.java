@@ -13,9 +13,6 @@ public class DTOUpdateConcern {
     @Schema(defaultValue = "")
     private String explanation;
 
-    @Schema(defaultValue = "")
-    private Integer user;
-
     public Integer getConcernId() {
         return concernId;
     }
@@ -40,11 +37,4 @@ public class DTOUpdateConcern {
         this.explanation = explanation;
     }
 
-    public Integer getUser() {
-        return user;
-    }
-
-    public void setUser(Integer user) {
-        this.user = user;
-    }
 }

@@ -78,7 +78,7 @@ public class ResourceConcern {
             description = "Concern successfully created."
     )
     @APIResponse(
-            responseCode = "400",
+            responseCode = "204",
             description = "Failed to create Concern. Verify 'Warning' Header."
     )
     @APIResponse(
@@ -131,11 +131,6 @@ public class ResourceConcern {
 
         if(dtoUpdateConcern == null) {
             throw new HttpBadRequestException("Body of request required.");
-        }
-
-        Integer user  = dtoUpdateConcern.getUser();
-        if(!utilityVerifyRequestField.isValidField(user)) {
-            throw new HttpBadRequestException("User field required.");
         }
 
         audit.debug("Verifying if the ID of the Body and the Path are the same...");

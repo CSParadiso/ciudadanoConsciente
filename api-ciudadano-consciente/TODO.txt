@@ -204,8 +204,15 @@ Commit 4717384
 - feat: agregar Content a Activity
 - feat: recuperar template del content asociado a la Activity
 
+- Commit 14b4bce
+build: Construir imagen de Postgres poblada con datos
+
 - Commit
-feat: Construir imagen de Postgres poblada con datos
+refactor: modificado el recurso de Concern
+build: creado el Dockerfile, compose y bakups que permiten levantar el proyecto entero con una imagen
+build: generada y pusheada la primera imagen de la api a dockerHub (csparadiso/ciudadano-consciente:API1.0)
+
+
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -260,11 +267,6 @@ MANEJO DE USUARIOS Y ROLES
 // TODO feat: Anunciar los archivos que la versión del activity type no encuentra.
 // TODO El archivo .js debería ser capaz de retornar ok o ko para que sepamos si la respuesta fué correcta o no. Quizás un porcentaje de completado de la actividad.
 // AQUÍ ENTRA EL JUEGO EL CONTEXTO DE EJECUCIÓN DE ESE ARCHIVO 
-
-// BUILD
-TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
-TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
-TODO PUSHEAR IMAGEN A DOCKERHUB CON POPULATED DB
 
 
 -----------------------------------------

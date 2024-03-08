@@ -1,0 +1,9 @@
+DB Ports
+- 3700:5432 --> postgresql 13.14-alpine
+- 3707:5432 --> postgresql 16
+
+API Ports
+- 
+- 
+
+

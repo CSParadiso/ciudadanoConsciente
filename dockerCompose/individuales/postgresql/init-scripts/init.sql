@@ -1,5 +1,7 @@
 -- init.sql
 
+CREATE USER saimon WITH PASSWORD 'chipaParaguaya' SUPERUSER;
+
 ----------- KEYCLOAK ---------------------------------------------------
 CREATE DATABASE IF NOT EXISTS keycloak; -- Tratar de crear la DB keycloak
 
@@ -11,7 +13,6 @@ CREATE SCHEMA IF NOT EXISTS keycloak;
 -----------------------------------------------------------------------
 
 --------------------- CIUDADANO CONSCIENTE ---------------------------
-CREATE USER saimon WITH PASSWORD 'chipaParaguaya' SUPERUSER;
 CREATE DATABASE ciudadano_consciente;
 \c  ciudadano_consciente;
 CREATE SCHEMA app;
