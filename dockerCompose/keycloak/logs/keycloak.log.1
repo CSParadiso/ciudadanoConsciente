@@ -1,67 +1,25 @@
-2024-03-07 23:09:13,247 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz
-2024-03-07 23:09:14,247 INFO  [org.keycloak.quarkus.runtime.hostname.DefaultHostnameProvider] (main) Hostname settings: Base URL: http://localhost:3704, Hostname: localhost, Strict HTTPS: false, Path: /, Strict BackChannel: true, Admin URL: http://localhost:3704, Admin: localhost, Port: 3704, Proxied: true
-2024-03-07 23:09:17,396 WARN  [io.quarkus.agroal.runtime.DataSources] (main) Datasource <default> enables XA but transaction recovery is not enabled. Please enable transaction recovery by setting quarkus.transaction-manager.enable-recovery=true, otherwise data may be lost if the application is terminated abruptly
-2024-03-07 23:09:17,837 WARN  [io.agroal.pool] (agroal-11) Datasource '<default>': FATAL: database "keycloak" does not exist
-2024-03-07 23:09:17,839 WARN  [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator] (JPA Startup Thread) HHH000342: Could not obtain connection to query metadata: java.lang.NullPointerException: Cannot invoke "org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(java.sql.SQLException, String)" because the return value of "org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.sqlExceptionHelper()" is null
-	at org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.doTheWork(JtaIsolationDelegate.java:186)
-	at org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.lambda$delegateWork$1(JtaIsolationDelegate.java:75)
-	at org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.doInSuspendedTransaction(JtaIsolationDelegate.java:107)
-	at org.hibernate.resource.transaction.backend.jta.internal.JtaIsolationDelegate.delegateWork(JtaIsolationDelegate.java:72)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:279)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:193)
-	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:69)
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:119)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:264)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:239)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:216)
-	at org.hibernate.engine.jdbc.internal.JdbcServicesImpl.configure(JdbcServicesImpl.java:52)
-	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.configureService(StandardServiceRegistryImpl.java:125)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:248)
-	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:216)
-	at org.hibernate.boot.internal.SessionFactoryOptionsBuilder.<init>(SessionFactoryOptionsBuilder.java:273)
-	at io.quarkus.hibernate.orm.runtime.recording.PrevalidatedQuarkusMetadata.buildSessionFactoryOptionsBuilder(PrevalidatedQuarkusMetadata.java:70)
-	at io.quarkus.hibernate.orm.runtime.boot.FastBootEntityManagerFactoryBuilder.build(FastBootEntityManagerFactoryBuilder.java:81)
-	at io.quarkus.hibernate.orm.runtime.FastBootHibernatePersistenceProvider.createEntityManagerFactory(FastBootHibernatePersistenceProvider.java:74)
-	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:80)
-	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55)
-	at io.quarkus.hibernate.orm.runtime.JPAConfig$LazyPersistenceUnit.get(JPAConfig.java:156)
-	at io.quarkus.hibernate.orm.runtime.JPAConfig$1.run(JPAConfig.java:64)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-
-2024-03-07 23:09:18,880 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
-2024-03-07 23:09:19,076 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
-2024-03-07 23:09:19,301 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000088: Unable to use any JGroups configuration mechanisms provided in properties {}. Using default JGroups configuration!
-2024-03-07 23:09:19,504 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN`
-2024-03-07 23:09:19,511 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: 864c1ffb-f967-4c0f-9b61-904c6134d5dd, name: keycloak-13559
-2024-03-07 23:09:19,527 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-03-07 23:09:19,529 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
-2024-03-07 23:09:19,530 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-03-07 23:09:19,532 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
-2024-03-07 23:09:19,565 INFO  [org.jgroups.protocols.FD_SOCK2] (keycloak-cache-init) server listening on *.41300
-2024-03-07 23:09:19,745 WARN  [io.quarkus.vertx.http.runtime.VertxHttpRecorder] (main) The X-Forwarded-* and Forwarded headers will be considered when determining the proxy address. This configuration can cause a security issue as clients can forge requests and send a forwarded header that is not overwritten by the proxy. Please consider use one of these headers just to forward the proxy address in requests.
-2024-03-07 23:09:21,599 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) keycloak-13559: no members discovered after 2005 ms: creating cluster as coordinator
-2024-03-07 23:09:21,609 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [keycloak-13559|0] (1) [keycloak-13559]
-2024-03-07 23:09:21,628 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `keycloak-13559`, physical addresses are `[192.168.160.3:56836]`
-2024-03-07 23:09:21,643 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
-2024-03-07 23:09:22,309 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: keycloak-13559, Site name: null
-2024-03-07 23:09:22,321 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
-2024-03-07 23:09:29,267 INFO  [org.keycloak.quarkus.runtime.storage.legacy.liquibase.QuarkusJpaUpdaterProvider] (main) Initializing database schema. Using changelog META-INF/jpa-changelog-master.xml
-2024-03-07 23:09:36,861 INFO  [org.keycloak.services] (main) KC-SERVICES0050: Initializing master realm
-2024-03-07 23:09:39,905 INFO  [io.quarkus] (main) Keycloak 23.0.7 on JVM (powered by Quarkus 3.2.10.Final) started in 28.049s. Listening on: http://0.0.0.0:8080
-2024-03-07 23:09:39,906 INFO  [io.quarkus] (main) Profile prod activated. 
-2024-03-07 23:09:39,907 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, jdbc-mariadb, jdbc-mssql, jdbc-mysql, jdbc-oracle, jdbc-postgresql, keycloak, logging-gelf, micrometer, narayana-jta, reactive-routes, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
-2024-03-07 23:09:40,670 INFO  [org.keycloak.services] (main) KC-SERVICES0009: Added user 'admin' to realm 'master'
-2024-03-07 23:18:37,776 WARN  [org.keycloak.events] (executor-thread-2) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="4ab95675-f637-4ac8-a7d6-6dfdf13be062", username="saimon"
-2024-03-07 23:18:44,201 WARN  [org.keycloak.events] (executor-thread-2) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="4ab95675-f637-4ac8-a7d6-6dfdf13be062", username="saimon"
-2024-03-07 23:33:31,915 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="null", userId="null", ipAddress="192.168.160.1", error="expired_code", restart_after_timeout="true"
-2024-03-07 23:33:33,307 WARN  [org.keycloak.events] (executor-thread-11) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="null", userId="null", ipAddress="192.168.160.1", error="cookie_not_found"
-2024-03-07 23:37:05,162 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="770551b2-76c1-4169-a123-765ff0019c2e", username="ciudadano"
-2024-03-08 00:38:45,995 WARN  [org.keycloak.events] (executor-thread-10) type="LOGOUT_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="session_expired"
-2024-03-08 00:39:09,927 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="01f1560f-d7ad-4a04-89df-26d4174e66c0", username="saimon"
-2024-03-08 00:39:18,701 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="01f1560f-d7ad-4a04-89df-26d4174e66c0", username="ciudadano"
-2024-03-08 00:39:30,161 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="01f1560f-d7ad-4a04-89df-26d4174e66c0", username="ciudadano"
-2024-03-08 00:40:13,235 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="01f1560f-d7ad-4a04-89df-26d4174e66c0", username="ciudadano"
-2024-03-08 00:42:11,099 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="2f39de14-d26e-4d1b-9139-8c78f231ae34", ipAddress="192.168.160.1", error="invalid_user_credentials", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="01f1560f-d7ad-4a04-89df-26d4174e66c0", username="admin"
-2024-03-08 00:42:26,553 WARN  [org.keycloak.events] (executor-thread-10) type="LOGIN_ERROR", realmId="ea2488f3-0312-4ad6-aa76-7bbff4cc4a64", clientId="security-admin-console", userId="null", ipAddress="192.168.160.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="01f1560f-d7ad-4a04-89df-26d4174e66c0", username="ciudadanoConsciente"
-2024-03-08 00:45:28,428 INFO  [org.infinispan.CLUSTER] (Shutdown thread) ISPN000080: Disconnecting JGroups channel `ISPN`
-2024-03-08 00:45:28,490 INFO  [io.quarkus] (Shutdown thread) Keycloak stopped in 0.093s
+2024-03-09 23:31:03,050 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz
+2024-03-09 23:31:03,997 INFO  [org.keycloak.quarkus.runtime.hostname.DefaultHostnameProvider] (main) Hostname settings: Base URL: http://localhost:3704, Hostname: localhost, Strict HTTPS: false, Path: /, Strict BackChannel: true, Admin URL: http://localhost:3704, Admin: localhost, Port: 3704, Proxied: true
+2024-03-09 23:31:07,076 WARN  [io.quarkus.agroal.runtime.DataSources] (main) Datasource <default> enables XA but transaction recovery is not enabled. Please enable transaction recovery by setting quarkus.transaction-manager.enable-recovery=true, otherwise data may be lost if the application is terminated abruptly
+2024-03-09 23:31:08,125 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
+2024-03-09 23:31:08,254 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
+2024-03-09 23:31:08,439 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000088: Unable to use any JGroups configuration mechanisms provided in properties {}. Using default JGroups configuration!
+2024-03-09 23:31:08,594 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN`
+2024-03-09 23:31:08,596 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: 738ef9a1-0879-4410-a069-ee9db206b54d, name: keycloak-18244
+2024-03-09 23:31:08,613 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-03-09 23:31:08,614 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
+2024-03-09 23:31:08,614 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-03-09 23:31:08,615 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
+2024-03-09 23:31:08,628 INFO  [org.jgroups.protocols.FD_SOCK2] (keycloak-cache-init) server listening on *.43593
+2024-03-09 23:31:08,809 WARN  [io.quarkus.vertx.http.runtime.VertxHttpRecorder] (main) The X-Forwarded-* and Forwarded headers will be considered when determining the proxy address. This configuration can cause a security issue as clients can forge requests and send a forwarded header that is not overwritten by the proxy. Please consider use one of these headers just to forward the proxy address in requests.
+2024-03-09 23:31:08,818 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+2024-03-09 23:31:10,635 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) keycloak-18244: no members discovered after 2004 ms: creating cluster as coordinator
+2024-03-09 23:31:10,648 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [keycloak-18244|0] (1) [keycloak-18244]
+2024-03-09 23:31:10,680 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `keycloak-18244`, physical addresses are `[192.168.32.5:59129]`
+2024-03-09 23:31:10,695 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
+2024-03-09 23:31:11,226 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: keycloak-18244, Site name: null
+2024-03-09 23:31:12,593 INFO  [io.quarkus] (main) Keycloak 23.0.7 on JVM (powered by Quarkus 3.2.10.Final) started in 11.315s. Listening on: http://0.0.0.0:8080
+2024-03-09 23:31:12,593 INFO  [io.quarkus] (main) Profile prod activated. 
+2024-03-09 23:31:12,594 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, jdbc-mariadb, jdbc-mssql, jdbc-mysql, jdbc-oracle, jdbc-postgresql, keycloak, logging-gelf, micrometer, narayana-jta, reactive-routes, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
+2024-03-10 00:03:34,154 INFO  [org.infinispan.CLUSTER] (Shutdown thread) ISPN000080: Disconnecting JGroups channel `ISPN`
+2024-03-10 00:03:34,189 INFO  [io.quarkus] (Shutdown thread) Keycloak stopped in 0.083s
