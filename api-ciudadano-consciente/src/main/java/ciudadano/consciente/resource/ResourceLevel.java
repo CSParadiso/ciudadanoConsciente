@@ -53,6 +53,24 @@ public class ResourceLevel {
     }
 
     @GET
+    @Path("paths")
+    @Operation(summary = "Retrieve all Levels without parent.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Levels successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve all Levels. Verify 'Warning' Header."
+    )
+    public Response getAllPaths() {
+
+        audit.debug("Getting all Levels without parent...");
+       return Response.ok(serviceLevel.getAllPaths()).build();
+
+    }
+
+    @GET
     @Path("{id}")
     @Operation(summary = "Retrieve a  Level by its ID.")
     @APIResponse(
@@ -71,6 +89,46 @@ public class ResourceLevel {
 
         audit.debug("Getting Level " + id + "...");
         return Response.ok(serviceLevel.get(id)).build();
+
+    }
+
+    @GET
+    @Path("{id}/childrens")
+    @Operation(summary = "Retrieve all childrens of a Level by its ID.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Levels successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Levels. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "404",
+            description = "Failed to retrieve Level. Verify 'Warning' Header."
+    )
+    public Response getChildrens(@PathParam("id") Integer id) {
+
+        audit.debug("Getting childrens of Level " + id + "...");
+        return Response.ok(serviceLevel.getChildrens(id)).build();
+
+    }
+
+    @GET
+    @Path("organizations/{organizationId}/paths")
+    @Operation(summary = "Retrieve all Levels (without a parent) of an Organization by the Organization ID.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Levels successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Levels. Verify 'Warning' Header."
+    )
+    public Response getPathsByOrganization(@PathParam("organizationId") Integer id) {
+
+        audit.debug("Getting paths of Organization " + id + "...");
+        return Response.ok(serviceLevel.getPathsByOrganization(id)).build();
 
     }
 
@@ -440,10 +498,6 @@ public class ResourceLevel {
     )
     @APIResponse(
             responseCode = "400",
-            description = "Failed to Vote Level. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "404",
             description = "Failed to Vote Level. Verify 'Warning' Header."
     )
     @APIResponse(

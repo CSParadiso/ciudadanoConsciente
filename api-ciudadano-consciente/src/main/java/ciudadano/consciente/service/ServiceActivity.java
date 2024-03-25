@@ -20,6 +20,7 @@ import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -53,6 +54,31 @@ public class ServiceActivity {
 
    }
 
+    public DTOActivity get(Integer id) {
+
+        audit.debug("Getting Activity " + id + ".");
+        Activity activity = accessActivity.get(id)
+                .orElseThrow( ()-> new HttpNoContentException("Activity not found."));
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperActivity.entityToDto(activity);
+
+    }
+
+    public DTOActivity getByLevel(Integer levelId) {
+
+        audit.debug("Getting Level.");
+        Level level = accessLevel.get(levelId)
+                .orElseThrow( ()-> new HttpNoContentException("Level not found.") );
+
+        Activity activity = accessActivity.getByLevel(level)
+                .orElseThrow( ()-> new HttpNoContentException("Activity not found.") );
+
+        return mapperActivity.entityToDto(activity);
+
+
+    }
+
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOActivity create(DTOCreateActivity dtoCreateActivity) {
 
@@ -69,23 +95,17 @@ public class ServiceActivity {
         Activity activity = mapperActivity.dtoToEntity(dtoCreateActivity);
 
         audit.debug("Saving Activity.");
-        accessActivity.save(activity)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity."));
+        try {
+            accessActivity.save(activity)
+                    .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity."));
+        } catch (ConstraintViolationException e) {
+            audit.debug("Level already has an Activity.");
+            throw new HttpBadRequestException("Level already has an Activity.");
+        }
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
 
-
-    }
-
-    public DTOActivity get(Integer id) {
-
-        audit.debug("Getting Activity " + id + ".");
-        Activity activity = accessActivity.get(id)
-                .orElseThrow( ()-> new HttpNoContentException("Activity not found."));
-
-        audit.debug("Mapping EntityType into DTO.");
-        return mapperActivity.entityToDto(activity);
 
     }
 
@@ -113,7 +133,12 @@ public class ServiceActivity {
         if(utilityVerifyRequestField.isValidField(levelDTO)) {
             Level level = accessLevel.get(levelDTO)
                     .orElseThrow( ()-> new HttpNoContentException("Level not found.") );
-            activity.setLevel(level);
+            if(accessActivity.getByLevel(level).isEmpty()) {
+                activity.setLevel(level);
+            } else {
+                throw new HttpBadRequestException("Level already has an Activity.");
+            }
+
         }
 
         if(utilityVerifyRequestField.isValidField(description)) {
@@ -127,8 +152,13 @@ public class ServiceActivity {
         }
 
         audit.debug("Saving Activity " + activity.getActivityId() + ".");
-        accessActivity.save(activity)
-                .orElseThrow( ()-> new HttpInternalServerException("Failed to persist updated Activity.") );
+        try {
+            accessActivity.save(activity)
+                    .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity."));
+        } catch (ConstraintViolationException e) {
+            audit.debug("Level already has an Activity.");
+            throw new HttpBadRequestException("Level already has an Activity.");
+        }
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperActivity.entityToDto(activity);
@@ -150,4 +180,5 @@ public class ServiceActivity {
         return mapperActivity.entityToDto(activity);
 
     }
+
 }

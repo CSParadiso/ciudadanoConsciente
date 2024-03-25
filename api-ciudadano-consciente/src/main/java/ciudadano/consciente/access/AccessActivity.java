@@ -1,6 +1,7 @@
 package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Activity;
+import ciudadano.consciente.model.Level;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.RequestScoped;
@@ -42,7 +43,12 @@ public class AccessActivity implements PanacheRepositoryBase<Activity, Integer> 
 
     }
 
+    public Optional<Activity> getByLevel(Level level) {
 
+        audit.debug("Trying to retrieve Activity by Level " + level.getLevelId());
+        return find("level", level).stream().findFirst();
+
+    }
 
     public boolean remove(Integer id) {
 

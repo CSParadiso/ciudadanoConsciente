@@ -1,10 +1,12 @@
 package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Level;
+import ciudadano.consciente.model.Organization;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -15,6 +17,9 @@ public class AccessLevel implements PanacheRepositoryBase<Level, Integer> {
 
     @Inject
     Logger audit;
+
+    @Inject
+    EntityManager entityManager;
 
     public List<Level> getAll() {
 
@@ -27,6 +32,16 @@ public class AccessLevel implements PanacheRepositoryBase<Level, Integer> {
 
         audit.debug("Trying to retrieve Level " + id + ".");
         return findByIdOptional(id);
+
+    }
+
+    public List<Level> getAllChildrens(Integer levelId) {
+
+        audit.debug("Trying to retrieve childrens of level...");
+        return entityManager
+                .createNamedQuery("Level.getAllChildrens", Level.class)
+                .setParameter("parentLevelId", levelId)
+                .getResultList();
 
     }
 
@@ -51,4 +66,19 @@ public class AccessLevel implements PanacheRepositoryBase<Level, Integer> {
         return count("name", name) > 0;
 
     }
+
+    public List<Level> getAllPaths() {
+
+        audit.debug("Trying to retrieve all Paths...");
+        return find("parent = null").stream().toList();
+
+    }
+
+    public List<Level> getAllPathsByOrganization(Organization organization) {
+
+        audit.debug("Trying to retrieve all Paths from Organization...");
+        return find("organization = ?1 and parent = null", organization).stream().toList();
+
+    }
+
 }

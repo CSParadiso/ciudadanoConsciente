@@ -132,7 +132,7 @@ create table app.images (
 create table app.activities (
 	activity_id integer generated always as identity primary key, 
 	description varchar(140) not null,
-	level_id integer references app.levels on delete cascade not null, 
+	level_id integer references app.levels on delete no action unique not null, 
 	content integer references app.contents not null
 	-- activityTypeVersion is inferred from content
 );

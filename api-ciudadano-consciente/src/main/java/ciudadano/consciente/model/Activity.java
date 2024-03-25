@@ -6,8 +6,6 @@ import jakarta.persistence.Entity;
 @Entity
 @Table(schema = "app", name = "activities")
 @NamedNativeQueries(//{
-        //@NamedNativeQuery(name = "Activity.getModelFromActivityTypeVersion",
-        //        query = "select c.model from app.activities as A inner join app.contents as B on(a.content = b.content_id) inner join app.activity_type_version as C on(b.activity_type_version = c.activity_type_version_id)"),
         @NamedNativeQuery(name = "Activity.getTemplateFromActivityTypeVersion",
                 query = "select c.template from app.activities as A inner join app.contents as B " +
                         "on(a.content = b.content_id) inner join app.activity_type_version as C " +

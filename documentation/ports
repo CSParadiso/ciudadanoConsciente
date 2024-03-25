@@ -1,9 +1,8 @@
-DB Ports
-- 3700:5432 --> postgresql 13.14-alpine
-- 3707:5432 --> postgresql 16
+Ports
 
-API Ports
-- 
-- 
+- 3700:5432 --> postgresql 16
+- 3704:8080 --> keycloak 23
+- 3705:5909 --> ciuco 1.0.0
+- 3706:8080 --> adminer 4.8.1
 
 

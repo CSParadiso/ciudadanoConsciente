@@ -6,6 +6,11 @@ import java.time.LocalDate;
 
 @Entity
 @Table(schema = "app", name = "votes")
+@NamedNativeQueries(
+        @NamedNativeQuery(name = "Vote.getMostVotedEntitiesByEntityType",
+                query = "select entity_id, count(*) as votes from app.votes where entity_type = :entityType and active = 'true'" +
+                        " group by (entity_id, entity_type) order by (count(*)) desc;")
+)
 public class Vote {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

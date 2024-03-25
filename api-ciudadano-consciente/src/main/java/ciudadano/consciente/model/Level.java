@@ -3,8 +3,25 @@ package ciudadano.consciente.model;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
+import java.util.List;
+
 @Entity
 @Table(schema = "app", name = "levels")
+@NamedNativeQueries(
+        @NamedNativeQuery(name = "Level.getAllChildrens", query = "WITH RECURSIVE LevelHierarchy AS (\n" +
+                "    SELECT level_id, name, description, organization, parent\n" +
+                "    FROM app.levels\n" +
+                "    WHERE level_id = :parentLevelId" +
+                "\n" +
+                "    UNION ALL\n" +
+                "\n" +
+                "    SELECT l.level_id, l.name, l.description, l.organization, l.parent\n" +
+                "    FROM app.levels l\n" +
+                "    INNER JOIN LevelHierarchy lh ON l.parent = lh.level_id\n" +
+                ")\n" +
+                "SELECT *\n" +
+                "FROM LevelHierarchy;\n", resultClass = Level.class)
+)
 public class Level {
 
     @GeneratedValue( strategy = GenerationType.IDENTITY)
@@ -24,6 +41,13 @@ public class Level {
     @ManyToOne(fetch = FetchType.EAGER) // or FetchType.EAGER
     @JoinColumn(name = "parent", referencedColumnName = "level_id")
     private Level parent;
+
+    //private boolean isOrdered; // The childrens of the level are displayed in order in the webapp
+
+    //private boolean orderRequired; // Previous levels must be completed before access the next one.
+
+    //private Integer order; // The position of the level in the hierarchy if its parent requiere the childrens to be ordered
+
 
     public Integer getLevelId() {
         return levelId;

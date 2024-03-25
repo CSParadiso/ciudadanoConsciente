@@ -13,7 +13,7 @@ services:
     environment:
       POSTGRES_PASSWORD: admin
     ports:
-      - 3707:5432
+      - 3700:5432
     volumes:
       - pg_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d  # Montar los scripts de inicialización (solo sirve si no hay nada en el directorio de datos mencionados arriba).

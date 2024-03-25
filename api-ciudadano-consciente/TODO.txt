@@ -207,10 +207,18 @@ Commit 4717384
 - Commit 14b4bce
 build: Construir imagen de Postgres poblada con datos
 
-- Commit
+- Commit 2c5020a
 refactor: modificado el recurso de Concern
 build: creado el Dockerfile, compose y bakups que permiten levantar el proyecto entero con una imagen
 build: generada y pusheada la primera imagen de la api a dockerHub (csparadiso/ciudadano-consciente:API1.0)
+
+- Commit da3a297 
+refactor: modificado el compose.yaml para poder seleccionar el directorio de imágenes del filesystem donde queremos que se almacenen los archivos de imágenes.
+
+- Commit
+feat: añadido recurso que recupera todos los childrens de un level.
+feat: añadido recurso que recupera todos los paths y sus votos
+feat: añadido recurso que recupera la actividad de un level
 
 
 
@@ -254,7 +262,6 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 
 
-// TODO Persistir volumen de imágenes en el Contenedor
 
 
 // TODO Verificar referencias eliminadas en cascade para ver si se pueden usar los estados en lugar de borrar
@@ -274,6 +281,7 @@ MANEJO DE USUARIOS Y ROLES
 -----------------------------------------
 
 OPTIMIZACIONES
+// FIXME refactor: modificar los DTO de Levels para recuperar solo los datos que se necesitan
 // FIXME refactor: match up DB restrictions with api restriction anotations
 // FIXME refactor: hacer más genérico el voto de las entidades
 // FIXME refactor: hacer clase por cada file type para hacer genérico el recurso get y el servicio que invoca

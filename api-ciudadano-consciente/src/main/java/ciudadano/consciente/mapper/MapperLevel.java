@@ -1,5 +1,6 @@
 package ciudadano.consciente.mapper;
 
+import ciudadano.consciente.dto.DTOLevelPath;
 import ciudadano.consciente.model.Level;
 import ciudadano.consciente.dto.DTOLevel;
 import ciudadano.consciente.model.Organization;
@@ -16,6 +17,12 @@ public interface MapperLevel {
     DTOLevel entityToDto(Level level);
 
     List<DTOLevel> entityToDto(List<Level> niveles);
+
+    @Mapping(target = "organization", source = "organization.organizationId")
+    DTOLevelPath entityToPathDto(Level level);
+
+    @Mapping(target = "organization", source = "organization.organizationId")
+    List<DTOLevelPath> entityToPathDto(List<Level> levels);
 
     @Mapping(target = "name", source = "name")
     @Mapping(target = "organization", source = "organization")

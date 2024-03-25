@@ -85,6 +85,25 @@ public class ResourceActivity {
 
     }
 
+    @GET
+    @Path("level/{levelId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Retrieve the Activity of a Level.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Activity successfully retrieved."
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Activity. Verify 'Warning' Header."
+    )
+    public Response getByLevel(@PathParam("levelId") Integer levelId) {
+
+        audit.debug("Getting Activity by Level " + levelId + "...");
+        return Response.ok(serviceActivity.getByLevel(levelId)).build();
+
+    }
+
     @POST
     @Operation(summary = "Create an Activity.")
     @APIResponse(
