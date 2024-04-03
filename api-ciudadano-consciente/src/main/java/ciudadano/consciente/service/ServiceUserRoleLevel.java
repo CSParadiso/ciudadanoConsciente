@@ -11,7 +11,7 @@ import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperUserRoleLevel;
-import ciudadano.consciente.model.User;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.model.UserRoleLevel;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;

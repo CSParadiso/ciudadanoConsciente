@@ -9,6 +9,7 @@ import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperActivityTypeVersionStatus;
 import ciudadano.consciente.model.ActivityTypeVersionStatus;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;

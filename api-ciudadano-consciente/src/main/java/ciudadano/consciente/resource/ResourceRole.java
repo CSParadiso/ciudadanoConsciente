@@ -1,6 +1,7 @@
 package ciudadano.consciente.resource;
 
 import ciudadano.consciente.exception.HttpBadRequestException;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceRole;
 import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;

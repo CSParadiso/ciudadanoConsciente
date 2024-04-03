@@ -1,12 +1,9 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.access.AccessImage;
-import ciudadano.consciente.model.Image;
+import ciudadano.consciente.model.Organization;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-
-import java.util.List;
 
 public class DTOContent {
 

@@ -1,13 +1,10 @@
 package ciudadano.consciente.model;
 
-import ciudadano.consciente.access.AccessImage;
 import ciudadano.consciente.utility.UtilityFileSystem;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.inject.Inject;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.jboss.logging.Logger;
 
 import java.util.List;
 

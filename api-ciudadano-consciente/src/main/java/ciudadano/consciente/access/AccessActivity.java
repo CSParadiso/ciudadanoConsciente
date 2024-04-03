@@ -2,8 +2,8 @@ package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Activity;
 import ciudadano.consciente.model.Level;
+import ciudadano.consciente.model.Organization;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;

@@ -2,6 +2,7 @@ package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceAnswer;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -15,7 +16,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
 import java.net.URI;
-import java.time.LocalDate;
 
 @RequestScoped
 @Tag(name = "Answer Resource")

@@ -2,10 +2,9 @@ package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceActivityTypeVersion;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
-import io.vertx.core.json.Json;
-import io.vertx.core.json.JsonObject;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -14,13 +13,9 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.hibernate.dialect.PostgreSQLJsonPGObjectJsonbType;
 import org.jboss.logging.Logger;
-import org.jboss.resteasy.reactive.RestResponse;
-import org.jose4j.json.internal.json_simple.JSONObject;
 
 import java.net.URI;
-import java.util.Base64;
 
 @Tag(name = "Activity Type Version Resource")
 @RequestScoped

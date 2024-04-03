@@ -1,8 +1,6 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Level;
-import ciudadano.consciente.model.Role;
-import ciudadano.consciente.model.User;
+import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOUserRoleLevel {

@@ -36,10 +36,10 @@ public class Vote {
 
     public Vote() {}
 
-    public Vote(User user, Integer organizationId, EntityType entityType) {
+    public Vote(User user, Integer entity, EntityType entityType) {
 
         this.user = user;
-        this.entity = organizationId;
+        this.entity = entity;
         this.entityType = entityType;
         this.date = LocalDate.now();
         this.active = true;

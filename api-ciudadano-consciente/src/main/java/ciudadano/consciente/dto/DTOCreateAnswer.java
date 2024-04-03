@@ -1,8 +1,7 @@
 package ciudadano.consciente.dto;
 
+import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-
-import java.time.LocalDate;
 
 public class DTOCreateAnswer {
 

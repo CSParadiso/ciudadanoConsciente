@@ -1,6 +1,6 @@
 package ciudadano.consciente.utility;
 
-import ciudadano.consciente.dto.DTOCreateImage;
+import ciudadano.consciente.model.Organization;
 import io.vertx.core.json.JsonObject;
 import jakarta.enterprise.context.RequestScoped;
 

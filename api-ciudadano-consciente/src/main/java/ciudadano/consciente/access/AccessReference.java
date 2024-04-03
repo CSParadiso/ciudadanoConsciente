@@ -1,6 +1,7 @@
 package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Level;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.model.Reference;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;

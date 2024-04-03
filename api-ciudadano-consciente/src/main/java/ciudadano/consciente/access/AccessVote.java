@@ -1,9 +1,6 @@
 package ciudadano.consciente.access;
 
-import ciudadano.consciente.model.EntityType;
-import ciudadano.consciente.model.Level;
-import ciudadano.consciente.model.User;
-import ciudadano.consciente.model.Vote;
+import ciudadano.consciente.model.*;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
@@ -92,6 +89,13 @@ public class AccessVote implements PanacheRepositoryBase<Vote, Integer> {
         audit.debug(resultMap.toString());
 
         return resultMap;
+
+    }
+
+    public List<Vote> getByEntityTypeAndUser(EntityType entityTypeId, User user) {
+
+        audit.debug("Trying to retrieve all Votes of an Entity Type by User.");
+        return find("entityType = ?1 and user = ?2 and active = true", entityTypeId, user).stream().toList();
 
     }
 

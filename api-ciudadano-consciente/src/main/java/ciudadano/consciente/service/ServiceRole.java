@@ -7,6 +7,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.model.Role;
 import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;

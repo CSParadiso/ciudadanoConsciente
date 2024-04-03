@@ -3,17 +3,31 @@ package ciudadano.consciente.dto;
 import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOCreateLevel {
+public class DTOLevelPathWithVotes {
 
-    @Schema(required = true, defaultValue = "")
+    @Schema
+    private Integer levelId;
+
+    @Schema
     private String name;
-    @Schema(required = true, defaultValue = "")
+
+    @Schema
     private String description;
 
-    @Schema(required = true, defaultValue = "")
-    private Integer organization;
-    @Schema(required = true, defaultValue = "")
-    private Integer parent;
+    @Schema
+    private Integer organizationId;
+
+    @Schema
+    private Integer votes; // Calculated atribute in DB
+
+
+    public Integer getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(Integer levelId) {
+        this.levelId = levelId;
+    }
 
     public String getName() {
         return name;
@@ -32,18 +46,15 @@ public class DTOCreateLevel {
     }
 
     public Integer getOrganization() {
-        return organization;
+        return organizationId;
     }
 
     public void setOrganization(Integer organization) {
-        this.organization = organization;
+        this.organizationId = organization;
     }
 
-    public Integer getParent() {
-        return parent;
-    }
+    public Integer getVotes() { return votes; }
 
-    public void setParent(Integer parent) {
-        this.parent = parent;
-    }
+    public void setVotes(Integer votes) { this.votes = votes; }
+
 }

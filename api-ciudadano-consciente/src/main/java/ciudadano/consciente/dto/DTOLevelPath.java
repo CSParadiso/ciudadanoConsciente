@@ -1,6 +1,5 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Level;
 import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -17,10 +16,6 @@ public class DTOLevelPath {
 
     @Schema
     private Integer organizationId;
-
-    @Schema
-    private Integer votes; // Calculated atribute in DB
-
 
     public Integer getLevelId() {
         return levelId;
@@ -53,9 +48,5 @@ public class DTOLevelPath {
     public void setOrganization(Integer organization) {
         this.organizationId = organization;
     }
-
-    public Integer getVotes() { return votes; }
-
-    public void setVotes(Integer votes) { this.votes = votes; }
 
 }

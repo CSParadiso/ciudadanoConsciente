@@ -1,5 +1,6 @@
 package ciudadano.consciente.dto;
 
+import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOUpdateActivityTypeVersion {

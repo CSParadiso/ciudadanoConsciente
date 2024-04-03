@@ -2,6 +2,7 @@ package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Level;
 import ciudadano.consciente.model.Organization;
+import ciudadano.consciente.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
@@ -78,6 +79,16 @@ public class AccessLevel implements PanacheRepositoryBase<Level, Integer> {
 
         audit.debug("Trying to retrieve all Paths from Organization...");
         return find("organization = ?1 and parent = null", organization).stream().toList();
+
+    }
+
+    public List<Object[]> getRecentlyUsedByUser(User user) {
+
+        audit.debug("Trying to retrieve User recently used Paths...");
+        return entityManager
+                .createNamedQuery("Level.getLatestsUserPaths")
+                .setParameter("user", user.getUserId())
+                .getResultList();
 
     }
 

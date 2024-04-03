@@ -1,6 +1,6 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Level;
+import ciudadano.consciente.model.Organization;
 import jakarta.enterprise.context.RequestScoped;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 

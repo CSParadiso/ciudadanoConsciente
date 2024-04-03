@@ -1,18 +1,10 @@
 package ciudadano.consciente.access;
 
-import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.model.Level;
-import ciudadano.consciente.model.Role;
-import ciudadano.consciente.model.User;
-import ciudadano.consciente.model.UserRoleLevel;
+import ciudadano.consciente.model.*;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.NamedNativeQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.jboss.logging.Logger;
-import org.mapstruct.control.MappingControl;
 
 import java.util.List;
 import java.util.Optional;

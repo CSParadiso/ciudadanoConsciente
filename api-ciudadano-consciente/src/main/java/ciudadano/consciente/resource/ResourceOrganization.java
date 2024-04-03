@@ -2,6 +2,7 @@
 package ciudadano.consciente.resource;
 
 import ciudadano.consciente.exception.HttpBadRequestException;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;

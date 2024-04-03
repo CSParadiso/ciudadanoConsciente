@@ -1,6 +1,7 @@
 package ciudadano.consciente.resource;
 
 import ciudadano.consciente.exception.HttpBadRequestException;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceLevel;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
@@ -10,6 +11,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
@@ -97,7 +100,8 @@ public class ResourceLevel {
     @Operation(summary = "Retrieve all childrens of a Level by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Levels successfully retrieved."
+            description = "Levels successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOLevelWithChildrens.class))
     )
     @APIResponse(
             responseCode = "204",
@@ -129,6 +133,44 @@ public class ResourceLevel {
 
         audit.debug("Getting paths of Organization " + id + "...");
         return Response.ok(serviceLevel.getPathsByOrganization(id)).build();
+
+    }
+
+    @GET
+    @Path("/paths/favorites/users/{userId}")
+    @Operation(summary = "Retrieve all Paths voted by a specific User.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Levels successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOLevelPath.class))
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Levels. Verify 'Warning' Header."
+    )
+    public Response getPathsByUserFavorite(@PathParam("userId") Integer userId) {
+
+        audit.debug("Getting favorite paths of User " + userId + "...");
+        return Response.ok(serviceLevel.getPathsByUserFavorite(userId)).build();
+
+    }
+
+    @GET
+    @Path("/paths/recently/users/{userId}")
+    @Operation(summary = "Retrieve latest Paths used by a specific User.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Levels successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOLevelPathUsedRecentlyByUser.class))
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Levels. Verify 'Warning' Header."
+    )
+    public Response getPathsUsedByUserRecently(@PathParam("userId") Integer userId) {
+
+        audit.debug("Getting favorite paths of User " + userId + "...");
+        return Response.ok(serviceLevel.getPathsUsedByUserRecently(userId)).build();
 
     }
 
@@ -372,9 +414,9 @@ public class ResourceLevel {
         Integer user = dtoAssignRoleToUserLevel.getUser();
         Integer level = dtoAssignRoleToUserLevel.getLevel();
         Integer role = dtoAssignRoleToUserLevel.getRole();
-        if(!utilityVerifyRequestField.isValidField(user) ||
-                !utilityVerifyRequestField.isValidField(level) ||
-                !utilityVerifyRequestField.isValidField(role)) {
+        if(!utilityVerifyRequestField.isValidField(user.toString()) ||
+                !utilityVerifyRequestField.isValidField(level.toString()) ||
+                !utilityVerifyRequestField.isValidField(role.toString())) {
             throw new HttpBadRequestException("All fields required.");
         }
 

@@ -9,7 +9,7 @@ import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperUser;
 import ciudadano.consciente.mapper.MapperVote;
-import ciudadano.consciente.model.EntityType;
+import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.model.User;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;

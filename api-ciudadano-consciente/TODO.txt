@@ -215,10 +215,15 @@ build: generada y pusheada la primera imagen de la api a dockerHub (csparadiso/c
 - Commit da3a297 
 refactor: modificado el compose.yaml para poder seleccionar el directorio de imágenes del filesystem donde queremos que se almacenen los archivos de imágenes.
 
-- Commit
+- Commit a62e881
 feat: añadido recurso que recupera todos los childrens de un level.
 feat: añadido recurso que recupera todos los paths y sus votos
 feat: añadido recurso que recupera la actividad de un level
+
+- Commit
+feat: añadido recurso que recupera los paths votados por un usuario. (Basado en votos)
+feat: añadido recurso que recupera los paths usados recientemente por un usuario. (Basado en respuestas)
+refactor: modificados varios transferibles.
 
 
 
@@ -281,6 +286,7 @@ MANEJO DE USUARIOS Y ROLES
 -----------------------------------------
 
 OPTIMIZACIONES
+// FIXME feat: añadir a todas las APIResponse anotations el content schema de la response
 // FIXME refactor: modificar los DTO de Levels para recuperar solo los datos que se necesitan
 // FIXME refactor: match up DB restrictions with api restriction anotations
 // FIXME refactor: hacer más genérico el voto de las entidades

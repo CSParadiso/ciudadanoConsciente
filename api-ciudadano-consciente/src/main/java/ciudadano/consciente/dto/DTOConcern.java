@@ -1,9 +1,6 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.User;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDate;

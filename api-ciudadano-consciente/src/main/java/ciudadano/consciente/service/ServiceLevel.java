@@ -16,10 +16,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.util.*;
 
 @RequestScoped
 public class ServiceLevel {
@@ -80,31 +78,31 @@ public class ServiceLevel {
 
     }
 
-    public List<DTOLevel> getChildrens(Integer id) {
+    public List<DTOLevelWithChildrens> getChildrens(Integer id) {
 
         audit.debug("Getting Level " + id + ".");
         Level level = accessLevel.get(id)
                 .orElseThrow( () -> new HttpNoContentException("Parent Level not found."));
 
         audit.debug("Getting childrens of Levels.");
-        return mapperLevel.entityToDto(accessLevel.getAllChildrens(level.getLevelId()));
+        return mapperLevel.entityToLevelWithChildrensDto(accessLevel.getAllChildrens(level.getLevelId()));
 
     }
 
-    public List<DTOLevelPath> getAllPaths() {
+    public List<DTOLevelPathWithVotes> getAllPaths() {
 
         audit.debug("Retrieving entityType");
         EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
                 .orElseThrow( ()-> new HttpNoContentException("EntityType not found") );
 
         audit.debug("Getting all Paths.");
-        List<DTOLevelPath> paths = mapperLevel.entityToPathDto(accessLevel.getAllPaths());
+        List<DTOLevelPathWithVotes> paths = mapperLevel.entityToPathWithVotesDto(accessLevel.getAllPaths());
 
         audit.debug("Getting all votes of entityType");
         Map<Integer, Integer> votes = accessVote.getMostVotedEntitiesByEntityType(entityType.getEntityTypeId());
 
         // If the path has votes, we set it. Otherwise, default is 0 (zero)
-        for(DTOLevelPath path : paths) {
+        for(DTOLevelPathWithVotes path : paths) {
             path.setVotes(votes.getOrDefault(path.getLevelId(), 0));
         }
 
@@ -112,14 +110,14 @@ public class ServiceLevel {
 
     }
 
-    public List<DTOLevelPath> getPathsByOrganization(Integer id) {
+    public List<DTOLevelPathWithVotes> getPathsByOrganization(Integer id) {
 
         audit.debug("Getting Organization " + id + ".");
         Organization organization = accessOrganization.get(id)
                 .orElseThrow( () -> new HttpNoContentException("Organization not found."));
 
         audit.debug("Getting paths of Organization.");
-        List<DTOLevelPath> paths = mapperLevel.entityToPathDto(accessLevel.getAllPathsByOrganization(organization));
+        List<DTOLevelPathWithVotes> paths = mapperLevel.entityToPathWithVotesDto(accessLevel.getAllPathsByOrganization(organization));
 
         audit.debug("Retrieving entityType");
         EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
@@ -129,11 +127,67 @@ public class ServiceLevel {
         Map<Integer, Integer> votes = accessVote.getMostVotedEntitiesByEntityType(entityType.getEntityTypeId());
 
         // If the path has votes, we set it. Otherwise, default is 0 (zero)
-        for(DTOLevelPath path : paths) {
+        for(DTOLevelPathWithVotes path : paths) {
             path.setVotes(votes.getOrDefault(path.getLevelId(), 0));
         }
 
         return paths;
+
+    }
+
+    public List<DTOLevelPath> getPathsByUserFavorite(Integer userId) {
+
+        audit.debug("Getting User " + userId + ".");
+        User user = accessUser.get(userId)
+                .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+        audit.debug("Retrieving entityType");
+        EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
+                .orElseThrow( ()-> new HttpNoContentException("EntityType not found") );
+
+        audit.debug("Getting all votes of entityType by user");
+        List<Vote> votes = accessVote.getByEntityTypeAndUser(entityType, user);
+
+        // Recuperar levels de votos
+        audit.debug("Retrieve levels of votes.");
+        List<Level> paths = new ArrayList<>();
+        for(Vote vote : votes) {
+
+            Level level = accessLevel.get(vote.getEntity()).orElseThrow( ()-> new HttpNoContentException("Level not found.") );
+            // Filtrar levels sin parent
+            if(level.getParent() == null) {
+                paths.add(level);
+            }
+
+        }
+
+        return mapperLevel.entityToPathDto(paths);
+
+    }
+
+    public List<DTOLevelPathUsedRecentlyByUser> getPathsUsedByUserRecently(Integer userId) {
+
+        audit.debug("Getting User " + userId + ".");
+        User user = accessUser.get(userId)
+                .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+        audit.debug("Retrieving Paths recently used by User.");
+        List<Object[]> levels = accessLevel.getRecentlyUsedByUser(user);
+
+        audit.debug("Mapping Result into DTO");
+        List<DTOLevelPathUsedRecentlyByUser> paths = new ArrayList<>();
+        for(Object[] level : levels) {
+            DTOLevelPathUsedRecentlyByUser path = new DTOLevelPathUsedRecentlyByUser();
+            path.setLevelId( (Integer) level[0]);
+            path.setName( (String) level[1]);
+            path.setDescription( (String) level[2]);
+            path.setOrganization( (Integer) level[3]);
+            path.setCreated( (Date) level[4]);
+            path.setLastModified( (Date) level[5]);
+            paths.add(path);
+        }
+
+        return mapperLevel.entityToRecentlyUsedPathDto(paths);
 
     }
 
@@ -192,8 +246,9 @@ public class ServiceLevel {
         }
 
         if(utilityVerifyRequestField.isValidField(organization)) {
-            level.setOrganization(accessOrganization.get(dtoUpdateLevel.getOrganization())
-                    .orElseThrow( ()-> new HttpNotFoundException("Organization not found.")) );
+            Organization organizationEntity = accessOrganization.get(dtoUpdateLevel.getOrganization())
+                    .orElseThrow( ()-> new HttpNotFoundException("Organization not found."));
+            level.setOrganization(organizationEntity);
         }
 
         if(utilityVerifyRequestField.isValidField(parent)) {

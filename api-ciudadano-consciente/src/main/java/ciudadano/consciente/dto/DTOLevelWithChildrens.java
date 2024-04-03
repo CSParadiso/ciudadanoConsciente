@@ -1,19 +1,32 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Organization;
+import ciudadano.consciente.model.Level;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOCreateLevel {
+public class DTOLevelWithChildrens {
 
-    @Schema(required = true, defaultValue = "")
+    @Schema
+    private Integer levelId;
+
+    @Schema
     private String name;
-    @Schema(required = true, defaultValue = "")
+
+    @Schema
     private String description;
 
-    @Schema(required = true, defaultValue = "")
-    private Integer organization;
-    @Schema(required = true, defaultValue = "")
+    @Schema
+    private Integer organizationId;
+
+    @Schema
     private Integer parent;
+
+    public Integer getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(Integer levelId) {
+        this.levelId = levelId;
+    }
 
     public String getName() {
         return name;
@@ -32,11 +45,11 @@ public class DTOCreateLevel {
     }
 
     public Integer getOrganization() {
-        return organization;
+        return organizationId;
     }
 
     public void setOrganization(Integer organization) {
-        this.organization = organization;
+        this.organizationId = organization;
     }
 
     public Integer getParent() {

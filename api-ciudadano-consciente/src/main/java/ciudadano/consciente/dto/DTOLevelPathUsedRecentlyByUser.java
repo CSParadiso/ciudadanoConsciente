@@ -1,10 +1,11 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Level;
-import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-public class DTOLevel {
+import java.sql.Date;
+import java.time.LocalDate;
+
+public class DTOLevelPathUsedRecentlyByUser {
 
     @Schema
     private Integer levelId;
@@ -19,7 +20,10 @@ public class DTOLevel {
     private Integer organizationId;
 
     @Schema
-    private Level parent;
+    private Date created;
+
+    @Schema
+    private Date lastModified;
 
     public Integer getLevelId() {
         return levelId;
@@ -53,11 +57,27 @@ public class DTOLevel {
         this.organizationId = organization;
     }
 
-    public Level getParent() {
-        return parent;
+    public Integer getOrganizationId() {
+        return organizationId;
     }
 
-    public void setParent(Level parent) {
-        this.parent = parent;
+    public void setOrganizationId(Integer organizationId) {
+        this.organizationId = organizationId;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 }

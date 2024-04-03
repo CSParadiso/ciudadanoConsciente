@@ -1,7 +1,6 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.AccessActivity;
-import ciudadano.consciente.access.AccessActivityType;
 import ciudadano.consciente.access.AccessContent;
 import ciudadano.consciente.access.AccessLevel;
 import ciudadano.consciente.dto.DTOActivity;
@@ -10,12 +9,8 @@ import ciudadano.consciente.dto.DTOUpdateActivity;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperActivity;
-import ciudadano.consciente.model.Activity;
-import ciudadano.consciente.model.ActivityType;
-import ciudadano.consciente.model.Content;
-import ciudadano.consciente.model.Level;
+import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;

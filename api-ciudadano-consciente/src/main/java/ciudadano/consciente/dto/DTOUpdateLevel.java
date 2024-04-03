@@ -1,5 +1,7 @@
 package ciudadano.consciente.dto;
 
+import ciudadano.consciente.model.Organization;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOUpdateLevel {
