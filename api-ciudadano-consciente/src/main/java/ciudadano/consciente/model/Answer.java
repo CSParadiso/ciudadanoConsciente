@@ -8,6 +8,17 @@ import java.time.LocalDate;
 
 @Entity
 @Table(schema = "app", name = "answers")
+@NamedNativeQueries(
+        @NamedNativeQuery(name = "Answer.getAllChildrenLevelsAnswers",
+        query = "WITH RECURSIVE LevelHierarchy AS " +
+                "(SELECT level_id, parent FROM app.levels WHERE level_id = :parentLevelId UNION ALL " +
+                "SELECT l.level_id, l.parent FROM app.levels l INNER JOIN " +
+                "LevelHierarchy lh ON l.parent = lh.level_id) " +
+                "SELECT LevelHierarchy.level_id, LevelHierarchy.parent as parent_id, ac.activity_id, ac.content as content_id," +
+                " s.answer_id, s.user_id, s.created, s.last_modified, s.status FROM LevelHierarchy join " +
+                "app.activities ac on (ac.level_id = LevelHierarchy.level_id) inner join " +
+                "app.answers s on (s.activity = ac.activity_id);")
+)
 public class Answer {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

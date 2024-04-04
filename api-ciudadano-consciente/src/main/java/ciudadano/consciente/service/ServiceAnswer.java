@@ -1,13 +1,12 @@
 package ciudadano.consciente.service;
 
-import ciudadano.consciente.access.AccessActivity;
-import ciudadano.consciente.access.AccessAnswer;
-import ciudadano.consciente.access.AccessActivityTypeVersionStatus;
-import ciudadano.consciente.access.AccessUser;
+import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.DTOAnswer;
+import ciudadano.consciente.dto.DTOAnswerOfChildrens;
 import ciudadano.consciente.dto.DTOCreateAnswer;
 import ciudadano.consciente.dto.DTOUpdateAnswerStatus;
 import ciudadano.consciente.exception.HttpInternalServerException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
 import ciudadano.consciente.mapper.MapperAnswer;
 import ciudadano.consciente.model.*;
@@ -16,7 +15,9 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestScoped
@@ -38,13 +39,41 @@ public class ServiceAnswer {
     AccessUser accessUser;
 
     @Inject
-    AccessActivityTypeVersionStatus accessActivityTypeVersionStatus;
+    AccessLevel accessLevel;
+
 
     public List<DTOAnswer> getAll() {
 
         audit.debug("Getting all Answers.");
         return mapperAnswer.entityToDto(accessAnswer.getAll());
         
+    }
+
+    public List<DTOAnswerOfChildrens> getAllChildrenLevelsAnswers(Integer levelId) {
+
+        audit.debug("Verifying if parent Level exists " + levelId);
+        Level level = accessLevel.get(levelId)
+                .orElseThrow( ()-> new HttpNoContentException("Level not found."));
+
+        List<Object[]> rawAnswers = accessAnswer.getAllChildrenLevelsAnswers(level.getLevelId());
+
+        List<DTOAnswerOfChildrens> answerOfChildrens = new ArrayList<>();
+        for(Object[] rawAnswer : rawAnswers) {
+            DTOAnswerOfChildrens dtoAnswerOfChildrens = new DTOAnswerOfChildrens();
+            dtoAnswerOfChildrens.setLevel((Integer) rawAnswer[0]);
+            dtoAnswerOfChildrens.setParent((Integer) rawAnswer[1]);
+            dtoAnswerOfChildrens.setActivity((Integer) rawAnswer[2]);
+            dtoAnswerOfChildrens.setContent((Integer) rawAnswer[3]);
+            dtoAnswerOfChildrens.setAnswer((Integer) rawAnswer[4]);
+            dtoAnswerOfChildrens.setUser((Integer) rawAnswer[5]);
+            dtoAnswerOfChildrens.setCreated((Date) rawAnswer[6]);
+            dtoAnswerOfChildrens.setLastModified((Date) rawAnswer[7]);
+            dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[8]);
+            answerOfChildrens.add(dtoAnswerOfChildrens);
+        }
+
+        return answerOfChildrens;
+
     }
 
     public DTOAnswer get(Integer id) {
@@ -101,4 +130,5 @@ public class ServiceAnswer {
         return mapperAnswer.entityToDto(answer);
 
     }
+
 }

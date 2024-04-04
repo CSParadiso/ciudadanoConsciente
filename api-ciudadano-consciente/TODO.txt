@@ -220,10 +220,14 @@ feat: añadido recurso que recupera todos los childrens de un level.
 feat: añadido recurso que recupera todos los paths y sus votos
 feat: añadido recurso que recupera la actividad de un level
 
-- Commit
+- Commit 60d3a99
 feat: añadido recurso que recupera los paths votados por un usuario. (Basado en votos)
 feat: añadido recurso que recupera los paths usados recientemente por un usuario. (Basado en respuestas)
 refactor: modificados varios transferibles.
+
+- Commit
+feat: añadido recurso que recupera todas las respuestas de un nivel y de sus hijos
+
 
 
 

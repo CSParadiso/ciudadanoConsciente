@@ -5,6 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public class AccessAnswer implements PanacheRepositoryBase<Answer, Integer> {
 
     @Inject
     Logger audit;
+
+    @Inject
+    EntityManager entityManager;
 
     public List<Answer> getAll() {
 
@@ -35,6 +39,15 @@ public class AccessAnswer implements PanacheRepositoryBase<Answer, Integer> {
         audit.debug("Trying to persist Answer" + answer.getAnswerId() + ".");
         persist(answer);
         return findByIdOptional(answer.getAnswerId());
+
+    }
+
+    public List<Object[]> getAllChildrenLevelsAnswers(Integer levelId) {
+
+        audit.debug("Trying to retrieve all children levels answers...");
+        return entityManager.createNamedQuery("Answer.getAllChildrenLevelsAnswers")
+                .setParameter("parentLevelId", levelId)
+                .getResultList();
 
     }
 

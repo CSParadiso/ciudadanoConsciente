@@ -11,6 +11,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
@@ -39,7 +41,8 @@ public class ResourceAnswer {
     @Operation(summary = "Retrieve all Answers.")
     @APIResponse(
             responseCode = "200",
-            description = "Answers successfully retrieved."
+            description = "Answers successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
     )
     @APIResponse(
             responseCode = "204",
@@ -53,11 +56,31 @@ public class ResourceAnswer {
     }
 
     @GET
+    @Path("levels/{levelId}/childrens")
+    @Operation(summary = "Retrieve all Answers from a Level and his childrens.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Answers successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOAnswerOfChildrens.class))
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Answers. Verify 'Warning' header."
+    )
+    public Response getAllChildrenLevelsAnswers(@PathParam("levelId") Integer levelId) {
+
+        audit.debug("Retrieving all Children Levels Answers.");
+        return Response.ok(serviceAnswer.getAllChildrenLevelsAnswers(levelId)).build();
+
+    }
+
+    @GET
     @Path("{id}")
     @Operation(summary = "Retrieve a  Answer by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Answer successfully retrieved."
+            description = "Answer successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
     )
     @APIResponse(
             responseCode = "204",
@@ -78,7 +101,8 @@ public class ResourceAnswer {
     @Operation(summary = "Create a Answer.")
     @APIResponse(
             responseCode = "201",
-            description = "Answer successfully created."
+            description = "Answer successfully created.",
+            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
     )
     @APIResponse(
             responseCode = "400",
@@ -120,7 +144,8 @@ public class ResourceAnswer {
     @Operation(summary = "Update Status of Answer.")
     @APIResponse(
             responseCode = "200",
-            description = "Answer Status successfully updated."
+            description = "Answer Status successfully updated.",
+            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
     )
     @APIResponse(
             responseCode = "400",
