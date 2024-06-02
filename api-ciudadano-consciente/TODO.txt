@@ -225,9 +225,14 @@ feat: añadido recurso que recupera los paths votados por un usuario. (Basado en
 feat: añadido recurso que recupera los paths usados recientemente por un usuario. (Basado en respuestas)
 refactor: modificados varios transferibles.
 
-- Commit
+- Commit dc17039
 feat: añadido recurso que recupera todas las respuestas de un nivel y de sus hijos
 
+- Commit 
+feat: añadido archivo de loggeo
+feat: personalizado un poco el index.html de Quarkus
+feat: añadido recurso de POSTeo de respuestas en BATCH mode (pero se DEPRECA por no corresponder a una buena práctica)
+feat: generar Tags (etiquetas)
 
 
 
@@ -258,7 +263,8 @@ feat: añadido recurso que recupera todas las respuestas de un nivel y de sus hi
 -----------------------------------------
 
 CORE
-// TODO feat: generar Tags (etiquetas)
+// 
+// TODO refactor averiguar fecha y hora en postgres en vez de solo fechA
 
 MANEJO DE USUARIOS Y ROLES
 // TODO feat: resolver autenticación
@@ -269,8 +275,6 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
-
-
 
 
 // TODO Verificar referencias eliminadas en cascade para ver si se pueden usar los estados en lugar de borrar

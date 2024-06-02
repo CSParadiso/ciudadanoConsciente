@@ -191,13 +191,14 @@ create table app.votes (
 	unique(user_id, entity_id, entity_type)
 );
 
-	-- Tabla Intermedia question_tag
-create table app.questions_tags (
-	questions_tag_id integer generated always as identity primary key, 
-	question integer references app.questions on delete cascade not null, 
-	tag integer references app.tags on delete cascade not null, 
-	unique(question, tag)
-); 
+	-- Tabla Intermedia tagged_concern
+create table app.tagged (
+        tagged_id integer generated always as identity primary key,
+        tag_id integer references app.tags not null,
+        entity_type_id integer references app.entity_types not null,
+	entity_id integer not null,
+	unique(tag_id, entity_type_id, entity_id)
+);
 
 	-- Tabla intermedia file_names_required_version_server
 create table app.file_names_required_version_server (

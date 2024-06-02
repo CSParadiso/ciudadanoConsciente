@@ -1,0 +1,3 @@
+2024-05-05 17:57:07,877 saimonlaptop api-ciudadano-consciente-dev.jar[122692] DEBUG [ciu.con.res.ResourceActivityType] (executor-thread-3) Getting all the Activity Types...
+2024-05-05 17:57:07,895 saimonlaptop api-ciudadano-consciente-dev.jar[122692] DEBUG [ciu.con.ser.ServiceActivityType] (executor-thread-3) Getting all Activity Types.
+2024-05-05 17:57:07,907 saimonlaptop api-ciudadano-consciente-dev.jar[122692] DEBUG [ciu.con.acc.AccessActivityType] (executor-thread-3) Trying to retrieve all Activity Types.

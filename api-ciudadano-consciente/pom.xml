@@ -110,6 +110,19 @@
       <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
     </dependency>
 
+    <!-- PARA MANIPULAR WEBP -->
+    <!-- https://mvnrepository.com/artifact/org.sejda.imageio/webp-imageio -->
+    <dependency>
+      <groupId>org.sejda.imageio</groupId>
+      <artifactId>webp-imageio</artifactId>
+      <version>0.1.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.4.1.Final</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

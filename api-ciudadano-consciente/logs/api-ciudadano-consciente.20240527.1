@@ -1,0 +1,47 @@
+2024-05-26 23:07:51,327 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+   ___ _           _           _                       ___                     _            _       
+  / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
+ / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
+/ /___| | |_| | (_| | (_| | (_| | (_| | | | | (_) | / /__| (_) | | | \__ \ (__| |  __/ | | | ||  __/
+\____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
+                                                                                                    
+
+2024-05-26 23:07:51,343 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.0 on JVM (powered by Quarkus 3.2.8.Final) started in 2.332s. Listening on: http://localhost:5909
+2024-05-26 23:07:51,345 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-05-26 23:07:51,348 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-05-26 23:07:51,354 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 3.708s 
+2024-05-26 23:08:20,639 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.res.ResourceTagged] (executor-thread-2) Tagging Entity...
+2024-05-26 23:08:20,645 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Retrieving Tag.
+2024-05-26 23:08:20,647 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTag] (executor-thread-2) Trying to retrieve Reference 4.
+2024-05-26 23:08:20,652 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Retrieving Entity Type.
+2024-05-26 23:08:20,654 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessEntityType] (executor-thread-2) Trying to retrieve category of EntityType 4.
+2024-05-26 23:08:20,658 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Tagging Entity.
+2024-05-26 23:08:20,659 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Saving Tagged Entity.
+2024-05-26 23:08:20,661 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTagged] (executor-thread-2) Trying to persist Tagged null.
+2024-05-26 23:08:20,665 saimonlaptop api-ciudadano-consciente-dev.jar[267257] WARN  [org.hib.eng.jdb.spi.SqlExceptionHelper] (executor-thread-2) SQL Error: 0, SQLState: 23505
+2024-05-26 23:08:20,666 saimonlaptop api-ciudadano-consciente-dev.jar[267257] ERROR [org.hib.eng.jdb.spi.SqlExceptionHelper] (executor-thread-2) ERROR: duplicate key value violates unique constraint "tagged_tag_id_tag_entity_type_tag_entity_id_key"
+  Detail: Key (tag_id, entity_type_id, entity_id)=(4, 4, 12) already exists.
+2024-05-26 23:08:20,668 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Tagged already exists.
+2024-05-26 23:08:20,672 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-2) mapHttpBadRequestException: Tagged already exists.
+2024-05-26 23:08:27,838 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.res.ResourceTagged] (executor-thread-2) Tagging Entity...
+2024-05-26 23:08:27,840 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Retrieving Tag.
+2024-05-26 23:08:27,845 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTag] (executor-thread-2) Trying to retrieve Reference 4.
+2024-05-26 23:08:27,850 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Retrieving Entity Type.
+2024-05-26 23:08:27,851 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessEntityType] (executor-thread-2) Trying to retrieve category of EntityType 9.
+2024-05-26 23:08:27,855 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-2) mapNotFoundExceptionException: Entity Type not found.
+2024-05-26 23:08:35,719 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.res.ResourceTagged] (executor-thread-2) Tagging Entity...
+2024-05-26 23:08:35,721 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Retrieving Tag.
+2024-05-26 23:08:35,722 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTag] (executor-thread-2) Trying to retrieve Reference 5.
+2024-05-26 23:08:35,726 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-2) mapNotFoundExceptionException: Tag not found.
+2024-05-26 23:08:45,338 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.res.ResourceTagged] (executor-thread-2) Tagging Entity...
+2024-05-26 23:08:45,339 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Retrieving Tag.
+2024-05-26 23:08:45,341 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTag] (executor-thread-2) Trying to retrieve Reference 4.
+2024-05-26 23:08:45,353 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Retrieving Entity Type.
+2024-05-26 23:08:45,357 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessEntityType] (executor-thread-2) Trying to retrieve category of EntityType 2.
+2024-05-26 23:08:45,362 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Tagging Entity.
+2024-05-26 23:08:45,363 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Saving Tagged Entity.
+2024-05-26 23:08:45,368 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTagged] (executor-thread-2) Trying to persist Tagged null.
+2024-05-26 23:08:45,389 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-2) Mapping EntityType into DTO.
+2024-05-26 23:08:45,409 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.res.ResourceTagged] (executor-thread-2) Creating URI...
+2024-05-26 23:11:35,541 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [ciu.con.uti.APILifeCycle] (Shutdown thread) The api CIUDADANO CONSCIENTE is stopping...
+2024-05-26 23:11:35,553 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Shutdown thread) api-ciudadano-consciente stopped in 0.012s

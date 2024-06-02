@@ -1,0 +1,24 @@
+2024-05-05 16:24:00,061 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessActivity] (executor-thread-1) Trying to retrieve Activity 4.
+2024-05-05 16:24:00,193 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-1) mapNotFoundExceptionException: Activity not found.
+2024-05-05 16:24:27,798 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.res.ResourceActivity] (executor-thread-1) Getting all Activities...
+2024-05-05 16:24:27,802 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceActivity] (executor-thread-1) Retrieving all Activities.
+2024-05-05 16:24:27,804 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessActivity] (executor-thread-1) Trying to retreive all Activities.
+2024-05-05 16:24:46,523 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.res.ResourceAnswer] (executor-thread-1) Creating Answers...
+2024-05-05 16:24:46,525 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessActivity] (executor-thread-1) Trying to retrieve Activity 6.
+2024-05-05 16:24:46,533 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 5
+2024-05-05 16:24:46,543 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Creating Answer.
+2024-05-05 16:24:46,551 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Saving Answer null.
+2024-05-05 16:24:46,553 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to persist Answernull.
+2024-05-05 16:24:46,598 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Mapping EntityType into DTO.
+2024-05-05 16:24:46,600 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessActivity] (executor-thread-1) Trying to retrieve Activity 7.
+2024-05-05 16:24:46,616 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 5
+2024-05-05 16:24:46,617 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Creating Answer.
+2024-05-05 16:24:46,619 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Saving Answer null.
+2024-05-05 16:24:46,620 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to persist Answernull.
+2024-05-05 16:24:46,626 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Mapping EntityType into DTO.
+2024-05-05 16:24:46,628 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessActivity] (executor-thread-1) Trying to retrieve Activity 15.
+2024-05-05 16:24:46,634 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 5
+2024-05-05 16:24:46,635 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Creating Answer.
+2024-05-05 16:24:46,637 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Saving Answer null.
+2024-05-05 16:24:46,639 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to persist Answernull.
+2024-05-05 16:24:46,644 saimonlaptop api-ciudadano-consciente-dev.jar[107110] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Mapping EntityType into DTO.

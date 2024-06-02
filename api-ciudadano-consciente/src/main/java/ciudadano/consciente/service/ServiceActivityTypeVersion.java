@@ -61,9 +61,6 @@ public class ServiceActivityTypeVersion {
     ServiceVersionServer serviceVersionServer;
 
     @Inject
-    UtilityVerifyRequestField utilityVerifyRequestField;
-
-    @Inject
     AccessVersionServer accessVersionServer;
 
     @Inject
@@ -216,7 +213,7 @@ public class ServiceActivityTypeVersion {
                 .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
 
         audit.debug("Verifying extension and size of thumbnail file.");
-        List<String> allowedImagesExtensions = Arrays.asList("png", "webp", "gif", "jpg", "jpeg"); // Allowed images
+        List<String> allowedImagesExtensions = Arrays.asList("png", "webp", "gif", "jpg", "jpeg", "bmp", "wbmp"); // Allowed images
         byte[] thumbnail = dtoCreateActivityTypeVersion.getThumbnail();
         String fileType = utilityFileSignature.detectFileType(thumbnail);
         if(!allowedImagesExtensions.contains(fileType)) {
@@ -243,10 +240,10 @@ public class ServiceActivityTypeVersion {
             accessActivityTypeVersion.save(activityTypeVersion)
                     .orElseThrow( ()-> new HttpInternalServerException("Failed to create new Activity Type Version.") );
         } catch (ConstraintViolationException e) {
-            audit.debug("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
-            throw new HttpBadRequestException("Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
+            audit.debug("Version of Activity Type already exists. (Make some changes before create a new version).");
+            throw new HttpBadRequestException("Version of Activity Type already exists. (Make some changes before create a new version).");
         } catch (DataException e) {
-            audit.debug("Invalid of files uploaded. " + e);
+            audit.debug("Invalid files uploaded. " + e);
             throw new HttpBadRequestException("Uploaded file content is not correct." + e);
         }
 

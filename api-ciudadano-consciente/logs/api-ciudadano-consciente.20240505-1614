@@ -1,0 +1,176 @@
+2024-05-05 16:14:01,613 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:01,614 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:01,615 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:05,386 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:05,387 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:05,387 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:11,013 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:11,013 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:11,014 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:13,412 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:13,413 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:13,414 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:17,452 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:17,453 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:17,453 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:20,737 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:20,739 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:20,742 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:23,412 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:23,413 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:23,414 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:28,794 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:28,795 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:28,795 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:32,741 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:32,742 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:32,742 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:36,011 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:36,012 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:36,013 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:38,284 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:38,284 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:38,285 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:42,914 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:42,915 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:42,916 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:47,582 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:47,583 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:47,583 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:52,638 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:52,639 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:52,640 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:55,362 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:55,364 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:55,365 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java
+2024-05-05 16:14:57,739 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-05 16:14:57,740 saimonlaptop api-ciudadano-consciente-dev.jar[90908] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-05 16:14:57,740 saimonlaptop api-ciudadano-consciente-dev.jar[90908] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-2) cannot find symbol
+  symbol:   method createBatchAnswers(ciudadano.consciente.dto.DTOCreateBatchAnswer)
+  location: variable serviceAnswer of type ciudadano.consciente.service.ServiceAnswer, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceAnswer.java

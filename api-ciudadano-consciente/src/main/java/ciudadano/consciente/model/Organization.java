@@ -1,52 +1,73 @@
 package ciudadano.consciente.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
 
 @Entity
 @Table(schema = "app", name = "organizations")
-public class Organization {
+public class Organization implements Taggable {
 
-    @GeneratedValue( strategy = GenerationType.IDENTITY )
-    @Column(name = "organization_id")
-    @Id
-    private Integer organizationId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "organization_id")
+  @Id
+  private Integer organizationId;
 
-    private String name;
+  private String name;
 
-    private String email;
+  private String email;
 
-    private  String description;
+  private String description;
 
-    public Integer getOrganizationId() {
-        return organizationId;
-    }
+  @Transient
+  List<Tag> tags = new ArrayList<>();
 
-    public void setOrganizationId(Integer organizationId) {
-        this.organizationId = organizationId;
-    }
+  public Integer getOrganizationId() {
+    return organizationId;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setOrganizationId(Integer organizationId) {
+    this.organizationId = organizationId;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public Integer getTaggableId() {
+    return this.organizationId;
+  }
+
+  @Override
+  public List<Tag> getTags() {
+    return this.tags;
+  }
+
+  @Override
+  public void setTags(List<Tag> tags) {
+    this.tags.addAll(tags);
+  }
+
 }

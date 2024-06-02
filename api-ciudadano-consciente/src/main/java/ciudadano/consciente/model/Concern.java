@@ -4,70 +4,94 @@ import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.quarkus.runtime.annotations.IgnoreProperty;
 
 @Entity
 @Table(schema = "app", name = "concerns")
-public class Concern {
+public class Concern implements Taggable {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "concern_id")
-    private Integer concernId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @Column(name = "concern_id")
+  private Integer concernId;
 
-    private String description;
+  private String description;
 
-    private String explanation;
+  private String explanation;
 
-    private LocalDate date;
+  private LocalDate date;
 
-    // @JoinColumn(name = nombreClaveForanea, referencedColumnName = nombreClavePrimaria referenciada)
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User user;
+  // @JoinColumn(name = nombreClaveForanea, referencedColumnName =
+  // nombreClavePrimaria referenciada)
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+  private User user;
 
-    public Concern() {
+  @Transient
+  private List<Tag> tags = new ArrayList<>();
 
-        this.date = LocalDate.now();
+  public Concern() {
 
-    }
+    this.date = LocalDate.now();
 
-    public Integer getConcernId() {
-        return concernId;
-    }
+  }
 
-    public void setConcernId(Integer concernId) {
-        this.concernId = concernId;
-    }
+  public Integer getConcernId() {
+    return concernId;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setConcernId(Integer concernId) {
+    this.concernId = concernId;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String getExplanation() {
-        return explanation;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setExplanation(String explanation) {
-        this.explanation = explanation;
-    }
+  public String getExplanation() {
+    return explanation;
+  }
 
-    public LocalDate getDate() {
-        return date;
-    }
+  public void setExplanation(String explanation) {
+    this.explanation = explanation;
+  }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+  public LocalDate getDate() {
+    return date;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public void setDate(LocalDate date) {
+    this.date = date;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  @Override
+  public Integer getTaggableId() {
+    return this.concernId;
+  }
+
+  @Override
+  public List<Tag> getTags() {
+    return this.tags;
+  }
+
+  @Override
+  public void setTags(List<Tag> tags) {
+    this.tags.addAll(tags);
+  }
+
 }

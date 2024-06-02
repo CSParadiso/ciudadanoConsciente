@@ -18,6 +18,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 
 import java.net.URI;
+import java.util.List;
 
 @RequestScoped
 @Tag(name = "Answer Resource")
@@ -136,6 +137,45 @@ public class ResourceAnswer {
         return Response.created(uri)
                 .entity(answer)
                 .build();
+
+    }
+
+    @Deprecated(since = "The request should be atomic, not for a Collection.")
+    @POST
+    @Path("batch")
+    @Operation(summary = "Create Answers in Batch Mode.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Answers successfully created.",
+            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to create Answer. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Failed to create Answer. Verify 'Warning' Header."
+    )
+    @APIResponse(
+            responseCode = "500",
+            description = "Failed to create Answer. Verify 'Warning' Header."
+    )
+    public Response createBatchAnswers(DTOCreateBatchAnswer dtoCreateBatchAnswers) {
+
+        if(dtoCreateBatchAnswers == null) {
+            throw new HttpBadRequestException("Body of request required.");
+        }
+
+        Integer user = dtoCreateBatchAnswers.getUserId();
+        if(!utilityVerifyRequestField.isValidField(user)) {
+            throw new HttpBadRequestException("User Id field required.");
+        }
+
+        audit.debug("Creating Answers...");
+        List<DTOAnswer> answers = serviceAnswer.createBatchAnswers(dtoCreateBatchAnswers);
+
+        return Response.ok(answers).build();
 
     }
 

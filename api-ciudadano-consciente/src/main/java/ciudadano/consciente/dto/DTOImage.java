@@ -1,6 +1,5 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Organization;
 
 public class DTOImage {
 

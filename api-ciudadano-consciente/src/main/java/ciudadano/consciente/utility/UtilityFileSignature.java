@@ -47,8 +47,11 @@ public class UtilityFileSignature {
                 return "webp";
             } else if (isJSON(fileBytes)) {
                 return "json";
-            }
-            else {
+            } else if (isBMP(signatureBytes)) {
+                return "bmp";
+            } else if (isWBMP(signatureBytes)) {
+                return "wbmp";
+            } else {
                 // Add more checks for other file types as needed
                 throw new HttpBadRequestException("File type not supported."); // Unknown file type
             }
@@ -105,6 +108,15 @@ public class UtilityFileSignature {
                 signatureBytes[10] == 'B' && signatureBytes[11] == 'P';
     }
 
+    private boolean isBMP(byte[] signatureBytes) {
+        // Check for BMP file signature
+        return signatureBytes[0] == (byte) 0x42 && signatureBytes[1] == (byte) 0x4D;
+    }
 
+    private boolean isWBMP(byte[] signatureBytes) {
+        // Check for WBMP file signature
+        return signatureBytes[0] == (byte) 0x00 && signatureBytes[1] == (byte) 0x00 &&
+                signatureBytes[2] == (byte) 0x00 && signatureBytes[3] == (byte) 0x0C;
+    }
 
 }

@@ -1,10 +1,7 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
-import ciudadano.consciente.dto.DTOAnswer;
-import ciudadano.consciente.dto.DTOAnswerOfChildrens;
-import ciudadano.consciente.dto.DTOCreateAnswer;
-import ciudadano.consciente.dto.DTOUpdateAnswerStatus;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNotFoundException;
@@ -109,6 +106,23 @@ public class ServiceAnswer {
 
         audit.debug("Mapping EntityType into DTO.");
         return mapperAnswer.entityToDto(answer);
+
+    }
+
+    @Transactional(Transactional.TxType.REQUIRED)
+    public List<DTOAnswer> createBatchAnswers(DTOCreateBatchAnswer dtoCreateBatchAnswer) {
+
+        Integer userDto = dtoCreateBatchAnswer.getUserId();
+
+        List<DTOAnswer> answers = new ArrayList<>();
+        for (DTOCreateBatchAnswer.DTOBatchAnswer batchAnswer : dtoCreateBatchAnswer.getAnswers() ) {
+            DTOCreateAnswer dtoCreateAnswer = new DTOCreateAnswer();
+            dtoCreateAnswer.setUserId(userDto);
+            dtoCreateAnswer.setActivity(batchAnswer.getActivity());
+            dtoCreateAnswer.setStatus(batchAnswer.getStatus());
+            answers.add(create(dtoCreateAnswer));
+        }
+        return answers;
 
     }
 

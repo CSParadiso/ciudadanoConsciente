@@ -33,6 +33,9 @@ public class UtilityFileSystem {
     @Inject
     Logger audit;
 
+    @Inject
+    UtilityFileCompression utilityFileCompression;
+
     @GET
     @Path("/download/{filename}")
     public Response downloadFile(@PathParam("filename") String filename) {
@@ -215,6 +218,10 @@ public class UtilityFileSystem {
 
         // Create a FileOutputStream to write the file
         try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+
+            // Converto to .webp
+           file = utilityFileCompression.compress(file);
+
             // Write the file content to the output stream
             outputStream.write(file);
         } catch (IOException e) {

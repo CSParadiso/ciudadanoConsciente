@@ -1,0 +1,24 @@
+2024-05-25 18:14:28,839 saimonlaptop api-ciudadano-consciente-dev.jar[68523] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+   ___ _           _           _                       ___                     _            _       
+  / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
+ / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
+/ /___| | |_| | (_| | (_| | (_| | (_| | | | | (_) | / /__| (_) | | | \__ \ (__| |  __/ | | | ||  __/
+\____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
+                                                                                                    
+
+2024-05-25 18:14:28,878 saimonlaptop api-ciudadano-consciente-dev.jar[68523] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.0 on JVM (powered by Quarkus 3.2.8.Final) started in 7.648s. Listening on: http://localhost:5909
+2024-05-25 18:14:28,880 saimonlaptop api-ciudadano-consciente-dev.jar[68523] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-05-25 18:14:28,881 saimonlaptop api-ciudadano-consciente-dev.jar[68523] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-05-25 18:14:33,620 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.res.ResourceTag] (executor-thread-1) Creating Tag...
+2024-05-25 18:14:33,652 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.ser.ServiceTag] (executor-thread-1) Creating Tag.
+2024-05-25 18:14:33,653 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.ser.ServiceTag] (executor-thread-1) null
+2024-05-25 18:14:33,655 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.ser.ServiceTag] (executor-thread-1) null
+2024-05-25 18:14:33,656 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.ser.ServiceTag] (executor-thread-1) Saving Tag.
+2024-05-25 18:14:33,657 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.acc.AccessTag] (executor-thread-1) Trying to persist Tag null.
+2024-05-25 18:14:33,735 saimonlaptop api-ciudadano-consciente-dev.jar[68523] WARN  [org.hib.eng.jdb.spi.SqlExceptionHelper] (executor-thread-1) SQL Error: 0, SQLState: 23502
+2024-05-25 18:14:33,736 saimonlaptop api-ciudadano-consciente-dev.jar[68523] ERROR [org.hib.eng.jdb.spi.SqlExceptionHelper] (executor-thread-1) ERROR: null value in column "name" of relation "tags" violates not-null constraint
+  Detail: Failing row contains (2, null).
+2024-05-25 18:14:33,745 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.ser.ServiceTag] (executor-thread-1) Tag already exists.
+2024-05-25 18:14:33,754 saimonlaptop api-ciudadano-consciente-dev.jar[68523] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-1) mapHttpBadRequestException: Tag already exists.
+2024-05-25 18:16:04,269 saimonlaptop api-ciudadano-consciente-dev.jar[68523] INFO  [ciu.con.uti.APILifeCycle] (Shutdown thread) The api CIUDADANO CONSCIENTE is stopping...
+2024-05-25 18:16:04,441 saimonlaptop api-ciudadano-consciente-dev.jar[68523] INFO  [io.quarkus] (Shutdown thread) api-ciudadano-consciente stopped in 0.174s

@@ -6,82 +6,105 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(schema = "app", name = "contents")
-public class Content {
+public class Content implements Taggable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "content_id")
-    private Integer contentId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "content_id")
+  private Integer contentId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "activity_type_version", referencedColumnName = "activity_type_version_id")
-    private ActivityTypeVersion activityTypeVersion;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "activity_type_version", referencedColumnName = "activity_type_version_id")
+  private ActivityTypeVersion activityTypeVersion;
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    @JdbcTypeCode(SqlTypes.JSON) // To automatically use the table as jsonb
-    @Column(name = "model", columnDefinition = "jsonb")
-    private String model;
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  @JdbcTypeCode(SqlTypes.JSON) // To automatically use the table as jsonb
+  @Column(name = "model", columnDefinition = "jsonb")
+  private String model;
 
-    @Transient
-    private List<Image> images;
+  @Transient
+  private List<Image> images;
 
-    public Content() {}
+  @Transient
+  private List<Tag> tags = new ArrayList<>();
 
-    public Content(ActivityTypeVersion activityTypeVersion, String model) {
+  public Content() {
+  }
 
-        this.activityTypeVersion = activityTypeVersion;
-        this.model = model;
+  public Content(ActivityTypeVersion activityTypeVersion, String model) {
 
+    this.activityTypeVersion = activityTypeVersion;
+    this.model = model;
+
+  }
+
+  public Integer getContentId() {
+    return contentId;
+  }
+
+  public void setContentId(Integer contentId) {
+    this.contentId = contentId;
+  }
+
+  public ActivityTypeVersion getActivityTypeVersion() {
+    return activityTypeVersion;
+  }
+
+  public void setActivityTypeVersion(ActivityTypeVersion activityTypeVersion) {
+    this.activityTypeVersion = activityTypeVersion;
+  }
+
+  public String getModel() {
+    return model;
+  }
+
+  public void setModel(String model) {
+    this.model = model;
+  }
+
+  public List<Image> getImages() {
+    // List<Image> list = new AccessImage().getImageByContent(this);
+    // for(Image image : list) {
+    // image.setImage(new UtilityFileSystem().getContentImages(this.contentId + "."
+    // + image.getImageName()));
+    // }
+    return this.images;
+  }
+
+  public void setImages(List<Image> images) {
+    for (Image image : images) {
+      // filename = ContentId.ImageName --> Example: "7.Red"
+      new UtilityFileSystem().saveContentImageToFileSystem(this.contentId.toString(), image.getImageName(),
+          image.getImage());
     }
+  }
 
-    public Integer getContentId() {
-        return contentId;
-    }
+  public void setImages(Image image) {
 
-    public void setContentId(Integer contentId) {
-        this.contentId = contentId;
-    }
+    // filename = ContentId.ImageName --> Example: "7.Red"
+    new UtilityFileSystem().saveContentImageToFileSystem(this.contentId.toString(), image.getImageName(),
+        image.getImage());
 
-    public ActivityTypeVersion getActivityTypeVersion() {
-        return activityTypeVersion;
-    }
+  }
 
-    public void setActivityTypeVersion(ActivityTypeVersion activityTypeVersion) {
-        this.activityTypeVersion = activityTypeVersion;
-    }
+  @Override
+  public Integer getTaggableId() {
+    return this.contentId;
+  }
 
-    public String getModel() {
-        return model;
-    }
+  @Override
+  public List<Tag> getTags() {
+    return this.tags;
+  }
 
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public List<Image> getImages() {
-//        List<Image> list = new AccessImage().getImageByContent(this);
-//        for(Image image : list) {
-//            image.setImage(new UtilityFileSystem().getContentImages(this.contentId + "." + image.getImageName()));
-//        }
-        return this.images;
-    }
-
-    public void setImages(List<Image> images) {
-        for(Image image : images) {
-            // filename = ContentId.ImageName --> Example: "7.Red"
-            new UtilityFileSystem().saveContentImageToFileSystem(this.contentId.toString(), image.getImageName(), image.getImage());
-        }
-    }
-
-    public void setImages(Image image) {
-
-        // filename = ContentId.ImageName --> Example: "7.Red"
-        new UtilityFileSystem().saveContentImageToFileSystem(this.contentId.toString(), image.getImageName(), image.getImage());
-
-    }
+  @Override
+  public void setTags(List<Tag> tags) {
+    this.tags.addAll(tags);
+  }
 
 }

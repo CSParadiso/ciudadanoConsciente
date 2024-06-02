@@ -1,0 +1,110 @@
+2024-05-26 23:05:53,138 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+   ___ _           _           _                       ___                     _            _       
+  / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
+ / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
+/ /___| | |_| | (_| | (_| | (_| | (_| | | | | (_) | / /__| (_) | | | \__ \ (__| |  __/ | | | ||  __/
+\____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
+                                                                                                    
+
+2024-05-26 23:05:53,171 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.0 on JVM (powered by Quarkus 3.2.8.Final) started in 8.481s. Listening on: http://localhost:5909
+2024-05-26 23:05:53,172 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-05-26 23:05:53,173 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-05-26 23:06:14,675 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.res.ResourceTagged] (executor-thread-1) Tagging Entity...
+2024-05-26 23:06:14,742 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-1) Retrieving Tag.
+2024-05-26 23:06:14,744 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTag] (executor-thread-1) Trying to retrieve Reference 4.
+2024-05-26 23:06:14,835 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-1) Retrieving Entity Type.
+2024-05-26 23:06:14,837 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessEntityType] (executor-thread-1) Trying to retrieve category of EntityType 4.
+2024-05-26 23:06:14,841 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-1) Tagging Entity.
+2024-05-26 23:06:14,842 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.ser.ServiceTagged] (executor-thread-1) Saving Tagged Entity.
+2024-05-26 23:06:14,844 saimonlaptop api-ciudadano-consciente-dev.jar[267257] DEBUG [ciu.con.acc.AccessTagged] (executor-thread-1) Trying to persist Tagged null.
+2024-05-26 23:06:14,877 saimonlaptop api-ciudadano-consciente-dev.jar[267257] WARN  [org.hib.eng.jdb.spi.SqlExceptionHelper] (executor-thread-1) SQL Error: 0, SQLState: 23505
+2024-05-26 23:06:14,878 saimonlaptop api-ciudadano-consciente-dev.jar[267257] ERROR [org.hib.eng.jdb.spi.SqlExceptionHelper] (executor-thread-1) ERROR: duplicate key value violates unique constraint "tagged_tag_id_tag_entity_type_tag_entity_id_key"
+  Detail: Key (tag_id, entity_type_id, entity_id)=(4, 4, 12) already exists.
+2024-05-26 23:06:14,903 saimonlaptop api-ciudadano-consciente-dev.jar[267257] ERROR [io.qua.ver.htt.run.QuarkusErrorHandler] (executor-thread-1) HTTP Request to /tagged/4/4/12 failed, error id: 3c7dce9e-6991-455e-be56-b2b1f0339769-1: org.hibernate.exception.ConstraintViolationException: could not execute statement [ERROR: duplicate key value violates unique constraint "tagged_tag_id_tag_entity_type_tag_entity_id_key"
+  Detail: Key (tag_id, entity_type_id, entity_id)=(4, 4, 12) already exists.] [insert into app.tagged (entity_id,entity_type_id,tag_id) values (?,?,?)]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:95)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:56)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:278)
+	at org.hibernate.id.insert.GetGeneratedKeysDelegate.performInsert(GetGeneratedKeysDelegate.java:107)
+	at org.hibernate.engine.jdbc.mutation.internal.MutationExecutorPostInsertSingleTable.execute(MutationExecutorPostInsertSingleTable.java:100)
+	at org.hibernate.persister.entity.mutation.InsertCoordinator.doStaticInserts(InsertCoordinator.java:171)
+	at org.hibernate.persister.entity.mutation.InsertCoordinator.coordinateInsert(InsertCoordinator.java:112)
+	at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:2780)
+	at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:81)
+	at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:676)
+	at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:291)
+	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:272)
+	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:322)
+	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:363)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:277)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:180)
+	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:140)
+	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:175)
+	at org.hibernate.event.internal.DefaultPersistEventListener.persist(DefaultPersistEventListener.java:93)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:77)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:54)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:755)
+	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:739)
+	at io.quarkus.hibernate.orm.runtime.session.TransactionScopedSession.persist(TransactionScopedSession.java:145)
+	at org.hibernate.engine.spi.SessionLazyDelegator.persist(SessionLazyDelegator.java:275)
+	at org.hibernate.Session_3a974b6a18ac399f675913d732c105426414d370_Synthetic_ClientProxy.persist(Unknown Source)
+	at io.quarkus.hibernate.orm.panache.common.runtime.AbstractJpaOperations.persist(AbstractJpaOperations.java:101)
+	at io.quarkus.hibernate.orm.panache.common.runtime.AbstractJpaOperations.persist(AbstractJpaOperations.java:96)
+	at io.quarkus.hibernate.orm.panache.PanacheRepositoryBase.persist(PanacheRepositoryBase.java:54)
+	at ciudadano.consciente.access.AccessTagged.save(AccessTagged.java:21)
+	at ciudadano.consciente.access.AccessTagged_ClientProxy.save(Unknown Source)
+	at ciudadano.consciente.service.ServiceTagged.tagEntity(ServiceTagged.java:53)
+	at ciudadano.consciente.service.ServiceTagged_Subclass.tagEntity$$superforward(Unknown Source)
+	at ciudadano.consciente.service.ServiceTagged_Subclass$$function$$1.apply(Unknown Source)
+	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:73)
+	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:62)
+	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorBase.invokeInOurTx(TransactionalInterceptorBase.java:136)
+	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorBase.invokeInOurTx(TransactionalInterceptorBase.java:107)
+	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorRequired.doIntercept(TransactionalInterceptorRequired.java:38)
+	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorBase.intercept(TransactionalInterceptorBase.java:61)
+	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorRequired.intercept(TransactionalInterceptorRequired.java:32)
+	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorRequired_Bean.intercept(Unknown Source)
+	at io.quarkus.arc.impl.InterceptorInvocation.invoke(InterceptorInvocation.java:42)
+	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:30)
+	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
+	at ciudadano.consciente.service.ServiceTagged_Subclass.tagEntity(Unknown Source)
+	at ciudadano.consciente.service.ServiceTagged_ClientProxy.tagEntity(Unknown Source)
+	at ciudadano.consciente.resource.ResourceTagged.tagEntity(ResourceTagged.java:60)
+	at ciudadano.consciente.resource.ResourceTagged_ClientProxy.tagEntity(Unknown Source)
+	at ciudadano.consciente.resource.ResourceTagged$quarkusrestinvoker$tagEntity_8daaf805fa4d3856133a3dd0d6ec1aa58bfb3534.invoke(Unknown Source)
+	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
+	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
+	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
+	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
+	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
+	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "tagged_tag_id_tag_entity_type_tag_entity_id_key"
+  Detail: Key (tag_id, entity_type_id, entity_id)=(4, 4, 12) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2713)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2401)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:368)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:498)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:415)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:190)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:152)
+	at io.agroal.pool.wrapper.PreparedStatementWrapper.executeUpdate(PreparedStatementWrapper.java:88)
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:275)
+	... 58 more
+
+2024-05-26 23:07:48,760 saimonlaptop api-ciudadano-consciente-dev.jar[267257] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing., line -1 in [unknown source]
+2024-05-26 23:07:48,762 saimonlaptop api-ciudadano-consciente-dev.jar[267257] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-05-26 23:07:48,774 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Restarting quarkus due to changes in ServiceTagged.class.
+2024-05-26 23:07:48,970 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) The api CIUDADANO CONSCIENTE is stopping...
+2024-05-26 23:07:48,999 saimonlaptop api-ciudadano-consciente-dev.jar[267257] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente stopped in 0.222s

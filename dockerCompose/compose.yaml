@@ -49,8 +49,9 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=chipaParaguaya # esta clave solo se setea si no existe ninguna, debemos cambiar esta clave
-      - KC_HOSTNAME_URL=http://localhost:3704 # Para poder acceder desde afuera de la red del contenedor
-      - KC_HOSTNAME_ADMIN_URL=http://localhost:3704 # Para poder acceder desde fuera de la red del contenedor
+        #- KC_HOSTNAME_URL=http://localhost:3704 # Para poder acceder desde afuera de la red del contenedor
+      - KC_HOSTNAME_URL=http://192.168.43.216:3704 # Esta url debe poder ser accesible por fuera de la red del contenedor (si la mapeamos internamente, desde fuera no saben el nombre del servicio.) 
+      - KC_HOSTNAME_ADMIN_URL=http://localhost:3704 # Esta url debe poder ser accesible por fuera de la red del contenedor (si la mapeamos internamente, desde fuera no saben el nombre del servicio.)
       - KC_HOSTNAME_STRICT_BACKCHANNEL=true
       - KC_PROXY=edge # permite HTTP
       - KC_DB=postgres
@@ -74,7 +75,7 @@ services:
 
   api-ciudadano-consciente:
     image: saimon/api-ciudadano-consciente:1.0.0
-    #image: csparadiso/ciudadano-consciente:API1.0 
+    # DESDE DOCKERHUB image: csparadiso/ciudadano-consciente:API1.0 
     container_name: ciuco
     deploy:
       resources:
@@ -96,11 +97,13 @@ services:
       - FILE_SYSTEM_IMAGES_VERSION_THUMBNAIL=/var/tmp/CiudadanoConsciente/resources/images/activity-type-version/thumbnail
       - FILE_SYSTEM_IMAGES_CONTENT=/var/tmp/CiudadanoConsciente/resources/images/content
       - IMAGE_MAX_MB_SIZE=5
+      - QUARKUS_LOG_FILE_ROTATION_FILE_SUFFIX=.yyyyMMdd
     depends_on:
       - keycloak
     networks:
       - ciudadano
     volumes: # volumeName:containerFileSystem
+      - logs:/home/jboss/logs
       - images_thumbnail:/var/tmp/CiudadanoConsciente/resources/images/activity-type-version/thumbnail
       - images_content:/var/tmp/CiudadanoConsciente/resources/images/content
 
@@ -116,6 +119,12 @@ networks:
 
 volumes:
   pg_data:
+  logs: # This volume is just mounted inside the container. Is only persisted in the filesystem outside the container.
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/saimon/Projects/CiudadanoConsciente/resources/logs 
   images_thumbnail: # This volume is just mounted inside the container. Is only persisted in the filesystem outside the container.
     driver: local
     driver_opts:
