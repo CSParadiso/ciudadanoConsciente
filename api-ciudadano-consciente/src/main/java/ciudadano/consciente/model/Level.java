@@ -39,7 +39,7 @@ import jakarta.persistence.Transient;
         "inner join app.levels as L on (a.level_id = L.level_id and L.parent is null) " +
         "order by b.last_modified DESC, b.created DESC;")
 })
-public class Level implements Taggable {
+public class Level implements Taggable, Votable {
 
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
@@ -73,6 +73,9 @@ public class Level implements Taggable {
 
   @Transient
   private List<Tag> tags = new ArrayList<>();
+
+  @Transient
+  private List<Vote> votes = new ArrayList<>();
 
   public Integer getLevelId() {
     return levelId;
@@ -115,7 +118,7 @@ public class Level implements Taggable {
   }
 
   @Override
-  public Integer getTaggableId() {
+  public Integer getId() {
     return this.levelId;
   }
 
@@ -125,8 +128,19 @@ public class Level implements Taggable {
   }
 
   @Override
-  public void setTags(List<Tag> tags) {
-    this.tags.addAll(tags);
+  public void setTag(Tag tag) {
+    this.tags.add(tag);
+  }
+
+  @Override
+  public List<Vote> getVotes() {
+    return this.votes;
+  }
+
+  @Override
+  public void setVote(Vote vote) {
+    this.votes.add(vote);
+
   }
 
 }

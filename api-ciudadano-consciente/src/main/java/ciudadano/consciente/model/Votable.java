@@ -5,12 +5,12 @@ import java.util.List;
 import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
-public interface Taggable {
+public interface Votable {
 
   Integer getId();
 
-  List<Tag> getTags();
+  List<Vote> getVotes();
 
-  void setTag(Tag tag);
+  void setVote(Vote vote);
 
 }

@@ -1,54 +1,51 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOActivityType {
 
-    @Schema
-    private Integer activityTypeId;
+  @Schema
+  private Integer activityTypeId;
 
-    @Schema
-    private String name;
+  @Schema
+  private String name;
 
-    @Schema
-    private String description;
+  @Schema
+  private String description;
 
-    @Schema
-    private Integer creator;
+  @Schema
+  private Integer creator;
 
+  public Integer getActivityTypeId() {
+    return activityTypeId;
+  }
 
+  public void setActivityTypeId(Integer activityTypeId) {
+    this.activityTypeId = activityTypeId;
+  }
 
-    public Integer getActivityTypeId() {
-        return activityTypeId;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setActivityTypeId(Integer activityTypeId) {
-        this.activityTypeId = activityTypeId;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public Integer getCreator() {
+    return creator;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Integer creator) {
-        this.creator = creator;
-    }
+  public void setCreator(Integer creator) {
+    this.creator = creator;
+  }
 
 }

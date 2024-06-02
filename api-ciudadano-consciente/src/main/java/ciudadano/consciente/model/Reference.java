@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(schema = "app", name = "reference")
-public class Reference implements Taggable {
+public class Reference implements Taggable, Votable {
 
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
@@ -26,6 +26,9 @@ public class Reference implements Taggable {
 
   @Transient
   private List<Tag> tags = new ArrayList<>();
+
+  @Transient
+  private List<Vote> votes = new ArrayList<>();
 
   public Integer getReferenceId() {
     return referenceId;
@@ -68,7 +71,7 @@ public class Reference implements Taggable {
   }
 
   @Override
-  public Integer getTaggableId() {
+  public Integer getId() {
     return this.referenceId;
   }
 
@@ -78,8 +81,19 @@ public class Reference implements Taggable {
   }
 
   @Override
-  public void setTags(List<Tag> tags) {
-    this.tags.addAll(tags);
+  public void setTag(Tag tag) {
+    this.tags.add(tag);
+  }
+
+  @Override
+  public List<Vote> getVotes() {
+    return this.votes;
+  }
+
+  @Override
+  public void setVote(Vote vote) {
+    this.votes.add(vote);
+
   }
 
 }

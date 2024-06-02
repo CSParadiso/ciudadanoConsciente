@@ -101,9 +101,12 @@ public class ServiceTagged {
     // ¿Cómo determinar su tipo y acceder a su accesor para recuperarla?
     // Algo de interfaces hay que implementar
     Taggable entity = retrieveEntity(entityType, entityId);
+    entity.setTag(tag);
+
+    audit.debug("TAGS: " + entity.getTags().stream().count());
 
     audit.debug("Tagging " + entityType.getTitle() + " Entity.");
-    Tagged tagged = new Tagged(tag, entityType, entity.getTaggableId());
+    Tagged tagged = new Tagged(tag, entityType, entity.getId());
 
     audit.debug("Saving Tagged Entity.");
     try {

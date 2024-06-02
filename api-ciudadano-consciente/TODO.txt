@@ -228,7 +228,7 @@ refactor: modificados varios transferibles.
 - Commit dc17039
 feat: añadido recurso que recupera todas las respuestas de un nivel y de sus hijos
 
-- Commit 
+- Commit 3f7f2af
 feat: añadido archivo de loggeo
 feat: personalizado un poco el index.html de Quarkus
 feat: añadido recurso de POSTeo de respuestas en BATCH mode (pero se DEPRECA por no corresponder a una buena práctica)
@@ -239,6 +239,13 @@ feat: generar Tags (etiquetas)
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
 -----------------------------------------
+/*
+* ASINCRONÍA
+* Podríamos implementar asincronía en la compresión de los archivos de imágenes.
+* Que el usuario siga manipulando su imagen mientras por debajo comprimimos al persistir.
+*/
+
+
 /* #1
 * Si usáramos UUID como identificador de todas las entidades, se podría tener una tabla votos,
 * una tabla creator y asi.. para relaciones vinculadas a usuarios con distintas entidades. De

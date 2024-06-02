@@ -131,6 +131,7 @@ public class ResourceConcern {
   }
 
   // VOTES HANDLING IN CONCERN
+  @Deprecated(since = "1.0.1")
   @POST
   @Path("{id}/votes")
   @Operation(summary = "Vote Concern.")

@@ -15,7 +15,7 @@ import org.jboss.logging.Logger;
 
 import java.net.URI;
 
-@Tag(name = "Resource Tagged Entities")
+@Tag(name = "Tagged Entities Resource")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestScoped

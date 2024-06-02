@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(schema = "app", name = "contents")
-public class Content implements Taggable {
+public class Content implements Taggable, Votable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,9 @@ public class Content implements Taggable {
 
   @Transient
   private List<Tag> tags = new ArrayList<>();
+
+  @Transient
+  private List<Vote> votes = new ArrayList<>();
 
   public Content() {
   }
@@ -93,7 +96,7 @@ public class Content implements Taggable {
   }
 
   @Override
-  public Integer getTaggableId() {
+  public Integer getId() {
     return this.contentId;
   }
 
@@ -103,8 +106,19 @@ public class Content implements Taggable {
   }
 
   @Override
-  public void setTags(List<Tag> tags) {
-    this.tags.addAll(tags);
+  public void setTag(Tag tag) {
+    this.tags.add(tag);
+  }
+
+  @Override
+  public List<Vote> getVotes() {
+    return this.votes;
+  }
+
+  @Override
+  public void setVote(Vote vote) {
+    this.votes.add(vote);
+
   }
 
 }

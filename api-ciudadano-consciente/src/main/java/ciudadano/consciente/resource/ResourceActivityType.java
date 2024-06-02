@@ -2,7 +2,6 @@ package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceActivityType;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -24,194 +23,150 @@ import java.net.URI;
 @Path("activity-type")
 public class ResourceActivityType {
 
-    final String BASE_PATH_RESOURCE = "/activity-type/";
-    final String BASE_PATH_RESOURCE_VOTE = "/votes/";
+  final String BASE_PATH_RESOURCE = "/activity-type/";
+  final String BASE_PATH_RESOURCE_VOTE = "/votes/";
 
-    @Inject
-    ServiceActivityType serviceActivityType;
+  @Inject
+  ServiceActivityType serviceActivityType;
 
-    @Inject
-    Logger audit;
+  @Inject
+  Logger audit;
 
-    @Inject
-    UtilityVerifyRequestField utilityVerifyRequestField;
+  @Inject
+  UtilityVerifyRequestField utilityVerifyRequestField;
 
-    @GET
-    @Operation(summary = "Retrieve all Activity Types.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Activity Types successfully retrieved."
-    )
-    public Response getAll() {
+  @GET
+  @Operation(summary = "Retrieve all Activity Types.")
+  @APIResponse(responseCode = "200", description = "Activity Types successfully retrieved.")
+  public Response getAll() {
 
-        audit.debug("Getting all the Activity Types...");
-        return Response.ok(serviceActivityType.getAll()).build();
+    audit.debug("Getting all the Activity Types...");
+    return Response.ok(serviceActivityType.getAll()).build();
 
+  }
+
+  @GET
+  @Path("{id}")
+  @Operation(summary = "Retrieve a specific Activity Type by its ID.")
+  @APIResponse(responseCode = "200", description = "Activity Types successfully retrieved.")
+  @APIResponse(responseCode = "404", description = "Failed to retrieve Activity Type. Verify 'Warning' Header.")
+  public Response get(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Activity Type " + id + "...");
+    return Response.ok(serviceActivityType.get(id)).build();
+
+  }
+
+  @POST
+  @Operation(summary = "Create an Activity Type.")
+  @APIResponse(responseCode = "201", description = "Activity Type successfully created.")
+  @APIResponse(responseCode = "400", description = "Failed to create Activity Type. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to create Activity Type. Verify 'Warning' Header.")
+  public Response create(DTOCreateActivityType dtoCreateActivityType) {
+
+    if (dtoCreateActivityType == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
 
-    @GET
-    @Path("{id}")
-    @Operation(summary = "Retrieve a specific Activity Type by its ID.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Activity Types successfully retrieved."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to retrieve Activity Type. Verify 'Warning' Header."
-    )
-    public Response get(@PathParam("id") Integer id) {
-
-        audit.debug("Getting Activity Type " + id + "...");
-        return Response.ok(serviceActivityType.get(id)).build();
-
+    String name = dtoCreateActivityType.getName();
+    String description = dtoCreateActivityType.getDescription();
+    Integer creator = dtoCreateActivityType.getCreator();
+    if (!utilityVerifyRequestField.isValidField(name) ||
+        !utilityVerifyRequestField.isValidField(description) ||
+        !utilityVerifyRequestField.isValidField(creator)) {
+      throw new HttpBadRequestException("All fields required.");
     }
 
-    @POST
-    @Operation(summary = "Create an Activity Type.")
-    @APIResponse(
-            responseCode = "201",
-            description = "Activity Type successfully created."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to create Activity Type. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to create Activity Type. Verify 'Warning' Header."
-    )
-    public Response create(DTOCreateActivityType dtoCreateActivityType) {
+    audit.debug("Creating Activity Type...");
+    DTOActivityType activityType = serviceActivityType.create(dtoCreateActivityType);
 
-        if(dtoCreateActivityType == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
+    audit.debug("Creating URI...");
+    URI uri = URI.create(BASE_PATH_RESOURCE + activityType.getActivityTypeId());
 
-        String name = dtoCreateActivityType.getName();
-        String description = dtoCreateActivityType.getDescription();
-        Integer creator = dtoCreateActivityType.getCreator();
-        if(!utilityVerifyRequestField.isValidField(name) ||
-                !utilityVerifyRequestField.isValidField(description) ||
-                !utilityVerifyRequestField.isValidField(creator)) {
-            throw new HttpBadRequestException("All fields required.");
-        }
+    return Response.created(uri)
+        .entity(activityType)
+        .build();
 
-        audit.debug("Creating Activity Type...");
-        DTOActivityType activityType = serviceActivityType.create(dtoCreateActivityType);
+  }
 
-        audit.debug("Creating URI...");
-        URI uri = URI.create(BASE_PATH_RESOURCE + activityType.getActivityTypeId());
+  @PATCH
+  @Path("{id}")
+  @Operation(summary = "Update an Activity Type.")
+  @APIResponse(responseCode = "200", description = "Activity Types successfully updated.")
+  @APIResponse(responseCode = "400", description = "Failed to update Activity Type. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "404", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
+  public Response update(@PathParam("id") Integer id,
+      DTOUpdateActivityType dtoUpdateActivityType) {
 
-        return Response.created(uri)
-                .entity(activityType)
-                .build();
-
+    if (dtoUpdateActivityType == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
 
-    @PATCH
-    @Path("{id}")
-    @Operation(summary = "Update an Activity Type.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Activity Types successfully updated."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to update Activity Type. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to delete Activity Type. Verify 'Warning' Header."
-    )
-    public Response update(@PathParam("id") Integer id,
-                           DTOUpdateActivityType dtoUpdateActivityType) {
-
-        if(dtoUpdateActivityType == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
-
-        String name = dtoUpdateActivityType.getName();
-        String description = dtoUpdateActivityType.getDescription();
-        if(!utilityVerifyRequestField.isValidField(name) &&
-                !utilityVerifyRequestField.isValidField(description)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
-
-        audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id.compareTo(dtoUpdateActivityType.getActivityTypeId()) != 0) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
-        }
-
-        audit.debug("Updating Activity Type " + id + "...");
-        return Response.ok(serviceActivityType.update(id, dtoUpdateActivityType)).build();
-
+    String name = dtoUpdateActivityType.getName();
+    String description = dtoUpdateActivityType.getDescription();
+    if (!utilityVerifyRequestField.isValidField(name) &&
+        !utilityVerifyRequestField.isValidField(description)) {
+      throw new HttpBadRequestException("No updates to make.");
     }
 
-    @DELETE
-    @Path("{id}")
-    @Operation(summary = "Delete a specific Activity Type by its ID.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Activity Types successfully deleted."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to delete Activity Type. Verify 'Warning' Header."
-    )
-    public Response delete(@PathParam("id") Integer id) {
-
-        audit.debug("Deleting Activity Type " + id + "...");
-        return Response.ok(serviceActivityType.delete(id)).build();
-
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (id.compareTo(dtoUpdateActivityType.getActivityTypeId()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same.");
     }
 
-    // VOTES HANDLING IN ACTIVITY TYPE
-    @POST
-    @Path("{id}/votes")
-    @Operation(summary = "Vote Activity Type.")
-    @APIResponse(
-            responseCode = "201",
-            description = "Activity Type successfully voted."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to Vote Activity Type. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to Vote Activity Type. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to Vote Activity Type. Verify 'Warning' Header."
-    )
-    public Response vote(@PathParam("id") Integer idActivityType,
-                         DTOCreateVote dtoCreateVote) {
+    audit.debug("Updating Activity Type " + id + "...");
+    return Response.ok(serviceActivityType.update(id, dtoUpdateActivityType)).build();
 
-        if(dtoCreateVote == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
+  }
 
-        Integer user = dtoCreateVote.getUser();
-        Integer activityType = dtoCreateVote.getEntity();
-        if(!utilityVerifyRequestField.isValidField(user) ||
-                !utilityVerifyRequestField.isValidField(activityType)) {
-            throw new HttpBadRequestException("All fields required.");
-        }
+  @DELETE
+  @Path("{id}")
+  @Operation(summary = "Delete a specific Activity Type by its ID.")
+  @APIResponse(responseCode = "200", description = "Activity Types successfully deleted.")
+  @APIResponse(responseCode = "404", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
+  public Response delete(@PathParam("id") Integer id) {
 
-        audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(idActivityType.compareTo(dtoCreateVote.getEntity()) != 0) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for ActivityType.");
-        }
-        audit.debug("Vote of User " + user
-                + " in ActivityType " + idActivityType + "...");
-        DTOVote dtoVote = serviceActivityType.vote(idActivityType, user);
+    audit.debug("Deleting Activity Type " + id + "...");
+    return Response.ok(serviceActivityType.delete(id)).build();
 
-        audit.debug("Creating URI...");
-        URI uri = URI.create(BASE_PATH_RESOURCE_VOTE + dtoVote.getVoteId());
+  }
 
-        return Response.created(uri).entity(dtoVote).build();
+  // VOTES HANDLING IN ACTIVITY TYPE
+  @Deprecated(since = "1.0.1")
+  @POST
+  @Path("{id}/votes")
+  @Operation(summary = "Vote Activity Type.")
+  @APIResponse(responseCode = "201", description = "Activity Type successfully voted.")
+  @APIResponse(responseCode = "400", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "404", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
+  public Response vote(@PathParam("id") Integer idActivityType,
+      DTOCreateVote dtoCreateVote) {
 
+    if (dtoCreateVote == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
+
+    Integer user = dtoCreateVote.getUser();
+    Integer activityType = dtoCreateVote.getEntity();
+    if (!utilityVerifyRequestField.isValidField(user) ||
+        !utilityVerifyRequestField.isValidField(activityType)) {
+      throw new HttpBadRequestException("All fields required.");
+    }
+
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (idActivityType.compareTo(dtoCreateVote.getEntity()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same for ActivityType.");
+    }
+    audit.debug("Vote of User " + user
+        + " in ActivityType " + idActivityType + "...");
+    DTOVote dtoVote = serviceActivityType.vote(idActivityType, user);
+
+    audit.debug("Creating URI...");
+    URI uri = URI.create(BASE_PATH_RESOURCE_VOTE + dtoVote.getVoteId());
+
+    return Response.created(uri).entity(dtoVote).build();
+
+  }
 
 }

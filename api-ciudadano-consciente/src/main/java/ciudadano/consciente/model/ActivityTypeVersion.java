@@ -16,7 +16,7 @@ import java.util.List;
         name = "activity_type_version_model_template_readme_activ_key", columnNames = { "model", "template", "readme",
             "activity_type_id" })
 })
-public class ActivityTypeVersion implements Taggable {
+public class ActivityTypeVersion implements Taggable, Votable {
 
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
@@ -56,6 +56,9 @@ public class ActivityTypeVersion implements Taggable {
 
   @Transient
   private List<Tag> tags = new ArrayList<>();
+
+  @Transient
+  private List<Vote> votes = new ArrayList<>();
 
   public ActivityTypeVersion() {
     this.stagedDate = LocalDate.now();
@@ -153,7 +156,7 @@ public class ActivityTypeVersion implements Taggable {
   }
 
   @Override
-  public Integer getTaggableId() {
+  public Integer getId() {
     return this.activityTypeVersionId;
   }
 
@@ -163,8 +166,19 @@ public class ActivityTypeVersion implements Taggable {
   }
 
   @Override
-  public void setTags(List<Tag> tags) {
-    this.tags.addAll(tags);
+  public void setTag(Tag tag) {
+    this.tags.add(tag);
+  }
+
+  @Override
+  public List<Vote> getVotes() {
+    return this.votes;
+  }
+
+  @Override
+  public void setVote(Vote vote) {
+    this.votes.add(vote);
+
   }
 
 }

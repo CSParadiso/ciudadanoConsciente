@@ -24,204 +24,154 @@ import java.net.URI;
 @Path("references")
 public class ResourceReference {
 
-    static final String PATH_BASE_RESOURCE = "/references/";
-    static final String PATH_BASE_RESOURCE_VOTES = "/votes/";
+  static final String PATH_BASE_RESOURCE = "/references/";
+  static final String PATH_BASE_RESOURCE_VOTES = "/votes/";
 
-    @Inject
-    ServiceReference serviceReference;
+  @Inject
+  ServiceReference serviceReference;
 
-    @Inject
-    Logger audit;
+  @Inject
+  Logger audit;
 
-    @Inject
-    UtilityVerifyRequestField utilityVerifyRequestField;
+  @Inject
+  UtilityVerifyRequestField utilityVerifyRequestField;
 
-    @GET
-    @Operation(summary = "Retrieve all References.")
-    @APIResponse(
-            responseCode = "200",
-            description = "References successfully retrieved."
-    )
-    public Response getAll() {
+  @GET
+  @Operation(summary = "Retrieve all References.")
+  @APIResponse(responseCode = "200", description = "References successfully retrieved.")
+  public Response getAll() {
 
-        audit.debug("Getting all References...");
-        return Response.ok(serviceReference.getAll()).build();
+    audit.debug("Getting all References...");
+    return Response.ok(serviceReference.getAll()).build();
 
+  }
+
+  @GET
+  @Path("{id}")
+  @Operation(summary = "Retrieve a specific Reference by its ID.")
+  @APIResponse(responseCode = "200", description = "Reference successfully retrieved.")
+  @APIResponse(responseCode = "404", description = "Failed to retrieve Reference. Verify 'Warning' Header.")
+  public Response get(@PathParam("id") Integer id) {
+
+    audit.debug("Retrieving Reference " + id + ".");
+    return Response.ok(serviceReference.get(id)).build();
+
+  }
+
+  @POST
+  @Operation(summary = "Create a new Reference.")
+  @APIResponse(responseCode = "201", description = "Reference successfully created.")
+  @APIResponse(responseCode = "404", description = "Failed to create Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to create Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to create Reference. Verify 'Warning' Header.")
+  public Response create(DTOCreateReference dtoCreateReference) {
+
+    if (dtoCreateReference == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
 
-    @GET
-    @Path("{id}")
-    @Operation(summary = "Retrieve a specific Reference by its ID.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Reference successfully retrieved."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to retrieve Reference. Verify 'Warning' Header."
-    )
-    public Response get(@PathParam("id") Integer id) {
-
-        audit.debug("Retrieving Reference " + id + ".");
-        return Response.ok(serviceReference.get(id)).build();
-
+    String title = dtoCreateReference.getTitle();
+    String url = dtoCreateReference.getUrl();
+    Integer levelDto = dtoCreateReference.getLevel();
+    if (!utilityVerifyRequestField.isValidField(title) ||
+        !utilityVerifyRequestField.isValidField(url) ||
+        !utilityVerifyRequestField.isValidField(levelDto)) {
+      throw new HttpBadRequestException("Title, URL and Level required.");
     }
 
-    @POST
-    @Operation(summary = "Create a new Reference.")
-    @APIResponse(
-            responseCode = "201",
-            description = "Reference successfully created."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to create Reference. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to create Reference. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to create Reference. Verify 'Warning' Header."
-    )
-    public Response create(DTOCreateReference dtoCreateReference) {
+    audit.debug("Creating Reference...");
+    DTOReference reference = serviceReference.create(dtoCreateReference);
 
-        if(dtoCreateReference == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
+    audit.debug("Creating URI...");
+    URI uri = URI.create(PATH_BASE_RESOURCE + reference.getReferenceId());
 
-        String title = dtoCreateReference.getTitle();
-        String url = dtoCreateReference.getUrl();
-        Integer levelDto = dtoCreateReference.getLevel();
-        if(!utilityVerifyRequestField.isValidField(title) ||
-                !utilityVerifyRequestField.isValidField(url) ||
-                !utilityVerifyRequestField.isValidField(levelDto)) {
-            throw new HttpBadRequestException("Title, URL and Level required.");
-        }
+    return Response.created(uri).entity(reference).build();
 
-        audit.debug("Creating Reference...");
-        DTOReference reference = serviceReference.create(dtoCreateReference);
+  }
 
-        audit.debug("Creating URI...");
-        URI uri = URI.create(PATH_BASE_RESOURCE + reference.getReferenceId());
+  @PATCH
+  @Path("{id}")
+  @Operation(summary = "Update a Reference.")
+  @APIResponse(responseCode = "200", description = "Reference successfully updated.")
+  @APIResponse(responseCode = "404", description = "Failed to update Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to update Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to update Reference. Verify 'Warning' Header.")
+  public Response update(@PathParam("id") Integer id,
+      DTOUpdateReference dtoUpdateReference) {
 
-        return Response.created(uri).entity(reference).build();
-
+    if (dtoUpdateReference == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
 
-    @PATCH
-    @Path("{id}")
-    @Operation(summary = "Update a Reference.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Reference successfully updated."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to update Reference. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to update Reference. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to update Reference. Verify 'Warning' Header."
-    )
-    public Response update(@PathParam("id") Integer id,
-                           DTOUpdateReference dtoUpdateReference) {
-
-        if(dtoUpdateReference == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
-
-        Integer level = dtoUpdateReference.getLevel();
-        String title = dtoUpdateReference.getTitle();
-        String url = dtoUpdateReference.getUrl();
-        String description = dtoUpdateReference.getDescription();
-        if(!utilityVerifyRequestField.isValidField(level) &&
-                !utilityVerifyRequestField.isValidField(title) &&
-                !utilityVerifyRequestField.isValidField(url) &&
-                !utilityVerifyRequestField.isValidField(description)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
-
-        audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id.compareTo(dtoUpdateReference.getReferenceId()) != 0) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
-        }
-
-        audit.debug("Updating Reference " + id + "...");
-        return Response.ok(serviceReference.update(id, dtoUpdateReference)).build();
-
+    Integer level = dtoUpdateReference.getLevel();
+    String title = dtoUpdateReference.getTitle();
+    String url = dtoUpdateReference.getUrl();
+    String description = dtoUpdateReference.getDescription();
+    if (!utilityVerifyRequestField.isValidField(level) &&
+        !utilityVerifyRequestField.isValidField(title) &&
+        !utilityVerifyRequestField.isValidField(url) &&
+        !utilityVerifyRequestField.isValidField(description)) {
+      throw new HttpBadRequestException("No updates to make.");
     }
 
-    @DELETE
-    @Path("{id}")
-    @Operation(summary = "Delete a Reference.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Reference successfully deleted."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to delete Reference. Verify 'Warning' Header."
-    )
-    public Response delete(@PathParam("id") Integer id) {
-
-        audit.debug("Deleting Reference " + id + "...");
-        return Response.ok(serviceReference.delete(id)).build();
-
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (id.compareTo(dtoUpdateReference.getReferenceId()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same.");
     }
 
-    // VOTES HANDLING IN CONCERN
-    @POST
-    @Path("{id}/votes")
-    @Operation(summary = "Vote Reference.")
-    @APIResponse(
-            responseCode = "201",
-            description = "Reference successfully voted."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to Vote Reference. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to Vote Reference. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to Vote Reference. Verify 'Warning' Header."
-    )
-    public Response vote(@PathParam("id") Integer idReference,
-                         DTOCreateVote dtoCreateVote) {
+    audit.debug("Updating Reference " + id + "...");
+    return Response.ok(serviceReference.update(id, dtoUpdateReference)).build();
 
-        if(dtoCreateVote == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
+  }
 
-        Integer user = dtoCreateVote.getUser();
-        Integer reference = dtoCreateVote.getEntity();
-        if(!utilityVerifyRequestField.isValidField(user) ||
-                !utilityVerifyRequestField.isValidField(reference)) {
-            throw new HttpBadRequestException("All fields required.");
-        }
+  @DELETE
+  @Path("{id}")
+  @Operation(summary = "Delete a Reference.")
+  @APIResponse(responseCode = "200", description = "Reference successfully deleted.")
+  @APIResponse(responseCode = "404", description = "Failed to delete Reference. Verify 'Warning' Header.")
+  public Response delete(@PathParam("id") Integer id) {
 
-        audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(idReference.compareTo(dtoCreateVote.getEntity()) != 0) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same for Reference.");
-        }
-        audit.debug("Vote of User " + user
-                + " in Reference " + idReference + "...");
-        DTOVote dtoVote = serviceReference.vote(idReference, user);
+    audit.debug("Deleting Reference " + id + "...");
+    return Response.ok(serviceReference.delete(id)).build();
 
-        audit.debug("Creating URI...");
-        URI uri = URI.create(PATH_BASE_RESOURCE_VOTES + dtoVote.getVoteId());
+  }
 
-        return Response.created(uri).entity(dtoVote).build();
+  // VOTES HANDLING IN CONCERN
+  @Deprecated(since = "1.0.1")
+  @POST
+  @Path("{id}/votes")
+  @Operation(summary = "Vote Reference.")
+  @APIResponse(responseCode = "201", description = "Reference successfully voted.")
+  @APIResponse(responseCode = "400", description = "Failed to Vote Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "404", description = "Failed to Vote Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to Vote Reference. Verify 'Warning' Header.")
+  public Response vote(@PathParam("id") Integer idReference,
+      DTOCreateVote dtoCreateVote) {
 
+    if (dtoCreateVote == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
+
+    Integer user = dtoCreateVote.getUser();
+    Integer reference = dtoCreateVote.getEntity();
+    if (!utilityVerifyRequestField.isValidField(user) ||
+        !utilityVerifyRequestField.isValidField(reference)) {
+      throw new HttpBadRequestException("All fields required.");
+    }
+
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (idReference.compareTo(dtoCreateVote.getEntity()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same for Reference.");
+    }
+    audit.debug("Vote of User " + user
+        + " in Reference " + idReference + "...");
+    DTOVote dtoVote = serviceReference.vote(idReference, user);
+
+    audit.debug("Creating URI...");
+    URI uri = URI.create(PATH_BASE_RESOURCE_VOTES + dtoVote.getVoteId());
+
+    return Response.created(uri).entity(dtoVote).build();
+
+  }
 
 }

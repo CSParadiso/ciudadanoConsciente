@@ -1,17 +1,14 @@
 package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.quarkus.runtime.annotations.IgnoreProperty;
-
 @Entity
 @Table(schema = "app", name = "concerns")
-public class Concern implements Taggable {
+public class Concern implements Taggable, Votable {
 
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
@@ -32,6 +29,9 @@ public class Concern implements Taggable {
 
   @Transient
   private List<Tag> tags = new ArrayList<>();
+
+  @Transient
+  private List<Vote> votes = new ArrayList<>();
 
   public Concern() {
 
@@ -80,7 +80,7 @@ public class Concern implements Taggable {
   }
 
   @Override
-  public Integer getTaggableId() {
+  public Integer getId() {
     return this.concernId;
   }
 
@@ -90,8 +90,19 @@ public class Concern implements Taggable {
   }
 
   @Override
-  public void setTags(List<Tag> tags) {
-    this.tags.addAll(tags);
+  public void setTag(Tag tag) {
+    this.tags.add(tag);
+  }
+
+  @Override
+  public List<Vote> getVotes() {
+    return this.votes;
+  }
+
+  @Override
+  public void setVote(Vote vote) {
+    this.votes.add(vote);
+
   }
 
 }

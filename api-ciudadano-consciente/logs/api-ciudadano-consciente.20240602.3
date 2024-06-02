@@ -1,4 +1,4 @@
-2024-06-02 02:01:49,641 saimonlaptop api-ciudadano-consciente-dev.jar[109841] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+2024-06-02 12:38:19,346 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
    ___ _           _           _                       ___                     _            _       
   / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
  / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
@@ -6,9 +6,591 @@
 \____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
                                                                                                     
 
-2024-06-02 02:01:49,642 saimonlaptop api-ciudadano-consciente-dev.jar[109841] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.0 on JVM (powered by Quarkus 3.2.8.Final) started in 2.241s. Listening on: http://localhost:5909
-2024-06-02 02:01:49,643 saimonlaptop api-ciudadano-consciente-dev.jar[109841] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2024-06-02 02:01:49,643 saimonlaptop api-ciudadano-consciente-dev.jar[109841] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
-2024-06-02 02:01:49,644 saimonlaptop api-ciudadano-consciente-dev.jar[109841] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 3.303s 
-2024-06-02 02:01:53,390 saimonlaptop api-ciudadano-consciente-dev.jar[109841] INFO  [ciu.con.uti.APILifeCycle] (Shutdown thread) The api CIUDADANO CONSCIENTE is stopping...
-2024-06-02 02:01:53,403 saimonlaptop api-ciudadano-consciente-dev.jar[109841] INFO  [io.quarkus] (Shutdown thread) api-ciudadano-consciente stopped in 0.052s
+2024-06-02 12:38:19,363 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.0 on JVM (powered by Quarkus 3.2.8.Final) started in 2.867s. Listening on: http://localhost:5909
+2024-06-02 12:38:19,367 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-06-02 12:38:19,368 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-06-02 12:38:19,383 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 3.384s 
+2024-06-02 12:38:19,443 saimonlaptop api-ciudadano-consciente-dev.jar[6956] DEBUG [ciu.con.res.ResourceEntityType] (executor-thread-1) Retrieving all categories of Entities...
+2024-06-02 12:38:19,450 saimonlaptop api-ciudadano-consciente-dev.jar[6956] DEBUG [ciu.con.ser.ServiceEntityType] (executor-thread-1) Retrieving all categories of Entities...
+2024-06-02 12:38:19,456 saimonlaptop api-ciudadano-consciente-dev.jar[6956] DEBUG [ciu.con.acc.AccessEntityType] (executor-thread-1) Trying to retrieve all types of Entity
+2024-06-02 13:08:21,565 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:21,579 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:23,091 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:23,095 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:25,300 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:25,302 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:27,182 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:27,184 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:31,334 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:31,337 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:34,809 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:34,814 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:37,070 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:37,074 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:43,183 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:43,187 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:48,686 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:48,689 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:52,333 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:52,336 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:08:57,933 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:08:57,936 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:03,297 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:03,306 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:07,320 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:07,323 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:10,290 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:10,292 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:12,254 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:12,257 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:15,691 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:15,696 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:18,566 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:18,576 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:23,472 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:23,509 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:27,718 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:27,722 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:32,372 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:32,374 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:39,558 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:39,562 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:43,952 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:43,955 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:48,227 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:48,229 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:53,586 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:53,588 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:09:59,048 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:09:59,051 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:05,126 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:05,133 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:08,742 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:08,794 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:15,384 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:15,387 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:20,533 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:20,543 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:25,791 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:25,819 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:30,122 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:30,132 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:33,047 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:33,049 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:36,756 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:36,759 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:41,358 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:41,362 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:43,600 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:43,603 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:48,631 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:48,634 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:52,011 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:52,022 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:56,323 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:56,349 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:10:59,401 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:10:59,414 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:03,525 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:03,528 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:05,783 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:05,790 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:11,984 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:11,988 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:16,778 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:16,781 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:20,469 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:20,475 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:25,343 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:25,345 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:30,394 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:30,397 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:33,242 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:33,245 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:40,036 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:40,138 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:46,598 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:46,613 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:51,208 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:51,224 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:54,201 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:54,222 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:11:58,984 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:11:58,990 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:03,503 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:03,508 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:06,806 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:06,833 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:11,599 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:11,625 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:16,332 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:16,357 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:19,356 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:19,386 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:23,238 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:23,248 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:25,961 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:25,965 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:31,622 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:31,629 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:34,445 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:34,465 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:38,763 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:38,795 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:42,320 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:42,326 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:47,979 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:47,982 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:51,943 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:51,949 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:12:57,472 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:12:57,478 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:01,112 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:01,116 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:05,693 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:05,705 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:09,272 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:09,277 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:09,281 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:09,286 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:09,300 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:09,305 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:16,058 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:16,063 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:16,072 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:16,082 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:16,090 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:16,096 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:19,476 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:19,493 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:19,505 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:19,519 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:19,533 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:19,536 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:21,926 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:21,931 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:21,946 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:21,959 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:21,963 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:21,968 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:27,794 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:27,801 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:27,816 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:27,819 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:27,823 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:27,836 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:32,163 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:32,171 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:32,177 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:32,179 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:32,183 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:32,191 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:37,083 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:37,085 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:37,087 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:37,088 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:37,090 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:37,093 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:42,076 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:42,078 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 170 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:42,081 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 172 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:42,084 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) method does not override or implement a method from a supertype, line 175 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:42,087 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol: variable votes, line 177 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/model/ActivityTypeVersion.java
+2024-06-02 13:13:42,091 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:46,767 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:46,772 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:52,156 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:52,159 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:13:57,328 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:13:57,332 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:00,833 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:00,836 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:04,217 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:04,222 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:08,341 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:08,345 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:12,883 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:12,886 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:15,364 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:15,367 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:17,821 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:17,823 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:22,155 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:22,157 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:26,297 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:26,300 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:29,000 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:29,003 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:33,807 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:33,810 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:37,523 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:37,525 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:41,126 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:41,128 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:47,141 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:47,150 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:52,722 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:52,726 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:14:57,479 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:14:57,482 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:00,242 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:00,245 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:03,449 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:03,452 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:07,946 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:07,948 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:10,217 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:10,219 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:13,354 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:13,356 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:17,865 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:17,867 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:21,228 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:21,230 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:26,320 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:26,325 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:29,676 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:29,684 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:33,336 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:33,338 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:36,330 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:36,332 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:40,142 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:40,152 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:44,419 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:44,422 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:50,640 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:50,643 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:53,632 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:53,635 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:15:58,517 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:15:58,520 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:03,324 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:03,327 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:06,915 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:06,920 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:12,095 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:12,098 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:17,019 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:17,026 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:22,790 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:22,793 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:26,276 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:26,278 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:30,631 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:30,641 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:34,598 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:34,603 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:39,657 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:39,662 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:42,825 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:42,839 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:46,501 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:46,503 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:48,793 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:48,795 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:16:56,098 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:16:56,109 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:01,946 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:01,950 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:05,759 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:05,761 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:08,166 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:08,171 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:13,016 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:13,019 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:16,085 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:16,087 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:18,452 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:18,454 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:24,549 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:24,552 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:29,934 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:29,958 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:36,111 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:36,112 saimonlaptop api-ciudadano-consciente-dev.jar[6956] ERROR [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) cannot find symbol
+  symbol:   method voteEntity(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+  location: variable serviceVote of type ciudadano.consciente.service.ServiceVote, line 74 in /home/saimon/Projects/CiudadanoConsciente/api-ciudadano-consciente/src/main/java/ciudadano/consciente/resource/ResourceVote.java
+2024-06-02 13:17:40,166 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:40,790 saimonlaptop api-ciudadano-consciente-dev.jar[6956] WARN  [io.qua.dep.dev.JavaCompilationProvider] (vert.x-worker-thread-1) The following options were not recognized by any processor: '[mapstruct.defaultComponentModel]', line -1 in [unknown source]
+2024-06-02 13:17:40,834 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Restarting quarkus due to changes in MapperActivityTypeImpl.class, MapperOrganizationImpl.class, Level.class, Reference.class, DTOActivityType.class, MapperConcernImpl.class, Organization.class, Concern.class, MapperReferenceImpl.class, MapperActivityTypeVersionImpl.class, ServiceVote.class, ActivityType.class, MapperActivityImpl.class, MapperUserRoleOrganizationImpl.class, MapperContentImpl.class, Content.class, ResourceVote.class, ServiceTagged.class, MapperUserRoleLevelImpl.class, Taggable.class, MapperImageImpl.class, ActivityTypeVersion.class, Votable.class.
+2024-06-02 13:17:40,856 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) The api CIUDADANO CONSCIENTE is stopping...
+2024-06-02 13:17:41,219 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente stopped in 0.365s
