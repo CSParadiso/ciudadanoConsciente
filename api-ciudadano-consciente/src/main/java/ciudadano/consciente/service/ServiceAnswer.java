@@ -4,7 +4,7 @@ import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperAnswer;
 import ciudadano.consciente.model.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -77,7 +77,7 @@ public class ServiceAnswer {
 
         audit.debug("Getting Answer " + id + ".");
         Answer answer = accessAnswer.get(id)
-                .orElseThrow( () -> new HttpNotFoundException("Answer not found."));
+                .orElseThrow( () -> new HttpNoContentException("Answer not found."));
 
         audit.debug("Mapping Answer into DTO.");
         return  mapperAnswer.entityToDto(answer);
@@ -92,10 +92,10 @@ public class ServiceAnswer {
         Boolean statusDto = dtoCreateAnswer.getStatus();
 
         Activity activity = accessActivity.get(activityDto)
-                        .orElseThrow( ()-> new HttpNotFoundException("Activity not found."));
+                        .orElseThrow( ()-> new HttpNoContentException("Activity not found."));
 
         User user = accessUser.get(userDto)
-                        .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+                        .orElseThrow( ()-> new HttpNoContentException("User not found."));
 
         audit.debug("Creating Answer.");
         Answer answer = new Answer(activity, user, statusDto);
@@ -130,7 +130,7 @@ public class ServiceAnswer {
     public DTOAnswer updateStatus(Integer id, DTOUpdateAnswerStatus dtoUpdateAnswerStatus) {
 
         Answer answer = accessAnswer.get(id)
-                .orElseThrow( () -> new HttpNotFoundException("Answer not found."));
+                .orElseThrow( () -> new HttpNoContentException("Answer not found."));
 
         audit.debug("Updating Answer " + id + ".");
         answer.setStatus(dtoUpdateAnswerStatus.getStatus());

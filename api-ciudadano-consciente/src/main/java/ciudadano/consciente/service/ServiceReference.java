@@ -5,7 +5,7 @@ import ciudadano.consciente.dto.DTOReference;
 import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.DTOUpdateReference;
@@ -62,7 +62,7 @@ public class ServiceReference {
 
     audit.debug("Retrieving Reference " + id + ".");
     Reference reference = accessReference.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Reference not found."));
+        .orElseThrow(() -> new HttpNoContentException("Reference not found."));
 
     return mapperReference.entityToDto(reference);
 
@@ -73,7 +73,7 @@ public class ServiceReference {
 
     Integer levelDto = dtoCreateReference.getLevel();
     Level level = accessLevel.get(levelDto)
-        .orElseThrow(() -> new HttpNotFoundException("Level not found."));
+        .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     String title = dtoCreateReference.getTitle();
     audit.debug("Verifying if title " + title + " of Reference already exists in Level " + levelDto);
@@ -97,12 +97,12 @@ public class ServiceReference {
   public DTOReference update(Integer id, DTOUpdateReference dtoUpdateReference) {
 
     Reference reference = accessReference.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Reference not found."));
+        .orElseThrow(() -> new HttpNoContentException("Reference not found."));
 
     Integer level = dtoUpdateReference.getLevel();
     if (utilityVerifyRequestField.isValidField(level)) {
       reference.setLevel(accessLevel.get(level)
-          .orElseThrow(() -> new HttpNotFoundException("Level not found.")));
+          .orElseThrow(() -> new HttpNoContentException("Level not found.")));
     }
 
     String title = dtoUpdateReference.getTitle();
@@ -139,7 +139,7 @@ public class ServiceReference {
 
     audit.debug("Deleting Reference " + id + ".");
     Reference reference = accessReference.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Reference not found."));
+        .orElseThrow(() -> new HttpNoContentException("Reference not found."));
 
     if (!accessReference.remove(reference.getReferenceId())) {
       throw new HttpInternalServerException("Failed to delete Reference");
@@ -156,13 +156,13 @@ public class ServiceReference {
 
     audit.debug("Retrieving Entity Type");
     EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     Reference reference = accessReference.get(idReference)
-        .orElseThrow(() -> new HttpNotFoundException("Reference not found."));
+        .orElseThrow(() -> new HttpNoContentException("Reference not found."));
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Verify if Vote already exists.");
     if (accessVote.getByKeys(user, reference.getReferenceId(), entityType).isPresent()) {

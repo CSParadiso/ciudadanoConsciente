@@ -11,11 +11,16 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
+import java.io.LineNumberInputStream;
 import java.net.URI;
+import java.util.List;
 
 @RequestScoped
 @Tag(name = "Activity Resource")
@@ -39,12 +44,13 @@ public class ResourceActivity {
     @Operation(summary = "Retrieve all Activities.")
     @APIResponse(
             responseCode = "200",
-            description = "All Activities successfully retrieved."
+            description = "All Activities successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOActivity.class))
     )
-    public Response getAll() {
+    public RestResponse<List<DTOActivity>> getAll() {
 
         audit.debug("Getting all Activities...");
-        return Response.ok(serviceActivity.getAll()).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivity.getAll()).build();
 
     }
 
@@ -53,16 +59,17 @@ public class ResourceActivity {
     @Operation(summary = "Retrieve a specific Activity by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Activities successfully retrieved."
+            description = "Activities successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOActivity.class))
     )
     @APIResponse(
             responseCode = "204",
             description = "Failed to retrieve Activity. Verify 'Warning' Header."
     )
-    public Response get(@PathParam("id") Integer id) {
+    public RestResponse<DTOActivity> get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Activity " + id + "...");
-        return Response.ok(serviceActivity.get(id)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivity.get(id)).build();
 
     }
 
@@ -78,10 +85,10 @@ public class ResourceActivity {
             responseCode = "204",
             description = "Failed to retrieve template. Verify 'Warning' Header."
     )
-    public Response getTemplate(@PathParam("id") Integer id) {
+    public RestResponse<String> getTemplate(@PathParam("id") Integer id) {
 
         audit.debug("Getting Activity " + id + "...");
-        return Response.ok(serviceActivity.getTemplate(id)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivity.getTemplate(id)).build();
 
     }
 
@@ -91,16 +98,17 @@ public class ResourceActivity {
     @Operation(summary = "Retrieve the Activity of a Level.")
     @APIResponse(
             responseCode = "200",
-            description = "Activity successfully retrieved."
+            description = "Activity successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOActivity.class))
     )
     @APIResponse(
             responseCode = "204",
             description = "Failed to retrieve Activity. Verify 'Warning' Header."
     )
-    public Response getByLevel(@PathParam("levelId") Integer levelId) {
+    public RestResponse<DTOActivity> getByLevel(@PathParam("levelId") Integer levelId) {
 
         audit.debug("Getting Activity by Level " + levelId + "...");
-        return Response.ok(serviceActivity.getByLevel(levelId)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivity.getByLevel(levelId)).build();
 
     }
 
@@ -108,7 +116,8 @@ public class ResourceActivity {
     @Operation(summary = "Create an Activity.")
     @APIResponse(
             responseCode = "201",
-            description = "Activity successfully created."
+            description = "Activity successfully created.",
+            content = @Content(schema = @Schema(implementation = DTOActivity.class))
     )
     @APIResponse(
             responseCode = "400",
@@ -118,7 +127,7 @@ public class ResourceActivity {
             responseCode = "500",
             description = "Failed to create Activity. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateActivity dtoCreateActivity) {
+    public RestResponse<DTOActivity> create(DTOCreateActivity dtoCreateActivity) {
 
         if(dtoCreateActivity == null) {
             throw new HttpBadRequestException("Body of request required.");
@@ -139,8 +148,9 @@ public class ResourceActivity {
         audit.debug("Creating URI...");
         URI uri = URI.create(BASE_PATH_RESOURCE + activity.getActivityId());
 
-        return Response.created(uri)
-                .entity(activity)
+        return RestResponse.ResponseBuilder
+                .create(RestResponse.Status.CREATED, activity)
+                .location(uri)
                 .build();
 
     }
@@ -150,7 +160,8 @@ public class ResourceActivity {
     @Operation(summary = "Update an Activity.")
     @APIResponse(
             responseCode = "200",
-            description = "Activities successfully updated."
+            description = "Activity successfully updated.",
+            content = @Content(schema = @Schema(implementation = DTOActivity.class))
     )
     @APIResponse(
             responseCode = "400",
@@ -160,7 +171,7 @@ public class ResourceActivity {
             responseCode = "204",
             description = "Failed to delete Activity. Verify 'Warning' Header."
     )
-    public Response update(@PathParam("id") Integer id,
+    public RestResponse<DTOActivity> update(@PathParam("id") Integer id,
                            DTOUpdateActivity dtoUpdateActivity) {
 
         if(dtoUpdateActivity == null) {
@@ -187,7 +198,7 @@ public class ResourceActivity {
         }
 
         audit.debug("Updating Activity " + id + "...");
-        return Response.ok(serviceActivity.update(id, dtoUpdateActivity)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivity.update(id, dtoUpdateActivity)).build();
 
     }
 
@@ -196,16 +207,17 @@ public class ResourceActivity {
     @Operation(summary = "Delete a specific Activity by its ID.")
     @APIResponse(
             responseCode = "200",
-            description = "Activities successfully deleted."
+            description = "Activities successfully deleted.",
+            content = @Content(schema = @Schema(implementation = DTOActivity.class))
     )
     @APIResponse(
             responseCode = "204",
             description = "Failed to delete Activity. Verify 'Warning' Header."
     )
-    public Response delete(@PathParam("id") Integer id) {
+    public RestResponse<DTOActivity> delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Activity " + id + "...");
-        return Response.ok(serviceActivity.delete(id)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivity.delete(id)).build();
 
     }
 

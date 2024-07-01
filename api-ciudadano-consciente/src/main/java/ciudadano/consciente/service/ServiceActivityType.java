@@ -9,7 +9,7 @@ import ciudadano.consciente.dto.DTOUpdateActivityType;
 import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.DTOCreateActivityType;
@@ -64,7 +64,7 @@ public class ServiceActivityType {
 
     // Verify if user exists
     accessUser.get(creator)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Mapping DTO into EntityType.");
     ActivityType activityType = mapperActivityType.dtoToEntity(dtoCreateActivityType);
@@ -89,7 +89,7 @@ public class ServiceActivityType {
 
     audit.debug("Getting Activity Type " + id + ".");
     ActivityType activityType = accessActivityType.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Activity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperActivityType.entityToDto(activityType);
@@ -101,7 +101,7 @@ public class ServiceActivityType {
 
     audit.debug("Deleting Activity Type " + id + ".");
     ActivityType activityType = accessActivityType.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Activity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
 
     if (!accessActivityType.remove(activityType.getActivityTypeId())) {
       throw new HttpInternalServerException("Failed to delete Activity Type.");
@@ -116,7 +116,7 @@ public class ServiceActivityType {
   public DTOActivityType update(Integer id, DTOUpdateActivityType dtoUpdateActivityType) {
 
     ActivityType activityType = accessActivityType.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Activity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
 
     audit.debug("Updating Activity Type.");
     String name = dtoUpdateActivityType.getName();
@@ -148,13 +148,13 @@ public class ServiceActivityType {
 
     audit.debug("Retrieving Entity Type");
     EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     ActivityType activityType = accessActivityType.get(idActivityType)
-        .orElseThrow(() -> new HttpNotFoundException("ActivityType not found."));
+        .orElseThrow(() -> new HttpNoContentException("ActivityType not found."));
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Verify if Vote already exists.");
     if (accessVote.getByKeys(user, activityType.getActivityTypeId(), entityType).isPresent()) {

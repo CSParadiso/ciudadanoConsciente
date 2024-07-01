@@ -48,7 +48,6 @@ public class ResourceTagged {
   @Operation(summary = "Retrieve a  Tagged.")
   @APIResponse(responseCode = "200", description = "Tagged successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve Tagged. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Tagged. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Tagged " + id + "...");
@@ -81,7 +80,7 @@ public class ResourceTagged {
   @Path("{id}")
   @Operation(summary = "Delete a  Tagged by its ID.")
   @APIResponse(responseCode = "200", description = "Tagged successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Tagged. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Tagged. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Tagged " + id + "...");

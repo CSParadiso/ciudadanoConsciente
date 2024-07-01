@@ -50,7 +50,6 @@ public class ResourceConcern {
   @Operation(summary = "Retrieve a  Concern.")
   @APIResponse(responseCode = "200", description = "Concern successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve Concern. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Concern. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Concern " + id + "...");
@@ -93,7 +92,7 @@ public class ResourceConcern {
   @Operation(summary = "Update a Concern.")
   @APIResponse(responseCode = "200", description = "Concern successfully updated.")
   @APIResponse(responseCode = "400", description = "Failed to update Concern. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to update Concern. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Concern. Verify 'Warning' Header.")
   public Response update(@PathParam("id") Integer id,
       DTOUpdateConcern dtoUpdateConcern) {
 
@@ -122,7 +121,7 @@ public class ResourceConcern {
   @Path("{id}")
   @Operation(summary = "Delete a  Concern by its ID.")
   @APIResponse(responseCode = "200", description = "Concern successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Concern. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Concern. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Concern " + id + "...");
@@ -137,7 +136,7 @@ public class ResourceConcern {
   @Operation(summary = "Vote Concern.")
   @APIResponse(responseCode = "201", description = "Concern successfully voted.")
   @APIResponse(responseCode = "400", description = "Failed to Vote Concern. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Vote Concern. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to Vote Concern. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Concern. Verify 'Warning' Header.")
   public Response vote(@PathParam("id") Integer idConcern,
       DTOCreateVote dtoCreateVote) {

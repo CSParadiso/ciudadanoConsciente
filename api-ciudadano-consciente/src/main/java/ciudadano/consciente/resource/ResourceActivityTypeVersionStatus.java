@@ -59,10 +59,6 @@ public class ResourceActivityTypeVersionStatus {
             responseCode = "204",
             description = "Failed to retrieve Activity Type Version Status. Verify 'Warning' Header."
     )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to retrieve Activity Type Version Status. Verify 'Warning' Header."
-    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Level " + id + "...");
@@ -121,7 +117,7 @@ public class ResourceActivityTypeVersionStatus {
             description = "Failed to update category of Activity Type Version Status. Verify 'Warning' Header."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to update category of Activity Type Version Status. Verify 'Warning' Header."
     )
     public Response update(@PathParam("id") Integer id,
@@ -156,7 +152,7 @@ public class ResourceActivityTypeVersionStatus {
             description = "Category of Activity Type Version Status successfully deleted."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to delete category of Activity Type Version Status. Verify 'Warning' Header."
     )
     public Response delete(@PathParam("id") Integer id) {

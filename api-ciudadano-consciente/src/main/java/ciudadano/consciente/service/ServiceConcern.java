@@ -11,7 +11,7 @@ import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperConcern;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
@@ -100,11 +100,11 @@ public class ServiceConcern {
 
     audit.debug("Retrieving Concern.");
     Concern concern = accessConcern.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Concern not found."));
+        .orElseThrow(() -> new HttpNoContentException("Concern not found."));
 
     // audit.debug("Retrieving User.");
     // User user = accessUser.get(dtoUpdateConcern.getUser())
-    // .orElseThrow( ()-> new HttpNotFoundException("User not found.") );
+    // .orElseThrow( ()-> new HttpNoContentException("User not found.") );
     //
     // audit.debug("Verifying if user updating is the same in DB");
     // if(user != concern.getUser()) {
@@ -137,7 +137,7 @@ public class ServiceConcern {
 
     audit.debug("Deleting Concern " + id + ".");
     Concern concern = accessConcern.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Concern not found."));
+        .orElseThrow(() -> new HttpNoContentException("Concern not found."));
 
     if (!accessConcern.remove(concern.getConcernId())) {
       throw new HttpInternalServerException("Failed to delete Concern");
@@ -154,13 +154,13 @@ public class ServiceConcern {
 
     audit.debug("Retrieving Entity Type");
     EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     Concern concern = accessConcern.get(idConcern)
-        .orElseThrow(() -> new HttpNotFoundException("Concern not found."));
+        .orElseThrow(() -> new HttpNoContentException("Concern not found."));
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Verify if Vote already exists.");
     if (accessVote.getByKeys(user, concern.getConcernId(), entityType).isPresent()) {

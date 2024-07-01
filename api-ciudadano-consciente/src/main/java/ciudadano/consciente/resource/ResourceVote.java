@@ -51,7 +51,6 @@ public class ResourceVote {
   @Operation(summary = "Retrieve a  Vote by its ID.")
   @APIResponse(responseCode = "200", description = "Vote successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve Vote. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Vote. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Vote " + id + "...");
@@ -85,7 +84,7 @@ public class ResourceVote {
   @Operation(summary = "Update Status of Vote.")
   @APIResponse(responseCode = "200", description = "Vote Status successfully updated.")
   @APIResponse(responseCode = "400", description = "Failed to update Vote Status. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to update Vote Status. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Vote Status. Verify 'Warning' Header.")
   public Response updateStatus(@PathParam("id") Integer id) {
 
     /*

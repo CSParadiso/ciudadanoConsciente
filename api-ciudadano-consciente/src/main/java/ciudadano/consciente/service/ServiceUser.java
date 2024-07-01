@@ -6,7 +6,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperUser;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.Organization;
@@ -130,7 +130,7 @@ public class ServiceUser {
 
         audit.debug("Deleting User " + id + ".");
         User user = accessUser.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("User not found."));
+                .orElseThrow( ()-> new HttpNoContentException("User not found."));
 
         if (!accessUser.remove(user.getUserId())) {
             throw new HttpInternalServerException("Failed to delete User.");
@@ -145,7 +145,7 @@ public class ServiceUser {
     public List<DTOVote> getVotes(Integer id) {
 
         User user = accessUser.get(id)
-                .orElseThrow( () -> new HttpNotFoundException("User not found."));
+                .orElseThrow( () -> new HttpNoContentException("User not found."));
 
         return mapperVote.entityToDto(accessVote.getByUser(user));
 

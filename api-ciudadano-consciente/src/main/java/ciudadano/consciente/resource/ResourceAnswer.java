@@ -87,10 +87,6 @@ public class ResourceAnswer {
             responseCode = "204",
             description = "Failed to retrieve Answer. Verify 'Warning' Header."
     )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to retrieve Answer. Verify 'Warning' Header."
-    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Answer " + id + "...");
@@ -192,7 +188,7 @@ public class ResourceAnswer {
             description = "Failed to update Answer Status. Verify 'Warning' Header."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to update Answer Status. Verify 'Warning' Header."
     )
     public Response updateStatus(@PathParam("id") Integer id,

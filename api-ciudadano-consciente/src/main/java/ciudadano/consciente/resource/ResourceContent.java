@@ -139,7 +139,7 @@ public class ResourceContent {
   @Path("{id}")
   @Operation(summary = "Delete a specific Content by its ID.")
   @APIResponse(responseCode = "200", description = "Content successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Content. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Content. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Content " + id + "...");
@@ -263,7 +263,7 @@ public class ResourceContent {
   @Operation(summary = "Vote Content.")
   @APIResponse(responseCode = "201", description = "Content successfully voted.")
   @APIResponse(responseCode = "400", description = "Failed to Vote Content. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Vote Content. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to Vote Content. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Content. Verify 'Warning' Header.")
   public Response vote(@PathParam("id") Integer idContent,
       DTOCreateVote dtoCreateVote) {

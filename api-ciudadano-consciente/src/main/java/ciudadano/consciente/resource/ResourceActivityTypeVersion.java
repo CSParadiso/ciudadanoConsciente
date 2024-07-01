@@ -72,7 +72,7 @@ public class ResourceActivityTypeVersion {
   @Operation(summary = "Retrieve a specific Version of an Activity Type by its ID.")
   @Consumes(MediaType.APPLICATION_JSON)
   @APIResponse(responseCode = "200", description = "Activity Types Version successfully retrieved.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Version of an Activity Type. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Version of an Activity Type. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Activity Type Version " + id + "...");
@@ -157,7 +157,7 @@ public class ResourceActivityTypeVersion {
   @Operation(summary = "Create Activity Type Version. Require a version server provider (only github support initially).")
   @APIResponse(responseCode = "201", description = "Activity Type Version successfully created.")
   @APIResponse(responseCode = "400", description = "Failed to create Activity Type Version. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to create Activity Type Version. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to create Activity Type Version. Verify 'Warning' Header.")
   @APIResponse(responseCode = "502", description = "Failed to retrieve files from version server. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create new Activity Type Version. Verify 'Warning' Header.")
   public Response createVersion(@PathParam("server") @DefaultValue("github") String versionServerProvider,
@@ -198,7 +198,7 @@ public class ResourceActivityTypeVersion {
   @Operation(summary = "Update the Status of an Activity Type Version.")
   @APIResponse(responseCode = "200", description = "Status of Activity Types Version successfully updated.")
   @APIResponse(responseCode = "400", description = "Failed to update Status of Activity Type Version. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to update Status Activity Type Version. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Status Activity Type Version. Verify 'Warning' Header.")
   public Response update(@PathParam("id") Integer id,
       DTOUpdateActivityTypeVersion dtoUpdateActivityTypeVersion) {
 
@@ -236,7 +236,7 @@ public class ResourceActivityTypeVersion {
   @Path("{id}")
   @Operation(summary = "Delete a specific Activity Type Version by its ID.")
   @APIResponse(responseCode = "200", description = "Activity Types Version successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Activity Type Version. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Activity Type Version. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Activity Type Version" + id + "...");
@@ -251,7 +251,7 @@ public class ResourceActivityTypeVersion {
   @Operation(summary = "Vote Activity Type Version.")
   @APIResponse(responseCode = "201", description = "Activity Type Version successfully voted.")
   @APIResponse(responseCode = "400", description = "Failed to Vote Activity Type Version. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Vote Activity Type Version. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to Vote Activity Type Version. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Activity Type Version. Verify 'Warning' Header.")
   public Response vote(@PathParam("id") Integer idActivityTypeVersion,
       DTOCreateVote dtoCreateVote) {

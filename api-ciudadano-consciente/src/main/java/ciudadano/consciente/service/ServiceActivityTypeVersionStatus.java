@@ -6,7 +6,7 @@ import ciudadano.consciente.dto.DTOCreateActivityTypeVersionStatus;
 import ciudadano.consciente.dto.DTOUpdateActivityTypeVersionStatus;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperActivityTypeVersionStatus;
 import ciudadano.consciente.model.ActivityTypeVersionStatus;
 import ciudadano.consciente.model.Organization;
@@ -44,7 +44,7 @@ public class ServiceActivityTypeVersionStatus {
 
         audit.debug("Getting ActivityTypeVersionStatus " + id + ".");
         ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(id)
-                .orElseThrow( () -> new HttpNotFoundException("ActivityTypeVersionStatus not found."));
+                .orElseThrow( () -> new HttpNoContentException("ActivityTypeVersionStatus not found."));
 
         audit.debug("Mapping EntityType into DTO.");
         return  mapperActivityTypeVersionStatus.entityToDto(activityTypeVersionStatus);
@@ -79,7 +79,7 @@ public class ServiceActivityTypeVersionStatus {
         String description = dtoUpdateActivityTypeVersionStatus.getDescription();
 
         ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(id)
-                .orElseThrow( () -> new HttpNotFoundException("Category of Answer Status not found."));
+                .orElseThrow( () -> new HttpNoContentException("Category of Answer Status not found."));
 
         if(utilityVerifyRequestField.isValidField(title)) {
             if(accessActivityTypeVersionStatus.existTitle(title)) {
@@ -106,7 +106,7 @@ public class ServiceActivityTypeVersionStatus {
 
         audit.debug("Deleting category of Answer Status " + id + ".");
         ActivityTypeVersionStatus activityTypeVersionStatus = accessActivityTypeVersionStatus.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("Answer Status not found."));
+                .orElseThrow( ()-> new HttpNoContentException("Answer Status not found."));
 
         if(!accessActivityTypeVersionStatus.remove(activityTypeVersionStatus.getActivityTypeVersionStatusId())) {
             throw new HttpInternalServerException("Failed to delete Answer Status");

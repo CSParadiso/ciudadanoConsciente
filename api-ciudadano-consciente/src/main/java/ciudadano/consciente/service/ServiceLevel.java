@@ -4,7 +4,7 @@ import ciudadano.consciente.access.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
@@ -18,6 +18,7 @@ import org.jboss.logging.Logger;
 
 import java.sql.Date;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class ServiceLevel {
@@ -59,6 +60,9 @@ public class ServiceLevel {
 
   @Inject
   AccessEntityType accessEntityType;
+
+  @Inject
+  AccessUserRoleOrganization accessUserRoleOrganization;
 
   public List<DTOLevel> getAll() {
 
@@ -202,7 +206,7 @@ public class ServiceLevel {
 
     Integer organizationDto = dtoCreateLevel.getOrganization();
     Organization organization = accessOrganization.get(organizationDto)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found."));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found."));
 
     audit.debug("Creating Level.");
     Level level = mapperLevel.dtoToEntity(name, organization);
@@ -237,7 +241,7 @@ public class ServiceLevel {
     String description = dtoUpdateLevel.getDescription();
 
     Level level = accessLevel.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Level not found."));
+        .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     if (utilityVerifyRequestField.isValidField(name)) {
       if (accessLevel.existName(name)) {
@@ -248,13 +252,13 @@ public class ServiceLevel {
 
     if (utilityVerifyRequestField.isValidField(organization)) {
       Organization organizationEntity = accessOrganization.get(dtoUpdateLevel.getOrganization())
-          .orElseThrow(() -> new HttpNotFoundException("Organization not found."));
+          .orElseThrow(() -> new HttpNoContentException("Organization not found."));
       level.setOrganization(organizationEntity);
     }
 
     if (utilityVerifyRequestField.isValidField(parent)) {
       level.setParent(accessLevel.get(parent)
-          .orElseThrow(() -> new HttpNotFoundException("Parent Level not found.")));
+          .orElseThrow(() -> new HttpNoContentException("Parent Level not found.")));
     }
 
     if (utilityVerifyRequestField.isValidField(description)) {
@@ -275,7 +279,7 @@ public class ServiceLevel {
 
     audit.debug("Deleting Level " + id + ".");
     Level level = accessLevel.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Level not found."));
+        .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     if (!accessLevel.remove(level.getLevelId())) {
       throw new HttpInternalServerException("Failed to delete Level");
@@ -297,13 +301,13 @@ public class ServiceLevel {
     }
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     Level level = accessLevel.get(idLevel)
-        .orElseThrow(() -> new HttpNotFoundException("Level not found."));
+        .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     Role role = accessRole.get(idRole)
-        .orElseThrow(() -> new HttpNotFoundException("Role not found."));
+        .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
     audit.debug("Creating Role of User in Level.");
     UserRoleLevel userRoleLevel = new UserRoleLevel();
@@ -325,7 +329,7 @@ public class ServiceLevel {
 
     audit.debug("Getting Level " + id + ".");
     Level level = accessLevel.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Level not found."));
+        .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     audit.debug("Retrieving all UserRole of Level " + level.getLevelId() + ".");
     List<UserRoleLevel> userRoleLevel = accessUserRoleLevel.getByLevel(level);
@@ -345,7 +349,7 @@ public class ServiceLevel {
     audit.debug("Deleting User(" + idUser + ")RoleLevel(" + idUser + ") " + idLevel + ".");
     List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser);
     if (userRoleLevelList.isEmpty()) {
-      throw new HttpNotFoundException("User don't have Roles in Level.");
+      throw new HttpNoContentException("User don't have Roles in Level.");
     } else {
       for (UserRoleLevel userRoleLevel : userRoleLevelList) {
         accessUserRoleLevel.remove(userRoleLevel.getUrlId());
@@ -360,7 +364,7 @@ public class ServiceLevel {
 
     audit.debug("Retrieving UserRoleLevel");
     UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
-        .orElseThrow(() -> new HttpNotFoundException("UserRoleLevel not found"));
+        .orElseThrow(() -> new HttpNoContentException("UserRoleLevel not found"));
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevel);
@@ -372,7 +376,7 @@ public class ServiceLevel {
 
     audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idLevel + ".");
     UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
-        .orElseThrow(() -> new HttpNotFoundException("UserRoleLevel not found."));
+        .orElseThrow(() -> new HttpNoContentException("UserRoleLevel not found."));
 
     if (!accessUserRoleLevel.remove(userRoleLevel.getUrlId())) {
       throw new HttpInternalServerException("Failed to remove UserRoleLevel.");
@@ -389,7 +393,7 @@ public class ServiceLevel {
     List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser);
 
     if (userRoleLevelList.isEmpty()) {
-      throw new HttpNotFoundException("User don't have Roles in Level.");
+      throw new HttpNoContentException("User don't have Roles in Level.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
@@ -400,13 +404,13 @@ public class ServiceLevel {
   public List<DTOUserRoleLevel> getAllUsersWithRoleByLevel(Integer idLevel) {
 
     Level level = accessLevel.get(idLevel)
-        .orElseThrow(() -> new HttpNotFoundException("Level not found."));
+        .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     audit.debug("Retrieving all Users with Roles in Level(" + idLevel + ").");
     List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevel(level);
 
     if (userRoleLevelList.isEmpty()) {
-      throw new HttpNotFoundException("Level without Roles assigned.");
+      throw new HttpNoContentException("Level without Roles assigned.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
@@ -420,7 +424,7 @@ public class ServiceLevel {
     List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndRole(idLevel, idRole);
 
     if (userRoleLevelList.isEmpty()) {
-      throw new HttpNotFoundException("Role don't have Users in Level.");
+      throw new HttpNoContentException("Role don't have Users in Level.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
@@ -438,18 +442,18 @@ public class ServiceLevel {
 
     audit.debug("Verifying if new Role exists.");
     Role role = accessRole.get(newRole)
-        .orElseThrow(() -> new HttpNotFoundException("Role not found."));
+        .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
     audit.debug("Verifying if UserRoleLevel original exists.");
     UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
-        .orElseThrow(() -> new HttpNotFoundException("UserRoleLevel not found."));
+        .orElseThrow(() -> new HttpNoContentException("UserRoleLevel not found."));
 
     audit.debug("Upating Rol of User in Level: from " + idRole + " to " + newRole);
     userRoleLevel.setRole(role);
 
     audit.debug("Saving updated UserRoleLevel " + userRoleLevel.getUrlId() + ".");
     accessUserRoleLevel.save(userRoleLevel)
-        .orElseThrow(() -> new HttpNotFoundException("Failed to update Role of User in Level."));
+        .orElseThrow(() -> new HttpNoContentException("Failed to update Role of User in Level."));
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevel);
@@ -485,6 +489,28 @@ public class ServiceLevel {
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperVote.entityToDto(vote);
+
+  }
+
+  public List<DTOLevel> getLevelsByOrganizationUserAndRole(Integer organizationId, Integer userId, Integer roleId) {
+
+    Organization organization = accessOrganization.get(organizationId)
+            .orElseThrow( ()-> new HttpNoContentException("Organization not found.") );
+
+    User user = accessUser.get(userId)
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    Role role = accessRole.get(roleId)
+            .orElseThrow( ()-> new HttpNoContentException("Role not found.") );
+
+    List<UserRoleLevel> userRoleLevel = accessUserRoleLevel.getByUserAndRole(user, role);
+
+    List<Level> levels = userRoleLevel.stream()
+            .map(UserRoleLevel::getLevel)
+            .filter(level -> level.getOrganization().equals(organization))
+            .toList();
+
+    return mapperLevel.entityToDto(levels);
 
   }
 

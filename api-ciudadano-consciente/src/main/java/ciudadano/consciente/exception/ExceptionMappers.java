@@ -49,16 +49,4 @@ public class ExceptionMappers {
 
     }
 
-    @ServerExceptionMapper
-    public RestResponse<DTOException> mapNotFoundExceptionException( HttpNotFoundException x, @Context UriInfo uriInfo ) {
-
-        audit.debug("mapNotFoundExceptionException: " + x.getMessage());
-        DTOException body = new DTOException();
-        body.setStatus(404);
-        body.setTitle(x.getMessage());
-        body.setInstance(uriInfo.getPath());
-        return RestResponse.ResponseBuilder.create(RestResponse.Status.NOT_FOUND, body).header("Warning", x.getMessage()).build();
-
-    }
-
 }

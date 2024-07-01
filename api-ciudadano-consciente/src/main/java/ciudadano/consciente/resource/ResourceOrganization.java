@@ -50,7 +50,7 @@ public class ResourceOrganization {
   @Path("{id}/")
   @Operation(summary = "Retrieve an specific Organization by its ID.")
   @APIResponse(responseCode = "200", description = "Organization successfully retrieved.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Organization. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Organization " + id + "...");
@@ -123,7 +123,7 @@ public class ResourceOrganization {
   @Path("{id}")
   @Operation(summary = "Delete an Organization.")
   @APIResponse(responseCode = "200", description = "Organization successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete new Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete new Organization. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Organization " + id + "...");
@@ -139,7 +139,7 @@ public class ResourceOrganization {
   @Operation(summary = "Assign Role to User in Organization.")
   @APIResponse(responseCode = "201", description = "Role successfully assign to User in Organization.")
   @APIResponse(responseCode = "400", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
   public Response assignRoleToUserInLevel(@PathParam("id") Integer id,
       DTOAssingRoleToUserOrganization dtoAssingRoleToUserOrganization) {
@@ -168,7 +168,6 @@ public class ResourceOrganization {
   @Operation(summary = "Retrieve Users with Role in Organization.")
   @APIResponse(responseCode = "200", description = "Users in Organization with Role successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve User with Role in Organization. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve User with Role in Organization. Verify 'Warning' Header.")
   public Response getUsersWithRole(@PathParam("id") Integer idOrganization,
       @QueryParam("role") Integer idRole,
       @QueryParam("user") Integer idUser) {
@@ -198,7 +197,7 @@ public class ResourceOrganization {
   @Operation(summary = "Assign Role to User in Organization.")
   @APIResponse(responseCode = "201", description = "Role successfully assign to User in Organization.")
   @APIResponse(responseCode = "400", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
   public Response assignRole(@PathParam("id") Integer idOrganization,
       // @PathParam("user") Integer idUser,
@@ -243,7 +242,7 @@ public class ResourceOrganization {
   @Operation(summary = "Update Role of User in Organization.")
   @APIResponse(responseCode = "200", description = "Role successfully updated to User in Organization.")
   @APIResponse(responseCode = "400", description = "Failed to update Role to User in Organization. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to update Role to User in Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Role to User in Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Role to User in Organization. Verify 'Warning' Header.")
   public Response updateRoleOfUserInOrganization(@PathParam("id") Integer idOrganization,
       // @PathParam("user") Integer idUser,
@@ -283,7 +282,7 @@ public class ResourceOrganization {
   @Path("{id}/users/{user}")
   @Operation(summary = "Delete all Roles of a User in a Organization.")
   @APIResponse(responseCode = "200", description = "Roles of User successfully deleted in Organization.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Roles of User in Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Roles of User in Organization. Verify 'Warning' Header.")
   public Response deleteAllRolesOfUserInOrganization(@PathParam("id") Integer idOrganization,
       @PathParam("user") Integer idUser) {
 
@@ -296,7 +295,7 @@ public class ResourceOrganization {
   @Path("{id}/users/{user}/roles/{role}")
   @Operation(summary = "Delete a Role of a User in a Organization.")
   @APIResponse(responseCode = "200", description = "Role of User successfully deleted in Organization.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Role of User in Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Role of User in Organization. Verify 'Warning' Header.")
   public Response deleteUserRoleOrganization(@PathParam("id") Integer idOrganization,
       @PathParam("user") Integer idUser,
       @PathParam("role") Integer idRole) {
@@ -314,7 +313,7 @@ public class ResourceOrganization {
   @Operation(summary = "Vote Organization.")
   @APIResponse(responseCode = "201", description = "Organization successfully voted.")
   @APIResponse(responseCode = "400", description = "Failed vote Organization. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to vote Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to vote Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to vote Organization. Verify 'Warning' Header.")
   public Response vote(@PathParam("id") Integer idOrganization,
       DTOCreateVote dtoCreateVote) {
@@ -350,7 +349,7 @@ public class ResourceOrganization {
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a Organization.")
   @APIResponse(responseCode = "200", description = "Votes of Organization successfully retrieved.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Votes of Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Organization. Verify 'Warning' Header.")
   public Response getVotes(@PathParam("id") Integer id) {
 
     audit.debug("Getting Organization " + id + " Votes...");

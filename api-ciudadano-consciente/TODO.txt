@@ -232,9 +232,18 @@ feat: añadido recurso que recupera todas las respuestas de un nivel y de sus hi
 feat: añadido archivo de loggeo
 feat: personalizado un poco el index.html de Quarkus
 feat: añadido recurso de POSTeo de respuestas en BATCH mode (pero se DEPRECA por no corresponder a una buena práctica)
+feat: añadida interfaz Taggable
 feat: generar Tags (etiquetas)
 
-
+- Commit 
+feat: añadida interfaz Votable
+feat: creado el recurso de obtener levels por usuario y rol
+refactor: unificados los votos en el recurso '/votes/{userId}/{entityTypeId}/{entityId}'.
+refactor: deprecados todos los recursos y servicios de votos en cada entidad.
+refactor: modificadas las HttpNotFoundException por HttpNoContentExpception
+refactor: modificados los ApiResponse (eliminados los 404 y los duplicados de 204)
+refactor: modificados los Rest por RestResponse<DTOActivity> en el recurso Activity
+feat: añadidas las anotaciones de content en ApiResponse del recurso Activity
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -282,6 +291,7 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
+// FIXME feat: añadir a todas las APIResponse anotations el content schema de la response
 
 
 // TODO Verificar referencias eliminadas en cascade para ver si se pueden usar los estados en lugar de borrar
@@ -301,7 +311,7 @@ MANEJO DE USUARIOS Y ROLES
 -----------------------------------------
 
 OPTIMIZACIONES
-// FIXME feat: añadir a todas las APIResponse anotations el content schema de la response
+
 // FIXME refactor: modificar los DTO de Levels para recuperar solo los datos que se necesitan
 // FIXME refactor: match up DB restrictions with api restriction anotations
 // FIXME refactor: hacer más genérico el voto de las entidades
@@ -316,7 +326,7 @@ OPTIMIZACIONES
 // FIXME refactor: los PATCH deberían quizás consumir el tipo de MEDIATYPE merge-patch-json y no json. Habría que modificar la implementación.
 // FIXME refactor: quizás no es necesario el user en el PATCH de Concern o quizás lo sea necesario en el DELETE también (unificar criterio)
 // FIXME refactor: quizás se pueda usar las restricciones UNIQUE de la DB para atrapar las excepciones cuando se quiere crear o actualizar una entidad y no andar comprobando antes si existe ese campo único. (Esto incrementa en uno cada el id de la entidad, incluso los fallidos)
-// FIXME refactor: cambiar los 404(el recurso no existe) por 204(no existe la entidad en el recurso)
+
 // FIXME Verificar Recursos que aceptan DTOs que no haya campos vacios de ids u otros campos.
 
 // TODO Verificar en la BD que hacer con el caso de ActivtyType null en Activity (quizás es obligatorio adaptar el dataset al activity type). En este sentido podría abrirse el espacio para que las organizaciones sugieran ActivityTypes que les gustaría usar.

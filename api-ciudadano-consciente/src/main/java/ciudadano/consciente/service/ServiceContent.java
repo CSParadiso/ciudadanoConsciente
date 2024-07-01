@@ -5,7 +5,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperContent;
 import ciudadano.consciente.mapper.MapperImage;
 import ciudadano.consciente.mapper.MapperVote;
@@ -237,7 +237,7 @@ public class ServiceContent {
 
     audit.debug("Verifying if Content exists.");
     Content content = accessContent.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Content not found."));
+        .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
     List<Image> imageList = accessImage.getImageByContent(content);
     audit.debug("Deleting Content images from File System");
@@ -298,13 +298,13 @@ public class ServiceContent {
 
     audit.debug("Retrieving Entity Type");
     EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     Content Content = accessContent.get(idContent)
-        .orElseThrow(() -> new HttpNotFoundException("Content not found."));
+        .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Verify if Vote already exists.");
     if (accessVote.getByKeys(user, Content.getContentId(), entityType).isPresent()) {

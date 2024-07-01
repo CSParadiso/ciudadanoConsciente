@@ -65,7 +65,6 @@ public class ResourceLevel {
   @Operation(summary = "Retrieve a  Level by its ID.")
   @APIResponse(responseCode = "200", description = "Level successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve Level. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Level. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Level " + id + "...");
@@ -77,8 +76,7 @@ public class ResourceLevel {
   @Path("{id}/childrens")
   @Operation(summary = "Retrieve all childrens of a Level by its ID.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelWithChildrens.class)))
-  @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Level. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Level. Verify 'Warning' Header.")
   public Response getChildrens(@PathParam("id") Integer id) {
 
     audit.debug("Getting childrens of Level " + id + "...");
@@ -95,6 +93,20 @@ public class ResourceLevel {
 
     audit.debug("Getting paths of Organization " + id + "...");
     return Response.ok(serviceLevel.getPathsByOrganization(id)).build();
+
+  }
+
+  @GET
+  @Path("organizations/{organizationId}/users/{userId}/roles/{roleId}")
+  @Operation(summary = "Retrieve all Levels of an Organization where the user has a specific role.")
+  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
+  public Response getLevelsByOrganizationUserAndRole(@PathParam("organizationId") Integer organizationId,
+                                                     @PathParam("userId") Integer userId,
+                                                     @PathParam("roleId") Integer roleId) {
+
+    audit.debug("Getting Levels of and Organization by User and Role...");
+    return Response.ok(serviceLevel.getLevelsByOrganizationUserAndRole(organizationId, userId, roleId)).build();
 
   }
 
@@ -157,7 +169,7 @@ public class ResourceLevel {
   @Operation(summary = "Update a Level.")
   @APIResponse(responseCode = "200", description = "Level successfully updated.")
   @APIResponse(responseCode = "400", description = "Failed to update Level. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to update Level. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Level. Verify 'Warning' Header.")
   public Response update(@PathParam("id") Integer id,
       DTOUpdateLevel dtoUpdateLevel) {
 
@@ -190,7 +202,7 @@ public class ResourceLevel {
   @Path("{id}")
   @Operation(summary = "Delete a  Level by its ID.")
   @APIResponse(responseCode = "200", description = "Level successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Level. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Level. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Level " + id + "...");
@@ -206,7 +218,6 @@ public class ResourceLevel {
   @Operation(summary = "Retrieve all the Users and Roles in a  Level.")
   @APIResponse(responseCode = "200", description = "Roles of User in Level successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header.")
   public Response getAll(@PathParam("id") Integer id) {
 
     audit.debug("Getting all the UserRole of Level " + id + "...");
@@ -220,7 +231,6 @@ public class ResourceLevel {
   @Operation(summary = "Retrieve all the Roles of User in a  Level.")
   @APIResponse(responseCode = "200", description = "Roles of User in Level successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header.")
   public Response getAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser) {
 
@@ -234,7 +244,6 @@ public class ResourceLevel {
   @Operation(summary = "Retrieve Users with Role in Level.")
   @APIResponse(responseCode = "200", description = "Users in Level with Role successfully retrieved.")
   @APIResponse(responseCode = "204", description = "Failed to retrieve User with Role in Level. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve User with Role in Level. Verify 'Warning' Header.")
   public Response getUsersWithRole(@PathParam("id") Integer idLevel,
       @QueryParam("role") Integer idRole,
       @QueryParam("user") Integer idUser) {
@@ -264,7 +273,7 @@ public class ResourceLevel {
   @Path("/{id}/users/{user}/roles/{role}")
   @Operation(summary = "Retrieve a User Role in Level.")
   @APIResponse(responseCode = "200", description = "UserRoleLevel successfully retrieved.")
-  @APIResponse(responseCode = "404", description = "User doesn't have that Role in Level.")
+  @APIResponse(responseCode = "204", description = "User doesn't have that Role in Level.")
   public Response getUserRoleLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser,
       @PathParam("role") Integer idRole) {
@@ -279,7 +288,7 @@ public class ResourceLevel {
   @Operation(summary = "Assign Role to User in Level.")
   @APIResponse(responseCode = "201", description = "Role successfully assign to User in Level.")
   @APIResponse(responseCode = "400", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
   public Response assignRole(@PathParam("id") Integer idLevel,
       // @PathParam("user") Integer idUser,
@@ -323,7 +332,7 @@ public class ResourceLevel {
   @Operation(summary = "Update Role of User in Level.")
   @APIResponse(responseCode = "200", description = "Role successfully updated to User in Level.")
   @APIResponse(responseCode = "400", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
   public Response updateRoleOfUserInLevel(@PathParam("id") Integer idLevel,
       // @PathParam("user") Integer idUser,
@@ -362,7 +371,7 @@ public class ResourceLevel {
   @Path("{id}/users/{user}")
   @Operation(summary = "Delete all Roles of a User in a Level.")
   @APIResponse(responseCode = "200", description = "Roles of User successfully deleted in Level.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Roles of User in Level. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Roles of User in Level. Verify 'Warning' Header.")
   public Response deleteAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser) {
 
@@ -375,7 +384,7 @@ public class ResourceLevel {
   @Path("{id}/users/{user}/roles/{role}")
   @Operation(summary = "Delete a Role of a User in a Level.")
   @APIResponse(responseCode = "200", description = "Role of User successfully deleted in Level.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Role of User in Level. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Role of User in Level. Verify 'Warning' Header.")
   public Response deleteUserRoleLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser,
       @PathParam("role") Integer idRole) {

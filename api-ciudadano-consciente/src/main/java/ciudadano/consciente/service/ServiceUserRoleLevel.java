@@ -9,7 +9,7 @@ import ciudadano.consciente.dto.DTOUserRoleLevel;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperUserRoleLevel;
 import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.model.UserRoleLevel;
@@ -56,7 +56,7 @@ public class ServiceUserRoleLevel {
 
         audit.debug("Updating RoleUserLevel " + id + ".");
         UserRoleLevel userRoleLevel = accessUserRoleLevel.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("UserRoleLevel not found.") );
+                .orElseThrow( ()-> new HttpNoContentException("UserRoleLevel not found.") );
 
         Integer user = dtoUpdateRoleUserLevel.getUser();
         Integer level = dtoUpdateRoleUserLevel.getLevel();
@@ -72,21 +72,21 @@ public class ServiceUserRoleLevel {
 
         if(utilityVerifyRequestField.isValidField(user)) {
             userRoleLevelAux.setUser(accessUser.get(user)
-                    .orElseThrow( ()-> new HttpNotFoundException("User not found.")));
+                    .orElseThrow( ()-> new HttpNoContentException("User not found.")));
         } else {
             userRoleLevelAux.setUser(userRoleLevel.getUser());
         }
 
         if(utilityVerifyRequestField.isValidField(level)) {
             userRoleLevel.setLevel(accessLevel.get(level)
-                    .orElseThrow( ()-> new HttpNotFoundException("Level not found.")));
+                    .orElseThrow( ()-> new HttpNoContentException("Level not found.")));
         } else {
             userRoleLevelAux.setRole(userRoleLevel.getRole());
         }
 
         if(utilityVerifyRequestField.isValidField(role)) {
             userRoleLevel.setRole(accessRole.get(role)
-                    .orElseThrow( ()-> new HttpNotFoundException("Role not found.")));
+                    .orElseThrow( ()-> new HttpNoContentException("Role not found.")));
         } else {
             userRoleLevelAux.setLevel(userRoleLevel.getLevel());
         }

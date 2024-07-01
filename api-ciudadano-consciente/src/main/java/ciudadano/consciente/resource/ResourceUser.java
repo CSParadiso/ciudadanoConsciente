@@ -160,7 +160,7 @@ public class ResourceUser {
             description = "User successfully deleted."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to create User. Verify 'Warning' Header."
     )
     public Response delete(@PathParam("id") Integer id) {
@@ -178,7 +178,7 @@ public class ResourceUser {
             description = "Votes of User successfully retrieved."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to retrieve Votes of User. Verify 'Warning' Header."
     )
     public Response getVotes(@PathParam("id") Integer id) {

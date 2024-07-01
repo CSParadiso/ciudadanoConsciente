@@ -50,10 +50,6 @@ public class ResourceUserRoleLevel {
             responseCode = "204",
             description = "Failed to retrieve UserRoleLevel. Verify 'Warning' Header."
     )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to retrieve UserRoleLevel. Verify 'Warning' Header."
-    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting User " + id + "...");

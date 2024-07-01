@@ -49,7 +49,7 @@ public class ResourceTag {
   @Path("{id}")
   @Operation(summary = "Retrieve a specific Tag by its ID.")
   @APIResponse(responseCode = "200", description = "Tag successfully retrieved.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Tag. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tag. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Retrieving Tag " + id + ".");
@@ -60,7 +60,7 @@ public class ResourceTag {
   @POST
   @Operation(summary = "Create a new Tag.")
   @APIResponse(responseCode = "201", description = "Tag successfully created.")
-  @APIResponse(responseCode = "404", description = "Failed to create Tag. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to create Tag. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to create Tag. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Tag. Verify 'Warning' Header.")
   public Response create(DTOCreateTag dtoCreateTag) {
@@ -89,7 +89,7 @@ public class ResourceTag {
   @Operation(summary = "Update a Tag.")
   @APIResponse(responseCode = "200", description = "Tag successfully updated.")
   @APIResponse(responseCode = "400", description = "Failed to update Tag. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to update Tag. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Tag. Verify 'Warning' Header.")
   public Response update(@PathParam("id") Integer id,
       DTOUpdateTag dtoUpdateTag) {
 
@@ -118,7 +118,7 @@ public class ResourceTag {
   @Path("{id}")
   @Operation(summary = "Delete a  Tag by its ID.")
   @APIResponse(responseCode = "200", description = "Tag successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Tag. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Tag. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Tag " + id + "...");

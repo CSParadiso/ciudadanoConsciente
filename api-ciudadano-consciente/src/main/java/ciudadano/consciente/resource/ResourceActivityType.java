@@ -49,7 +49,6 @@ public class ResourceActivityType {
   @Path("{id}")
   @Operation(summary = "Retrieve a specific Activity Type by its ID.")
   @APIResponse(responseCode = "200", description = "Activity Types successfully retrieved.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Activity Type. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Activity Type " + id + "...");
@@ -94,7 +93,7 @@ public class ResourceActivityType {
   @Operation(summary = "Update an Activity Type.")
   @APIResponse(responseCode = "200", description = "Activity Types successfully updated.")
   @APIResponse(responseCode = "400", description = "Failed to update Activity Type. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
   public Response update(@PathParam("id") Integer id,
       DTOUpdateActivityType dtoUpdateActivityType) {
 
@@ -123,7 +122,7 @@ public class ResourceActivityType {
   @Path("{id}")
   @Operation(summary = "Delete a specific Activity Type by its ID.")
   @APIResponse(responseCode = "200", description = "Activity Types successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Activity Type " + id + "...");
@@ -138,7 +137,6 @@ public class ResourceActivityType {
   @Operation(summary = "Vote Activity Type.")
   @APIResponse(responseCode = "201", description = "Activity Type successfully voted.")
   @APIResponse(responseCode = "400", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
   public Response vote(@PathParam("id") Integer idActivityType,
       DTOCreateVote dtoCreateVote) {

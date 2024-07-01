@@ -5,7 +5,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperActivityTypeVersion;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
@@ -184,7 +184,7 @@ public class ServiceActivityTypeVersion {
 
     audit.debug("Retrieving Version Server " + versionServerProvider + ".");
     VersionServer versionServer = accessVersionServer.getByName(versionServerProvider)
-        .orElseThrow(() -> new HttpNotFoundException("Version Server Not Found or Not Supported yet."));
+        .orElseThrow(() -> new HttpNoContentException("Version Server Not Found or Not Supported yet."));
 
     audit.debug("Sending parameters to version server.");
     ActivityTypeVersion activityTypeVersion = serviceVersionServer.createVersion(versionServer,
@@ -302,7 +302,7 @@ public class ServiceActivityTypeVersion {
 
     audit.debug("Deleting ActivityTypeVersion " + id + ".");
     ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("ActivityTypeVersion not found."));
+        .orElseThrow(() -> new HttpNoContentException("ActivityTypeVersion not found."));
 
     // The version already has been deleted
     if (activityTypeVersion.getActivityTypeVersionStatusId().getTitle().equals("DELETED")) {
@@ -328,13 +328,13 @@ public class ServiceActivityTypeVersion {
 
     audit.debug("Retrieving Entity Type");
     EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     ActivityTypeVersion ActivityTypeVersion = accessActivityTypeVersion.get(idActivityTypeVersion)
-        .orElseThrow(() -> new HttpNotFoundException("ActivityTypeVersion not found."));
+        .orElseThrow(() -> new HttpNoContentException("ActivityTypeVersion not found."));
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Verify if Vote already exists.");
     if (accessVote.getByKeys(user, ActivityTypeVersion.getActivityTypeVersionId(), entityType).isPresent()) {

@@ -6,7 +6,7 @@ import ciudadano.consciente.dto.DTOTag;
 import ciudadano.consciente.dto.DTOUpdateTag;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperTag;
 import ciudadano.consciente.model.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -40,7 +40,7 @@ public class ServiceTag {
 
     audit.debug("Retrieving Tag " + id + ".");
     Tag tag = accessTag.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Tag not found."));
+        .orElseThrow(() -> new HttpNoContentException("Tag not found."));
 
     return mapperTag.entityToDto(tag);
 
@@ -74,7 +74,7 @@ public class ServiceTag {
 
     audit.debug("Retrieving Tag.");
     Tag tag = accessTag.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Tag not found."));
+        .orElseThrow(() -> new HttpNoContentException("Tag not found."));
 
     audit.debug("Updating Concern " + id + ".");
     mapperTag.update(tag, dtoUpdateTag);
@@ -93,7 +93,7 @@ public class ServiceTag {
 
     audit.debug("Deleting Concern " + id + ".");
     Tag tag = accessTag.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Tag not found."));
+        .orElseThrow(() -> new HttpNoContentException("Tag not found."));
 
     if (!accessTag.remove(tag.getTagId())) {
       throw new HttpInternalServerException("Failed to delete Tag");

@@ -60,10 +60,6 @@ public class ResourceEntityType {
             responseCode = "204",
             description = "Failed to retrieve EntityType. Verify 'Warning' Header."
     )
-    @APIResponse(
-            responseCode = "404",
-            description = "Failed to retrieve EntityType. Verify 'Warning' Header."
-    )
     public Response get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Level " + id + "...");
@@ -120,7 +116,7 @@ public class ResourceEntityType {
             description = "Failed to update category of Entities. Verify 'Warning' Header."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to update category of Entities. Verify 'Warning' Header."
     )
     public Response update(@PathParam("id") Integer id,
@@ -153,7 +149,7 @@ public class ResourceEntityType {
             description = "Category of Entities successfully deleted."
     )
     @APIResponse(
-            responseCode = "404",
+            responseCode = "204",
             description = "Failed to delete category of Entities. Verify 'Warning' Header."
     )
     public Response delete(@PathParam("id") Integer id) {

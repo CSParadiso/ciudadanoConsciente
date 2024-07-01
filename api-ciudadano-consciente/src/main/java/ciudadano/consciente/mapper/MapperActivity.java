@@ -6,7 +6,7 @@ import ciudadano.consciente.access.AccessLevel;
 import ciudadano.consciente.dto.DTOActivity;
 import ciudadano.consciente.dto.DTOCreateActivity;
 import ciudadano.consciente.dto.DTOUpdateActivity;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.model.Activity;
 import ciudadano.consciente.model.ActivityType;
 import ciudadano.consciente.model.Level;

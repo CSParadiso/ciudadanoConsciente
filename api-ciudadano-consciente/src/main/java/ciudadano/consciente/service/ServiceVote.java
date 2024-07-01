@@ -5,7 +5,7 @@ import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -67,7 +67,7 @@ public class ServiceVote {
 
     audit.debug("Getting Vote " + id + ".");
     Vote vote = accessVote.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Vote not found."));
+        .orElseThrow(() -> new HttpNoContentException("Vote not found."));
 
     audit.debug("Mapping Vote into DTO.");
     return mapperVote.entityToDto(vote);
@@ -78,7 +78,7 @@ public class ServiceVote {
   public DTOVote updateStatus(Integer id) {
 
     Vote vote = accessVote.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Vote not found."));
+        .orElseThrow(() -> new HttpNoContentException("Vote not found."));
 
     audit.debug("Updating Vote " + id + ".");
     vote.setActive(false);
@@ -97,11 +97,11 @@ public class ServiceVote {
 
     audit.debug("Retrieving User.");
     User user = accessUser.get(userId)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Retrieving Entity Type.");
     EntityType entityType = accessEntityType.get(entityTypeId)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     // TODO Verificar que existe esa entidad
     // ¿Cómo determinar su tipo y acceder a su accesor para recuperarla?

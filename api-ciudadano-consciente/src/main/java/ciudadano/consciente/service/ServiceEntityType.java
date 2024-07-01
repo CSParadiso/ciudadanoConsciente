@@ -6,7 +6,7 @@ import ciudadano.consciente.dto.DTOEntityType;
 import ciudadano.consciente.dto.DTOUpdateEntityType;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperEntityType;
 import ciudadano.consciente.model.EntityType;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
@@ -44,7 +44,7 @@ public class ServiceEntityType {
 
     audit.debug("Getting EntityType " + id + ".");
     EntityType entityType = accessEntityType.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("EntityType not found."));
+        .orElseThrow(() -> new HttpNoContentException("EntityType not found."));
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperEntityType.entityToDto(entityType);
@@ -78,7 +78,7 @@ public class ServiceEntityType {
     String title = dtoUpdateEntityType.getTitle();
 
     EntityType entityType = accessEntityType.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Category of EntityType not found."));
+        .orElseThrow(() -> new HttpNoContentException("Category of EntityType not found."));
 
     if (utilityVerifyRequestField.isValidField(title)) {
       if (accessEntityType.existTitle(title)) {
@@ -101,7 +101,7 @@ public class ServiceEntityType {
 
     audit.debug("Deleting category of EntityType " + id + ".");
     EntityType entityType = accessEntityType.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("EntityType not found."));
+        .orElseThrow(() -> new HttpNoContentException("EntityType not found."));
 
     if (!accessEntityType.remove(entityType.getEntityTypeId())) {
       throw new HttpInternalServerException("Failed to delete EntityType");

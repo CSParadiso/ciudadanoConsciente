@@ -1,4 +1,4 @@
-2024-06-02 13:47:25,905 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+2024-07-01 20:30:30,678 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
    ___ _           _           _                       ___                     _            _       
   / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
  / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
@@ -6,9 +6,7 @@
 \____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
                                                                                                     
 
-2024-06-02 13:47:25,921 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.0 on JVM (powered by Quarkus 3.2.8.Final) started in 2.525s. Listening on: http://localhost:5909
-2024-06-02 13:47:25,926 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2024-06-02 13:47:25,935 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
-2024-06-02 13:47:25,938 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-2) Live reload total time: 3.951s 
-2024-06-02 13:49:41,236 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [ciu.con.uti.APILifeCycle] (Shutdown thread) The api CIUDADANO CONSCIENTE is stopping...
-2024-06-02 13:49:41,257 saimonlaptop api-ciudadano-consciente-dev.jar[6956] INFO  [io.quarkus] (Shutdown thread) api-ciudadano-consciente stopped in 0.021s
+2024-07-01 20:30:30,680 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.1 on JVM (powered by Quarkus 3.2.8.Final) started in 1.757s. Listening on: http://localhost:5909
+2024-07-01 20:30:30,681 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-07-01 20:30:30,682 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-07-01 20:30:30,683 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-2) Live reload total time: 2.069s 

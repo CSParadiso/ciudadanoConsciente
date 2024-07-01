@@ -50,7 +50,7 @@ public class ResourceReference {
   @Path("{id}")
   @Operation(summary = "Retrieve a specific Reference by its ID.")
   @APIResponse(responseCode = "200", description = "Reference successfully retrieved.")
-  @APIResponse(responseCode = "404", description = "Failed to retrieve Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Reference. Verify 'Warning' Header.")
   public Response get(@PathParam("id") Integer id) {
 
     audit.debug("Retrieving Reference " + id + ".");
@@ -61,7 +61,7 @@ public class ResourceReference {
   @POST
   @Operation(summary = "Create a new Reference.")
   @APIResponse(responseCode = "201", description = "Reference successfully created.")
-  @APIResponse(responseCode = "404", description = "Failed to create Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to create Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to create Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Reference. Verify 'Warning' Header.")
   public Response create(DTOCreateReference dtoCreateReference) {
@@ -93,7 +93,7 @@ public class ResourceReference {
   @Path("{id}")
   @Operation(summary = "Update a Reference.")
   @APIResponse(responseCode = "200", description = "Reference successfully updated.")
-  @APIResponse(responseCode = "404", description = "Failed to update Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to update Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Reference. Verify 'Warning' Header.")
   public Response update(@PathParam("id") Integer id,
@@ -128,7 +128,7 @@ public class ResourceReference {
   @Path("{id}")
   @Operation(summary = "Delete a Reference.")
   @APIResponse(responseCode = "200", description = "Reference successfully deleted.")
-  @APIResponse(responseCode = "404", description = "Failed to delete Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to delete Reference. Verify 'Warning' Header.")
   public Response delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Reference " + id + "...");
@@ -143,7 +143,7 @@ public class ResourceReference {
   @Operation(summary = "Vote Reference.")
   @APIResponse(responseCode = "201", description = "Reference successfully voted.")
   @APIResponse(responseCode = "400", description = "Failed to Vote Reference. Verify 'Warning' Header.")
-  @APIResponse(responseCode = "404", description = "Failed to Vote Reference. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to Vote Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Reference. Verify 'Warning' Header.")
   public Response vote(@PathParam("id") Integer idReference,
       DTOCreateVote dtoCreateVote) {

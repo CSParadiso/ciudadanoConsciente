@@ -5,7 +5,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperUserRoleOrganization;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
@@ -114,7 +114,7 @@ public class ServiceOrganization {
 
     audit.debug("Updating Organization " + id + ".");
     Organization organization = accessOrganization.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found"));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found"));
 
     String email = dtoUpdateOrganization.getEmail();
     String name = dtoUpdateOrganization.getName();
@@ -151,7 +151,7 @@ public class ServiceOrganization {
 
     audit.debug("Deleting Organization " + id);
     Organization organization = accessOrganization.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found"));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found"));
 
     if (!accessOrganization.remove(organization.getOrganizationId())) {
       throw new HttpInternalServerException("Failed to delete Organization.");
@@ -180,13 +180,13 @@ public class ServiceOrganization {
     UserRolOrganization userRolOrganization = new UserRolOrganization();
 
     userRolOrganization.setUser(accessUser.get(user)
-        .orElseThrow(() -> new HttpNotFoundException("User not found.")));
+        .orElseThrow(() -> new HttpNoContentException("User not found.")));
 
     userRolOrganization.setOrganization(accessOrganization.get(organization)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found.")));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found.")));
 
     userRolOrganization.setRole(accessRole.get(role)
-        .orElseThrow(() -> new HttpNotFoundException("Role not found.")));
+        .orElseThrow(() -> new HttpNoContentException("Role not found.")));
 
     audit.debug("Saving UserRoleOrganization " + userRolOrganization.getUroId() + ".");
     try {
@@ -205,7 +205,7 @@ public class ServiceOrganization {
 
     audit.debug("Getting Organization " + id + ".");
     Organization organization = accessOrganization.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found."));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found."));
 
     audit.debug("Retrieving all UserRole of Organization " + organization.getOrganizationId() + ".");
     List<UserRolOrganization> userRolOrganizations = accessUserRoleOrganization.getByOrganization(organization);
@@ -222,13 +222,13 @@ public class ServiceOrganization {
   public List<DTOUserRoleOrganization> getAllUsersWithRoleByOrganization(Integer idOrganization) {
 
     Organization organization = accessOrganization.get(idOrganization)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found."));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found."));
 
     audit.debug("Retrieving all Users with Roles in Organization(" + idOrganization + ").");
     List<UserRolOrganization> userRoleOrganizationList = accessUserRoleOrganization.getByOrganization(organization);
 
     if (userRoleOrganizationList.isEmpty()) {
-      throw new HttpNotFoundException("Organization without Roles assigned.");
+      throw new HttpNoContentException("Organization without Roles assigned.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
@@ -243,7 +243,7 @@ public class ServiceOrganization {
         .getByOrganizationAndUser(idOrganization, idUser);
 
     if (userRoleOrganizationList.isEmpty()) {
-      throw new HttpNotFoundException("User don't have Roles in Organization.");
+      throw new HttpNoContentException("User don't have Roles in Organization.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
@@ -258,7 +258,7 @@ public class ServiceOrganization {
         .getByOrganizationAndRole(idOrganization, idRole);
 
     if (userRoleOrganizationList.isEmpty()) {
-      throw new HttpNotFoundException("Role don't have Users in Organization.");
+      throw new HttpNoContentException("Role don't have Users in Organization.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
@@ -270,7 +270,7 @@ public class ServiceOrganization {
 
     audit.debug("Retrieving UserRoleOrganization");
     UserRolOrganization userRoleorganization = accessUserRoleOrganization.get(idOrganization, idUser, idRole)
-        .orElseThrow(() -> new HttpNotFoundException("UserRoleOrganization not found"));
+        .orElseThrow(() -> new HttpNoContentException("UserRoleOrganization not found"));
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleOrganization.entityToDto(userRoleorganization);
@@ -287,13 +287,13 @@ public class ServiceOrganization {
     }
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     Organization organization = accessOrganization.get(idOrganization)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found."));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found."));
 
     Role role = accessRole.get(idRole)
-        .orElseThrow(() -> new HttpNotFoundException("Role not found."));
+        .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
     audit.debug("Creating Role of User in Organization.");
     UserRolOrganization userRoleOrganization = new UserRolOrganization();
@@ -321,18 +321,18 @@ public class ServiceOrganization {
 
     audit.debug("Verifying if new Role exists.");
     Role role = accessRole.get(newRole)
-        .orElseThrow(() -> new HttpNotFoundException("Role not found."));
+        .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
     audit.debug("Verifying if UserRoleOrganization original exists.");
     UserRolOrganization userRoleOrganization = accessUserRoleOrganization.get(idOrganization, idUser, idRole)
-        .orElseThrow(() -> new HttpNotFoundException("UserRoleOrganization not found."));
+        .orElseThrow(() -> new HttpNoContentException("UserRoleOrganization not found."));
 
     audit.debug("Upating Rol of User in Organization: from " + idRole + " to " + newRole);
     userRoleOrganization.setRole(role);
 
     audit.debug("Saving updated UserRoleOrganization " + userRoleOrganization.getUroId() + ".");
     accessUserRoleOrganization.save(userRoleOrganization)
-        .orElseThrow(() -> new HttpNotFoundException("Failed to update Role of User in Organization."));
+        .orElseThrow(() -> new HttpNoContentException("Failed to update Role of User in Organization."));
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
@@ -346,7 +346,7 @@ public class ServiceOrganization {
     List<UserRolOrganization> userRoleOrganizationList = accessUserRoleOrganization
         .getByOrganizationAndUser(idOrganization, idUser);
     if (userRoleOrganizationList.isEmpty()) {
-      throw new HttpNotFoundException("User don't have Roles in Organization.");
+      throw new HttpNoContentException("User don't have Roles in Organization.");
     } else {
       for (UserRolOrganization userRoleOrganization : userRoleOrganizationList) {
         accessUserRoleOrganization.remove(userRoleOrganization.getUroId());
@@ -362,7 +362,7 @@ public class ServiceOrganization {
 
     audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Organization(" + idOrganization + ".");
     UserRolOrganization userRoleOrganization = accessUserRoleOrganization.get(idOrganization, idUser, idRole)
-        .orElseThrow(() -> new HttpNotFoundException("UserRoleOrganization not found."));
+        .orElseThrow(() -> new HttpNoContentException("UserRoleOrganization not found."));
 
     if (!accessUserRoleOrganization.remove(userRoleOrganization.getUroId())) {
       throw new HttpInternalServerException("Failed to remove UserRoleOrganization.");
@@ -380,13 +380,13 @@ public class ServiceOrganization {
 
     audit.debug("Retrieving Entity Type");
     EntityType entityType = accessEntityType.getByName(ENTITY_NAME)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     Organization organization = accessOrganization.get(idOrganization)
-        .orElseThrow(() -> new HttpNotFoundException("Organization not found."));
+        .orElseThrow(() -> new HttpNoContentException("Organization not found."));
 
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNotFoundException("User not found."));
+        .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Verify if Vote already exists.");
     if (accessVote.getByKeys(user, organization.getOrganizationId(), entityType).isPresent()) {
@@ -408,7 +408,7 @@ public class ServiceOrganization {
   public List<DTOVote> getVotes(Integer id) {
 
     EntityType entityType = accessEntityType.getByName("Organization")
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     return mapperVote.entityToDto(accessVote.getByKeys(entityType, id));
 

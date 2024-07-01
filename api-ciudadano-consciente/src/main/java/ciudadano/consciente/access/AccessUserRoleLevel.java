@@ -81,4 +81,11 @@ public class AccessUserRoleLevel implements PanacheRepositoryBase<UserRoleLevel,
         return find("level.levelId = ?1 and role.roleId = ?2", idLevel, idRole).stream().toList();
 
     }
+
+    public List<UserRoleLevel> getByUserAndRole(User user, Role role) {
+
+        return find("user.userId = ?1 and role.roleId = ?2", user.getUserId(), role.getRoleId()).stream().toList();
+
+    }
+
 }

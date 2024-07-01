@@ -21,7 +21,7 @@ import ciudadano.consciente.access.AccessTagged;
 import ciudadano.consciente.dto.DTOTagged;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperTagged;
 import ciudadano.consciente.model.ActivityType;
 import ciudadano.consciente.model.Concern;
@@ -91,11 +91,11 @@ public class ServiceTagged {
 
     audit.debug("Retrieving Tag.");
     Tag tag = accessTag.get(tagId)
-        .orElseThrow(() -> new HttpNotFoundException("Tag not found."));
+        .orElseThrow(() -> new HttpNoContentException("Tag not found."));
 
     audit.debug("Retrieving Entity Type.");
     EntityType entityType = accessEntityType.get(entityTypeId)
-        .orElseThrow(() -> new HttpNotFoundException("Entity Type not found."));
+        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
 
     // TODO Verificar que existe esa entidad
     // ¿Cómo determinar su tipo y acceder a su accesor para recuperarla?
@@ -156,7 +156,7 @@ public class ServiceTagged {
 
     audit.debug("Deleting Tagged " + id + ".");
     Tagged tagged = accessTagged.get(id)
-        .orElseThrow(() -> new HttpNotFoundException("Tagged not found."));
+        .orElseThrow(() -> new HttpNoContentException("Tagged not found."));
 
     if (!accessTagged.remove(tagged.getTaggedId())) {
       throw new HttpInternalServerException("Failed to delete Tagged.");

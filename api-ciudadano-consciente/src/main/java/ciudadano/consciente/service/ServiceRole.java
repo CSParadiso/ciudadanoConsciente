@@ -6,7 +6,7 @@ import ciudadano.consciente.dto.DTORole;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNotFoundException;
+import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.model.Role;
 import ciudadano.consciente.dto.DTOUpdateRole;
@@ -104,7 +104,7 @@ public class ServiceRole {
 
         audit.debug("Deleting Role " + id + ".");
         Role role = accessRole.get(id)
-                .orElseThrow( ()-> new HttpNotFoundException("Role not found."));
+                .orElseThrow( ()-> new HttpNoContentException("Role not found."));
 
         if(!accessRole.remove(role.getRoleId())) {
             throw new HttpInternalServerException("Failed to dalete Role.");
