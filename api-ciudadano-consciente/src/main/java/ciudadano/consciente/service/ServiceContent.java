@@ -131,7 +131,7 @@ public class ServiceContent {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public Object update(Integer id, DTOUpdateContent dtoUpdateContent) {
+  public DTOContent update(Integer id, DTOUpdateContent dtoUpdateContent) {
 
     Integer contentId = dtoUpdateContent.getContent();
     byte[] modelFile = dtoUpdateContent.getModel();

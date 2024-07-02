@@ -16,6 +16,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -49,10 +50,10 @@ public class ResourceAnswer {
             responseCode = "204",
             description = "Failed to retrieve all Answers. Verify 'Warning' Header."
     )
-    public Response getAll() {
+    public RestResponse<List<DTOAnswer>> getAll() {
 
         audit.debug("Getting all Answers...");
-        return Response.ok(serviceAnswer.getAll()).build();
+        return RestResponse.ResponseBuilder.ok(serviceAnswer.getAll()).build();
 
     }
 
@@ -68,10 +69,10 @@ public class ResourceAnswer {
             responseCode = "204",
             description = "Failed to retrieve Answers. Verify 'Warning' header."
     )
-    public Response getAllChildrenLevelsAnswers(@PathParam("levelId") Integer levelId) {
+    public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswers(@PathParam("levelId") Integer levelId) {
 
         audit.debug("Retrieving all Children Levels Answers.");
-        return Response.ok(serviceAnswer.getAllChildrenLevelsAnswers(levelId)).build();
+        return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswers(levelId)).build();
 
     }
 
@@ -87,10 +88,10 @@ public class ResourceAnswer {
             responseCode = "204",
             description = "Failed to retrieve Answer. Verify 'Warning' Header."
     )
-    public Response get(@PathParam("id") Integer id) {
+    public RestResponse<DTOAnswer> get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Answer " + id + "...");
-        return Response.ok(serviceAnswer.get(id)).build();
+        return RestResponse.ResponseBuilder.ok(serviceAnswer.get(id)).build();
 
     }
 
@@ -109,7 +110,7 @@ public class ResourceAnswer {
             responseCode = "500",
             description = "Failed to create Answer. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateAnswer dtoCreateAnswer) {
+    public RestResponse<DTOAnswer> create(DTOCreateAnswer dtoCreateAnswer) {
 
         if(dtoCreateAnswer == null) {
             throw new HttpBadRequestException("Body of request required.");
@@ -130,8 +131,8 @@ public class ResourceAnswer {
         audit.debug("Creating URI...");
         URI uri = URI.create(PATH_BASE_RESOURCE + answer.getAnswerId());
 
-        return Response.created(uri)
-                .entity(answer)
+        return RestResponse.ResponseBuilder
+                .create(RestResponse.Status.CREATED, answer)
                 .build();
 
     }
@@ -157,7 +158,7 @@ public class ResourceAnswer {
             responseCode = "500",
             description = "Failed to create Answer. Verify 'Warning' Header."
     )
-    public Response createBatchAnswers(DTOCreateBatchAnswer dtoCreateBatchAnswers) {
+    public RestResponse<List<DTOAnswer>> createBatchAnswers(DTOCreateBatchAnswer dtoCreateBatchAnswers) {
 
         if(dtoCreateBatchAnswers == null) {
             throw new HttpBadRequestException("Body of request required.");
@@ -171,7 +172,7 @@ public class ResourceAnswer {
         audit.debug("Creating Answers...");
         List<DTOAnswer> answers = serviceAnswer.createBatchAnswers(dtoCreateBatchAnswers);
 
-        return Response.ok(answers).build();
+        return RestResponse.ResponseBuilder.ok(answers).build();
 
     }
 
@@ -191,7 +192,7 @@ public class ResourceAnswer {
             responseCode = "204",
             description = "Failed to update Answer Status. Verify 'Warning' Header."
     )
-    public Response updateStatus(@PathParam("id") Integer id,
+    public RestResponse<DTOAnswer> updateStatus(@PathParam("id") Integer id,
                            DTOUpdateAnswerStatus dtoUpdateAnswerStatus) {
 
         if(dtoUpdateAnswerStatus == null) {
@@ -209,7 +210,7 @@ public class ResourceAnswer {
         }
         // TODO Podría simplemente negar lo que ya estaba
         audit.debug("Updating Answer Status" + id + "...");
-        return Response.ok(serviceAnswer.updateStatus(id, dtoUpdateAnswerStatus)).build();
+        return RestResponse.ResponseBuilder.ok(serviceAnswer.updateStatus(id, dtoUpdateAnswerStatus)).build();
 
     }
     

@@ -11,11 +11,15 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
+import java.util.List;
 
 @Tag(name = "Activity Type Version Status Resource")
 @RequestScoped
@@ -39,12 +43,13 @@ public class ResourceActivityTypeVersionStatus {
     @Operation(summary = "Retrieve all categories of Activity Type Version Status")
     @APIResponse(
             responseCode = "200",
-            description = "Categories of Activity Type Version Status successfully retrieved"
+            description = "Categories of Activity Type Version Status successfully retrieved",
+            content = @Content( schema = @Schema(implementation = DTOActivityTypeVersionStatus.class))
     )
-    public Response getAll() {
+    public RestResponse<List<DTOActivityTypeVersionStatus>> getAll() {
 
         audit.debug("Retrieving all categories of Activity Type Version Status...");
-        return Response.ok(serviceActivityTypeVersionStatus.getAll()).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersionStatus.getAll()).build();
 
     }
 
@@ -53,16 +58,17 @@ public class ResourceActivityTypeVersionStatus {
     @Operation(summary = "Retrieve a category of Activity Type Version Status.")
     @APIResponse(
             responseCode = "200",
-            description = "Category of Activity Type Version Status successfully retrieved."
+            description = "Category of Activity Type Version Status successfully retrieved.",
+            content = @Content( schema = @Schema(implementation = DTOActivityTypeVersionStatus.class))
     )
     @APIResponse(
             responseCode = "204",
             description = "Failed to retrieve Activity Type Version Status. Verify 'Warning' Header."
     )
-    public Response get(@PathParam("id") Integer id) {
+    public RestResponse<DTOActivityTypeVersionStatus> get(@PathParam("id") Integer id) {
 
         audit.debug("Getting Level " + id + "...");
-        return Response.ok(serviceActivityTypeVersionStatus.get(id)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersionStatus.get(id)).build();
 
     }
 
@@ -70,7 +76,8 @@ public class ResourceActivityTypeVersionStatus {
     @Operation(summary = "Create a category of Activity Type Version Status.")
     @APIResponse(
             responseCode = "201",
-            description = "Category of Activity Type Version Status successfully created."
+            description = "Category of Activity Type Version Status successfully created.",
+            content = @Content( schema = @Schema(implementation = DTOActivityTypeVersionStatus.class))
     )
     @APIResponse(
             responseCode = "400",
@@ -80,7 +87,7 @@ public class ResourceActivityTypeVersionStatus {
             responseCode = "500",
             description = "Failed to create category of Activity Type Version Status. Verify 'Warning' Header."
     )
-    public Response create(DTOCreateActivityTypeVersionStatus dtoCreateActivityTypeVersionStatus) {
+    public RestResponse<DTOActivityTypeVersionStatus> create(DTOCreateActivityTypeVersionStatus dtoCreateActivityTypeVersionStatus) {
 
         if(dtoCreateActivityTypeVersionStatus == null) {
             throw new HttpBadRequestException("Body of request required.");
@@ -99,8 +106,9 @@ public class ResourceActivityTypeVersionStatus {
         audit.debug("Creating URI...");
         URI uri = URI.create(PATH_BASE_RESOURCE + dtoActivityTypeVersionStatus.getAnswersStatusId());
 
-        return Response.created(uri)
-                .entity(dtoActivityTypeVersionStatus)
+        return RestResponse.ResponseBuilder
+                .create(RestResponse.Status.CREATED, dtoActivityTypeVersionStatus)
+                .location(uri)
                 .build();
 
     }
@@ -110,7 +118,8 @@ public class ResourceActivityTypeVersionStatus {
     @Operation(summary = "Update a category of Activity Type Version Status.")
     @APIResponse(
             responseCode = "200",
-            description = "Category of Activity Type Version Status successfully updated."
+            description = "Category of Activity Type Version Status successfully updated.",
+            content = @Content( schema = @Schema(implementation = DTOActivityTypeVersionStatus.class))
     )
     @APIResponse(
             responseCode = "400",
@@ -120,7 +129,7 @@ public class ResourceActivityTypeVersionStatus {
             responseCode = "204",
             description = "Failed to update category of Activity Type Version Status. Verify 'Warning' Header."
     )
-    public Response update(@PathParam("id") Integer id,
+    public RestResponse<DTOActivityTypeVersionStatus> update(@PathParam("id") Integer id,
                            DTOUpdateActivityTypeVersionStatus dtoUpdateActivityTypeVersionStatus) {
 
         if(dtoUpdateActivityTypeVersionStatus == null) {
@@ -140,7 +149,7 @@ public class ResourceActivityTypeVersionStatus {
         }
 
         audit.debug("Updating category of Activity Type Version Status " + id + "...");
-        return Response.ok(serviceActivityTypeVersionStatus.update(id, dtoUpdateActivityTypeVersionStatus)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersionStatus.update(id, dtoUpdateActivityTypeVersionStatus)).build();
 
     }
 
@@ -149,16 +158,17 @@ public class ResourceActivityTypeVersionStatus {
     @Operation(summary = "Delete a category of Activity Type Version Status.")
     @APIResponse(
             responseCode = "200",
-            description = "Category of Activity Type Version Status successfully deleted."
+            description = "Category of Activity Type Version Status successfully deleted.",
+            content = @Content( schema = @Schema(implementation = DTOActivityTypeVersionStatus.class))
     )
     @APIResponse(
             responseCode = "204",
             description = "Failed to delete category of Activity Type Version Status. Verify 'Warning' Header."
     )
-    public Response delete(@PathParam("id") Integer id) {
+    public RestResponse<DTOActivityTypeVersionStatus> delete(@PathParam("id") Integer id) {
 
         audit.debug("Deleting Level " + id + "...");
-        return Response.ok(serviceActivityTypeVersionStatus.delete(id)).build();
+        return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersionStatus.delete(id)).build();
 
     }
 

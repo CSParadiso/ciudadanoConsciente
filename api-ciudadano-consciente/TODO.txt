@@ -245,11 +245,15 @@ refactor: modificados los ApiResponse (eliminados los 404 y los duplicados de 20
 refactor: modificados los Rest por RestResponse<DTOActivity> en el recurso Activity
 feat: añadidas las anotaciones de content en ApiResponse del recurso Activity
 
-- Commit
+- Commit 390ceff
 feat: añadir recurso para obtener organizations de un user a través del id del user
 feat: modificada entidad (en modelo y en DB). El content ahora tiene un creator (User not null),
 un determinante de si es publico o no (booleano not null) y una organización vinculada (opcional).
 (resta la lógica de protección del borrado y la modificación)
+
+- Commit
+refactor: desde Response a RestResponse<T> en ActivityType, ActivityTypeVersion, ActivityTypeVersionStatus,
+Answer, Concern y Content.
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------

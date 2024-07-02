@@ -57,13 +57,6 @@ public class AccessActivity implements PanacheRepositoryBase<Activity, Integer> 
 
     }
 
-//    public String getTemplate(Integer activityId) {
-//
-//        audit.debug("Retrieving template...");
-//        return find("Activity.getTemplateFromActivityTypeVersion", Parameters.with("activityId", activityId)).toString();
-//
-//    }
-
     public String getTemplate(Integer activityId) {
         List<String> resultList = entityManager
                 .createNamedQuery("Activity.getTemplateFromActivityTypeVersion", String.class)

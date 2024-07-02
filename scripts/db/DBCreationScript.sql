@@ -116,7 +116,10 @@ create table app.version_servers (
 create table app.contents (
    content_id integer generated always as identity primary key,
    activity_type_version integer default 1 references app.activity_types_version on delete set default not null,-- it doesnt get deleted, the version just changes its status to DELETED
-   model jsonb not null 
+   model jsonb not null,
+   creator integer references app.users not null,
+   public boolean not null,
+   organization integer references app.organizations
 );
 
 

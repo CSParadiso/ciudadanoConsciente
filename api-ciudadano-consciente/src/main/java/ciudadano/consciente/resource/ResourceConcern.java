@@ -10,11 +10,15 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
+import java.util.List;
 
 @RequestScoped
 @Tag(name = "Concern Resource")
@@ -37,32 +41,44 @@ public class ResourceConcern {
 
   @GET
   @Operation(summary = "Retrieve all Concerns")
-  @APIResponse(responseCode = "200", description = "All Concerns successfully retrieved.")
-  public Response getAll() {
+  @APIResponse(
+          responseCode = "200",
+          description = "All Concerns successfully retrieved.",
+          content = @Content (schema = @Schema (implementation = DTOConcern.class))
+  )
+  public RestResponse<List<DTOConcern>> getAll() {
 
     audit.debug("Getting all Concerns...");
-    return Response.ok(serviceConcern.getAll()).build();
+    return RestResponse.ResponseBuilder.ok(serviceConcern.getAll()).build();
 
   }
 
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a  Concern.")
-  @APIResponse(responseCode = "200", description = "Concern successfully retrieved.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Concern successfully retrieved.",
+          content = @Content (schema = @Schema (implementation = DTOConcern.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to retrieve Concern. Verify 'Warning' Header.")
-  public Response get(@PathParam("id") Integer id) {
+  public RestResponse<DTOConcern> get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Concern " + id + "...");
-    return Response.ok(serviceConcern.get(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceConcern.get(id)).build();
 
   }
 
   @POST
   @Operation(summary = "Create a Concern.")
-  @APIResponse(responseCode = "201", description = "Concern successfully created.")
+  @APIResponse(
+          responseCode = "201",
+          description = "Concern successfully created.",
+          content = @Content (schema = @Schema (implementation = DTOConcern.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to create Concern. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Concern. Verify 'Warning' Header.")
-  public Response create(DTOCreateConcern dtoCreateConcern) {
+  public RestResponse<DTOConcern> create(DTOCreateConcern dtoCreateConcern) {
 
     if (dtoCreateConcern == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -81,19 +97,24 @@ public class ResourceConcern {
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + concern.getConcernId());
 
-    return Response.created(uri)
-        .entity(concern)
-        .build();
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, concern)
+            .location(uri)
+            .build();
 
   }
 
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Concern.")
-  @APIResponse(responseCode = "200", description = "Concern successfully updated.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Concern successfully updated.",
+          content = @Content (schema = @Schema (implementation = DTOConcern.class))
+  )
   @APIResponse(responseCode = "400", description = "Failed to update Concern. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to update Concern. Verify 'Warning' Header.")
-  public Response update(@PathParam("id") Integer id,
+  public RestResponse<DTOConcern> update(@PathParam("id") Integer id,
       DTOUpdateConcern dtoUpdateConcern) {
 
     if (dtoUpdateConcern == null) {
@@ -113,19 +134,23 @@ public class ResourceConcern {
     }
 
     audit.debug("Updating Concern" + id + "...");
-    return Response.ok(serviceConcern.update(id, dtoUpdateConcern)).build();
+    return RestResponse.ResponseBuilder.ok(serviceConcern.update(id, dtoUpdateConcern)).build();
 
   }
 
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a  Concern by its ID.")
-  @APIResponse(responseCode = "200", description = "Concern successfully deleted.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Concern successfully deleted.",
+          content = @Content (schema = @Schema (implementation = DTOConcern.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to delete Concern. Verify 'Warning' Header.")
-  public Response delete(@PathParam("id") Integer id) {
+  public RestResponse<DTOConcern> delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Concern " + id + "...");
-    return Response.ok(serviceConcern.delete(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceConcern.delete(id)).build();
 
   }
 
@@ -134,11 +159,15 @@ public class ResourceConcern {
   @POST
   @Path("{id}/votes")
   @Operation(summary = "Vote Concern.")
-  @APIResponse(responseCode = "201", description = "Concern successfully voted.")
+  @APIResponse(
+          responseCode = "201",
+          description = "Concern successfully voted.",
+          content = @Content (schema = @Schema (implementation = DTOVote.class))
+  )
   @APIResponse(responseCode = "400", description = "Failed to Vote Concern. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to Vote Concern. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Concern. Verify 'Warning' Header.")
-  public Response vote(@PathParam("id") Integer idConcern,
+  public RestResponse<DTOVote> vote(@PathParam("id") Integer idConcern,
       DTOCreateVote dtoCreateVote) {
 
     if (dtoCreateVote == null) {
@@ -163,7 +192,10 @@ public class ResourceConcern {
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE_VOTE + dtoVote.getVoteId());
 
-    return Response.created(uri).entity(dtoVote).build();
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, dtoVote)
+            .location(uri)
+            .build();
 
   }
 

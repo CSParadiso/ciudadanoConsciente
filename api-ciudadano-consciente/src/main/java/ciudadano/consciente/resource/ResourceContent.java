@@ -11,11 +11,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
+import java.util.List;
 
 @RequestScoped
 @Tag(name = "Content Resource")
@@ -38,37 +41,47 @@ public class ResourceContent {
 
   @GET
   @Operation(summary = "Retrieve all Contents.")
-  @APIResponse(responseCode = "200", description = "Contents successfully retrieved.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Contents successfully retrieved.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to retrieve all Contents. Verify 'Warning' header.")
-  public Response getAll() {
+  public RestResponse<List<DTOContent>> getAll() {
 
     audit.debug("Getting all Contents.");
-    return Response.ok(serviceContent.getAll())
-        .build();
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAll()).build();
 
   }
 
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a specific Content.")
-  @APIResponse(responseCode = "200", description = "Content successfully retrieved.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Content successfully retrieved.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to retrieve Content. Verify 'Warning' header.")
-  public Response get(@PathParam("id") Integer id) {
+  public RestResponse<DTOContent> get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Content.");
-    return Response.ok(serviceContent.get(id))
-        .build();
+    return RestResponse.ResponseBuilder.ok(serviceContent.get(id)).build();
 
   }
 
   @POST
   @Operation(summary = "Create a new Content for a Activity Type Version.")
   @Consumes({ MediaType.MULTIPART_FORM_DATA })
-  @APIResponse(responseCode = "201", description = "Content successfully created.")
+  @APIResponse(
+          responseCode = "201",
+          description = "Content successfully created.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
   @APIResponse(responseCode = "400", description = "Failed to create Content. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to create Content. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create new Content. Verify 'Warning' Header.")
-  public Response create(DTOCreateContent dtoCreateContent) {
+  public RestResponse<DTOContent> create(DTOCreateContent dtoCreateContent) {
 
     if (dtoCreateContent == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -96,9 +109,10 @@ public class ResourceContent {
     audit.debug("Creating URI for new Activity Type Version");
     URI uri = URI.create(BASE_PATH_RESOURCE + dtoContent.getContentId());
 
-    return Response.created(uri)
-        .entity(dtoContent)
-        .build();
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, dtoContent)
+            .location(uri)
+            .build();
 
   }
 
@@ -106,12 +120,16 @@ public class ResourceContent {
   @Path("images")
   @Operation(summary = "Add Images to Content.")
   @Consumes({ MediaType.MULTIPART_FORM_DATA })
-  @APIResponse(responseCode = "201", description = "Image successfully added.")
+  @APIResponse(
+          responseCode = "201",
+          description = "Image successfully added.",
+          content = @Content (schema = @Schema(implementation = DTOImage.class))
+  )
   @APIResponse(responseCode = "400", description = "Failed to add Image. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to add Image. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to add Image. Verify 'Warning' Header.")
   // public Response create(DTOCreateContent dtoCreateContent) {
-  public Response addImageToContent(DTOCreateImage dtoCreateImage) {
+  public RestResponse<DTOImage> addImageToContent(DTOCreateImage dtoCreateImage) {
 
     if (dtoCreateImage == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -135,9 +153,10 @@ public class ResourceContent {
     audit.debug("Creating URI for new Image");
     URI uri = URI.create(BASE_PATH_RESOURCE + dtoImage.getContentId() + "/images/" + dtoImage.getImageId());
 
-    return Response.created(uri)
-        .entity(dtoImage)
-        .build();
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, dtoImage)
+            .location(uri)
+            .build();
 
   }
 
@@ -145,24 +164,32 @@ public class ResourceContent {
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a specific Content by its ID.")
-  @APIResponse(responseCode = "200", description = "Content successfully deleted.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Content successfully deleted.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to delete Content. Verify 'Warning' Header.")
-  public Response delete(@PathParam("id") Integer id) {
+  public RestResponse<DTOContent> delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Content " + id + "...");
-    return Response.ok(serviceContent.delete(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceContent.delete(id)).build();
 
   }
 
   @GET
   @Path("{content}/images")
   @Operation(summary = "Retrieve all Images from Content.")
-  @APIResponse(responseCode = "200", description = "Images successfully retrieved.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Images successfully retrieved.",
+          content = @Content (schema = @Schema(implementation = DTOImage.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to retrieve images. Verify 'Warning' header.")
-  public Response getAllImage(@PathParam("content") Integer content) {
+  public RestResponse<List<DTOImage>> getAllImage(@PathParam("content") Integer content) {
 
     audit.debug("Getting all Images from Content.");
-    return Response.ok(serviceContent.getAllImages(content))
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAllImages(content))
         .build();
 
   }
@@ -206,9 +233,13 @@ public class ResourceContent {
   @Path("{id}")
   @Operation(summary = "Update a Content.")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  @APIResponse(responseCode = "200", description = "Content updated successfully.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Content updated successfully.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
   @APIResponse(responseCode = "204", description = "Failed to update Content. Verify 'Warning' header.")
-  public Response update(@PathParam("id") Integer id, DTOUpdateContent dtoUpdateContent) {
+  public RestResponse<DTOContent> update(@PathParam("id") Integer id, DTOUpdateContent dtoUpdateContent) {
 
     if (dtoUpdateContent == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -227,7 +258,7 @@ public class ResourceContent {
     }
 
     audit.debug("Updating Content " + id + "...");
-    return Response.ok(serviceContent.update(id, dtoUpdateContent)).build();
+    return RestResponse.ResponseBuilder.ok(serviceContent.update(id, dtoUpdateContent)).build();
 
   }
 
@@ -269,11 +300,15 @@ public class ResourceContent {
   @POST
   @Path("{id}/votes")
   @Operation(summary = "Vote Content.")
-  @APIResponse(responseCode = "201", description = "Content successfully voted.")
+  @APIResponse(
+          responseCode = "201",
+          description = "Content successfully voted.",
+          content = @Content (schema = @Schema(implementation = DTOVote.class))
+  )
   @APIResponse(responseCode = "400", description = "Failed to Vote Content. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to Vote Content. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Content. Verify 'Warning' Header.")
-  public Response vote(@PathParam("id") Integer idContent,
+  public RestResponse<DTOVote> vote(@PathParam("id") Integer idContent,
       DTOCreateVote dtoCreateVote) {
 
     if (dtoCreateVote == null) {
@@ -298,7 +333,10 @@ public class ResourceContent {
     audit.debug("Creating URI...");
     URI uri = URI.create(BASE_PATH_RESOURCE_VOTE + dtoVote.getVoteId());
 
-    return Response.created(uri).entity(dtoVote).build();
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, dtoVote)
+            .location(uri)
+            .build();
 
   }
 

@@ -10,11 +10,15 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
+import java.util.List;
 
 @Tag(name = "Activity Type Resource")
 @RequestScoped
@@ -37,31 +41,43 @@ public class ResourceActivityType {
 
   @GET
   @Operation(summary = "Retrieve all Activity Types.")
-  @APIResponse(responseCode = "200", description = "Activity Types successfully retrieved.")
-  public Response getAll() {
+  @APIResponse(
+          responseCode = "200",
+          description = "Activity Types successfully retrieved.",
+          content = @Content(schema = @Schema(implementation = DTOActivityType.class)))
+  public RestResponse<List<DTOActivityType>>getAll() {
 
     audit.debug("Getting all the Activity Types...");
-    return Response.ok(serviceActivityType.getAll()).build();
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.getAll()).build();
 
   }
 
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a specific Activity Type by its ID.")
-  @APIResponse(responseCode = "200", description = "Activity Types successfully retrieved.")
-  public Response get(@PathParam("id") Integer id) {
+  @APIResponse(
+          responseCode = "200",
+          description = "Activity Types successfully retrieved.",
+          content = @Content(schema = @Schema(implementation = DTOActivityType.class)))
+  @APIResponse(
+          responseCode = "204",
+          description = "Failed retrieve Activity Types. Verify 'Warning' header.")
+  public RestResponse<DTOActivityType>get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Activity Type " + id + "...");
-    return Response.ok(serviceActivityType.get(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.get(id)).build();
 
   }
 
   @POST
   @Operation(summary = "Create an Activity Type.")
-  @APIResponse(responseCode = "201", description = "Activity Type successfully created.")
+  @APIResponse(
+          responseCode = "201",
+          description = "Activity Type successfully created.",
+          content = @Content(schema = @Schema(implementation = DTOActivityType.class)))
   @APIResponse(responseCode = "400", description = "Failed to create Activity Type. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Activity Type. Verify 'Warning' Header.")
-  public Response create(DTOCreateActivityType dtoCreateActivityType) {
+  public RestResponse<DTOActivityType>create(DTOCreateActivityType dtoCreateActivityType) {
 
     if (dtoCreateActivityType == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -82,19 +98,23 @@ public class ResourceActivityType {
     audit.debug("Creating URI...");
     URI uri = URI.create(BASE_PATH_RESOURCE + activityType.getActivityTypeId());
 
-    return Response.created(uri)
-        .entity(activityType)
-        .build();
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, activityType)
+            .location(uri)
+            .build();
 
   }
 
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update an Activity Type.")
-  @APIResponse(responseCode = "200", description = "Activity Types successfully updated.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Activity Types successfully updated.",
+          content = @Content(schema = @Schema(implementation = DTOActivityType.class)))
   @APIResponse(responseCode = "400", description = "Failed to update Activity Type. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
-  public Response update(@PathParam("id") Integer id,
+  public RestResponse<DTOActivityType>update(@PathParam("id") Integer id,
       DTOUpdateActivityType dtoUpdateActivityType) {
 
     if (dtoUpdateActivityType == null) {
@@ -114,19 +134,22 @@ public class ResourceActivityType {
     }
 
     audit.debug("Updating Activity Type " + id + "...");
-    return Response.ok(serviceActivityType.update(id, dtoUpdateActivityType)).build();
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.update(id, dtoUpdateActivityType)).build();
 
   }
 
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a specific Activity Type by its ID.")
-  @APIResponse(responseCode = "200", description = "Activity Types successfully deleted.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Activity Types successfully deleted.",
+          content = @Content(schema = @Schema(implementation = DTOActivityType.class)))
   @APIResponse(responseCode = "500", description = "Failed to delete Activity Type. Verify 'Warning' Header.")
-  public Response delete(@PathParam("id") Integer id) {
+  public RestResponse<DTOActivityType>delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Activity Type " + id + "...");
-    return Response.ok(serviceActivityType.delete(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.delete(id)).build();
 
   }
 
@@ -135,11 +158,15 @@ public class ResourceActivityType {
   @POST
   @Path("{id}/votes")
   @Operation(summary = "Vote Activity Type.")
-  @APIResponse(responseCode = "201", description = "Activity Type successfully voted.")
+  @APIResponse(
+          responseCode = "201",
+          description = "Activity Type successfully voted.",
+          content = @Content (schema = @Schema (implementation = DTOVote.class))
+  )
   @APIResponse(responseCode = "400", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Activity Type. Verify 'Warning' Header.")
-  public Response vote(@PathParam("id") Integer idActivityType,
-      DTOCreateVote dtoCreateVote) {
+  public RestResponse<DTOVote> vote(@PathParam("id") Integer idActivityType,
+                                            DTOCreateVote dtoCreateVote) {
 
     if (dtoCreateVote == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -163,7 +190,10 @@ public class ResourceActivityType {
     audit.debug("Creating URI...");
     URI uri = URI.create(BASE_PATH_RESOURCE_VOTE + dtoVote.getVoteId());
 
-    return Response.created(uri).entity(dtoVote).build();
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, dtoVote)
+            .location(uri)
+            .build();
 
   }
 
