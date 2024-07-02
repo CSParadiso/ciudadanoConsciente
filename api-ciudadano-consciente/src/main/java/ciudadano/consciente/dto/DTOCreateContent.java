@@ -10,6 +10,18 @@ public class DTOCreateContent {
     @Schema(defaultValue = "", required = true)
     private Integer activityTypeVersionId;
 
+    @FormParam("creator")
+    @Schema(defaultValue = "", required = true)
+    private Integer creator;
+
+    @FormParam("organization")
+    @Schema(defaultValue = "")
+    private Integer organization;
+
+    @FormParam("public")
+    @Schema(defaultValue = "false", required = true)
+    private boolean publicContent;
+
     @FormParam("model")
     @Schema(defaultValue = "", required = true)
     private byte[] model;
@@ -30,4 +42,27 @@ public class DTOCreateContent {
         this.model = model;
     }
 
+    public Integer getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Integer creator) {
+        this.creator = creator;
+    }
+
+    public Integer getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Integer organization) {
+        this.organization = organization;
+    }
+
+    public boolean isPublicContent() {
+        return publicContent;
+    }
+
+    public void setPublicContent(boolean publicContent) {
+        this.publicContent = publicContent;
+    }
 }

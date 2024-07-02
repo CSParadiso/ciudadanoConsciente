@@ -3,6 +3,8 @@ package ciudadano.consciente.model;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
+import java.util.List;
+
 @Entity
 @Table(schema = "app", name = "users_roles_organizations")
 public class UserRolOrganization {
@@ -57,4 +59,5 @@ public class UserRolOrganization {
     public void setOrganization(Organization organization) {
         this.organization = organization;
     }
+
 }

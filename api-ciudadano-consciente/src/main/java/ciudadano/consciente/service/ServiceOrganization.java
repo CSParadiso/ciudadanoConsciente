@@ -76,6 +76,24 @@ public class ServiceOrganization {
 
   }
 
+  public List<DTOOrganization> getOrganizationsByUser(Integer userId) {
+
+    audit.debug("Retrieving Organization by User " + userId);
+    User user = accessUser.get(userId)
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    List<UserRolOrganization> userRolOrganizations = accessUserRoleOrganization.getByUser(user);
+
+    List<Organization> organizations = userRolOrganizations.stream()
+            .map(UserRolOrganization::getOrganization)
+            .filter(organization -> accessOrganization.get(organization.getOrganizationId()).isPresent())
+            .distinct()
+            .toList();
+
+    return mapperOrganization.entityToDto(organizations);
+
+  }
+
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOOrganization create(DTOCreateOrganization dtoCreateOrganization) {
 

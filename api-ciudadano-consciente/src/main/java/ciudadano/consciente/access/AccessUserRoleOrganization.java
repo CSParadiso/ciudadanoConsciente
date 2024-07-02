@@ -1,6 +1,7 @@
 package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Organization;
+import ciudadano.consciente.model.User;
 import ciudadano.consciente.model.UserRolOrganization;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
@@ -50,6 +51,13 @@ public class AccessUserRoleOrganization implements PanacheRepositoryBase<UserRol
         audit.debug("Trying to retrieve User(" + idUser + ")Role(" + idRole + ")Organization(" + idUser + ") " + idOrganization + ".");
         return find("organization.organizationId = ?1 and user.userId = ?2 and role.roleId = ?3", idOrganization, idUser, idRole).firstResultOptional();
         
+    }
+
+    public List<UserRolOrganization> getByUser(User user) {
+
+        audit.debug("Trying to retrive Organizations by user " + user.getUserId());
+        return find("user", user).stream().toList();
+
     }
 
     public boolean remove(Integer uroId) {

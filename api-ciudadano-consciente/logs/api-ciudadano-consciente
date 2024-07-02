@@ -1,4 +1,4 @@
-2024-07-01 20:30:30,678 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+2024-07-02 18:05:47,489 saimonlaptop api-ciudadano-consciente-dev.jar[5903] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
    ___ _           _           _                       ___                     _            _       
   / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
  / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
@@ -6,7 +6,53 @@
 \____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
                                                                                                     
 
-2024-07-01 20:30:30,680 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.1 on JVM (powered by Quarkus 3.2.8.Final) started in 1.757s. Listening on: http://localhost:5909
-2024-07-01 20:30:30,681 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2024-07-01 20:30:30,682 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
-2024-07-01 20:30:30,683 saimonlaptop api-ciudadano-consciente-dev.jar[19866] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-2) Live reload total time: 2.069s 
+2024-07-02 18:05:47,499 saimonlaptop api-ciudadano-consciente-dev.jar[5903] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.1 on JVM (powered by Quarkus 3.2.8.Final) started in 4.216s. Listening on: http://localhost:5909
+2024-07-02 18:05:47,504 saimonlaptop api-ciudadano-consciente-dev.jar[5903] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-07-02 18:05:47,505 saimonlaptop api-ciudadano-consciente-dev.jar[5903] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-07-02 18:05:47,507 saimonlaptop api-ciudadano-consciente-dev.jar[5903] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-2) Live reload total time: 4.557s 
+2024-07-02 18:05:47,567 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) 4
+2024-07-02 18:05:47,570 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) ActivityType: 4
+2024-07-02 18:05:47,571 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Creator 9
+2024-07-02 18:05:47,574 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Public Content?: false
+2024-07-02 18:05:47,576 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Model: [B@395abf28
+2024-07-02 18:05:47,577 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Creating new Content...
+2024-07-02 18:05:47,656 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-1) Verifying if ActivityTypeVersion exists.
+2024-07-02 18:05:47,658 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessActivityTypeVersion] (executor-thread-1) Trying to retrieve version of Activity Type
+2024-07-02 18:05:47,697 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-1) mapHttpNoContentException: Activity Type Version not found.
+2024-07-02 18:05:58,992 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) 21
+2024-07-02 18:05:58,997 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) ActivityType: 21
+2024-07-02 18:05:59,000 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Creator 9
+2024-07-02 18:05:59,002 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Public Content?: false
+2024-07-02 18:05:59,003 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Model: [B@116563f8
+2024-07-02 18:05:59,005 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Creating new Content...
+2024-07-02 18:05:59,009 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-2) Verifying if ActivityTypeVersion exists.
+2024-07-02 18:05:59,012 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessActivityTypeVersion] (executor-thread-2) Trying to retrieve version of Activity Type
+2024-07-02 18:05:59,022 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-2) mapHttpNoContentException: Activity Type Version not found.
+2024-07-02 18:06:16,716 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) 46
+2024-07-02 18:06:16,718 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) ActivityType: 46
+2024-07-02 18:06:16,721 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Creator 9
+2024-07-02 18:06:16,722 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Public Content?: false
+2024-07-02 18:06:16,724 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Model: [B@37eedc1a
+2024-07-02 18:06:16,728 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-1) Creating new Content...
+2024-07-02 18:06:16,731 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-1) Verifying if ActivityTypeVersion exists.
+2024-07-02 18:06:16,733 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessActivityTypeVersion] (executor-thread-1) Trying to retrieve version of Activity Type
+2024-07-02 18:06:16,761 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 9
+2024-07-02 18:06:16,775 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessOrganization] (executor-thread-1) Trying to retrieve Organization 3.
+2024-07-02 18:06:16,794 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-1) Verifying files format.
+2024-07-02 18:06:16,826 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-1) mapHttpBadRequestException: File type not supported.
+2024-07-02 18:06:37,845 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) 46
+2024-07-02 18:06:37,848 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) ActivityType: 46
+2024-07-02 18:06:37,849 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Creator 9
+2024-07-02 18:06:37,851 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Public Content?: false
+2024-07-02 18:06:37,853 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Model: [B@645f5717
+2024-07-02 18:06:37,855 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Creating new Content...
+2024-07-02 18:06:37,857 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-2) Verifying if ActivityTypeVersion exists.
+2024-07-02 18:06:37,859 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessActivityTypeVersion] (executor-thread-2) Trying to retrieve version of Activity Type
+2024-07-02 18:06:37,868 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User 9
+2024-07-02 18:06:37,872 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessOrganization] (executor-thread-2) Trying to retrieve Organization 3.
+2024-07-02 18:06:37,878 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-2) Verifying files format.
+2024-07-02 18:06:37,893 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-2) Creating Content.
+2024-07-02 18:06:37,896 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-2) Saving new Content.
+2024-07-02 18:06:37,901 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.acc.AccessContent] (executor-thread-2) Trying to persist Content.
+2024-07-02 18:06:37,980 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.ser.ServiceContent] (executor-thread-2) Mapping Entity into DTO.
+2024-07-02 18:06:38,007 saimonlaptop api-ciudadano-consciente-dev.jar[5903] DEBUG [ciu.con.res.ResourceContent] (executor-thread-2) Creating URI for new Activity Type Version

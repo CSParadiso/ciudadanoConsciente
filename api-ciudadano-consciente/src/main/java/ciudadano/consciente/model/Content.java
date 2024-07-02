@@ -27,6 +27,17 @@ public class Content implements Taggable, Votable {
   @Column(name = "model", columnDefinition = "jsonb")
   private String model;
 
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "creator", referencedColumnName = "user_id")
+  private User creator;
+
+  @Column(name = "public")
+  private boolean publicContent;
+
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "organization", referencedColumnName = "organization_id")
+  private Organization organization;
+
   @Transient
   private List<Image> images;
 
@@ -43,6 +54,16 @@ public class Content implements Taggable, Votable {
 
     this.activityTypeVersion = activityTypeVersion;
     this.model = model;
+
+  }
+
+  public Content(ActivityTypeVersion activityTypeVersion, String model, User creator, Organization organization, boolean publicContent) {
+ 	
+    this.activityTypeVersion = activityTypeVersion;
+    this.model = model;
+    this.creator = creator;
+    this.organization = organization;
+    this.publicContent = publicContent;
 
   }
 
@@ -121,4 +142,27 @@ public class Content implements Taggable, Votable {
 
   }
 
+  public User getCreator() {
+    return creator;
+  }
+
+  public void setCreator(User creator) {
+    this.creator = creator;
+  }
+
+  public boolean isPublicContent() {
+    return publicContent;
+  }
+
+  public void setPublicContent(boolean publicContent) {
+    this.publicContent = publicContent;
+  }
+
+  public Organization getOrganization() {
+    return organization;
+  }
+
+  public void setOrganization(Organization organization) {
+    this.organization = organization;
+  }
 }

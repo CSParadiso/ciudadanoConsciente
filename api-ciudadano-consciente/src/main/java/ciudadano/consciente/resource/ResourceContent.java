@@ -77,11 +77,17 @@ public class ResourceContent {
     audit.debug(dtoCreateContent.getActivityTypeVersionId());
     Integer activityTypeVersionId = dtoCreateContent.getActivityTypeVersionId();
     audit.debug("ActivityType: " + activityTypeVersionId);
+    Integer creator = dtoCreateContent.getCreator();
+    audit.debug("Creator " + creator);
+    boolean publicContent = dtoCreateContent.isPublicContent();
+    audit.debug("Public Content?: " + publicContent);
     byte[] model = dtoCreateContent.getModel();
     audit.debug("Model: " + model);
     if (!utilityVerifyRequestField.isValidField(activityTypeVersionId) ||
-        !utilityVerifyRequestField.isValidField(model)) {
-      throw new HttpBadRequestException("All fields required. (No empty files allowed.)");
+        !utilityVerifyRequestField.isValidField(model) ||
+        !utilityVerifyRequestField.isValidField(creator) ||
+        !utilityVerifyRequestField.isValidField(publicContent)) {
+      throw new HttpBadRequestException("Missing require field.");
     }
 
     audit.debug("Creating new Content...");
@@ -135,6 +141,7 @@ public class ResourceContent {
 
   }
 
+  // TODO Verificar que sea el creator o el moderador del content que lo modifica
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a specific Content by its ID.")
@@ -194,6 +201,7 @@ public class ResourceContent {
 
   }
 
+  // TODO Verificar que sea el creator o el moderador del content que lo modifica
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Content.")

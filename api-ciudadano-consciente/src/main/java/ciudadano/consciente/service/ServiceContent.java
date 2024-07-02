@@ -63,6 +63,9 @@ public class ServiceContent {
   @Inject
   MapperVote mapperVote;
 
+  @Inject
+  AccessOrganization accessOrganization;
+
   public List<DTOContent> getAll() {
 
     audit.debug("Retrieving all Contents.");
@@ -93,6 +96,15 @@ public class ServiceContent {
       throw new HttpNoContentException("Activity Type Version has been deleted.");
     }
 
+    User creator = accessUser.get(dtoCreateContent.getCreator())
+                    .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    Organization organization = null;
+    if(dtoCreateContent.getOrganization() != null) {
+       organization = accessOrganization.get(dtoCreateContent.getOrganization())
+              .orElseThrow( ()-> new HttpNoContentException("Organization not found.") );
+    }
+
     audit.debug("Verifying files format.");
     byte[] modelFile = dtoCreateContent.getModel();
     if (!utilityFileSignature.detectFileType(modelFile).equals("json")) {
@@ -102,7 +114,7 @@ public class ServiceContent {
     String model = new String(modelFile);
 
     audit.debug("Creating Content.");
-    Content content = new Content(activityTypeVersion, model);
+    Content content = new Content(activityTypeVersion, model, creator, organization, dtoCreateContent.isPublicContent());
 
     audit.debug("Saving new Content.");
     try {

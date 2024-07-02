@@ -235,7 +235,7 @@ feat: añadido recurso de POSTeo de respuestas en BATCH mode (pero se DEPRECA po
 feat: añadida interfaz Taggable
 feat: generar Tags (etiquetas)
 
-- Commit 
+- Commit 9a1c4e1
 feat: añadida interfaz Votable
 feat: creado el recurso de obtener levels por usuario y rol
 refactor: unificados los votos en el recurso '/votes/{userId}/{entityTypeId}/{entityId}'.
@@ -244,6 +244,12 @@ refactor: modificadas las HttpNotFoundException por HttpNoContentExpception
 refactor: modificados los ApiResponse (eliminados los 404 y los duplicados de 204)
 refactor: modificados los Rest por RestResponse<DTOActivity> en el recurso Activity
 feat: añadidas las anotaciones de content en ApiResponse del recurso Activity
+
+- Commit
+feat: añadir recurso para obtener organizations de un user a través del id del user
+feat: modificada entidad (en modelo y en DB). El content ahora tiene un creator (User not null),
+un determinante de si es publico o no (booleano not null) y una organización vinculada (opcional).
+(resta la lógica de protección del borrado y la modificación)
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -291,7 +297,10 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
+// TODO: feat: las modificaciones del content las hacen los creators (si son public) y los moderadores (si tiene vinculada una org)
 // FIXME feat: añadir a todas las APIResponse anotations el content schema de la response
+// FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
+
 
 
 // TODO Verificar referencias eliminadas en cascade para ver si se pueden usar los estados en lugar de borrar
@@ -317,7 +326,7 @@ OPTIMIZACIONES
 // FIXME refactor: hacer más genérico el voto de las entidades
 // FIXME refactor: hacer clase por cada file type para hacer genérico el recurso get y el servicio que invoca
 // FIXME Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
-// FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
+
 // FIXME refactor: agregar @Content a la @ApiResponse para que se vea en el Swagger qué tipo de dato responde
 // FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 // FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances

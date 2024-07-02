@@ -1,6 +1,7 @@
 package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Organization;
+import ciudadano.consciente.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -57,4 +58,5 @@ public class AccessOrganization implements PanacheRepositoryBase<Organization, I
         return count("email", email) > 0;
 
     }
+
 }

@@ -11,6 +11,12 @@ public class DTOContent {
 
     private Integer activityTypeVersionId;
 
+    private Integer creator;
+
+    private Integer organization;
+
+    private boolean publicContent;
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JdbcTypeCode(SqlTypes.JSON) // To automatically use the table as jsonb
     private String model;
@@ -39,4 +45,27 @@ public class DTOContent {
         this.model = model;
     }
 
+    public Integer getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Integer creator) {
+        this.creator = creator;
+    }
+
+    public Integer getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Integer organization) {
+        this.organization = organization;
+    }
+
+    public boolean isPublicContent() {
+        return publicContent;
+    }
+
+    public void setPublicContent(boolean publicContent) {
+        this.publicContent = publicContent;
+    }
 }

@@ -58,6 +58,18 @@ public class ResourceOrganization {
 
   }
 
+  @GET
+  @Path("users/{userId}/")
+  @Operation(summary = "Retrieve all Organization in which a User participate.")
+  @APIResponse(responseCode = "200", description = "Organization successfully retrieved.")
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Organizations. Verify 'Warning' Header.")
+  public Response getOrganizationsByUser(@PathParam("userId") Integer userId) {
+
+    audit.debug("Getting Organizations by userId " + userId + "...");
+    return Response.ok(serviceOrganization.getOrganizationsByUser(userId)).build();
+
+  }
+
   @POST
   @Operation(summary = "Create a new Organization.")
   @APIResponse(responseCode = "201", description = "Organization successfully created.")

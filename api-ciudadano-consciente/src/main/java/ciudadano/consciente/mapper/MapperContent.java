@@ -11,6 +11,8 @@ import java.util.List;
 public interface MapperContent {
 
     @Mapping(target = "activityTypeVersionId", source = "activityTypeVersion.activityTypeVersionId")
+    @Mapping(target = "creator", source = "creator.userId")
+    @Mapping(target = "organization", source = "organization.organizationId")
     DTOContent entityToDto(Content content);
 
     List<DTOContent> entityToDto(List<Content> all);
