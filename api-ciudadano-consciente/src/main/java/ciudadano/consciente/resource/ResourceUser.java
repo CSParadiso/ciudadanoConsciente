@@ -1,8 +1,8 @@
 package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.DTOUser;
+import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceUser;
 import ciudadano.consciente.dto.DTOUpdateUser;
 import ciudadano.consciente.dto.DTOCreateUser;
@@ -13,12 +13,16 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.common.jaxrs.RestResponseImpl;
 
 import java.net.URI;
-
+import java.util.List;
 
 @Tag(name = "User Resource")
 @RequestScoped
@@ -27,165 +31,126 @@ import java.net.URI;
 @Path("/users")
 public class ResourceUser {
 
-    final String BASE_PATH_RESOURCE = "/users/";
+  final String BASE_PATH_RESOURCE = "/users/";
 
-    @Inject
-    ServiceUser serviceUser;
+  @Inject
+  ServiceUser serviceUser;
 
-    @Inject
-    Logger audit;
+  @Inject
+  Logger audit;
 
-    @Inject
-    UtilityVerifyRequestField utilityVerifyRequestField;
+  @Inject
+  UtilityVerifyRequestField utilityVerifyRequestField;
 
-    @GET
-    @Operation( summary = "Retrieve all users.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Users successfully retrieved."
-            )
-    public Response getAll() {
+  @GET
+  @Operation(summary = "Retrieve all users.")
+  @APIResponse(responseCode = "200", description = "Users successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  public RestResponse<List<DTOUser>> getAll() {
 
-        audit.debug("Getting all Users...");
-        return Response.ok(serviceUser.getAll()).build();
+    audit.debug("Getting all Users...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.getAll()).build();
 
+  }
+
+  @GET
+  @Path("/{id}/")
+  @Operation(summary = "Retrieve a specific User by its ID.")
+  @APIResponse(responseCode = "200", description = "User successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve User. Verify 'Warning' Header.")
+  public RestResponse<DTOUser> get(@PathParam("id") Integer id) {
+
+    audit.debug("Getting User " + id + "...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.get(id)).build();
+
+  }
+
+  @POST
+  @Operation(summary = "Create a new User.")
+  @APIResponse(responseCode = "201", description = "User successfully created.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "400", description = "Failed to create User. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to create User. Verify 'Warning' Header.")
+  public RestResponse<DTOUser> create(DTOCreateUser dtoCreateUser) {
+
+    if (dtoCreateUser == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
 
-    @GET
-    @Path("/{id}/")
-    @Operation( summary = "Retrieve a specific User by its ID.")
-    @APIResponse(
-            responseCode = "200",
-            description = "User successfully retrieved."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to retrieve User. Verify 'Warning' Header."
-    )
-    public Response get(@PathParam("id") Integer id) {
-
-        audit.debug("Getting User " + id + "...");
-        return Response.ok(serviceUser.get(id)).build();
-
+    String email = dtoCreateUser.getEmail();
+    String username = dtoCreateUser.getUsername();
+    String password = dtoCreateUser.getPassword();
+    if (!utilityVerifyRequestField.isValidField(email) ||
+        !utilityVerifyRequestField.isValidField(username) ||
+        !utilityVerifyRequestField.isValidField(password)) {
+      throw new HttpBadRequestException("All fields required.");
     }
 
-    @POST
-    @Operation( summary = "Create a new User.")
-    @APIResponse(
-            responseCode = "201",
-            description = "User successfully created."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to create User. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to create User. Verify 'Warning' Header."
-    )
-    public Response create(DTOCreateUser dtoCreateUser) {
+    audit.debug("Creating User...");
+    DTOUser user = serviceUser.create(dtoCreateUser);
 
-        if(dtoCreateUser == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
+    audit.debug("Creating URI...");
+    URI uri = URI.create(BASE_PATH_RESOURCE + user.getUserId());
 
-        String email = dtoCreateUser.getEmail();
-        String username = dtoCreateUser.getUsername();
-        String password = dtoCreateUser.getPassword();
-        if(!utilityVerifyRequestField.isValidField(email) ||
-                !utilityVerifyRequestField.isValidField(username) ||
-                !utilityVerifyRequestField.isValidField(password)) {
-            throw new HttpBadRequestException("All fields required.");
-        }
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, user)
+        .location(uri)
+        .build();
 
-        audit.debug("Creating User...");
-        DTOUser user = serviceUser.create(dtoCreateUser);
+  }
 
-        audit.debug("Creating URI...");
-        URI uri = URI.create(BASE_PATH_RESOURCE + user.getUserId());
+  @PATCH
+  @Path("{id}")
+  @Operation(summary = "Update User.")
+  @APIResponse(responseCode = "200", description = "User successfully updated.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "204", description = "Failed to update User. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to update User. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to update User. Verify 'Warning' Header.")
+  public RestResponse<DTOUser> update(@PathParam("id") Integer id, DTOUpdateUser dtoUpdateUser) {
 
-        return Response.created(uri).entity(user).build();
-
+    if (dtoUpdateUser == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
 
-    @PATCH
-    @Path("{id}")
-    @Operation( summary = "Update User.")
-    @APIResponse(
-            responseCode = "200",
-            description = "User successfully updated."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to update User. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to update User. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to update User. Verify 'Warning' Header."
-    )
-    public Response update(@PathParam("id") Integer id, DTOUpdateUser dtoUpdateUser) {
-
-        if(dtoUpdateUser == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
-
-        String email = dtoUpdateUser.getEmail();
-        String username = dtoUpdateUser.getUsername();
-        String password = dtoUpdateUser.getPassword();
-        if(!utilityVerifyRequestField.isValidField(email) &&
-                !utilityVerifyRequestField.isValidField(username) &&
-                !utilityVerifyRequestField.isValidField(password)) {
-            throw new HttpBadRequestException("No updates to make.");
-        }
-
-        audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id.compareTo(dtoUpdateUser.getUserId()) != 0 )  {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
-        }
-
-        audit.debug("Updating User... " + id + "...");
-        return Response.ok(serviceUser.update(id, dtoUpdateUser)).build();
-
+    String email = dtoUpdateUser.getEmail();
+    String username = dtoUpdateUser.getUsername();
+    String password = dtoUpdateUser.getPassword();
+    if (!utilityVerifyRequestField.isValidField(email) &&
+        !utilityVerifyRequestField.isValidField(username) &&
+        !utilityVerifyRequestField.isValidField(password)) {
+      throw new HttpBadRequestException("No updates to make.");
     }
 
-    @DELETE
-    @Path("{id}")
-    @Operation( summary = "Delete a User.")
-    @APIResponse(
-            responseCode = "200",
-            description = "User successfully deleted."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to create User. Verify 'Warning' Header."
-    )
-    public Response delete(@PathParam("id") Integer id) {
-
-        audit.debug("Deleting User " + id + "...");
-        return Response.ok(serviceUser.delete(id)).build();
-
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (id.compareTo(dtoUpdateUser.getUserId()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same.");
     }
 
-    @GET
-    @Path("{id}/votes")
-    @Operation( summary = "Retrieve votes of a User.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Votes of User successfully retrieved."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to retrieve Votes of User. Verify 'Warning' Header."
-    )
-    public Response getVotes(@PathParam("id") Integer id) {
+    audit.debug("Updating User... " + id + "...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.update(id, dtoUpdateUser)).build();
 
-        audit.debug("Getting User " + id + " Votes...");
-        return Response.ok(serviceUser.getVotes(id)).build();
+  }
 
-    }
+  @DELETE
+  @Path("{id}")
+  @Operation(summary = "Delete a User.")
+  @APIResponse(responseCode = "200", description = "User successfully deleted.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "204", description = "Failed to create User. Verify 'Warning' Header.")
+  public RestResponse<DTOUser> delete(@PathParam("id") Integer id) {
+
+    audit.debug("Deleting User " + id + "...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.delete(id)).build();
+
+  }
+
+  @GET
+  @Path("{id}/votes")
+  @Operation(summary = "Retrieve votes of a User.")
+  @APIResponse(responseCode = "200", description = "Votes of User successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of User. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVote>> getVotes(@PathParam("id") Integer id) {
+
+    audit.debug("Getting User " + id + " Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.getVotes(id)).build();
+
+  }
 
 }

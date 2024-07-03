@@ -9,14 +9,18 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
+import java.util.List;
 
 @Tag(name = "Level Resource")
 @RequestScoped
@@ -39,36 +43,36 @@ public class ResourceLevel {
 
   @GET
   @Operation(summary = "Retrieve all Levels.")
-  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve all Levels. Verify 'Warning' Header.")
-  public Response getAll() {
+  public RestResponse<List<DTOLevel>> getAll() {
 
     audit.debug("Getting all Levels...");
-    return Response.ok(serviceLevel.getAll()).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getAll()).build();
 
   }
 
   @GET
   @Path("paths")
   @Operation(summary = "Retrieve all Levels without parent.")
-  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPathWithVotes.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve all Levels. Verify 'Warning' Header.")
-  public Response getAllPaths() {
+  public RestResponse<List<DTOLevelPathWithVotes>> getAllPaths() {
 
     audit.debug("Getting all Levels without parent...");
-    return Response.ok(serviceLevel.getAllPaths()).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getAllPaths()).build();
 
   }
 
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a  Level by its ID.")
-  @APIResponse(responseCode = "200", description = "Level successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Level successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Level. Verify 'Warning' Header.")
-  public Response get(@PathParam("id") Integer id) {
+  public RestResponse<DTOLevel> get(@PathParam("id") Integer id) {
 
     audit.debug("Getting Level " + id + "...");
-    return Response.ok(serviceLevel.get(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.get(id)).build();
 
   }
 
@@ -77,36 +81,38 @@ public class ResourceLevel {
   @Operation(summary = "Retrieve all childrens of a Level by its ID.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelWithChildrens.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Level. Verify 'Warning' Header.")
-  public Response getChildrens(@PathParam("id") Integer id) {
+  public RestResponse<List<DTOLevelWithChildrens>> getChildrens(@PathParam("id") Integer id) {
 
     audit.debug("Getting childrens of Level " + id + "...");
-    return Response.ok(serviceLevel.getChildrens(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getChildrens(id)).build();
 
   }
 
   @GET
   @Path("organizations/{organizationId}/paths")
   @Operation(summary = "Retrieve all Levels (without a parent) of an Organization by the Organization ID.")
-  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPathWithVotes.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
-  public Response getPathsByOrganization(@PathParam("organizationId") Integer id) {
+  public RestResponse<List<DTOLevelPathWithVotes>> getPathsByOrganization(@PathParam("organizationId") Integer id) {
 
     audit.debug("Getting paths of Organization " + id + "...");
-    return Response.ok(serviceLevel.getPathsByOrganization(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsByOrganization(id)).build();
 
   }
 
   @GET
   @Path("organizations/{organizationId}/users/{userId}/roles/{roleId}")
   @Operation(summary = "Retrieve all Levels of an Organization where the user has a specific role.")
-  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
-  public Response getLevelsByOrganizationUserAndRole(@PathParam("organizationId") Integer organizationId,
-                                                     @PathParam("userId") Integer userId,
-                                                     @PathParam("roleId") Integer roleId) {
+  public RestResponse<List<DTOLevel>> getLevelsByOrganizationUserAndRole(
+      @PathParam("organizationId") Integer organizationId,
+      @PathParam("userId") Integer userId,
+      @PathParam("roleId") Integer roleId) {
 
     audit.debug("Getting Levels of and Organization by User and Role...");
-    return Response.ok(serviceLevel.getLevelsByOrganizationUserAndRole(organizationId, userId, roleId)).build();
+    return RestResponse.ResponseBuilder
+        .ok(serviceLevel.getLevelsByOrganizationUserAndRole(organizationId, userId, roleId)).build();
 
   }
 
@@ -115,10 +121,10 @@ public class ResourceLevel {
   @Operation(summary = "Retrieve all Paths voted by a specific User.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPath.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
-  public Response getPathsByUserFavorite(@PathParam("userId") Integer userId) {
+  public RestResponse<List<DTOLevelPath>> getPathsByUserFavorite(@PathParam("userId") Integer userId) {
 
     audit.debug("Getting favorite paths of User " + userId + "...");
-    return Response.ok(serviceLevel.getPathsByUserFavorite(userId)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsByUserFavorite(userId)).build();
 
   }
 
@@ -127,19 +133,20 @@ public class ResourceLevel {
   @Operation(summary = "Retrieve latest Paths used by a specific User.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPathUsedRecentlyByUser.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
-  public Response getPathsUsedByUserRecently(@PathParam("userId") Integer userId) {
+  public RestResponse<List<DTOLevelPathUsedRecentlyByUser>> getPathsUsedByUserRecently(
+      @PathParam("userId") Integer userId) {
 
     audit.debug("Getting favorite paths of User " + userId + "...");
-    return Response.ok(serviceLevel.getPathsUsedByUserRecently(userId)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsUsedByUserRecently(userId)).build();
 
   }
 
   @POST
   @Operation(summary = "Create a Level.")
-  @APIResponse(responseCode = "201", description = "Level successfully created.")
+  @APIResponse(responseCode = "201", description = "Level successfully created.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
   @APIResponse(responseCode = "400", description = "Failed to create Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Level. Verify 'Warning' Header.")
-  public Response create(DTOCreateLevel dtoCreateLevel) {
+  public RestResponse<DTOLevel> create(DTOCreateLevel dtoCreateLevel) {
 
     if (dtoCreateLevel == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -158,8 +165,9 @@ public class ResourceLevel {
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + level.getLevelId());
 
-    return Response.created(uri)
-        .entity(level)
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, level)
+        .location(uri)
         .build();
 
   }
@@ -167,10 +175,10 @@ public class ResourceLevel {
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Level.")
-  @APIResponse(responseCode = "200", description = "Level successfully updated.")
+  @APIResponse(responseCode = "200", description = "Level successfully updated.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
   @APIResponse(responseCode = "400", description = "Failed to update Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to update Level. Verify 'Warning' Header.")
-  public Response update(@PathParam("id") Integer id,
+  public RestResponse<DTOLevel> update(@PathParam("id") Integer id,
       DTOUpdateLevel dtoUpdateLevel) {
 
     if (dtoUpdateLevel == null) {
@@ -194,19 +202,19 @@ public class ResourceLevel {
     }
 
     audit.debug("Updating Level" + id + "...");
-    return Response.ok(serviceLevel.update(id, dtoUpdateLevel)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.update(id, dtoUpdateLevel)).build();
 
   }
 
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a  Level by its ID.")
-  @APIResponse(responseCode = "200", description = "Level successfully deleted.")
+  @APIResponse(responseCode = "200", description = "Level successfully deleted.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to delete Level. Verify 'Warning' Header.")
-  public Response delete(@PathParam("id") Integer id) {
+  public RestResponse<DTOLevel> delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Level " + id + "...");
-    return Response.ok(serviceLevel.delete(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.delete(id)).build();
 
   }
 
@@ -216,12 +224,12 @@ public class ResourceLevel {
   @GET
   @Path("{id}/users")
   @Operation(summary = "Retrieve all the Users and Roles in a  Level.")
-  @APIResponse(responseCode = "200", description = "Roles of User in Level successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Roles of User in Level successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header.")
-  public Response getAll(@PathParam("id") Integer id) {
+  public RestResponse<List<DTOUserRoleLevel>> getAll(@PathParam("id") Integer id) {
 
     audit.debug("Getting all the UserRole of Level " + id + "...");
-    return Response.ok(serviceLevel.getUserRoleLevel(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getUserRoleLevel(id)).build();
 
   }
 
@@ -229,42 +237,42 @@ public class ResourceLevel {
   @GET
   @Path("{id}/users/{user}")
   @Operation(summary = "Retrieve all the Roles of User in a  Level.")
-  @APIResponse(responseCode = "200", description = "Roles of User in Level successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Roles of User in Level successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header.")
-  public Response getAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
+  public RestResponse<List<DTOUserRoleLevel>> getAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser) {
 
     audit.debug("Getting all the Roles of User (" + idUser + ") in Level " + idLevel + "...");
-    return Response.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
 
   }
 
   @GET
   @Path("{id}/users/roles")
   @Operation(summary = "Retrieve Users with Role in Level.")
-  @APIResponse(responseCode = "200", description = "Users in Level with Role successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Users in Level with Role successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve User with Role in Level. Verify 'Warning' Header.")
-  public Response getUsersWithRole(@PathParam("id") Integer idLevel,
+  public RestResponse<List<DTOUserRoleLevel>> getUsersWithRole(@PathParam("id") Integer idLevel,
       @QueryParam("role") Integer idRole,
       @QueryParam("user") Integer idUser) {
 
     if (idRole == null && idUser == null) {
       audit.debug("Getting all the Users with Roles in Level " + idLevel + "...");
-      return Response.ok(serviceLevel.getAllUsersWithRoleByLevel(idLevel)).build();
+      return RestResponse.ResponseBuilder.ok(serviceLevel.getAllUsersWithRoleByLevel(idLevel)).build();
     }
 
     if (idRole == null) {
       audit.debug("Getting all Roles of User(" + idUser + ") in Level " + idLevel + "...");
-      return Response.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
+      return RestResponse.ResponseBuilder.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
     }
 
     if (idUser == null) {
       audit.debug("Getting all the Users with Role(" + idRole + ") in Level " + idLevel + "...");
-      return Response.ok(serviceLevel.getAllUsersWithRoleInLevel(idLevel, idRole)).build();
+      return RestResponse.ResponseBuilder.ok(serviceLevel.getAllUsersWithRoleInLevel(idLevel, idRole)).build();
     }
 
     audit.debug("Getting User(" + idUser + ") with Role (" + idRole + ") in Level " + idLevel + "...");
-    return Response.ok(serviceLevel.getUserRoleLevel(idLevel, idUser, idRole)).build();
+    return RestResponse.ResponseBuilder.ok(List.of(serviceLevel.getUserRoleLevel(idLevel, idUser, idRole))).build();
 
   }
 
@@ -272,25 +280,25 @@ public class ResourceLevel {
   @GET
   @Path("/{id}/users/{user}/roles/{role}")
   @Operation(summary = "Retrieve a User Role in Level.")
-  @APIResponse(responseCode = "200", description = "UserRoleLevel successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "UserRoleLevel successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "204", description = "User doesn't have that Role in Level.")
-  public Response getUserRoleLevel(@PathParam("id") Integer idLevel,
+  public RestResponse<DTOUserRoleLevel> getUserRoleLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser,
       @PathParam("role") Integer idRole) {
 
     audit.debug("Getting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + "...");
-    return Response.ok(serviceLevel.getUserRoleLevel(idLevel, idUser, idRole)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getUserRoleLevel(idLevel, idUser, idRole)).build();
 
   }
 
   @POST
   @Path("{id}/users/roles") // /{user}/roles/{role}")
   @Operation(summary = "Assign Role to User in Level.")
-  @APIResponse(responseCode = "201", description = "Role successfully assign to User in Level.")
+  @APIResponse(responseCode = "201", description = "Role successfully assign to User in Level.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "400", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
-  public Response assignRole(@PathParam("id") Integer idLevel,
+  public RestResponse<DTOUserRoleLevel> assignRole(@PathParam("id") Integer idLevel,
       // @PathParam("user") Integer idUser,
       // @PathParam("role") Integer idRole,
       DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel) {
@@ -323,18 +331,21 @@ public class ResourceLevel {
         "?users=" + dtoUserRoleLevel.getUser() +
         "&roles=" + dtoUserRoleLevel.getRole());
 
-    return Response.created(uri).entity(dtoUserRoleLevel).build();
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, dtoUserRoleLevel)
+        .location(uri)
+        .build();
 
   }
 
   @PATCH
   @Path("{id}/users/roles") // {user}/roles/{role}")
   @Operation(summary = "Update Role of User in Level.")
-  @APIResponse(responseCode = "200", description = "Role successfully updated to User in Level.")
+  @APIResponse(responseCode = "200", description = "Role successfully updated to User in Level.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "400", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
-  public Response updateRoleOfUserInLevel(@PathParam("id") Integer idLevel,
+  public RestResponse<DTOUserRoleLevel> updateRoleOfUserInLevel(@PathParam("id") Integer idLevel,
       // @PathParam("user") Integer idUser,
       // @PathParam("role") Integer idRole,
       DTOUpdateRoleUserLevel dtoUpdateRoleUserLevel) {
@@ -363,34 +374,34 @@ public class ResourceLevel {
         + " in Level " + idLevel + "...");
     DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.updateRoleOfUserInLevel(idLevel, user, role, newRole);
 
-    return Response.ok(dtoUserRoleLevel).build();
+    return RestResponse.ResponseBuilder.ok(dtoUserRoleLevel).build();
 
   }
 
   @DELETE
   @Path("{id}/users/{user}")
   @Operation(summary = "Delete all Roles of a User in a Level.")
-  @APIResponse(responseCode = "200", description = "Roles of User successfully deleted in Level.")
+  @APIResponse(responseCode = "200", description = "Roles of User successfully deleted in Level.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to delete Roles of User in Level. Verify 'Warning' Header.")
-  public Response deleteAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
+  public RestResponse<List<DTOUserRoleLevel>> deleteAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser) {
 
     audit.debug("Deleting all Roles of User(" + idUser + ") in Level (" + idLevel + ")...");
-    return Response.ok(serviceLevel.deleteAllRolesOfUserInLevel(idLevel, idUser)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.deleteAllRolesOfUserInLevel(idLevel, idUser)).build();
 
   }
 
   @DELETE
   @Path("{id}/users/{user}/roles/{role}")
   @Operation(summary = "Delete a Role of a User in a Level.")
-  @APIResponse(responseCode = "200", description = "Role of User successfully deleted in Level.")
+  @APIResponse(responseCode = "200", description = "Role of User successfully deleted in Level.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
   @APIResponse(responseCode = "204", description = "Failed to delete Role of User in Level. Verify 'Warning' Header.")
-  public Response deleteUserRoleLevel(@PathParam("id") Integer idLevel,
+  public RestResponse<DTOUserRoleLevel> deleteUserRoleLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser,
       @PathParam("role") Integer idRole) {
 
     audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + "...");
-    return Response.ok(serviceLevel.deleteUserRoleLevel(idLevel, idUser, idRole)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.deleteUserRoleLevel(idLevel, idUser, idRole)).build();
 
   }
 
@@ -399,10 +410,10 @@ public class ResourceLevel {
   @POST
   @Path("{id}/votes")
   @Operation(summary = "Vote Level.")
-  @APIResponse(responseCode = "201", description = "Level successfully voted.")
+  @APIResponse(responseCode = "201", description = "Level successfully voted.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
   @APIResponse(responseCode = "400", description = "Failed to Vote Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Level. Verify 'Warning' Header.")
-  public Response vote(@PathParam("id") Integer idLevel,
+  public RestResponse<DTOVote> vote(@PathParam("id") Integer idLevel,
       DTOCreateVote dtoCreateVote) {
 
     if (dtoCreateVote == null) {
@@ -427,7 +438,10 @@ public class ResourceLevel {
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE_VOTE + dtoVote.getVoteId());
 
-    return Response.created(uri).entity(dtoVote).build();
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, dtoVote)
+        .location(uri)
+        .build();
 
   }
 

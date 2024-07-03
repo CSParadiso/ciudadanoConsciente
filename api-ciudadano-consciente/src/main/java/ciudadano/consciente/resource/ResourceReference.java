@@ -2,20 +2,24 @@ package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceReference;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import jakarta.ejb.Schedule;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
+import java.util.List;
 
 @Tag(name = "Reference Resource")
 @RequestScoped
@@ -38,33 +42,33 @@ public class ResourceReference {
 
   @GET
   @Operation(summary = "Retrieve all References.")
-  @APIResponse(responseCode = "200", description = "References successfully retrieved.")
-  public Response getAll() {
+  @APIResponse(responseCode = "200", description = "References successfully retrieved.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
+  public RestResponse<List<DTOReference>> getAll() {
 
     audit.debug("Getting all References...");
-    return Response.ok(serviceReference.getAll()).build();
+    return RestResponse.ResponseBuilder.ok(serviceReference.getAll()).build();
 
   }
 
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a specific Reference by its ID.")
-  @APIResponse(responseCode = "200", description = "Reference successfully retrieved.")
+  @APIResponse(responseCode = "200", description = "Reference successfully retrieved.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Reference. Verify 'Warning' Header.")
-  public Response get(@PathParam("id") Integer id) {
+  public RestResponse<DTOReference> get(@PathParam("id") Integer id) {
 
     audit.debug("Retrieving Reference " + id + ".");
-    return Response.ok(serviceReference.get(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceReference.get(id)).build();
 
   }
 
   @POST
   @Operation(summary = "Create a new Reference.")
-  @APIResponse(responseCode = "201", description = "Reference successfully created.")
+  @APIResponse(responseCode = "201", description = "Reference successfully created.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
   @APIResponse(responseCode = "204", description = "Failed to create Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to create Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Reference. Verify 'Warning' Header.")
-  public Response create(DTOCreateReference dtoCreateReference) {
+  public RestResponse<DTOReference> create(DTOCreateReference dtoCreateReference) {
 
     if (dtoCreateReference == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -85,18 +89,21 @@ public class ResourceReference {
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + reference.getReferenceId());
 
-    return Response.created(uri).entity(reference).build();
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, reference)
+        .location(uri)
+        .build();
 
   }
 
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Reference.")
-  @APIResponse(responseCode = "200", description = "Reference successfully updated.")
+  @APIResponse(responseCode = "200", description = "Reference successfully updated.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
   @APIResponse(responseCode = "204", description = "Failed to update Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to update Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Reference. Verify 'Warning' Header.")
-  public Response update(@PathParam("id") Integer id,
+  public RestResponse<DTOReference> update(@PathParam("id") Integer id,
       DTOUpdateReference dtoUpdateReference) {
 
     if (dtoUpdateReference == null) {
@@ -120,19 +127,19 @@ public class ResourceReference {
     }
 
     audit.debug("Updating Reference " + id + "...");
-    return Response.ok(serviceReference.update(id, dtoUpdateReference)).build();
+    return RestResponse.ResponseBuilder.ok(serviceReference.update(id, dtoUpdateReference)).build();
 
   }
 
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a Reference.")
-  @APIResponse(responseCode = "200", description = "Reference successfully deleted.")
+  @APIResponse(responseCode = "200", description = "Reference successfully deleted.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
   @APIResponse(responseCode = "204", description = "Failed to delete Reference. Verify 'Warning' Header.")
-  public Response delete(@PathParam("id") Integer id) {
+  public RestResponse<DTOReference> delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting Reference " + id + "...");
-    return Response.ok(serviceReference.delete(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceReference.delete(id)).build();
 
   }
 
@@ -141,11 +148,11 @@ public class ResourceReference {
   @POST
   @Path("{id}/votes")
   @Operation(summary = "Vote Reference.")
-  @APIResponse(responseCode = "201", description = "Reference successfully voted.")
+  @APIResponse(responseCode = "201", description = "Reference successfully voted.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOVote.class)))
   @APIResponse(responseCode = "400", description = "Failed to Vote Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to Vote Reference. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote Reference. Verify 'Warning' Header.")
-  public Response vote(@PathParam("id") Integer idReference,
+  public RestResponse<DTOVote> vote(@PathParam("id") Integer idReference,
       DTOCreateVote dtoCreateVote) {
 
     if (dtoCreateVote == null) {
@@ -170,7 +177,10 @@ public class ResourceReference {
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE_VOTES + dtoVote.getVoteId());
 
-    return Response.created(uri).entity(dtoVote).build();
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, dtoVote)
+        .location(uri)
+        .build();
 
   }
 

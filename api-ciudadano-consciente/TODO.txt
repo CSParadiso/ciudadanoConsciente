@@ -251,9 +251,12 @@ feat: modificada entidad (en modelo y en DB). El content ahora tiene un creator 
 un determinante de si es publico o no (booleano not null) y una organización vinculada (opcional).
 (resta la lógica de protección del borrado y la modificación)
 
-- Commit
+- Commit cad5cc7
 refactor: desde Response a RestResponse<T> en ActivityType, ActivityTypeVersion, ActivityTypeVersionStatus,
 Answer, Concern y Content.
+
+- Commit
+refactor: desde Response a RestResponse<T> en EntityType, Level, Organizations, Reference, Role. Tag, Tagged, User, UserRoleLevel, Vote.
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
