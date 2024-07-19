@@ -271,14 +271,22 @@ CHANGELOG 158f3ce:
         * $tipoEntidad/votes --> GET ALL VOTES
         * $tipoEntidad/{id}/votes --> GET ALL VOTES FOR SPECIFIC ENTITY
 
-- Commit
+- Commit 9c4f6f1
 feat: agregar modelo, accesor, transferible, transformador y recurso de vistas de las tagged entities
     * añadir transferible y transformador genérico de vistas de entidades tageables en API (DTOTaggedEntity, MapperTaggedEntity)
     * añadir modelo, accesor y recursos GET_ALL, GET de vistas de entidades taggeables en API (Organization, Level, ActivityType, Concern, Reference, ActivityTypeVersion, Content)
-CHANGELOG :
+CHANGELOG 9c4f6f1:
     - Ahora existen endpoints para consultar los tags de entidades:
         * $tipoEntidad/tags --> GET ALL TAGS
         * $tipoEntidad/{id}/tags --> GET ALL TAGS FOR SPECIFI ENTITY
+
+- Commit
+    - feat: añadir modelo, accesor, transferible transformador y recurso de RandomStreak
+CHANGELOG :
+    - Ahora se puede registrar la racha de un usuario en MODO RANDOM:
+        * streak/random/users --> GET ALL RANDOM STREAKS
+        * streak/random/users/{userId} --> POST, GET y PATCH RANDOM STREAK FOR SPECIFIC USER
+        * streak/random/{id} --> GET SPECIFIC RANDOM STREAK
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -326,7 +334,6 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
-TODO feat: agregar modelo, transferibles y endpoints de RandomStreak
 
 // TODO: feat: las modificaciones del content las hacen los creators (si son public) y los moderadores (si tiene vinculada una org)
 // TODO: El content ahora tiene un creator (User not null),
