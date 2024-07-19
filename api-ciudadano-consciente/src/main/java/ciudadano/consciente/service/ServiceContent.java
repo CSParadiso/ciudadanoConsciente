@@ -9,6 +9,7 @@ import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperContent;
 import ciudadano.consciente.mapper.MapperImage;
 import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityFileSignature;
 import ciudadano.consciente.utility.UtilityFileSystem;
@@ -65,6 +66,12 @@ public class ServiceContent {
 
   @Inject
   AccessOrganization accessOrganization;
+  
+  @Inject
+  AccessVotedContent accessVotedContent;
+  
+  @Inject
+  MapperVotedEntity mapperVotedEntity;
 
   public List<DTOContent> getAll() {
 
@@ -335,4 +342,20 @@ public class ServiceContent {
 
   }
 
+  public List<DTOVotedEntity> getAllVotes() {
+
+    audit.debug("Retrieving all votes from Contents.");
+    return mapperVotedEntity.votedContentEntityToDto((accessVotedContent.getAllVotes()));
+
+  }
+
+  public List<DTOVotedEntity> getVotes(Integer id) {
+
+    Content content = accessContent.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Content not found."));
+
+    return mapperVotedEntity.votedContentEntityToDto(accessVotedContent.getVotes(content));
+
+  }
+  
 }

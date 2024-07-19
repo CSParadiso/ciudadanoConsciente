@@ -5,12 +5,10 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
-import jakarta.ejb.Schedule;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -380,13 +378,24 @@ public class ResourceOrganization {
 
   }
 
-  @Deprecated
+  @GET
+  @Path("/votes")
+  @Operation(summary = "Retrieve votes of Organizations.")
+  @APIResponse(responseCode = "200", description = "Votes of Organizations successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Organizations. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVotedEntity>> getAllVotes() {
+
+    audit.debug("Getting Organizations Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.getAllVotes()).build();
+
+  }
+
   @GET
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a Organization.")
-  @APIResponse(responseCode = "200", description = "Votes of Organization successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
+  @APIResponse(responseCode = "200", description = "Votes of Organization successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Organization. Verify 'Warning' Header.")
-  public RestResponse<List<DTOVote>> getVotes(@PathParam("id") Integer id) {
+  public RestResponse<List<DTOVotedEntity>> getVotes(@PathParam("id") Integer id) {
 
     audit.debug("Getting Organization " + id + " Votes...");
     return RestResponse.ResponseBuilder.ok(serviceOrganization.getVotes(id)).build();

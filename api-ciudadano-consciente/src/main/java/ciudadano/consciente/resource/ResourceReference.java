@@ -12,9 +12,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 
@@ -181,6 +181,30 @@ public class ResourceReference {
         .create(RestResponse.Status.CREATED, dtoVote)
         .location(uri)
         .build();
+
+  }
+
+  @GET
+  @Path("/votes")
+  @Operation(summary = "Retrieve votes of References.")
+  @APIResponse(responseCode = "200", description = "Votes of References successfully retrieved.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOVotedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of References. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVotedEntity>> getAllVotes() {
+
+    audit.debug("Getting References Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceReference.getAllVotes()).build();
+
+  }
+
+  @GET
+  @Path("{id}/votes")
+  @Operation(summary = "Retrieve votes of a Reference.")
+  @APIResponse(responseCode = "200", description = "Votes of Reference successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Reference. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVotedEntity>> getVotes(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Reference " + id + " Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceReference.getVotes(id)).build();
 
   }
 

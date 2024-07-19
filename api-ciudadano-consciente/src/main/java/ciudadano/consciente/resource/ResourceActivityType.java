@@ -197,4 +197,28 @@ public class ResourceActivityType {
 
   }
 
+  @GET
+  @Path("/votes")
+  @Operation(summary = "Retrieve votes of Activity Types.")
+  @APIResponse(responseCode = "200", description = "Votes of Activity Types successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Activity Types. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVotedEntity>> getAllVotes() {
+
+    audit.debug("Getting Activity Types Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.getAllVotes()).build();
+
+  }
+
+  @GET
+  @Path("{id}/votes")
+  @Operation(summary = "Retrieve votes of a ActivityType.")
+  @APIResponse(responseCode = "200", description = "Votes of ActivityType successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of ActivityType. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVotedEntity>> getVotes(@PathParam("id") Integer id) {
+
+    audit.debug("Getting ActivityType " + id + " Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.getVotes(id)).build();
+
+  }
+
 }

@@ -1,15 +1,13 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
-import ciudadano.consciente.dto.DTOReference;
-import ciudadano.consciente.dto.DTOVote;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
-import ciudadano.consciente.dto.DTOUpdateReference;
-import ciudadano.consciente.dto.DTOCreateReference;
 import ciudadano.consciente.mapper.MapperReference;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -50,6 +48,12 @@ public class ServiceReference {
 
   @Inject
   AccessUser accessUser;
+  
+  @Inject
+  AccessVotedReference accessVotedReference;
+  
+  @Inject
+  MapperVotedEntity mapperVotedEntity;
 
   public List<DTOReference> getAll() {
 
@@ -181,4 +185,20 @@ public class ServiceReference {
 
   }
 
+  public List<DTOVotedEntity> getAllVotes() {
+
+    audit.debug("Retrieving all votes from References.");
+    return mapperVotedEntity.votedReferenceEntityToDto((accessVotedReference.getAllVotes()));
+
+  }
+
+  public List<DTOVotedEntity> getVotes(Integer id) {
+
+    Reference reference = accessReference.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Reference not found."));
+
+    return mapperVotedEntity.votedReferenceEntityToDto(accessVotedReference.getVotes(reference));
+
+  }
+  
 }

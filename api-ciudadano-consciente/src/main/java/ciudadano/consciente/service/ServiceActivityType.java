@@ -1,18 +1,13 @@
 package ciudadano.consciente.service;
 
-import ciudadano.consciente.access.AccessActivityType;
-import ciudadano.consciente.access.AccessEntityType;
-import ciudadano.consciente.access.AccessUser;
-import ciudadano.consciente.access.AccessVote;
-import ciudadano.consciente.dto.DTOActivityType;
-import ciudadano.consciente.dto.DTOUpdateActivityType;
-import ciudadano.consciente.dto.DTOVote;
+import ciudadano.consciente.access.*;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
-import ciudadano.consciente.dto.DTOCreateActivityType;
 import ciudadano.consciente.mapper.MapperActivityType;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -50,6 +45,12 @@ public class ServiceActivityType {
 
   @Inject
   MapperVote mapperVote;
+
+  @Inject
+  AccessVotedActivityType accessVotedActivityType;
+
+  @Inject
+  MapperVotedEntity mapperVotedEntity;
 
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOActivityType create(DTOCreateActivityType dtoCreateActivityType) {
@@ -170,6 +171,22 @@ public class ServiceActivityType {
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperVote.entityToDto(vote);
+
+  }
+
+  public List<DTOVotedEntity> getAllVotes() {
+
+    audit.debug("Retrieving all votes from Activity Type.");
+    return mapperVotedEntity.votedActivityTypeEntityToDto((accessVotedActivityType.getAllVotes()));
+
+  }
+
+  public List<DTOVotedEntity> getVotes(Integer id) {
+
+    ActivityType activityType = accessActivityType.get(id)
+            .orElseThrow(() -> new HttpNoContentException("ActivityType not found."));
+
+    return mapperVotedEntity.votedActivityTypeEntityToDto(accessVotedActivityType.getVotes(activityType));
 
   }
 

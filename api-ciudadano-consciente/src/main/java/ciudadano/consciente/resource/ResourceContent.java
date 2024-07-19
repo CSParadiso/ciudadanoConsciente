@@ -340,4 +340,28 @@ public class ResourceContent {
 
   }
 
+  @GET
+  @Path("/votes")
+  @Operation(summary = "Retrieve votes of Contents.")
+  @APIResponse(responseCode = "200", description = "Votes of Contents successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Contents. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVotedEntity>> getAllVotes() {
+
+    audit.debug("Getting Contents Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAllVotes()).build();
+
+  }
+
+  @GET
+  @Path("{id}/votes")
+  @Operation(summary = "Retrieve votes of a Content.")
+  @APIResponse(responseCode = "200", description = "Votes of Content successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Content. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVotedEntity>> getVotes(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Content " + id + " Votes...");
+    return RestResponse.ResponseBuilder.ok(serviceContent.getVotes(id)).build();
+
+  }
+  
 }

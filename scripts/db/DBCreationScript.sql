@@ -151,6 +151,15 @@ create table app.answers(
 	user_id integer default 1 references app.users on delete set default not null  
 );
 
+	-- Tabla streak (racha)
+create table app.random_streak(
+	streak_id integer generated always as identity primary key,
+	max_streak integer not null,
+	actual_streak integer not null,
+	streak_count integer not null,
+	user_id integer references app.users not null
+);
+
 	-- Tabla app.activity_type_version_status (CATEGORíA NOMINAL)
 create table app.activity_type_version_status(
 	activity_type_version_status_id integer generated always as identity primary key,
@@ -211,6 +220,103 @@ create table app.file_names_required_version_server (
 	purpose varchar(140) not null, -- why is the file needed in the version_server
 	UNIQUE(file_name_required, version_server)
 );
+
+----------------------
+-----| VIEWS |-----
+----------------------
+
+create view app.voted_organizations
+	(vote_id, user_id, user_name, organization_id, active, "date") as
+	select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
+	app.votes.active, app.votes."date"
+	from app.votes, app.users
+	where app.votes.user_id = app.users.user_id and app.votes.entity_type = 1;
+
+create view app.voted_levels
+	(vote_id, user_id, user_name, level_id, active, "date") as
+	select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
+	app.votes.active, app.votes."date"
+	from app.votes, app.users
+	where app.votes.user_id = app.users.user_id and app.votes.entity_type = 2;
+
+create view app.voted_activity_types
+	(vote_id, user_id, user_name, activity_type_id, active, "date") as
+	select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
+	app.votes.active, app.votes."date"
+	from app.votes, app.users
+	where app.votes.user_id = app.users.user_id and app.votes.entity_type = 3;
+
+create view app.voted_concerns
+        (vote_id, user_id, user_name, concern_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 4;
+
+create view app.voted_references
+        (vote_id, user_id, user_name, reference_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 5;
+
+create view app.voted_activity_type_versions
+        (vote_id, user_id, user_name, activity_type_version_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 6;
+
+create view app.voted_contents
+        (vote_id, user_id, user_name, content_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 7;
+
+create view app.tagged_organizations
+	(tagged_id, tag_id, tag_name, organization_id) as
+	select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id   
+	from app.tagged, app.tags
+	where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 1;
+
+create view app.tagged_levels
+        (tagged_id, tag_id, tag_name, level_id) as
+        select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
+        from app.tagged, app.tags
+        where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 2;
+
+create view app.tagged_activity_types
+        (tagged_id, tag_id, tag_name, activity_type_id) as
+        select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
+        from app.tagged, app.tags
+        where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 3;
+
+create view app.tagged_concerns
+        (tagged_id, tag_id, tag_name, concern_id) as
+        select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
+        from app.tagged, app.tags
+        where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 4;
+
+
+create view app.tagged_references
+        (tagged_id, tag_id, tag_name, reference_id) as
+        select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
+        from app.tagged, app.tags
+        where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 5;
+
+create view app.tagged_activity_type_versions
+        (tagged_id, tag_id, tag_name, activity_type_version_id) as
+        select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
+        from app.tagged, app.tags
+        where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 6;
+
+create view app.tagged_contents
+        (tagged_id, tag_id, tag_name, content_id) as
+        select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
+        from app.tagged, app.tags
+        where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 7;
+
 
 ----------------------
 -----| TRIGGERS |-----

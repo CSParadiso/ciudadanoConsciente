@@ -5,13 +5,14 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperUserRoleOrganization;
 import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.mapper.MapperOrganization;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
@@ -56,6 +57,12 @@ public class ServiceOrganization {
 
   @Inject
   MapperVote mapperVote;
+
+  @Inject
+  MapperVotedEntity mapperVotedEntity;
+
+  @Inject
+  AccessVotedOrganization accessVotedOrganization;
 
   public List<DTOOrganization> getAll() {
 
@@ -423,12 +430,19 @@ public class ServiceOrganization {
 
   }
 
-  public List<DTOVote> getVotes(Integer id) {
+  public List<DTOVotedEntity> getAllVotes() {
 
-    EntityType entityType = accessEntityType.getByName("Organization")
-        .orElseThrow(() -> new HttpNoContentException("Entity Type not found."));
+    audit.debug("Retrieving all votes from Organizations.");
+    return mapperVotedEntity.votedOrganizationEntityToDto((accessVotedOrganization.getAllVotes()));
 
-    return mapperVote.entityToDto(accessVote.getByKeys(entityType, id));
+  }
+
+  public List<DTOVotedEntity> getVotes(Integer id) {
+
+    Organization organization = accessOrganization.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+
+    return mapperVotedEntity.votedOrganizationEntityToDto(accessVotedOrganization.getVotes(organization));
 
   }
 

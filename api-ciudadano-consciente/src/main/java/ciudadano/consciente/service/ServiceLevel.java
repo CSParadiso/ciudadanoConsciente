@@ -4,8 +4,8 @@ import ciudadano.consciente.access.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.mapper.MapperLevel;
@@ -18,7 +18,6 @@ import org.jboss.logging.Logger;
 
 import java.sql.Date;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequestScoped
 public class ServiceLevel {
@@ -60,6 +59,12 @@ public class ServiceLevel {
 
   @Inject
   AccessEntityType accessEntityType;
+
+  @Inject
+  AccessVotedLevel accessVotedLevel;
+
+  @Inject
+  MapperVotedEntity mapperVotedEntity;
 
   @Inject
   AccessUserRoleOrganization accessUserRoleOrganization;
@@ -511,6 +516,22 @@ public class ServiceLevel {
             .toList();
 
     return mapperLevel.entityToDto(levels);
+
+  }
+
+  public List<DTOVotedEntity> getAllVotes() {
+
+    audit.debug("Retrieving all votes from Levels.");
+    return mapperVotedEntity.votedLevelEntityToDto((accessVotedLevel.getAllVotes()));
+
+  }
+
+  public List<DTOVotedEntity> getVotes(Integer id) {
+
+    Level level = accessLevel.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    return mapperVotedEntity.votedLevelEntityToDto(accessVotedLevel.getVotes(level));
 
   }
 

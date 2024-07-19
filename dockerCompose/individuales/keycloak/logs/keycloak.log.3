@@ -1,189 +1,25 @@
-2024-07-01 20:34:43,663 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz
-2024-07-01 20:34:44,952 INFO  [org.keycloak.quarkus.runtime.hostname.DefaultHostnameProvider] (main) Hostname settings: Base URL: http://localhost:3704, Hostname: localhost, Strict HTTPS: false, Path: /, Strict BackChannel: true, Admin URL: http://localhost:3704, Admin: localhost, Port: 3704, Proxied: true
-2024-07-01 20:34:47,525 WARN  [io.quarkus.agroal.runtime.DataSources] (main) Datasource <default> enables XA but transaction recovery is not enabled. Please enable transaction recovery by setting quarkus.transaction-manager.enable-recovery=true, otherwise data may be lost if the application is terminated abruptly
-2024-07-01 20:34:49,017 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
-2024-07-01 20:34:49,153 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
-2024-07-01 20:34:49,403 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000088: Unable to use any JGroups configuration mechanisms provided in properties {}. Using default JGroups configuration!
-2024-07-01 20:34:49,578 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN`
-2024-07-01 20:34:49,586 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: aaa3d266-bbdd-4147-aa6c-6993adbde9a0, name: keycloak-14500
-2024-07-01 20:34:49,595 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-07-01 20:34:49,595 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
-2024-07-01 20:34:49,596 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-07-01 20:34:49,596 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
-2024-07-01 20:34:49,613 INFO  [org.jgroups.protocols.FD_SOCK2] (keycloak-cache-init) server listening on *.34585
-2024-07-01 20:34:49,737 WARN  [io.quarkus.vertx.http.runtime.VertxHttpRecorder] (main) The X-Forwarded-* and Forwarded headers will be considered when determining the proxy address. This configuration can cause a security issue as clients can forge requests and send a forwarded header that is not overwritten by the proxy. Please consider use one of these headers just to forward the proxy address in requests.
-2024-07-01 20:34:49,745 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
-2024-07-01 20:34:51,622 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) keycloak-14500: no members discovered after 2005 ms: creating cluster as coordinator
-2024-07-01 20:34:51,639 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [keycloak-14500|0] (1) [keycloak-14500]
-2024-07-01 20:34:51,677 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `keycloak-14500`, physical addresses are `[172.22.0.3:50121]`
-2024-07-01 20:34:51,695 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
-2024-07-01 20:34:52,217 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: keycloak-14500, Site name: null
-2024-07-01 20:34:53,260 INFO  [io.quarkus] (main) Keycloak 23.0.7 on JVM (powered by Quarkus 3.2.10.Final) started in 11.226s. Listening on: http://0.0.0.0:8080
-2024-07-01 20:34:53,262 INFO  [io.quarkus] (main) Profile prod activated. 
-2024-07-01 20:34:53,263 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, jdbc-mariadb, jdbc-mssql, jdbc-mysql, jdbc-oracle, jdbc-postgresql, keycloak, logging-gelf, micrometer, narayana-jta, reactive-routes, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
-2024-07-02 00:28:44,995 WARN  [org.keycloak.events] (executor-thread-4) type="LOGIN_ERROR", realmId="44b690a6-7f35-41fb-8346-8205084c63aa", clientId="security-admin-console", userId="null", ipAddress="172.22.0.1", error="user_not_found", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="b358e0dd-d3ce-4a10-b78d-b8520e9afb01", username="saimon"
-2024-07-02 00:28:50,881 WARN  [org.keycloak.events] (executor-thread-4) type="LOGIN_ERROR", realmId="44b690a6-7f35-41fb-8346-8205084c63aa", clientId="security-admin-console", userId="e43de437-4079-4930-9a68-ba6172d9dffb", ipAddress="172.22.0.1", error="invalid_user_credentials", auth_method="openid-connect", auth_type="code", redirect_uri="http://localhost:3704/admin/master/console/", code_id="b358e0dd-d3ce-4a10-b78d-b8520e9afb01", username="admin"
-2024-07-02 00:28:59,247 ERROR [org.keycloak.services.error.KeycloakErrorHandler] (executor-thread-5) Uncaught server error: java.lang.NullPointerException: Cannot invoke "org.keycloak.models.ClientModel.getRole(String)" because "client" is null
-	at org.keycloak.authorization.common.UserModelIdentity.hasOneClientRole(UserModelIdentity.java:63)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.hasOneAdminRole(MgmtPermissions.java:171)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.canView(MgmtPermissions.java:357)
-	at org.keycloak.admin.ui.rest.RealmResource.lambda$realmList$0(RealmResource.java:54)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:178)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.Spliterators$IteratorSpliterator.tryAdvance(Spliterators.java:1856)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.lambda$initPartialTraversalState$0(StreamSpliterators.java:292)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.fillBuffer(StreamSpliterators.java:206)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.doAdvance(StreamSpliterators.java:161)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.tryAdvance(StreamSpliterators.java:298)
-	at java.base/java.util.Spliterators$1Adapter.hasNext(Spliterators.java:681)
-	at org.keycloak.utils.ClosingStream$ClosingIterator.hasNext(ClosingStream.java:293)
-	at org.keycloak.utils.StreamsUtil.throwIfEmpty(StreamsUtil.java:51)
-	at org.keycloak.admin.ui.rest.RealmResource.realmList(RealmResource.java:57)
-	at org.keycloak.admin.ui.rest.RealmResource$quarkusrestinvoker$realmList_ea97cef971b26880d6e802b2b011f07465408e31.invoke(Unknown Source)
-	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
-	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
-	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
-	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
-	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
-	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
-	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
-	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-
-2024-07-02 00:28:59,254 WARN  [io.agroal.pool] (executor-thread-5) Datasource '<default>': JDBC resources leaked: 1 ResultSet(s) and 1 Statement(s)
-2024-07-02 00:29:46,227 ERROR [org.keycloak.services.error.KeycloakErrorHandler] (executor-thread-1) Uncaught server error: java.lang.NullPointerException: Cannot invoke "org.keycloak.models.ClientModel.getRole(String)" because "client" is null
-	at org.keycloak.authorization.common.UserModelIdentity.hasOneClientRole(UserModelIdentity.java:63)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.hasOneAdminRole(MgmtPermissions.java:171)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.canView(MgmtPermissions.java:357)
-	at org.keycloak.admin.ui.rest.RealmResource.lambda$realmList$0(RealmResource.java:54)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:178)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.Spliterators$IteratorSpliterator.tryAdvance(Spliterators.java:1856)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.lambda$initPartialTraversalState$0(StreamSpliterators.java:292)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.fillBuffer(StreamSpliterators.java:206)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.doAdvance(StreamSpliterators.java:161)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.tryAdvance(StreamSpliterators.java:298)
-	at java.base/java.util.Spliterators$1Adapter.hasNext(Spliterators.java:681)
-	at org.keycloak.utils.ClosingStream$ClosingIterator.hasNext(ClosingStream.java:293)
-	at org.keycloak.utils.StreamsUtil.throwIfEmpty(StreamsUtil.java:51)
-	at org.keycloak.admin.ui.rest.RealmResource.realmList(RealmResource.java:57)
-	at org.keycloak.admin.ui.rest.RealmResource$quarkusrestinvoker$realmList_ea97cef971b26880d6e802b2b011f07465408e31.invoke(Unknown Source)
-	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
-	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
-	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
-	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
-	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
-	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
-	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
-	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-
-2024-07-02 00:29:46,231 WARN  [io.agroal.pool] (executor-thread-1) Datasource '<default>': JDBC resources leaked: 1 ResultSet(s) and 1 Statement(s)
-2024-07-02 00:30:49,589 WARN  [org.keycloak.events] (executor-thread-1) type="LOGIN_ERROR", realmId="44b690a6-7f35-41fb-8346-8205084c63aa", clientId="null", userId="null", ipAddress="172.22.0.1", error="cookie_not_found"
-2024-07-02 00:30:52,435 WARN  [org.keycloak.events] (executor-thread-1) type="LOGIN_ERROR", realmId="44b690a6-7f35-41fb-8346-8205084c63aa", clientId="null", userId="null", ipAddress="172.22.0.1", error="cookie_not_found"
-2024-07-02 00:33:09,123 ERROR [org.keycloak.services.error.KeycloakErrorHandler] (executor-thread-10) Uncaught server error: java.lang.NullPointerException: Cannot invoke "org.keycloak.models.ClientModel.getRole(String)" because "client" is null
-	at org.keycloak.authorization.common.UserModelIdentity.hasOneClientRole(UserModelIdentity.java:63)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.hasOneAdminRole(MgmtPermissions.java:171)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.canView(MgmtPermissions.java:357)
-	at org.keycloak.admin.ui.rest.RealmResource.lambda$realmList$0(RealmResource.java:54)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:178)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.Spliterators$IteratorSpliterator.tryAdvance(Spliterators.java:1856)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.lambda$initPartialTraversalState$0(StreamSpliterators.java:292)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.fillBuffer(StreamSpliterators.java:206)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.doAdvance(StreamSpliterators.java:161)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.tryAdvance(StreamSpliterators.java:298)
-	at java.base/java.util.Spliterators$1Adapter.hasNext(Spliterators.java:681)
-	at org.keycloak.utils.ClosingStream$ClosingIterator.hasNext(ClosingStream.java:293)
-	at org.keycloak.utils.StreamsUtil.throwIfEmpty(StreamsUtil.java:51)
-	at org.keycloak.admin.ui.rest.RealmResource.realmList(RealmResource.java:57)
-	at org.keycloak.admin.ui.rest.RealmResource$quarkusrestinvoker$realmList_ea97cef971b26880d6e802b2b011f07465408e31.invoke(Unknown Source)
-	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
-	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
-	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
-	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
-	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
-	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
-	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
-	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-
-2024-07-02 00:33:09,126 WARN  [io.agroal.pool] (executor-thread-10) Datasource '<default>': JDBC resources leaked: 1 ResultSet(s) and 1 Statement(s)
-2024-07-02 00:33:41,082 ERROR [org.keycloak.services.error.KeycloakErrorHandler] (executor-thread-15) Uncaught server error: java.lang.NullPointerException: Cannot invoke "org.keycloak.models.ClientModel.getRole(String)" because "client" is null
-	at org.keycloak.authorization.common.UserModelIdentity.hasOneClientRole(UserModelIdentity.java:63)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.hasOneAdminRole(MgmtPermissions.java:171)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.canView(MgmtPermissions.java:357)
-	at org.keycloak.admin.ui.rest.RealmResource.lambda$realmList$0(RealmResource.java:54)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:178)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.Spliterators$IteratorSpliterator.tryAdvance(Spliterators.java:1856)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.lambda$initPartialTraversalState$0(StreamSpliterators.java:292)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.fillBuffer(StreamSpliterators.java:206)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.doAdvance(StreamSpliterators.java:161)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.tryAdvance(StreamSpliterators.java:298)
-	at java.base/java.util.Spliterators$1Adapter.hasNext(Spliterators.java:681)
-	at org.keycloak.utils.ClosingStream$ClosingIterator.hasNext(ClosingStream.java:293)
-	at org.keycloak.utils.StreamsUtil.throwIfEmpty(StreamsUtil.java:51)
-	at org.keycloak.admin.ui.rest.RealmResource.realmList(RealmResource.java:57)
-	at org.keycloak.admin.ui.rest.RealmResource$quarkusrestinvoker$realmList_ea97cef971b26880d6e802b2b011f07465408e31.invoke(Unknown Source)
-	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
-	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
-	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
-	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
-	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
-	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
-	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
-	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-
-2024-07-02 00:33:41,084 WARN  [io.agroal.pool] (executor-thread-15) Datasource '<default>': JDBC resources leaked: 1 ResultSet(s) and 1 Statement(s)
-2024-07-02 00:33:55,023 ERROR [org.keycloak.services.error.KeycloakErrorHandler] (executor-thread-16) Uncaught server error: java.lang.NullPointerException: Cannot invoke "org.keycloak.models.ClientModel.getRole(String)" because "client" is null
-	at org.keycloak.authorization.common.UserModelIdentity.hasOneClientRole(UserModelIdentity.java:63)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.hasOneAdminRole(MgmtPermissions.java:171)
-	at org.keycloak.services.resources.admin.permissions.MgmtPermissions.canView(MgmtPermissions.java:357)
-	at org.keycloak.admin.ui.rest.RealmResource.lambda$realmList$0(RealmResource.java:54)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:178)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
-	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
-	at java.base/java.util.Spliterators$IteratorSpliterator.tryAdvance(Spliterators.java:1856)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.lambda$initPartialTraversalState$0(StreamSpliterators.java:292)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.fillBuffer(StreamSpliterators.java:206)
-	at java.base/java.util.stream.StreamSpliterators$AbstractWrappingSpliterator.doAdvance(StreamSpliterators.java:161)
-	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.tryAdvance(StreamSpliterators.java:298)
-	at java.base/java.util.Spliterators$1Adapter.hasNext(Spliterators.java:681)
-	at org.keycloak.utils.ClosingStream$ClosingIterator.hasNext(ClosingStream.java:293)
-	at org.keycloak.utils.StreamsUtil.throwIfEmpty(StreamsUtil.java:51)
-	at org.keycloak.admin.ui.rest.RealmResource.realmList(RealmResource.java:57)
-	at org.keycloak.admin.ui.rest.RealmResource$quarkusrestinvoker$realmList_ea97cef971b26880d6e802b2b011f07465408e31.invoke(Unknown Source)
-	at org.jboss.resteasy.reactive.server.handlers.InvocationHandler.handle(InvocationHandler.java:29)
-	at io.quarkus.resteasy.reactive.server.runtime.QuarkusResteasyReactiveRequestContext.invokeHandler(QuarkusResteasyReactiveRequestContext.java:141)
-	at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:145)
-	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
-	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
-	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
-	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
-	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:840)
-
-2024-07-02 00:33:55,026 WARN  [io.agroal.pool] (executor-thread-16) Datasource '<default>': JDBC resources leaked: 1 ResultSet(s) and 1 Statement(s)
-2024-07-02 00:34:37,097 WARN  [org.keycloak.events] (executor-thread-16) type="LOGIN_ERROR", realmId="44b690a6-7f35-41fb-8346-8205084c63aa", clientId="null", userId="null", ipAddress="172.22.0.1", error="cookie_not_found"
-2024-07-02 00:34:37,944 WARN  [org.keycloak.events] (executor-thread-16) type="LOGIN_ERROR", realmId="44b690a6-7f35-41fb-8346-8205084c63aa", clientId="null", userId="null", ipAddress="172.22.0.1", error="cookie_not_found"
+2024-07-05 18:59:29,490 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz
+2024-07-05 18:59:31,385 INFO  [org.keycloak.quarkus.runtime.hostname.DefaultHostnameProvider] (main) Hostname settings: Base URL: http://localhost:3704, Hostname: localhost, Strict HTTPS: false, Path: /, Strict BackChannel: true, Admin URL: http://localhost:3704, Admin: localhost, Port: 3704, Proxied: true
+2024-07-05 18:59:36,837 WARN  [io.quarkus.agroal.runtime.DataSources] (main) Datasource <default> enables XA but transaction recovery is not enabled. Please enable transaction recovery by setting quarkus.transaction-manager.enable-recovery=true, otherwise data may be lost if the application is terminated abruptly
+2024-07-05 18:59:39,362 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
+2024-07-05 18:59:39,642 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
+2024-07-05 18:59:40,118 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000088: Unable to use any JGroups configuration mechanisms provided in properties {}. Using default JGroups configuration!
+2024-07-05 18:59:40,544 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN`
+2024-07-05 18:59:40,549 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: c5c0efdd-8468-43c8-ae85-ba6f8bd37de6, name: keycloak-37652
+2024-07-05 18:59:40,590 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-07-05 18:59:40,591 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
+2024-07-05 18:59:40,592 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-07-05 18:59:40,593 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
+2024-07-05 18:59:40,616 INFO  [org.jgroups.protocols.FD_SOCK2] (keycloak-cache-init) server listening on *.32659
+2024-07-05 18:59:41,035 WARN  [io.quarkus.vertx.http.runtime.VertxHttpRecorder] (main) The X-Forwarded-* and Forwarded headers will be considered when determining the proxy address. This configuration can cause a security issue as clients can forge requests and send a forwarded header that is not overwritten by the proxy. Please consider use one of these headers just to forward the proxy address in requests.
+2024-07-05 18:59:41,050 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+2024-07-05 18:59:42,662 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) keycloak-37652: no members discovered after 2017 ms: creating cluster as coordinator
+2024-07-05 18:59:42,698 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [keycloak-37652|0] (1) [keycloak-37652]
+2024-07-05 18:59:42,774 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `keycloak-37652`, physical addresses are `[172.22.0.3:48195]`
+2024-07-05 18:59:42,801 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
+2024-07-05 18:59:43,751 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: keycloak-37652, Site name: null
+2024-07-05 18:59:45,315 INFO  [io.quarkus] (main) Keycloak 23.0.7 on JVM (powered by Quarkus 3.2.10.Final) started in 18.392s. Listening on: http://0.0.0.0:8080
+2024-07-05 18:59:45,316 INFO  [io.quarkus] (main) Profile prod activated. 
+2024-07-05 18:59:45,317 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, jdbc-mariadb, jdbc-mssql, jdbc-mysql, jdbc-oracle, jdbc-postgresql, keycloak, logging-gelf, micrometer, narayana-jta, reactive-routes, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
+2024-07-09 03:32:22,609 INFO  [org.infinispan.CLUSTER] (main) ISPN000080: Disconnecting JGroups channel `ISPN`
+2024-07-09 03:32:23,048 INFO  [io.quarkus] (main) Keycloak stopped in 1.232s

@@ -255,8 +255,19 @@ un determinante de si es publico o no (booleano not null) y una organización vi
 refactor: desde Response a RestResponse<T> en ActivityType, ActivityTypeVersion, ActivityTypeVersionStatus,
 Answer, Concern y Content.
 
-- Commit
+- Commit e8a8d87
 refactor: desde Response a RestResponse<T> en EntityType, Level, Organizations, Reference, Role. Tag, Tagged, User, UserRoleLevel, Vote.
+feat: añadir a todas las APIResponse anotations el content schema de la response
+
+
+- Commit
+feat: agregar modelo, accesor, transferible, transformador y recurso de vistas de las voted entities
+    * añadir vistas de entidades votables en DB
+    * añadir vistas de entidades taggeables en DB
+    * añadir tabla de rachas de respuestas a contents en RANDOM (random_streak) en DB
+    * añadir transferible y transformador genérico de vistas de entidades votables en API (DTOVotedEntity, MapperVotedEntity)
+    * añadir modelo, accesor y recursos GET_ALL, GET de vistas de entidades votables en API (Organization, Level, ActivityType, Concern, Reference, ActivityTypeVersion, Content)
+
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -305,9 +316,13 @@ MANEJO DE USUARIOS Y ROLES
 ------------------- DOING --------------
 ----------------------------------------
 // TODO: feat: las modificaciones del content las hacen los creators (si son public) y los moderadores (si tiene vinculada una org)
-// FIXME feat: añadir a todas las APIResponse anotations el content schema de la response
-// FIXME refactor: los RESOURCES quizás deberían retornar un RestResponse y no un Rest.
-
+// TODO: El content ahora tiene un creator (User not null),
+// un determinante de si es publico o no (booleano not null) y
+// una organización vinculada (opcional).
+// (resta la lógica de protección del borrado y la modificación)
+TODO feat: agregar modelo, transferibles y endpoints de vistas de las voted y tagged entities
+TODO feat: agregar modelo, transferibles y endpoints de RandomStreak
+TODO refactor: si se elimina un activityTypeVersion su voto aún sigue existiendo (el id 22 no existe pero tiene votos)
 
 
 // TODO Verificar referencias eliminadas en cascade para ver si se pueden usar los estados en lugar de borrar
@@ -334,7 +349,6 @@ OPTIMIZACIONES
 // FIXME refactor: hacer clase por cada file type para hacer genérico el recurso get y el servicio que invoca
 // FIXME Aplicar algoritmo para reducir al mínimo los estados de las versiones. (Algoritmos de las máquinas de estados finitos de Fundamentos de la Informática).
 
-// FIXME refactor: agregar @Content a la @ApiResponse para que se vea en el Swagger qué tipo de dato responde
 // FIXME Refactor de los DTO considerando si devolver las entidades hijas o sus identificadores
 // FIXME Refactor Quizás sea necesario agregar la anotación @MappingTarget en argumento de la clase que es actualizada https://mapstruct.org/documentation/stable/reference/html/#updating-bean-instances
 // FIXME refactor: los URI creados por los post de Level y Organizacion deberían retornar /levels/{id}/users/{user}/roles/{role} y no /levels/{id}/?users={user}&roles={role}

@@ -1,19 +1,14 @@
 package ciudadano.consciente.service;
 
-import ciudadano.consciente.access.AccessConcern;
-import ciudadano.consciente.access.AccessEntityType;
-import ciudadano.consciente.access.AccessUser;
-import ciudadano.consciente.access.AccessVote;
-import ciudadano.consciente.dto.DTOConcern;
-import ciudadano.consciente.dto.DTOCreateConcern;
-import ciudadano.consciente.dto.DTOUpdateConcern;
-import ciudadano.consciente.dto.DTOVote;
+import ciudadano.consciente.access.*;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperConcern;
 import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -52,6 +47,12 @@ public class ServiceConcern {
 
   @Inject
   AccessVote accessVote;
+  
+  @Inject
+  AccessVotedConcern accessVotedConcern;
+  
+  @Inject
+  MapperVotedEntity mapperVotedEntity;
 
   public List<DTOConcern> getAll() {
 
@@ -176,6 +177,22 @@ public class ServiceConcern {
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperVote.entityToDto(vote);
+
+  }
+
+  public List<DTOVotedEntity> getAllVotes() {
+
+    audit.debug("Retrieving all votes from Concerns.");
+    return mapperVotedEntity.votedConcernEntityToDto((accessVotedConcern.getAllVotes()));
+
+  }
+
+  public List<DTOVotedEntity> getVotes(Integer id) {
+
+    Concern concern = accessConcern.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Concern not found."));
+
+    return mapperVotedEntity.votedConcernEntityToDto(accessVotedConcern.getVotes(concern));
 
   }
 
