@@ -363,5 +363,29 @@ public class ResourceContent {
     return RestResponse.ResponseBuilder.ok(serviceContent.getVotes(id)).build();
 
   }
+
+  @GET
+  @Path("/tags")
+  @Operation(summary = "Retrieve tags of Contents.")
+  @APIResponse(responseCode = "200", description = "Tags of Contents successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Contents. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getAllTags() {
+
+    audit.debug("Getting Contents Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAllTags()).build();
+
+  }
+
+  @GET
+  @Path("{id}/tags")
+  @Operation(summary = "Retrieve tags of a Content.")
+  @APIResponse(responseCode = "200", description = "Tags of Content successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Content. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Content " + id + " Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceContent.getTags(id)).build();
+
+  }
   
 }

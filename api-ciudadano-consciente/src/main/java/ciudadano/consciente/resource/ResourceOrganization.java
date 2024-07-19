@@ -402,4 +402,28 @@ public class ResourceOrganization {
 
   }
 
+  @GET
+  @Path("/tags")
+  @Operation(summary = "Retrieve tags of Organizations.")
+  @APIResponse(responseCode = "200", description = "Tags of Organizations successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Organizations. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getAllTags() {
+
+    audit.debug("Getting Organizations Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.getAllTags()).build();
+
+  }
+
+  @GET
+  @Path("{id}/tags")
+  @Operation(summary = "Retrieve tags of a Organization.")
+  @APIResponse(responseCode = "200", description = "Tags of Organization successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Organization. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Organization " + id + " Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.getTags(id)).build();
+
+  }
+
 }

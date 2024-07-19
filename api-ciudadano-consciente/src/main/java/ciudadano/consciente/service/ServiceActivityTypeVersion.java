@@ -7,6 +7,7 @@ import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperActivityTypeVersion;
+import ciudadano.consciente.mapper.MapperTaggedEntity;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
@@ -78,6 +79,12 @@ public class ServiceActivityTypeVersion {
 
   @Inject
   MapperVotedEntity mapperVotedEntity;
+
+  @Inject
+  AccessTaggedActivityTypeVersion accessTaggedActivityTypeVersion;
+
+  @Inject
+  MapperTaggedEntity mapperTaggedEntity;
 
   public List<DTOActivityTypeVersion> getAllByStatus(Integer status) {
 
@@ -373,6 +380,22 @@ public class ServiceActivityTypeVersion {
             .orElseThrow(() -> new HttpNoContentException("ActivityTypeVersion not found."));
 
     return mapperVotedEntity.votedActivityTypeVersionEntityToDto(accessVotedActivityTypeVersion.getVotes(activityTypeVersion));
+
+  }
+
+  public List<DTOTaggedEntity> getAllTags() {
+
+    audit.debug("Retrieving all tags from Activity Type Versions.");
+    return mapperTaggedEntity.taggedActivityTypeVersionEntityToDto((accessTaggedActivityTypeVersion.getAllTags()));
+
+  }
+
+  public List<DTOTaggedEntity> getTags(Integer id) {
+
+    ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(id)
+            .orElseThrow(() -> new HttpNoContentException("ActivityTypeVersion not found."));
+
+    return mapperTaggedEntity.taggedActivityTypeVersionEntityToDto(accessTaggedActivityTypeVersion.getTags(activityTypeVersion));
 
   }
 

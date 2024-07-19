@@ -223,4 +223,28 @@ public class ResourceConcern {
 
   }
 
+  @GET
+  @Path("/tags")
+  @Operation(summary = "Retrieve tags of Concerns.")
+  @APIResponse(responseCode = "200", description = "Tags of Concerns successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Concerns. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getAllTags() {
+
+    audit.debug("Getting Concerns Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceConcern.getAllTags()).build();
+
+  }
+
+  @GET
+  @Path("{id}/tags")
+  @Operation(summary = "Retrieve tags of a Concern.")
+  @APIResponse(responseCode = "200", description = "Tags of Concern successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Concern. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Concern " + id + " Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceConcern.getTags(id)).build();
+
+  }
+
 }

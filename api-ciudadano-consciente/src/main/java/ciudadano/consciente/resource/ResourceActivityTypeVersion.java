@@ -340,4 +340,28 @@ public class ResourceActivityTypeVersion {
 
   }
 
+  @GET
+  @Path("/tags")
+  @Operation(summary = "Retrieve tags of Activity Type Versions.")
+  @APIResponse(responseCode = "200", description = "Tags of Activity Type Versions successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Activity Type Versions. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getAllTags() {
+
+    audit.debug("Getting Activity Type Versions Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersion.getAllTags()).build();
+
+  }
+
+  @GET
+  @Path("{id}/tags")
+  @Operation(summary = "Retrieve tags of a ActivityTypeVersion.")
+  @APIResponse(responseCode = "200", description = "Tags of ActivityTypeVersion successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of ActivityTypeVersion. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
+
+    audit.debug("Getting ActivityTypeVersion " + id + " Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersion.getTags(id)).build();
+
+  }
+
 }

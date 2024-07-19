@@ -208,4 +208,28 @@ public class ResourceReference {
 
   }
 
+  @GET
+  @Path("/tags")
+  @Operation(summary = "Retrieve tags of References.")
+  @APIResponse(responseCode = "200", description = "Tags of References successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of References. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getAllTags() {
+
+    audit.debug("Getting References Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceReference.getAllTags()).build();
+
+  }
+
+  @GET
+  @Path("{id}/tags")
+  @Operation(summary = "Retrieve tags of a Reference.")
+  @APIResponse(responseCode = "200", description = "Tags of Reference successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Reference. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Reference " + id + " Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceReference.getTags(id)).build();
+
+  }
+
 }

@@ -5,6 +5,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.mapper.MapperTaggedEntity;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
@@ -54,6 +55,12 @@ public class ServiceReference {
   
   @Inject
   MapperVotedEntity mapperVotedEntity;
+
+  @Inject
+  AccessTaggedReference accessTaggedReference;
+
+  @Inject
+  MapperTaggedEntity mapperTaggedEntity;
 
   public List<DTOReference> getAll() {
 
@@ -198,6 +205,22 @@ public class ServiceReference {
             .orElseThrow(() -> new HttpNoContentException("Reference not found."));
 
     return mapperVotedEntity.votedReferenceEntityToDto(accessVotedReference.getVotes(reference));
+
+  }
+
+  public List<DTOTaggedEntity> getAllTags() {
+
+    audit.debug("Retrieving all tags from References.");
+    return mapperTaggedEntity.taggedReferenceEntityToDto((accessTaggedReference.getAllTags()));
+
+  }
+
+  public List<DTOTaggedEntity> getTags(Integer id) {
+
+    Reference reference = accessReference.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Reference not found."));
+
+    return mapperTaggedEntity.taggedReferenceEntityToDto(accessTaggedReference.getTags(reference));
 
   }
   

@@ -5,11 +5,8 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.mapper.MapperUserRoleOrganization;
-import ciudadano.consciente.mapper.MapperVote;
-import ciudadano.consciente.mapper.MapperVotedEntity;
+import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
-import ciudadano.consciente.mapper.MapperOrganization;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Default;
@@ -63,6 +60,12 @@ public class ServiceOrganization {
 
   @Inject
   AccessVotedOrganization accessVotedOrganization;
+
+  @Inject
+  AccessTaggedOrganization accessTaggedOrganization;
+
+  @Inject
+  MapperTaggedEntity mapperTaggedEntity;
 
   public List<DTOOrganization> getAll() {
 
@@ -446,4 +449,20 @@ public class ServiceOrganization {
 
   }
 
+  public List<DTOTaggedEntity> getAllTags() {
+
+    audit.debug("Retrieving all tags from Organizations.");
+    return mapperTaggedEntity.taggedOrganizationEntityToDto((accessTaggedOrganization.getAllTags()));
+
+  }
+
+  public List<DTOTaggedEntity> getTags(Integer id) {
+
+    Organization organization = accessOrganization.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+
+    return mapperTaggedEntity.taggedOrganizationEntityToDto(accessTaggedOrganization.getTags(organization));
+
+  }  
+  
 }

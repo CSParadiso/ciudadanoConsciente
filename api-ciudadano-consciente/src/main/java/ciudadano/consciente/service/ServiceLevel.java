@@ -4,12 +4,9 @@ import ciudadano.consciente.access.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.mapper.MapperVote;
-import ciudadano.consciente.mapper.MapperVotedEntity;
+import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
-import ciudadano.consciente.mapper.MapperLevel;
-import ciudadano.consciente.mapper.MapperUserRoleLevel;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -65,6 +62,12 @@ public class ServiceLevel {
 
   @Inject
   MapperVotedEntity mapperVotedEntity;
+  
+  @Inject
+  AccessTaggedLevel accessTaggedLevel;
+  
+  @Inject
+  MapperTaggedEntity mapperTaggedEntity;
 
   @Inject
   AccessUserRoleOrganization accessUserRoleOrganization;
@@ -534,5 +537,21 @@ public class ServiceLevel {
     return mapperVotedEntity.votedLevelEntityToDto(accessVotedLevel.getVotes(level));
 
   }
+
+  public List<DTOTaggedEntity> getAllTags() {
+
+    audit.debug("Retrieving all tags from Levels.");
+    return mapperTaggedEntity.taggedLevelEntityToDto((accessTaggedLevel.getAllTags()));
+
+  }
+
+  public List<DTOTaggedEntity> getTags(Integer id) {
+
+    Level level = accessLevel.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    return mapperTaggedEntity.taggedLevelEntityToDto(accessTaggedLevel.getTags(level));
+
+  }  
 
 }

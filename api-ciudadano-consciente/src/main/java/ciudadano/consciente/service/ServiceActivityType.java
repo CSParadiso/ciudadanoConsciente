@@ -5,6 +5,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.mapper.MapperTaggedEntity;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
@@ -51,6 +52,12 @@ public class ServiceActivityType {
 
   @Inject
   MapperVotedEntity mapperVotedEntity;
+
+  @Inject
+  AccessTaggedActivityType accessTaggedActivityType;
+
+  @Inject
+  MapperTaggedEntity mapperTaggedEntity;
 
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOActivityType create(DTOCreateActivityType dtoCreateActivityType) {
@@ -190,4 +197,20 @@ public class ServiceActivityType {
 
   }
 
+  public List<DTOTaggedEntity> getAllTags() {
+
+    audit.debug("Retrieving all tags from Activity Types.");
+    return mapperTaggedEntity.taggedActivityTypeEntityToDto((accessTaggedActivityType.getAllTags()));
+
+  }
+
+  public List<DTOTaggedEntity> getTags(Integer id) {
+
+    ActivityType activityType = accessActivityType.get(id)
+            .orElseThrow(() -> new HttpNoContentException("ActivityType not found."));
+
+    return mapperTaggedEntity.taggedActivityTypeEntityToDto(accessTaggedActivityType.getTags(activityType));
+
+  }
+  
 }

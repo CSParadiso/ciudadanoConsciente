@@ -469,4 +469,28 @@ public class ResourceLevel {
 
   }
 
+  @GET
+  @Path("/tags")
+  @Operation(summary = "Retrieve tags of Levels.")
+  @APIResponse(responseCode = "200", description = "Tags of Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Levels. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getAllTags() {
+
+    audit.debug("Getting Levels Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getAllTags()).build();
+
+  }
+
+  @GET
+  @Path("{id}/tags")
+  @Operation(summary = "Retrieve tags of a Level.")
+  @APIResponse(responseCode = "200", description = "Tags of Level successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Level. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
+
+    audit.debug("Getting Level " + id + " Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getTags(id)).build();
+
+  }
+
 }

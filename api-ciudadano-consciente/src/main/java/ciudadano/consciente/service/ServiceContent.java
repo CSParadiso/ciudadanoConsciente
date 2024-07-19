@@ -6,10 +6,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.mapper.MapperContent;
-import ciudadano.consciente.mapper.MapperImage;
-import ciudadano.consciente.mapper.MapperVote;
-import ciudadano.consciente.mapper.MapperVotedEntity;
+import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityFileSignature;
 import ciudadano.consciente.utility.UtilityFileSystem;
@@ -72,6 +69,12 @@ public class ServiceContent {
   
   @Inject
   MapperVotedEntity mapperVotedEntity;
+  
+  @Inject
+  AccessTaggedContent accessTaggedContent;
+  
+  @Inject
+  MapperTaggedEntity mapperTaggedEntity;
 
   public List<DTOContent> getAll() {
 
@@ -355,6 +358,22 @@ public class ServiceContent {
             .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
     return mapperVotedEntity.votedContentEntityToDto(accessVotedContent.getVotes(content));
+
+  }
+
+  public List<DTOTaggedEntity> getAllTags() {
+
+    audit.debug("Retrieving all tags from Contents.");
+    return mapperTaggedEntity.taggedContentEntityToDto((accessTaggedContent.getAllTags()));
+
+  }
+
+  public List<DTOTaggedEntity> getTags(Integer id) {
+
+    Content content = accessContent.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Content not found."));
+
+    return mapperTaggedEntity.taggedContentEntityToDto(accessTaggedContent.getTags(content));
 
   }
   

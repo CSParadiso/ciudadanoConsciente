@@ -7,6 +7,7 @@ import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperConcern;
+import ciudadano.consciente.mapper.MapperTaggedEntity;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
@@ -53,6 +54,12 @@ public class ServiceConcern {
   
   @Inject
   MapperVotedEntity mapperVotedEntity;
+
+  @Inject
+  AccessTaggedConcern accessTaggedConcern;
+
+  @Inject
+  MapperTaggedEntity mapperTaggedEntity;
 
   public List<DTOConcern> getAll() {
 
@@ -193,6 +200,22 @@ public class ServiceConcern {
             .orElseThrow(() -> new HttpNoContentException("Concern not found."));
 
     return mapperVotedEntity.votedConcernEntityToDto(accessVotedConcern.getVotes(concern));
+
+  }
+
+  public List<DTOTaggedEntity> getAllTags() {
+
+    audit.debug("Retrieving all tags from Concerns.");
+    return mapperTaggedEntity.taggedConcernEntityToDto((accessTaggedConcern.getAllTags()));
+
+  }
+
+  public List<DTOTaggedEntity> getTags(Integer id) {
+
+    Concern concern = accessConcern.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Concern not found."));
+
+    return mapperTaggedEntity.taggedConcernEntityToDto(accessTaggedConcern.getTags(concern));
 
   }
 

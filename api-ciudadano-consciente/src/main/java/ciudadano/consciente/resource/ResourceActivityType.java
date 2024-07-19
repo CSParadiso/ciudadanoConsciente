@@ -221,4 +221,28 @@ public class ResourceActivityType {
 
   }
 
+  @GET
+  @Path("/tags")
+  @Operation(summary = "Retrieve tags of Activity Types.")
+  @APIResponse(responseCode = "200", description = "Tags of Activity Types successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Activity Types. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getAllTags() {
+
+    audit.debug("Getting Activity Types Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.getAllTags()).build();
+
+  }
+
+  @GET
+  @Path("{id}/tags")
+  @Operation(summary = "Retrieve tags of a ActivityType.")
+  @APIResponse(responseCode = "200", description = "Tags of ActivityType successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of ActivityType. Verify 'Warning' Header.")
+  public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
+
+    audit.debug("Getting ActivityType " + id + " Tags...");
+    return RestResponse.ResponseBuilder.ok(serviceActivityType.getTags(id)).build();
+
+  }
+
 }
