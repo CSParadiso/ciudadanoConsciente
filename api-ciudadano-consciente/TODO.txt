@@ -295,12 +295,17 @@ CHANGELOG 30eac98:
    - Ahora las respuestas no se pueden actualizar, sólo se generan.
    - Los transferibles de Answer ya no tienen el campo "lastModified", tampoco el endpoint GET /levels/paths/recently/users/{userId}
 
-- Commit
+- Commit 3ed15a9
 feat: añadir endpoint para recuperar respuestas de un usuario en un nivel y sus hijos
-CHANGELOG
+CHANGELOG 3ed15a9:
     - Ahora se puede recuperar las repuestas de un usuario en un PATH ('/answers/levels/{levelId}/users/{userId}/childrens')
 
-
+- Commit
+feat: Recuperar user a partir de email o username (endpoints 'users/[username | email]/{username | email}')
+CHANGELOG:
+    - Ahora se puede recuperar usuarios por username o email:
+        * users/username/{username} --> USER
+        * users/email/{email} --> USER
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
 -----------------------------------------
@@ -347,7 +352,6 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
-
 
 // TODO: feat: las modificaciones del content las hacen los creators (si son public) y los moderadores (si tiene vinculada una org)
 // TODO: El content ahora tiene un creator (User not null),

@@ -64,6 +64,30 @@ public class ResourceUser {
 
   }
 
+  @GET
+  @Path("username/{username}")
+  @Operation(summary = "Retrieve a specific User by its username.")
+  @APIResponse(responseCode = "200", description = "User successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve User. Verify 'Warning' Header.")
+  public RestResponse<DTOUser> getByUsername(@PathParam("username") String username) {
+
+    audit.debug("Getting User with username " + username + "...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.getByUsername(username)).build();
+
+  }
+
+  @GET
+  @Path("email/{email}")
+  @Operation(summary = "Retrieve a specific User by its email address.")
+  @APIResponse(responseCode = "200", description = "User successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve User. Verify 'Warning' Header.")
+  public RestResponse<DTOUser> getByEmailAddress(@PathParam("email") String email) {
+
+    audit.debug("Getting User with email address " + email + "...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.getByEmail(email)).build();
+
+  }
+
   @POST
   @Operation(summary = "Create a new User.")
   @APIResponse(responseCode = "201", description = "User successfully created.", content = @Content(schema = @Schema(implementation = DTOUser.class)))

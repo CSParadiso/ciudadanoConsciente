@@ -51,6 +51,28 @@ public class ServiceUser {
 
     }
 
+    public DTOUser getByUsername(String username) {
+
+        audit.debug("Retrieving User " + username + ".");
+        User user = accessUser.getByUsername(username)
+                .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperUser.entityToDto(user);
+
+    }
+
+    public DTOUser getByEmail(String email) {
+
+        audit.debug("Retrieving User with email " + email + ".");
+        User user = accessUser.getByEmail(email)
+                .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+        audit.debug("Mapping EntityType into DTO.");
+        return mapperUser.entityToDto(user);
+
+    }
+
     public List<DTOUser> getAll() {
 
         audit.debug("Retrieving all Users.");

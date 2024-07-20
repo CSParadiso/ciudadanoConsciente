@@ -1,4 +1,4 @@
-2024-07-20 16:07:36,131 saimonlaptop api-ciudadano-consciente-dev.jar[83475] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+2024-07-20 16:55:59,678 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
    ___ _           _           _                       ___                     _            _       
   / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
  / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
@@ -6,43 +6,23 @@
 \____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
                                                                                                     
 
-2024-07-20 16:07:36,139 saimonlaptop api-ciudadano-consciente-dev.jar[83475] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.2 on JVM (powered by Quarkus 3.2.8.Final) started in 2.851s. Listening on: http://localhost:5909
-2024-07-20 16:07:36,140 saimonlaptop api-ciudadano-consciente-dev.jar[83475] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2024-07-20 16:07:36,141 saimonlaptop api-ciudadano-consciente-dev.jar[83475] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
-2024-07-20 16:07:36,142 saimonlaptop api-ciudadano-consciente-dev.jar[83475] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 3.263s 
-2024-07-20 16:07:36,178 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.res.ResourceAnswer] (executor-thread-1) Retrieving all Children Levels Answers of a User.
-2024-07-20 16:07:36,194 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if parent Level exists 7
-2024-07-20 16:07:36,196 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessLevel] (executor-thread-1) Trying to retrieve Level 7.
-2024-07-20 16:07:36,213 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if user exists 8
-2024-07-20 16:07:36,221 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 8
-2024-07-20 16:07:36,243 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to retrieve all children levels answers...
-2024-07-20 16:07:47,941 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.res.ResourceAnswer] (executor-thread-1) Retrieving all Children Levels Answers of a User.
-2024-07-20 16:07:47,943 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if parent Level exists 7
-2024-07-20 16:07:47,944 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessLevel] (executor-thread-1) Trying to retrieve Level 7.
-2024-07-20 16:07:47,949 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if user exists 5
-2024-07-20 16:07:47,951 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 5
-2024-07-20 16:07:47,956 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to retrieve all children levels answers...
-2024-07-20 16:07:53,807 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.res.ResourceAnswer] (executor-thread-1) Retrieving all Children Levels Answers of a User.
-2024-07-20 16:07:53,808 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if parent Level exists 7
-2024-07-20 16:07:53,810 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessLevel] (executor-thread-1) Trying to retrieve Level 7.
-2024-07-20 16:07:53,814 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if user exists 4
-2024-07-20 16:07:53,815 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 4
-2024-07-20 16:07:53,819 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to retrieve all children levels answers...
-2024-07-20 16:08:34,002 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.res.ResourceAnswer] (executor-thread-1) Retrieving all Children Levels Answers of a User.
-2024-07-20 16:08:34,004 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if parent Level exists 12
-2024-07-20 16:08:34,006 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessLevel] (executor-thread-1) Trying to retrieve Level 12.
-2024-07-20 16:08:34,010 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if user exists 4
-2024-07-20 16:08:34,012 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 4
-2024-07-20 16:08:34,015 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to retrieve all children levels answers...
-2024-07-20 16:08:46,508 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.res.ResourceAnswer] (executor-thread-1) Retrieving all Children Levels Answers of a User.
-2024-07-20 16:08:46,510 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if parent Level exists 7
-2024-07-20 16:08:46,511 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessLevel] (executor-thread-1) Trying to retrieve Level 7.
-2024-07-20 16:08:46,515 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if user exists 4
-2024-07-20 16:08:46,517 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 4
-2024-07-20 16:08:46,519 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to retrieve all children levels answers...
-2024-07-20 16:08:52,523 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.res.ResourceAnswer] (executor-thread-1) Retrieving all Children Levels Answers of a User.
-2024-07-20 16:08:52,524 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if parent Level exists 6
-2024-07-20 16:08:52,525 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessLevel] (executor-thread-1) Trying to retrieve Level 6.
-2024-07-20 16:08:52,528 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.ser.ServiceAnswer] (executor-thread-1) Verifying if user exists 4
-2024-07-20 16:08:52,529 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 4
-2024-07-20 16:08:52,532 saimonlaptop api-ciudadano-consciente-dev.jar[83475] DEBUG [ciu.con.acc.AccessAnswer] (executor-thread-1) Trying to retrieve all children levels answers...
+2024-07-20 16:55:59,698 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.2 on JVM (powered by Quarkus 3.2.8.Final) started in 1.902s. Listening on: http://localhost:5909
+2024-07-20 16:55:59,700 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-07-20 16:55:59,701 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-07-20 16:55:59,703 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-2) Live reload total time: 2.184s 
+2024-07-20 16:57:26,128 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with email address saimon@paradiso.com...
+2024-07-20 16:57:26,134 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User with email saimon@paradiso.com.
+2024-07-20 16:57:26,143 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User with emailsaimon@paradiso.com
+2024-07-20 16:57:26,166 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Mapping EntityType into DTO.
+2024-07-20 16:57:34,505 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with email address saimon@paradiso.com.ar...
+2024-07-20 16:57:34,506 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User with email saimon@paradiso.com.ar.
+2024-07-20 16:57:34,507 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User with emailsaimon@paradiso.com.ar
+2024-07-20 16:57:34,510 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-2) mapHttpNoContentException: User not found.
+2024-07-20 16:57:43,217 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with email address mick@jagger.com...
+2024-07-20 16:57:43,218 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User with email mick@jagger.com.
+2024-07-20 16:57:43,219 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User with emailmick@jagger.com
+2024-07-20 16:57:43,225 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Mapping EntityType into DTO.
+2024-07-20 17:00:25,677 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with username ron...
+2024-07-20 17:00:25,679 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User ron.
+2024-07-20 17:00:25,680 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User ron
+2024-07-20 17:00:25,697 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Mapping EntityType into DTO.

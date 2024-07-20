@@ -21,6 +21,16 @@ public class AccessUser implements PanacheRepositoryBase<User, Integer> {
         return findByIdOptional(id);
     }
 
+    public Optional<User> getByUsername(String username) {
+        audit.debug("Trying to retrieve User " + username);
+        return find("username", username).stream().findFirst();
+    }
+
+    public Optional<User> getByEmail(String email) {
+        audit.debug("Trying to retrieve User with email" + email);
+        return find("email", email).stream().findFirst();
+    }
+
     public List<User> getAll() {
 
         audit.debug("Trying to retrieve all Users.");
