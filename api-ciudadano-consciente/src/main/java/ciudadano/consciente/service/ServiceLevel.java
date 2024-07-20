@@ -196,7 +196,6 @@ public class ServiceLevel {
       path.setDescription((String) level[2]);
       path.setOrganization((Integer) level[3]);
       path.setCreated((Date) level[4]);
-      path.setLastModified((Date) level[5]);
       paths.add(path);
     }
 

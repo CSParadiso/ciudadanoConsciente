@@ -33,11 +33,11 @@ import jakarta.persistence.Transient;
         "SELECT *\n" +
         "FROM LevelHierarchy;\n", resultClass = Level.class),
 
-    @NamedNativeQuery(name = "Level.getLatestsUserPaths", query = "select distinct L.level_id, L.name, L.description, L.organization, b.created, b.last_modified "
+    @NamedNativeQuery(name = "Level.getLatestsUserPaths", query = "select distinct L.level_id, L.name, L.description, L.organization, b.created "
         +
         "from app.activities as A inner join app.answers as B on (B.activity = A.activity_id and B.user_id = :user) " +
         "inner join app.levels as L on (a.level_id = L.level_id and L.parent is null) " +
-        "order by b.last_modified DESC, b.created DESC;")
+        "order by b.created DESC;")
 })
 public class Level implements Taggable, Votable {
 

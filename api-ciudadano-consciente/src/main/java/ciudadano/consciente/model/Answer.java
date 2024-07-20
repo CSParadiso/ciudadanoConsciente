@@ -15,7 +15,7 @@ import java.time.LocalDate;
                 "SELECT l.level_id, l.parent FROM app.levels l INNER JOIN " +
                 "LevelHierarchy lh ON l.parent = lh.level_id) " +
                 "SELECT LevelHierarchy.level_id, LevelHierarchy.parent as parent_id, ac.activity_id, ac.content as content_id," +
-                " s.answer_id, s.user_id, s.created, s.last_modified, s.status FROM LevelHierarchy join " +
+                " s.answer_id, s.user_id, s.created, s.status FROM LevelHierarchy join " +
                 "app.activities ac on (ac.level_id = LevelHierarchy.level_id) inner join " +
                 "app.answers s on (s.activity = ac.activity_id);")
 )
@@ -27,9 +27,6 @@ public class Answer {
     private Integer answerId;
 
     private LocalDate created;
-
-    @Column(name = "last_modified")
-    private LocalDate lastModified;
 
     // @JoinColumn(nombreClaveForanea en Modelo, nombreClavePrimaria en BD)
     @OneToOne
@@ -49,7 +46,6 @@ public class Answer {
         this.userId = userId;
         this.status = status;
         this.created = LocalDate.now();
-        this.lastModified = null;
     }
 
     public Integer getAnswerId() {
@@ -66,14 +62,6 @@ public class Answer {
 
     public void setCreated(LocalDate created) {
         this.created = created;
-    }
-
-    public LocalDate getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(LocalDate lastModified) {
-        this.lastModified = lastModified;
     }
 
     public Activity getActivity() {

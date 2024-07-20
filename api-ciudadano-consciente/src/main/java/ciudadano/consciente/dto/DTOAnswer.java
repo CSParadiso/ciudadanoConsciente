@@ -14,9 +14,6 @@ public class DTOAnswer {
     private LocalDate created;
 
     @Schema(description = "")
-    private LocalDate lastModified;
-
-    @Schema(description = "")
     private Integer activity;
 
     @Schema(description = "")
@@ -39,14 +36,6 @@ public class DTOAnswer {
 
     public void setCreated(LocalDate created) {
         this.created = created;
-    }
-
-    public LocalDate getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(LocalDate lastModified) {
-        this.lastModified = lastModified;
     }
 
     public Integer getActivity() {

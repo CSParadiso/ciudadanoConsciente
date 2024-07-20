@@ -17,9 +17,6 @@ public class DTOAnswerOfChildrens {
     private Date created;
 
     @Schema
-    private Date lastModified;
-
-    @Schema
     private Boolean status;
 
     @Schema
@@ -88,14 +85,6 @@ public class DTOAnswerOfChildrens {
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
     }
 
     public Boolean getStatus() {

@@ -280,13 +280,20 @@ CHANGELOG 9c4f6f1:
         * $tipoEntidad/tags --> GET ALL TAGS
         * $tipoEntidad/{id}/tags --> GET ALL TAGS FOR SPECIFI ENTITY
 
-- Commit
-    - feat: añadir modelo, accesor, transferible transformador y recurso de RandomStreak
-CHANGELOG :
+- Commit 80872f7
+    - feat: añadir modelo, accesor, transferible, transformador y recurso de RandomStreak
+CHANGELOG 80872f7:
     - Ahora se puede registrar la racha de un usuario en MODO RANDOM:
         * streak/random/users --> GET ALL RANDOM STREAKS
         * streak/random/users/{userId} --> POST, GET y PATCH RANDOM STREAK FOR SPECIFIC USER
         * streak/random/{id} --> GET SPECIFIC RANDOM STREAK
+
+Commit
+    - refactor: eliminar el campo "last_modified" de las answers de la DB y de la API (del modelo, de los transferibles y servicios asociados).
+    - deprecar el PATCH de Answers y sus transferibles y métodos asociados
+CHANGELOG:
+    - Ahora las respuestas no se pueden actualizar, sólo se generan.
+    - Los transferibles de Answer ya no tienen el campo "lastModified", tampoco el endpoint GET /levels/paths/recently/users/{userId}
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------

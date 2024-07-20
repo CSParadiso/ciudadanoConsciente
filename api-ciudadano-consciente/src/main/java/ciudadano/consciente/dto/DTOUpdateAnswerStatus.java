@@ -2,6 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
+@Deprecated(since = "1.0.3. The answers should not be modified.")
 public class DTOUpdateAnswerStatus {
 
     @Schema(defaultValue = "")

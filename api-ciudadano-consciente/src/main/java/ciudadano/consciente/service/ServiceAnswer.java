@@ -64,8 +64,7 @@ public class ServiceAnswer {
             dtoAnswerOfChildrens.setAnswer((Integer) rawAnswer[4]);
             dtoAnswerOfChildrens.setUser((Integer) rawAnswer[5]);
             dtoAnswerOfChildrens.setCreated((Date) rawAnswer[6]);
-            dtoAnswerOfChildrens.setLastModified((Date) rawAnswer[7]);
-            dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[8]);
+            dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[7]);
             answerOfChildrens.add(dtoAnswerOfChildrens);
         }
 
@@ -126,6 +125,7 @@ public class ServiceAnswer {
 
     }
 
+    @Deprecated(since = "1.0.3. The answers should not be modified.")
     @Transactional(Transactional.TxType.REQUIRED)
     public DTOAnswer updateStatus(Integer id, DTOUpdateAnswerStatus dtoUpdateAnswerStatus) {
 
@@ -134,7 +134,6 @@ public class ServiceAnswer {
 
         audit.debug("Updating Answer " + id + ".");
         answer.setStatus(dtoUpdateAnswerStatus.getStatus());
-        answer.setLastModified(LocalDate.now());
 
         audit.debug("Saving Answer " + answer.getAnswerId() + ".");
         accessAnswer.save(answer)

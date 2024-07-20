@@ -22,9 +22,6 @@ public class DTOLevelPathUsedRecentlyByUser {
     @Schema
     private Date created;
 
-    @Schema
-    private Date lastModified;
-
     public Integer getLevelId() {
         return levelId;
     }
@@ -73,11 +70,4 @@ public class DTOLevelPathUsedRecentlyByUser {
         this.created = created;
     }
 
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
 }

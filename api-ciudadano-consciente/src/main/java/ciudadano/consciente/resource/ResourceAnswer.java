@@ -176,6 +176,7 @@ public class ResourceAnswer {
 
     }
 
+    @Deprecated(since = "1.0.3. The answers should not be modified.")
     @PATCH
     @Path("{id}/status")
     @Operation(summary = "Update Status of Answer.")
