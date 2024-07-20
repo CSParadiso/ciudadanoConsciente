@@ -77,6 +77,26 @@ public class ResourceAnswer {
     }
 
     @GET
+    @Path("levels/{levelId}/users/{userId}/childrens")
+    @Operation(summary = "Retrieve all Answers of a User from a Level and his childrens.")
+    @APIResponse(
+            responseCode = "200",
+            description = "Answers successfully retrieved.",
+            content = @Content(schema = @Schema(implementation = DTOAnswerOfChildrens.class))
+    )
+    @APIResponse(
+            responseCode = "204",
+            description = "Failed to retrieve Answers. Verify 'Warning' header."
+    )
+    public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswersOfUser(@PathParam("levelId") Integer levelId,
+                                                                                      @PathParam("userId") Integer userId) {
+
+        audit.debug("Retrieving all Children Levels Answers of a User.");
+        return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswersOfUser(levelId, userId)).build();
+
+    }
+
+    @GET
     @Path("{id}")
     @Operation(summary = "Retrieve a  Answer by its ID.")
     @APIResponse(
@@ -133,6 +153,7 @@ public class ResourceAnswer {
 
         return RestResponse.ResponseBuilder
                 .create(RestResponse.Status.CREATED, answer)
+                .location(uri)
                 .build();
 
     }

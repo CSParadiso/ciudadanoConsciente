@@ -51,4 +51,14 @@ public class AccessAnswer implements PanacheRepositoryBase<Answer, Integer> {
 
     }
 
+    public List<Object[]> getAllChildrenLevelsAnswersOfUser(Integer levelId, Integer userId) {
+
+        audit.debug("Trying to retrieve all children levels answers...");
+        return entityManager.createNamedQuery("Answer.getAllChildrenLevelsAnswersOfUser")
+                .setParameter("parentLevelId", levelId)
+                .setParameter("userId", userId)
+                .getResultList();
+
+    }
+
 }

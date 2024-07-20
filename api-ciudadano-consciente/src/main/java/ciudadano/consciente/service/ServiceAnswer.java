@@ -4,7 +4,6 @@ import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperAnswer;
 import ciudadano.consciente.model.*;
 import jakarta.enterprise.context.RequestScoped;
@@ -13,7 +12,6 @@ import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +51,36 @@ public class ServiceAnswer {
                 .orElseThrow( ()-> new HttpNoContentException("Level not found."));
 
         List<Object[]> rawAnswers = accessAnswer.getAllChildrenLevelsAnswers(level.getLevelId());
+
+        List<DTOAnswerOfChildrens> answerOfChildrens = new ArrayList<>();
+        for(Object[] rawAnswer : rawAnswers) {
+            DTOAnswerOfChildrens dtoAnswerOfChildrens = new DTOAnswerOfChildrens();
+            dtoAnswerOfChildrens.setLevel((Integer) rawAnswer[0]);
+            dtoAnswerOfChildrens.setParent((Integer) rawAnswer[1]);
+            dtoAnswerOfChildrens.setActivity((Integer) rawAnswer[2]);
+            dtoAnswerOfChildrens.setContent((Integer) rawAnswer[3]);
+            dtoAnswerOfChildrens.setAnswer((Integer) rawAnswer[4]);
+            dtoAnswerOfChildrens.setUser((Integer) rawAnswer[5]);
+            dtoAnswerOfChildrens.setCreated((Date) rawAnswer[6]);
+            dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[7]);
+            answerOfChildrens.add(dtoAnswerOfChildrens);
+        }
+
+        return answerOfChildrens;
+
+    }
+
+    public List<DTOAnswerOfChildrens> getAllChildrenLevelsAnswersOfUser(Integer levelId, Integer userId) {
+
+        audit.debug("Verifying if parent Level exists " + levelId);
+        Level level = accessLevel.get(levelId)
+                .orElseThrow( ()-> new HttpNoContentException("Level not found."));
+
+        audit.debug("Verifying if user exists " + userId);
+        User user = accessUser.get(userId)
+                .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+        List<Object[]> rawAnswers = accessAnswer.getAllChildrenLevelsAnswersOfUser(level.getLevelId(), user.getUserId());
 
         List<DTOAnswerOfChildrens> answerOfChildrens = new ArrayList<>();
         for(Object[] rawAnswer : rawAnswers) {
