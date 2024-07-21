@@ -11,8 +11,9 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
-import java.sql.Date;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RequestScoped
@@ -61,7 +62,7 @@ public class ServiceAnswer {
             dtoAnswerOfChildrens.setContent((Integer) rawAnswer[3]);
             dtoAnswerOfChildrens.setAnswer((Integer) rawAnswer[4]);
             dtoAnswerOfChildrens.setUser((Integer) rawAnswer[5]);
-            dtoAnswerOfChildrens.setCreated((Date) rawAnswer[6]);
+            dtoAnswerOfChildrens.setCreated((OffsetDateTime) rawAnswer[6]);
             dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[7]);
             answerOfChildrens.add(dtoAnswerOfChildrens);
         }
@@ -91,7 +92,7 @@ public class ServiceAnswer {
             dtoAnswerOfChildrens.setContent((Integer) rawAnswer[3]);
             dtoAnswerOfChildrens.setAnswer((Integer) rawAnswer[4]);
             dtoAnswerOfChildrens.setUser((Integer) rawAnswer[5]);
-            dtoAnswerOfChildrens.setCreated((Date) rawAnswer[6]);
+            dtoAnswerOfChildrens.setCreated((OffsetDateTime) rawAnswer[6]);
             dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[7]);
             answerOfChildrens.add(dtoAnswerOfChildrens);
         }

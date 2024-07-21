@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +35,10 @@ public class ActivityTypeVersion implements Taggable, Votable {
   private Integer versionNumber;
 
   @Column(name = "staged_date")
-  private LocalDate stagedDate;
+  private OffsetDateTime stagedDate;
 
   @Column(name = "last_modified_status_date")
-  private LocalDate lastModifiedStatusDate;
+  private OffsetDateTime lastModifiedStatusDate;
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   @JdbcTypeCode(SqlTypes.JSON) // To automatically use the table as jsonb
@@ -61,8 +61,8 @@ public class ActivityTypeVersion implements Taggable, Votable {
   private List<Vote> votes = new ArrayList<>();
 
   public ActivityTypeVersion() {
-    this.stagedDate = LocalDate.now();
-    this.lastModifiedStatusDate = LocalDate.now();
+    this.stagedDate = OffsetDateTime.now();
+    this.lastModifiedStatusDate = OffsetDateTime.now();
   }
 
   public ActivityTypeVersion(String model, String template, String readme) {
@@ -70,8 +70,8 @@ public class ActivityTypeVersion implements Taggable, Votable {
     this.model = model;
     this.template = template;
     this.readme = readme;
-    this.stagedDate = LocalDate.now();
-    this.lastModifiedStatusDate = LocalDate.now();
+    this.stagedDate = OffsetDateTime.now();
+    this.lastModifiedStatusDate = OffsetDateTime.now();
 
   }
 
@@ -107,19 +107,19 @@ public class ActivityTypeVersion implements Taggable, Votable {
     this.versionNumber = versionNumber;
   }
 
-  public LocalDate getStagedDate() {
+  public OffsetDateTime getStagedDate() {
     return stagedDate;
   }
 
-  public void setStagedDate(LocalDate stagedDate) {
+  public void setStagedDate(OffsetDateTime stagedDate) {
     this.stagedDate = stagedDate;
   }
 
-  public LocalDate getLastModifiedStatusDate() {
+  public OffsetDateTime getLastModifiedStatusDate() {
     return lastModifiedStatusDate;
   }
 
-  public void setLastModifiedStatusDate(LocalDate lastModifiedStatusDate) {
+  public void setLastModifiedStatusDate(OffsetDateTime lastModifiedStatusDate) {
     this.lastModifiedStatusDate = lastModifiedStatusDate;
   }
 

@@ -1,10 +1,9 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Organization;
 import jakarta.persistence.GeneratedValue;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class DTOActivityTypeVersion {
 
@@ -22,10 +21,10 @@ public class DTOActivityTypeVersion {
     private Integer versionNumber;
 
     @Schema(defaultValue = "")
-    private LocalDate stagedDate;
+    private OffsetDateTime stagedDate;
 
     @Schema(defaultValue ="")
-    private LocalDate lastModifiedStatusDate;
+    private OffsetDateTime lastModifiedStatusDate;
 
     @Schema(defaultValue = "")
     private String model;
@@ -68,19 +67,19 @@ public class DTOActivityTypeVersion {
         this.versionNumber = versionNumber;
     }
 
-    public LocalDate getStagedDate() {
+    public OffsetDateTime getStagedDate() {
         return stagedDate;
     }
 
-    public void setStagedDate(LocalDate stagedDate) {
+    public void setStagedDate(OffsetDateTime stagedDate) {
         this.stagedDate = stagedDate;
     }
 
-    public LocalDate getLastModifiedStatusDate() {
+    public OffsetDateTime getLastModifiedStatusDate() {
         return lastModifiedStatusDate;
     }
 
-    public void setLastModifiedStatusDate(LocalDate lastModifiedStatusDate) {
+    public void setLastModifiedStatusDate(OffsetDateTime lastModifiedStatusDate) {
         this.lastModifiedStatusDate = lastModifiedStatusDate;
     }
 

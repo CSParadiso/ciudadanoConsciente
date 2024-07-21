@@ -2,7 +2,8 @@ package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Concern implements Taggable, Votable {
 
   private String explanation;
 
-  private LocalDate date;
+  private OffsetDateTime date;
 
   // @JoinColumn(name = nombreClaveForanea, referencedColumnName =
   // nombreClavePrimaria referenciada)
@@ -35,7 +36,7 @@ public class Concern implements Taggable, Votable {
 
   public Concern() {
 
-    this.date = LocalDate.now();
+    this.date = OffsetDateTime.now();
 
   }
 
@@ -63,11 +64,11 @@ public class Concern implements Taggable, Votable {
     this.explanation = explanation;
   }
 
-  public LocalDate getDate() {
+  public OffsetDateTime getDate() {
     return date;
   }
 
-  public void setDate(LocalDate date) {
+  public void setDate(OffsetDateTime date) {
     this.date = date;
   }
 

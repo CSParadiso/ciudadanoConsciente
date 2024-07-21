@@ -1,9 +1,8 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class DTOConcern {
 
@@ -17,7 +16,7 @@ public class DTOConcern {
     private String explanation;
 
     @Schema(defaultValue = "")
-    private LocalDate date;
+    private OffsetDateTime date;
 
     @Schema(defaultValue = "")
     private Integer user;
@@ -46,11 +45,11 @@ public class DTOConcern {
         this.explanation = explanation;
     }
 
-    public LocalDate getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 

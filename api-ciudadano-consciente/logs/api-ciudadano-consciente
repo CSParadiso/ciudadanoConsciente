@@ -1,4 +1,4 @@
-2024-07-20 16:55:59,678 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
+2024-07-21 11:07:01,009 saimonlaptop api-ciudadano-consciente-dev.jar[153300] INFO  [ciu.con.uti.APILifeCycle] (Quarkus Main Thread) 
    ___ _           _           _                       ___                     _            _       
   / __(_)_   _  __| | __ _  __| | __ _ _ __   ___     / __\___  _ __  ___  ___(_) ___ _ __ | |_ ___ 
  / /  | | | | |/ _` |/ _` |/ _` |/ _` | '_ \ / _ \   / /  / _ \| '_ \/ __|/ __| |/ _ \ '_ \| __/ _ \
@@ -6,23 +6,17 @@
 \____/|_|\__,_|\__,_|\__,_|\__,_|\__,_|_| |_|\___/  \____/\___/|_| |_|___/\___|_|\___|_| |_|\__\___|
                                                                                                     
 
-2024-07-20 16:55:59,698 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.2 on JVM (powered by Quarkus 3.2.8.Final) started in 1.902s. Listening on: http://localhost:5909
-2024-07-20 16:55:59,700 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2024-07-20 16:55:59,701 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
-2024-07-20 16:55:59,703 saimonlaptop api-ciudadano-consciente-dev.jar[100388] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-2) Live reload total time: 2.184s 
-2024-07-20 16:57:26,128 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with email address saimon@paradiso.com...
-2024-07-20 16:57:26,134 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User with email saimon@paradiso.com.
-2024-07-20 16:57:26,143 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User with emailsaimon@paradiso.com
-2024-07-20 16:57:26,166 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Mapping EntityType into DTO.
-2024-07-20 16:57:34,505 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with email address saimon@paradiso.com.ar...
-2024-07-20 16:57:34,506 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User with email saimon@paradiso.com.ar.
-2024-07-20 16:57:34,507 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User with emailsaimon@paradiso.com.ar
-2024-07-20 16:57:34,510 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.exc.ExceptionMappers] (executor-thread-2) mapHttpNoContentException: User not found.
-2024-07-20 16:57:43,217 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with email address mick@jagger.com...
-2024-07-20 16:57:43,218 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User with email mick@jagger.com.
-2024-07-20 16:57:43,219 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User with emailmick@jagger.com
-2024-07-20 16:57:43,225 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Mapping EntityType into DTO.
-2024-07-20 17:00:25,677 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.res.ResourceUser] (executor-thread-2) Getting User with username ron...
-2024-07-20 17:00:25,679 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Retrieving User ron.
-2024-07-20 17:00:25,680 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.acc.AccessUser] (executor-thread-2) Trying to retrieve User ron
-2024-07-20 17:00:25,697 saimonlaptop api-ciudadano-consciente-dev.jar[100388] DEBUG [ciu.con.ser.ServiceUser] (executor-thread-2) Mapping EntityType into DTO.
+2024-07-21 11:07:01,049 saimonlaptop api-ciudadano-consciente-dev.jar[153300] INFO  [io.quarkus] (Quarkus Main Thread) api-ciudadano-consciente 1.0.2 on JVM (powered by Quarkus 3.2.8.Final) started in 9.806s. Listening on: http://localhost:5909
+2024-07-21 11:07:01,051 saimonlaptop api-ciudadano-consciente-dev.jar[153300] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2024-07-21 11:07:01,051 saimonlaptop api-ciudadano-consciente-dev.jar[153300] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, oidc, rest-client-reactive, rest-client-reactive-jackson, resteasy-reactive, resteasy-reactive-jackson, security, security-jpa, smallrye-context-propagation, smallrye-openapi, swagger-ui, vertx]
+2024-07-21 11:07:20,665 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.res.ResourceConcern] (executor-thread-1) Creating Concern...
+2024-07-21 11:07:20,694 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.acc.AccessUser] (executor-thread-1) Trying to retrieve User 8
+2024-07-21 11:07:20,787 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.ser.ServiceConcern] (executor-thread-1) Creating Concern.
+2024-07-21 11:07:20,788 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.ser.ServiceConcern] (executor-thread-1) Saving Concern.
+2024-07-21 11:07:20,790 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.acc.AccessConcern] (executor-thread-1) Trying to persist Concernnull.
+2024-07-21 11:07:20,821 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.ser.ServiceConcern] (executor-thread-1) Mapping EntityType into DTO.
+2024-07-21 11:07:20,836 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.res.ResourceConcern] (executor-thread-1) Creating URI...
+2024-07-21 11:07:32,979 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.res.ResourceConcern] (executor-thread-1) Getting all Concerns...
+2024-07-21 11:07:32,981 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.ser.ServiceConcern] (executor-thread-1) Retrieving all Concerns.
+2024-07-21 11:07:32,982 saimonlaptop api-ciudadano-consciente-dev.jar[153300] DEBUG [ciu.con.acc.AccessConcern] (executor-thread-1) Trying to get all Concerns
+2024-07-21 11:16:59,916 saimonlaptop api-ciudadano-consciente-dev.jar[153300] WARN  [io.agr.pool] (agroal-11) Datasource '<default>': Closing connection in incorrect state VALIDATION

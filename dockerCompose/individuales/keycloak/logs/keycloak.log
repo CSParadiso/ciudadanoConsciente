@@ -21,3 +21,4 @@
 2024-07-19 16:52:14,298 INFO  [io.quarkus] (main) Keycloak 23.0.7 on JVM (powered by Quarkus 3.2.10.Final) started in 25.062s. Listening on: http://0.0.0.0:8080
 2024-07-19 16:52:14,306 INFO  [io.quarkus] (main) Profile prod activated. 
 2024-07-19 16:52:14,312 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, jdbc-mariadb, jdbc-mssql, jdbc-mysql, jdbc-oracle, jdbc-postgresql, keycloak, logging-gelf, micrometer, narayana-jta, reactive-routes, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
+2024-07-21 14:15:40,200 WARN  [io.agroal.pool] (agroal-11) Datasource '<default>': Closing connection in incorrect state VALIDATION

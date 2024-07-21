@@ -5,7 +5,6 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
-import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperActivityTypeVersion;
 import ciudadano.consciente.mapper.MapperTaggedEntity;
 import ciudadano.consciente.mapper.MapperVote;
@@ -13,7 +12,6 @@ import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityFileSignature;
 import ciudadano.consciente.utility.UtilityFileSystem;
-import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -21,7 +19,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.DataException;
 import org.jboss.logging.Logger;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -299,7 +297,7 @@ public class ServiceActivityTypeVersion {
 
     audit.debug("Updating Activity Type Version " + id);
     activityTypeVersion.setActivityTypeVersionStatusId(activityTypeVersionStatus);
-    activityTypeVersion.setLastModifiedStatusDate(LocalDate.now());
+    activityTypeVersion.setLastModifiedStatusDate(OffsetDateTime.now());
 
     audit.debug("Trying to persist updated Status of Activity Type Version.");
     accessActivityTypeVersion.save(activityTypeVersion)

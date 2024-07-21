@@ -1,10 +1,9 @@
 package ciudadano.consciente.model;
 
-import jakarta.enterprise.inject.Default;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(schema = "app", name = "answers")
@@ -35,7 +34,7 @@ public class Answer {
     @Column(name = "answer_id")
     private Integer answerId;
 
-    private LocalDate created;
+    private OffsetDateTime created;
 
     // @JoinColumn(nombreClaveForanea en Modelo, nombreClavePrimaria en BD)
     @OneToOne
@@ -54,7 +53,7 @@ public class Answer {
         this.activity = activity;
         this.userId = userId;
         this.status = status;
-        this.created = LocalDate.now();
+        this.created = OffsetDateTime.now();
     }
 
     public Integer getAnswerId() {
@@ -65,11 +64,11 @@ public class Answer {
         this.answerId = answerId;
     }
 
-    public LocalDate getCreated() {
+    public OffsetDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(OffsetDateTime created) {
         this.created = created;
     }
 

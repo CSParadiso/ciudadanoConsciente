@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(schema = "app", name = "voted_references")
@@ -26,7 +26,7 @@ public class VotedReference {
 
     private Boolean active;
 
-    private LocalDate date;
+    private OffsetDateTime date;
 
 
     public Integer getVoteId() {
@@ -69,11 +69,11 @@ public class VotedReference {
         this.active = active;
     }
 
-    public LocalDate getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 }

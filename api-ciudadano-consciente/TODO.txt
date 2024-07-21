@@ -300,12 +300,33 @@ feat: añadir endpoint para recuperar respuestas de un usuario en un nivel y sus
 CHANGELOG 3ed15a9:
     - Ahora se puede recuperar las repuestas de un usuario en un PATH ('/answers/levels/{levelId}/users/{userId}/childrens')
 
-- Commit
+- Commit a18c1d9
 feat: Recuperar user a partir de email o username (endpoints 'users/[username | email]/{username | email}')
-CHANGELOG:
+CHANGELOG a18c1d9:
     - Ahora se puede recuperar usuarios por username o email:
         * users/username/{username} --> USER
         * users/email/{email} --> USER
+
+- Commit
+refactor: para tener fecha y hora, migrar todas las fechas a timestamp with time zone en la DB
+refactor: para tener fecha y hora, migrar todas las fechas a OffsetDateTime en la API
+    * stagedDate de DTOActivityTypeVersion
+    * lastModifiedStatusDate de DTOActivityTypeVersion
+    * created de DTOAnswer
+    * created de DTOAnswerOfChildrens
+    * date de DTOConcern
+    * created de DTOLevelPathUsedRecentlyByUser
+    * date de DTOVote
+    * stagedDate de ActivityTypeVersion
+    * lastModifiedStatusDate de ActivityTypeVersion
+    * created de Answer
+    * date de Concern
+    * date de Vote
+    * DTO Voted Entity
+    * Voted{Entity}
+CHANGELOG :
+    - Ahora todas las fechas de la API tienen además hora y timezone (GMT -3)
+    - Ahora la DB tienes timezone
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
 -----------------------------------------
@@ -340,8 +361,9 @@ CHANGELOG:
 -----------------------------------------
 
 CORE
-// 
-// TODO refactor averiguar fecha y hora en postgres en vez de solo fechA
+
+
+
 
 MANEJO DE USUARIOS Y ROLES
 // TODO feat: resolver autenticación

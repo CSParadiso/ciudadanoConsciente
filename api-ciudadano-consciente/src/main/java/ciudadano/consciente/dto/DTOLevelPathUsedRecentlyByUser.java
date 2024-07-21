@@ -2,8 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class DTOLevelPathUsedRecentlyByUser {
 
@@ -20,7 +19,7 @@ public class DTOLevelPathUsedRecentlyByUser {
     private Integer organizationId;
 
     @Schema
-    private Date created;
+    private OffsetDateTime created;
 
     public Integer getLevelId() {
         return levelId;
@@ -62,11 +61,11 @@ public class DTOLevelPathUsedRecentlyByUser {
         this.organizationId = organizationId;
     }
 
-    public Date getCreated() {
+    public OffsetDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(OffsetDateTime created) {
         this.created = created;
     }
 

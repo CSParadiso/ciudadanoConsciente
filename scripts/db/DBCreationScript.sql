@@ -3,6 +3,9 @@
 -- ACLARACIONES
 -- * Las convenciones de los nombres de tablas en plural: basado en el idioma inglés
 
+-- SETEAR TIMEZONE
+ALTER SYSTEM SET timezone TO 'America/Argentina/Ushuaia';
+
 -- CREAR ESQUEMAS 
 	
 	-- Esquema app
@@ -66,7 +69,7 @@ create table app.concerns (
 	concern_id integer generated always as identity primary key, 
 	description varchar(140) not null, 
 	url varchar(500), 
-	date date default CURRENT_DATE, -- siempre entre comillas simples
+	date timestamp with time zone default CURRENT_DATE, -- siempre entre comillas simples
 	user_id integer default 1 references app.users on delete set 1 not null
 );
 
@@ -86,8 +89,8 @@ create table app.activity_type_version (
         activity_type_id integer default 1 references app.activity_types on delete set default not null,
         activity_type_version_status_id integer default 7 references app.activity_type_version_status on delete set default not null,
         version_number integer not null, -- disparado por trigger
-        staged_date date default CURRENT_DATE not null, -- cuando es posteado por vez primera
-        last_modified_status_date date default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
+        staged_date timestamp with time zone default CURRENT_DATE not null, -- cuando es posteado por vez primera
+        last_modified_status_date timestamp with time zone default CURRENT_DATE, -- la última vez que se modificado el status de la versión 
         model jsonb not null,
         template text not null,
         readme text not null,
@@ -143,8 +146,7 @@ create table app.activities (
 	-- Tabla answers
 create table app.answers(
 	answer_id integer generated always as identity primary key, 
-	created date default CURRENT_DATE not null, 	-- Puede ser localDateTime
-	last_modified date default CURRENT_DATE null,	-- Puede ser localDateTime 
+	created timestamp with time zone default CURRENT_DATE not null, 	-- Puede ser localDateTime
 	activity integer default 1 references app.activities on delete set default not null, 
 	status boolean default false not null;
         -- add percentage double default 0.0 not null, PARA DETERMINAR EL PORCENTAJE DE COMPLETADO TANTO PARA FALLO COMO PARA EXITO (quizás implica que la version explicite en el model el procentaje)	
@@ -157,7 +159,7 @@ create table app.random_streak(
 	max_streak integer not null,
 	actual_streak integer not null,
 	streak_count integer not null,
-	user_id integer references app.users not null
+	user_id integer references app.users not null unique
 );
 
 	-- Tabla app.activity_type_version_status (CATEGORíA NOMINAL)
@@ -199,7 +201,7 @@ create table app.votes (
 	entity_id integer, 
 	entity_type integer references app.entity_types on delete cascade not null, 
 	active boolean default true not null, -- por si cambia de opinion varias veces
-	date date default CURRENT_DATE, 
+	date timestamp with time zone default CURRENT_DATE, 
 	unique(user_id, entity_id, entity_type)
 );
 
@@ -226,7 +228,7 @@ create table app.file_names_required_version_server (
 ----------------------
 
 create view app.voted_organizations
-	(vote_id, user_id, user_name, organization_id, active, "date") as
+(vote_id, user_id, user_name, organization_id, active, "date") as
 	select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
 	app.votes.active, app.votes."date"
 	from app.votes, app.users

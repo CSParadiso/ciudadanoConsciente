@@ -2,7 +2,7 @@ package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(schema = "app", name = "voted_organizations")
@@ -23,7 +23,7 @@ public class VotedOrganization {
 
     private Boolean active;
 
-    private LocalDate date;
+    private OffsetDateTime date;
 
 
     public Integer getVoteId() {
@@ -66,11 +66,11 @@ public class VotedOrganization {
         this.active = active;
     }
 
-    public LocalDate getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 }

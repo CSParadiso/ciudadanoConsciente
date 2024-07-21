@@ -2,8 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class DTOAnswerOfChildrens {
 
@@ -14,7 +13,7 @@ public class DTOAnswerOfChildrens {
     private Integer user;
 
     @Schema
-    private Date created;
+    private OffsetDateTime created;
 
     @Schema
     private Boolean status;
@@ -79,11 +78,11 @@ public class DTOAnswerOfChildrens {
         this.user = user;
     }
 
-    public Date getCreated() {
+    public OffsetDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(OffsetDateTime created) {
         this.created = created;
     }
 

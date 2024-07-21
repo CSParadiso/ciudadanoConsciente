@@ -1,9 +1,8 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Organization;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class DTOAnswer {
 
@@ -11,7 +10,7 @@ public class DTOAnswer {
     private Integer answerId;
 
     @Schema(description = "")
-    private LocalDate created;
+    private OffsetDateTime created;
 
     @Schema(description = "")
     private Integer activity;
@@ -30,11 +29,11 @@ public class DTOAnswer {
         this.answerId = answerId;
     }
 
-    public LocalDate getCreated() {
+    public OffsetDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(OffsetDateTime created) {
         this.created = created;
     }
 

@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
 import java.sql.Date;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @RequestScoped
@@ -195,7 +196,7 @@ public class ServiceLevel {
       path.setName((String) level[1]);
       path.setDescription((String) level[2]);
       path.setOrganization((Integer) level[3]);
-      path.setCreated((Date) level[4]);
+      path.setCreated((OffsetDateTime) level[4]);
       paths.add(path);
     }
 

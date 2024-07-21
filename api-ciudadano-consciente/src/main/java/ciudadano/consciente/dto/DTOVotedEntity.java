@@ -2,7 +2,7 @@ package ciudadano.consciente.dto;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class DTOVotedEntity {
 
@@ -20,7 +20,7 @@ public class DTOVotedEntity {
 
     private Boolean active;
 
-    private LocalDate date;
+    private OffsetDateTime date;
 
     public Integer getVoteId() {
         return voteId;
@@ -62,11 +62,11 @@ public class DTOVotedEntity {
         this.active = active;
     }
 
-    public LocalDate getDate() {
+    public OffsetDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(OffsetDateTime date) {
         this.date = date;
     }
 }
