@@ -1,0 +1,108 @@
+-- Agregar al compose.yaml de api-ciudadano-consciente
+- TZ=America/Argentina/Ushuaia # Para la JVM
+- QUARKUS_HIBERNATE_ORM_JDBC_TIMEZONE=America/Argentina/Ushuaia # Para el ORM
+- QUARKUS_HIBERNATE_ORM_MAPPING_TIMEZONE_DEFAULT_STORAGE=normalize # Toma el timezone de la JDBC al mapear
+
+-- DENTRO DEL CONTENEDOR DE POSTGRESQL
+-- (docker exec -i postresql psql -U saimon -d ciudadano_consciente)
+-- 0. Algunas verificaciones previas para comparar al final de la migración
+select current_timestamp; -- Muetra la hora completa
+show timezone; -- Muestra el timezone que hay
+-- 1. Cambiar timezone
+ALTER SYSTEM SET timezone TO 'America/Argentina/Ushuaia';
+
+
+-- MIGRACIÓN en DB de fechas, desde DATE a Timestamp with time zone
+
+-- 2. SOLO SI YA ESTABAN LAS VISTAS EN LA DB 
+-- Eliminar las vistas que dependan de las tablas referenciadas
+-- (no se puede cambiar el tipo de los campos de las vistas)
+drop view app.voted_organizations;
+drop view app.voted_levels;
+drop view app.voted_activity_types;
+drop view app.voted_concerns;
+drop view app.voted_references;
+drop view app.voted_activity_type_versions;
+drop view app.voted_contents;
+
+-- 3. Verificar fechas una última vez
+select date from app.concerns;
+select date from app.votes;
+select created from app.answers;
+select staged_date from app.activity_type_version;
+select last_modified_status_date from app.activity_type_version;
+
+-- 4. Cambiar el tipo de fechas desde DATE a timestampz
+alter table app.concerns alter column date type timestamp with time zone;
+alter table app.votes alter column date type timestamp with time zone;
+alter table app.answers alter column created type timestamp with time zone;
+alter table app.activity_type_version alter column staged_date type timestamp with time zone;
+alter table app.activity_type_version alter column last_modified_status_date type timestamp with time zone;
+
+-- 5. Crear nuevamente las vistas (o por primera vez si no estaban)
+create view app.voted_organizations
+(vote_id, user_id, user_name, organization_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 1;
+
+create view app.voted_levels
+        (vote_id, user_id, user_name, level_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 2;
+
+create view app.voted_activity_types
+        (vote_id, user_id, user_name, activity_type_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 3;
+
+create view app.voted_concerns
+        (vote_id, user_id, user_name, concern_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 4;
+
+create view app.voted_references
+        (vote_id, user_id, user_name, reference_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 5;
+
+create view app.voted_activity_type_versions
+        (vote_id, user_id, user_name, activity_type_version_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 6;
+
+create view app.voted_contents
+        (vote_id, user_id, user_name, content_id, active, "date") as
+        select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
+        app.votes.active, app.votes."date"
+        from app.votes, app.users
+        where app.votes.user_id = app.users.user_id and app.votes.entity_type = 7;
+
+
+                      
+-- Modificar constraint de Roles (solo un rol por organización o nivel)
+\d app.users_roles_organizations; -- visualizar constraints actuales
+\d app.users_roles_levels; -- visualizar constraints actuales
+
+alter table app.users_roles_organizations drop constraint users_roles_organizations_user_id_role_id_organization_key; -- eliminar la constraint actual
+alter table app.users_roles_organizations add constraint users_roles_organizations_user_id_organization_key unique(user_id, organization_id); -- añadir la correcta
+
+alter table app.users_roles_levels drop constraint users_roles_levels_user_id_role_id_level_id_key; -- eliminar constraint actual
+alter table app.users_roles_levels add constraint users_roles_levels_user_id_level_id_key unique(user_id, level_id); -- añadir la correcta
+-- ERROR:  could not create unique index "users_roles_levels_user_id_level_id_key"
+-- DETAIL:  Key (user_id, level_id)=(8, 5) is duplicated.
+-- delete from app.users_roles_levels where user_id = 8 and level_id = 5; -- POR SI YA EXISTEN FILAS QUE NO CUMPLAN LA NUEVA CONSTRAINT
+-- DELETE 2
+-- alter table app.users_roles_levels add constraint users_roles_levels_user_id_level_id_key unique(user_id, level_id);
+

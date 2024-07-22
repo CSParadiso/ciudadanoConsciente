@@ -16,6 +16,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequestScoped
 public class ServiceOrganization {
@@ -224,6 +225,7 @@ public class ServiceOrganization {
       throw new HttpBadRequestException("Already exists Role for User in Organization.");
     }
 
+
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleOrganization.entityToDto(userRolOrganization);
 
@@ -264,18 +266,14 @@ public class ServiceOrganization {
 
   }
 
-  public List<DTOUserRoleOrganization> getAllRolesInOrganizationByUser(Integer idOrganization, Integer idUser) {
+  public DTOUserRoleOrganization getRoleInOrganizationByUser(Integer idOrganization, Integer idUser) {
 
-    audit.debug("Retrieving all Roles of User(" + idUser + ") in Organization(" + idOrganization + ").");
-    List<UserRolOrganization> userRoleOrganizationList = accessUserRoleOrganization
-        .getByOrganizationAndUser(idOrganization, idUser);
-
-    if (userRoleOrganizationList.isEmpty()) {
-      throw new HttpNoContentException("User don't have Roles in Organization.");
-    }
+    audit.debug("Retrieving Role of User(" + idUser + ") in Organization(" + idOrganization + ").");
+    UserRolOrganization userRoleOrganization = accessUserRoleOrganization.getByOrganizationAndUser(idOrganization, idUser)
+            .orElseThrow( ()-> new HttpNoContentException("User don't have Roles in Organization."));
 
     audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleOrganization.entityToDto(userRoleOrganizationList);
+    return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
 
   }
 
@@ -330,8 +328,13 @@ public class ServiceOrganization {
     userRoleOrganization.setRole(role);
 
     audit.debug("Saving UserRoleOrganization " + userRoleOrganization.getUroId() + ".");
-    accessUserRoleOrganization.save(userRoleOrganization)
-        .orElseThrow(() -> new HttpInternalServerException("Failed to persist new UserRoleOrganization."));
+    try {
+      accessUserRoleOrganization.save(userRoleOrganization)
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist UserRoleLevel."));
+    } catch (ConstraintViolationException e) {
+      audit.debug("Already exists Role for User in Organization.");
+      throw new HttpBadRequestException("Already exists Role for User in Organization.");
+    }
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
@@ -339,49 +342,63 @@ public class ServiceOrganization {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleOrganization updateRoleOfUserInOrganization(Integer idOrganization, Integer idUser, Integer idRole,
-      Integer newRole) {
+  public DTOUserRoleOrganization updateRoleOfUserInOrganization(Integer idOrganization, Integer idUser, Integer newRoleId) {
 
-    audit.debug("Verifying if UserRoleOrganization intended exists.");
-    if (accessUserRoleOrganization.get(idOrganization, idUser, newRole).isPresent()) {
-      throw new HttpBadRequestException("UserRoleOrganization already exists.");
-    }
+    audit.debug("Verifying if User exists.");
+    User user = accessUser.get(idUser)
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
 
     audit.debug("Verifying if new Role exists.");
-    Role role = accessRole.get(newRole)
+    Role newRole = accessRole.get(newRoleId)
         .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
+    audit.debug("Verifying if new Organization exists.");
+    Organization organization = accessOrganization.get(idOrganization)
+            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+
     audit.debug("Verifying if UserRoleOrganization original exists.");
-    UserRolOrganization userRoleOrganization = accessUserRoleOrganization.get(idOrganization, idUser, idRole)
-        .orElseThrow(() -> new HttpNoContentException("UserRoleOrganization not found."));
+    Optional<UserRolOrganization> userRoleOrganization = accessUserRoleOrganization.getByOrganizationAndUser(organization.getOrganizationId(), user.getUserId());
+    if(userRoleOrganization.isEmpty()) {
+      audit.debug("User " + user.getUserId() + " does not have Role in Organization " + idOrganization);
+      throw new HttpNoContentException("UserRoleOrganization not found.");
+    }
 
-    audit.debug("Upating Rol of User in Organization: from " + idRole + " to " + newRole);
-    userRoleOrganization.setRole(role);
-
-    audit.debug("Saving updated UserRoleOrganization " + userRoleOrganization.getUroId() + ".");
-    accessUserRoleOrganization.save(userRoleOrganization)
-        .orElseThrow(() -> new HttpNoContentException("Failed to update Role of User in Organization."));
+    if(userRoleOrganization.get().getRole().equals(newRole)) {
+      audit.debug("User " + user.getUserId() + " already has Role " + newRole.getRoleId() + " in Organization " + organization.getOrganizationId() + ".");
+    } else {
+      audit.debug("Updating Rol of User in Organization: from " + userRoleOrganization.get().getRole().getRoleId() + " to " + newRole.getRoleId());
+      userRoleOrganization.get().setRole(newRole);
+      audit.debug("Saving updated UserRoleOrganization " + userRoleOrganization.get().getUroId() + ".");
+      accessUserRoleOrganization.save(userRoleOrganization.get())
+              .orElseThrow(() -> new HttpNoContentException("Failed to update Role of User in Organization."));
+    }
 
     audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
+    return mapperUserRoleOrganization.entityToDto(userRoleOrganization.get());
 
   }
 
+  @Deprecated(since = "1.0.3 Users should hace only one Role by Organization")
   @Transactional(Transactional.TxType.REQUIRED)
-  public List<DTOUserRoleOrganization> deleteAllRolesOfUserInOrganization(Integer idOrganization, Integer idUser) {
+  public DTOUserRoleOrganization deleteRoleOfUserInOrganization(Integer idOrganization, Integer idUser) {
 
-    audit.debug("Deleting User(" + idUser + ")RoleOrganization(" + idUser + ") " + idOrganization + ".");
-    List<UserRolOrganization> userRoleOrganizationList = accessUserRoleOrganization
-        .getByOrganizationAndUser(idOrganization, idUser);
-    if (userRoleOrganizationList.isEmpty()) {
-      throw new HttpNoContentException("User don't have Roles in Organization.");
-    } else {
-      for (UserRolOrganization userRoleOrganization : userRoleOrganizationList) {
-        accessUserRoleOrganization.remove(userRoleOrganization.getUroId());
-      }
-    }
+    Organization organization = accessOrganization.get(idOrganization)
+                    .orElseThrow( ()-> new HttpNoContentException("Organization not found.") );
+
+    User user = accessUser.get(idUser)
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    audit.debug("Retrieving UserRoleOrganization.");
+    UserRolOrganization userRoleOrganization = accessUserRoleOrganization.getByOrganizationAndUser(organization.getOrganizationId(),
+                    user.getUserId())
+            .orElseThrow( ()-> new HttpNoContentException("User don't have Roles in Organization.") );
+
+    audit.debug("Deleting Role " + userRoleOrganization.getRole().getRoleId()
+            + " of User " + idUser + " from Organization " + idOrganization + ".");
+    accessUserRoleOrganization.remove(userRoleOrganization.getUroId());
+
     audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleOrganization.entityToDto(userRoleOrganizationList);
+    return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
 
   }
 

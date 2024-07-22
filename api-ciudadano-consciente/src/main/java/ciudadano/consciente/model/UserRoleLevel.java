@@ -4,7 +4,12 @@ import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
 @Entity
-@Table(schema = "app", name = "users_roles_levels", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id", "level_id"}))
+@Table(schema = "app", name = "users_roles_levels", uniqueConstraints = {
+        @UniqueConstraint( // Only a Role per User in Level
+                name = "users_roles_levels_user_id_level_id_key",
+                columnNames = { "user_id", "level_id" })
+}
+)
 @NamedQuery(name = "UserRoleLevel", query = "from UserRoleLevel as u where u.user = :user and u.role = :role and u.level = :level")
 public class UserRoleLevel {
 

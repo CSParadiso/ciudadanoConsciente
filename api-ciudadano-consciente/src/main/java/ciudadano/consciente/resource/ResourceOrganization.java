@@ -200,9 +200,9 @@ public class ResourceOrganization {
     }
 
     if (idRole == null) {
-      audit.debug("Getting all Roles of User(" + idUser + ") in Organization " + idOrganization + "...");
+      audit.debug("Getting Role of User(" + idUser + ") in Organization " + idOrganization + "...");
       return RestResponse.ResponseBuilder
-          .ok(serviceOrganization.getAllRolesInOrganizationByUser(idOrganization, idUser)).build();
+          .ok(List.of(serviceOrganization.getRoleInOrganizationByUser(idOrganization, idUser))).build();
     }
 
     if (idUser == null) {
@@ -283,7 +283,6 @@ public class ResourceOrganization {
 
     Integer user = dtoUpdateRoleUserOrganization.getUser();
     Integer organization = dtoUpdateRoleUserOrganization.getOrganization();
-    Integer role = dtoUpdateRoleUserOrganization.getRole();
     Integer newRole = dtoUpdateRoleUserOrganization.getRole();
     if (!utilityVerifyRequestField.isValidField(user) ||
         !utilityVerifyRequestField.isValidField(organization) ||
@@ -300,24 +299,25 @@ public class ResourceOrganization {
         + " of User " + user
         + " in Organization " + idOrganization + "...");
     DTOUserRoleOrganization dtoUserRoleOrganization = serviceOrganization.updateRoleOfUserInOrganization(idOrganization,
-        user, role, newRole);
+        user, newRole);
 
     return RestResponse.ResponseBuilder.ok(dtoUserRoleOrganization).build();
 
   }
 
+  @Deprecated(since = "1.0.3 Users should hace only one Role by Organization")
   @DELETE
   @Path("{id}/users/{user}")
   @Operation(summary = "Delete all Roles of a User in a Organization.")
   @APIResponse(responseCode = "200", description = "Roles of User successfully deleted in Organization.", content = @Content(schema = @Schema(implementation = DTOUserRoleOrganization.class)))
   @APIResponse(responseCode = "204", description = "Failed to delete Roles of User in Organization. Verify 'Warning' Header.")
-  public RestResponse<List<DTOUserRoleOrganization>> deleteAllRolesOfUserInOrganization(
+  public RestResponse<DTOUserRoleOrganization> deleteRoleOfUserInOrganization(
       @PathParam("id") Integer idOrganization,
       @PathParam("user") Integer idUser) {
 
-    audit.debug("Deleting all Roles of User(" + idUser + ") in Organization (" + idOrganization + ")...");
+    audit.debug("Deleting Role of User(" + idUser + ") in Organization (" + idOrganization + ")...");
     return RestResponse.ResponseBuilder
-        .ok(serviceOrganization.deleteAllRolesOfUserInOrganization(idOrganization, idUser)).build();
+        .ok(serviceOrganization.deleteRoleOfUserInOrganization(idOrganization, idUser)).build();
 
   }
 

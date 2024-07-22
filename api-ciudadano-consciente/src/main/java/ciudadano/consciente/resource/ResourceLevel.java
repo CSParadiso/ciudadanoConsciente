@@ -236,14 +236,14 @@ public class ResourceLevel {
   @Deprecated
   @GET
   @Path("{id}/users/{user}")
-  @Operation(summary = "Retrieve all the Roles of User in a  Level.")
-  @APIResponse(responseCode = "200", description = "Roles of User in Level successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
-  @APIResponse(responseCode = "204", description = "Failed to retrieve Roles of User in Level. Verify 'Warning' Header.")
-  public RestResponse<List<DTOUserRoleLevel>> getAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
+  @Operation(summary = "Retrieve Role of User in a  Level.")
+  @APIResponse(responseCode = "200", description = "Role of User in Level successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Role of User in Level. Verify 'Warning' Header.")
+  public RestResponse<DTOUserRoleLevel> getRoleOfUserInLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser) {
 
-    audit.debug("Getting all the Roles of User (" + idUser + ") in Level " + idLevel + "...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
+    audit.debug("Getting Role of User (" + idUser + ") in Level " + idLevel + "...");
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getRoleInLevelByUser(idLevel, idUser)).build();
 
   }
 
@@ -263,7 +263,7 @@ public class ResourceLevel {
 
     if (idRole == null) {
       audit.debug("Getting all Roles of User(" + idUser + ") in Level " + idLevel + "...");
-      return RestResponse.ResponseBuilder.ok(serviceLevel.getAllRolesInLevelByUser(idLevel, idUser)).build();
+      return RestResponse.ResponseBuilder.ok(List.of(serviceLevel.getRoleInLevelByUser(idLevel, idUser))).build();
     }
 
     if (idUser == null) {
@@ -356,7 +356,6 @@ public class ResourceLevel {
 
     Integer user = dtoUpdateRoleUserLevel.getUser();
     Integer level = dtoUpdateRoleUserLevel.getLevel();
-    Integer role = dtoUpdateRoleUserLevel.getRole();
     Integer newRole = dtoUpdateRoleUserLevel.getRole();
     if (!utilityVerifyRequestField.isValidField(user) ||
         !utilityVerifyRequestField.isValidField(level) ||
@@ -372,22 +371,23 @@ public class ResourceLevel {
     audit.debug("Updating Role" + newRole
         + " of User " + user
         + " in Level " + idLevel + "...");
-    DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.updateRoleOfUserInLevel(idLevel, user, role, newRole);
+    DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.updateRoleOfUserInLevel(idLevel, user, newRole);
 
     return RestResponse.ResponseBuilder.ok(dtoUserRoleLevel).build();
 
   }
 
+  @Deprecated(since = "1.0.3 Roles of User in Level are deleted by identifier of relation.")
   @DELETE
   @Path("{id}/users/{user}")
-  @Operation(summary = "Delete all Roles of a User in a Level.")
-  @APIResponse(responseCode = "200", description = "Roles of User successfully deleted in Level.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
-  @APIResponse(responseCode = "204", description = "Failed to delete Roles of User in Level. Verify 'Warning' Header.")
-  public RestResponse<List<DTOUserRoleLevel>> deleteAllRolesOfUserInLevel(@PathParam("id") Integer idLevel,
+  @Operation(summary = "Delete Role of a User in a Level.")
+  @APIResponse(responseCode = "200", description = "Role of User successfully deleted in Level.", content = @Content(schema = @Schema(implementation = DTOUserRoleLevel.class)))
+  @APIResponse(responseCode = "204", description = "Failed to delete Role of User in Level. Verify 'Warning' Header.")
+  public RestResponse<DTOUserRoleLevel> deleteRoleOfUserInLevel(@PathParam("id") Integer idLevel,
       @PathParam("user") Integer idUser) {
 
-    audit.debug("Deleting all Roles of User(" + idUser + ") in Level (" + idLevel + ")...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.deleteAllRolesOfUserInLevel(idLevel, idUser)).build();
+    audit.debug("Deleting Role of User(" + idUser + ") in Level (" + idLevel + ")...");
+    return RestResponse.ResponseBuilder.ok(serviceLevel.deleteRoleOfUserInLevel(idLevel, idUser)).build();
 
   }
 

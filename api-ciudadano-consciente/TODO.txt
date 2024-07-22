@@ -307,7 +307,7 @@ CHANGELOG a18c1d9:
         * users/username/{username} --> USER
         * users/email/{email} --> USER
 
-- Commit
+- Commit 4053926
 refactor: para tener fecha y hora, migrar todas las fechas a timestamp with time zone en la DB
 refactor: para tener fecha y hora, migrar todas las fechas a OffsetDateTime en la API
     * stagedDate de DTOActivityTypeVersion
@@ -324,9 +324,19 @@ refactor: para tener fecha y hora, migrar todas las fechas a OffsetDateTime en l
     * date de Vote
     * DTO Voted Entity
     * Voted{Entity}
-CHANGELOG :
+CHANGELOG 4053926:
     - Ahora todas las fechas de la API tienen además hora y timezone (GMT -3)
     - Ahora la DB tienes timezone
+
+- Commit
+refactor: un User solo puede tener un Role en una Organization en DB(unique constraint) y API(unique constraint del modelo, recursos: post, patch y delete, servicios y accesor)
+refactor: un User solo puede tener un Role en un Level en DB(unique constraint) y API(unique constraint del modelo, recursos: post, patch y delete, servicios y accesor)
+docs: añadido directorio 'configurationChanges' para scripts con eventuales cambios de configuraciones. Se añade un archivo inicial.
+CHANGELOG:
+    * A partir de ahora los usuarios solo pueden tener un solo Rol en una Organización
+    * A partir de ahora los usuarios solo pueden tener un solo Rol en un Nivel
+    * Consideración: Verificar combinaciones de Roles en Organización y Levels
+
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
 -----------------------------------------
@@ -366,6 +376,7 @@ CORE
 
 
 MANEJO DE USUARIOS Y ROLES
+¿Qué sucede si un usuario tiene rol Moderador en Org pero Divulgador en Level?
 // TODO feat: resolver autenticación
 // TODO feat: resolver logueo
 // TODO feat: resolver verificación de permisos (roles en organización y level)
@@ -374,6 +385,10 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
+
+CORE
+// TODO: feat  ¿cómo comprender los roles inferiores dentro de lo superiores?
+//
 
 // TODO: feat: las modificaciones del content las hacen los creators (si son public) y los moderadores (si tiene vinculada una org)
 // TODO: El content ahora tiene un creator (User not null),

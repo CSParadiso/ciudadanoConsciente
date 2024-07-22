@@ -160,6 +160,7 @@ create table app.random_streak(
 	actual_streak integer not null,
 	streak_count integer not null,
 	user_id integer references app.users not null unique
+	-- random boolean not null PODRÍAMOS USAR ESTE DOSCRIMINADOR PARA PERISTIR RACHAS DE PATHS TAMBIÉN, NO SOLO EN MODO RANDOM. REGISTRARÍAMOS LA CANTIDAD, NO LA RUTA
 );
 
 	-- Tabla app.activity_type_version_status (CATEGORíA NOMINAL)
@@ -182,7 +183,7 @@ create table app.users_roles_organizations(
 	user_id integer references app.users on delete cascade not null, 
 	role_id integer default 1 references app.roles on delete set cascade not null, 
 	organization_id integer references app.organizations on delete cascade not null, 
-	unique(user_id, role_id, organization)
+	unique(user_id, organization) -- un único rol por organización 
 );
 
 	-- Tabla Intermedia URL (users, roles, levels) no es necesaria porque el level tiene la organización?
@@ -191,7 +192,7 @@ create table app.users_roles_levels (
 	user_id integer references app.users on delete cascade not null, 
 	role_id integer references app.roles on delete cascade not null, 
 	level_id integer references app.levels on delete cascade not null,
-	unique(user_id, role_id, level_id)
+	unique(user_id, level_id) -- un único rol por nivel
 );
 
 	-- Tabla Intermedia votes (users, entity, entity_type)

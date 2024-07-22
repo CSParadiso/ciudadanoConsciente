@@ -6,7 +6,11 @@ import jakarta.persistence.Entity;
 import java.util.List;
 
 @Entity
-@Table(schema = "app", name = "users_roles_organizations")
+@Table(schema = "app", name = "users_roles_organizations", uniqueConstraints = {
+        @UniqueConstraint( // Only a Role per User in Organization
+                name = "users_roles_organizations_user_id_organization_key",
+                columnNames = { "user_id", "organization_id" })
+})
 public class UserRolOrganization {
 
     //@JoinColumn (nombreEnTablaPropia, nombreEnTablaAjena)

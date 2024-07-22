@@ -32,10 +32,10 @@ public class AccessUserRoleOrganization implements PanacheRepositoryBase<UserRol
 
     }
 
-    public List<UserRolOrganization> getByOrganizationAndUser(Integer idOrganization, Integer idUser) {
+    public Optional<UserRolOrganization> getByOrganizationAndUser(Integer idOrganization, Integer idUser) {
 
-        audit.debug("Trying to retrieve User(" + idUser + ") Roles in Organization(" + idOrganization + ".");
-        return find("organization.organizationId = ?1 and user.userId = ?2", idOrganization, idUser).stream().toList();
+        audit.debug("Trying to retrieve User(" + idUser + ") Role in Organization(" + idOrganization + ".");
+        return find("organization.organizationId = ?1 and user.userId = ?2", idOrganization, idUser).stream().findFirst();
         
     }
 

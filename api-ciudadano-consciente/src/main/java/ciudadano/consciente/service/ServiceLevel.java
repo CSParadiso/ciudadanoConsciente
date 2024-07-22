@@ -11,6 +11,7 @@ import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.sql.Date;
@@ -307,7 +308,7 @@ public class ServiceLevel {
     if (accessUserRoleLevel.get(idLevel, idUser, idRole).isPresent()) {
       throw new HttpBadRequestException("UserRoleLevel already exists.");
     }
-
+    
     User user = accessUser.get(idUser)
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
@@ -316,7 +317,7 @@ public class ServiceLevel {
 
     Role role = accessRole.get(idRole)
         .orElseThrow(() -> new HttpNoContentException("Role not found."));
-
+    
     audit.debug("Creating Role of User in Level.");
     UserRoleLevel userRoleLevel = new UserRoleLevel();
     userRoleLevel.setUser(user);
@@ -324,11 +325,76 @@ public class ServiceLevel {
     userRoleLevel.setRole(role);
 
     audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
-    accessUserRoleLevel.save(userRoleLevel)
-        .orElseThrow(() -> new HttpInternalServerException("Failed to persist new UserRoleLevel."));
-
+    try {
+      accessUserRoleLevel.save(userRoleLevel)
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist new UserRoleLevel."));
+    } catch (ConstraintViolationException e) {
+      audit.debug("Already exists Role for User in Level.");
+      throw new HttpBadRequestException("Already exists Role for User in Level.");
+    }
+    
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevel);
+
+  }
+
+  @Transactional(Transactional.TxType.REQUIRED)
+  public DTOUserRoleLevel updateRoleOfUserInLevel(Integer idLevel, Integer idUser, Integer newRoleId) {
+
+    audit.debug("Verifying if User exists.");
+    User user = accessUser.get(idUser)
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    audit.debug("Verifying if new Role exists.");
+    Role newRole = accessRole.get(newRoleId)
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    audit.debug("Verifying if new Level exists.");
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    audit.debug("Verifying if UserRoleLevel original exists.");
+    Optional<UserRoleLevel> userRoleLevel = accessUserRoleLevel.getByLevelAndUser(level.getLevelId(), user.getUserId());
+    if(userRoleLevel.isEmpty()) {
+      audit.debug("User " + user.getUserId() + " does not have Role in Level " + idLevel);
+      throw new HttpNoContentException("UserRoleLevel not found.");
+    }
+
+    if(userRoleLevel.get().getRole().equals(newRole)) {
+      audit.debug("User " + user.getUserId() + " already has Role " + newRole.getRoleId() + " in Level " + level.getLevelId() + ".");
+    } else {
+      audit.debug("Updating Rol of User in Level: from " + userRoleLevel.get().getRole().getRoleId() + " to " + newRole.getRoleId());
+      userRoleLevel.get().setRole(newRole);
+      audit.debug("Saving updated UserRoleLevel " + userRoleLevel.get().getUrlId() + ".");
+      accessUserRoleLevel.save(userRoleLevel.get())
+              .orElseThrow(() -> new HttpNoContentException("Failed to update Role of User in Level."));
+    }
+
+    audit.debug("Mapping EntityType into DTO.");
+    return mapperUserRoleLevel.entityToDto(userRoleLevel.get());
+    
+//    audit.debug("Verifying if UserRoleLevel intended exists.");
+//    if (accessUserRoleLevel.get(idLevel, idUser, newRole).isPresent()) {
+//      throw new HttpBadRequestException("UserRoleLevel already exists.");
+//    }
+//
+//    audit.debug("Verifying if new Role exists.");
+//    Role role = accessRole.get(newRole)
+//            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+//
+//    audit.debug("Verifying if UserRoleLevel original exists.");
+//    UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
+//            .orElseThrow(() -> new HttpNoContentException("UserRoleLevel not found."));
+//
+//    audit.debug("Upating Rol of User in Level: from " + idRole + " to " + newRole);
+//    userRoleLevel.setRole(role);
+//
+//    audit.debug("Saving updated UserRoleLevel " + userRoleLevel.getUrlId() + ".");
+//    accessUserRoleLevel.save(userRoleLevel)
+//            .orElseThrow(() -> new HttpNoContentException("Failed to update Role of User in Level."));
+//
+//    audit.debug("Mapping EntityType into DTO.");
+//    return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
   }
 
@@ -352,19 +418,25 @@ public class ServiceLevel {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public List<DTOUserRoleLevel> deleteAllRolesOfUserInLevel(Integer idLevel, Integer idUser) {
+  public DTOUserRoleLevel deleteRoleOfUserInLevel(Integer idLevel, Integer idUser) {
 
-    audit.debug("Deleting User(" + idUser + ")RoleLevel(" + idUser + ") " + idLevel + ".");
-    List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser);
-    if (userRoleLevelList.isEmpty()) {
-      throw new HttpNoContentException("User don't have Roles in Level.");
-    } else {
-      for (UserRoleLevel userRoleLevel : userRoleLevelList) {
-        accessUserRoleLevel.remove(userRoleLevel.getUrlId());
-      }
-    }
+    Level level = accessLevel.get(idLevel)
+                    .orElseThrow( ()-> new HttpNoContentException("Level not found.") );
+    
+    User user = accessUser.get(idUser)
+                    .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+    
+    audit.debug("Retrieving UserRoleLevel.");
+    UserRoleLevel userRoleLevel = accessUserRoleLevel.getByLevelAndUser(level.getLevelId(),
+                    user.getUserId())
+            .orElseThrow( ()-> new HttpNoContentException("User don't have Roles in Level.") );
+
+    audit.debug("Deleting Role " + userRoleLevel.getRole().getRoleId()
+            + " of User " + idUser + " from Level " + idLevel + ".");
+    accessUserRoleLevel.remove(userRoleLevel.getUrlId());
+
     audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleLevel.entityToDto(userRoleLevelList);
+    return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
   }
 
@@ -395,17 +467,14 @@ public class ServiceLevel {
 
   }
 
-  public List<DTOUserRoleLevel> getAllRolesInLevelByUser(Integer idLevel, Integer idUser) {
+  public DTOUserRoleLevel getRoleInLevelByUser(Integer idLevel, Integer idUser) {
 
-    audit.debug("Retrieving all Roles of User(" + idUser + ") in Level(" + idLevel + ").");
-    List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser);
-
-    if (userRoleLevelList.isEmpty()) {
-      throw new HttpNoContentException("User don't have Roles in Level.");
-    }
+    audit.debug("Retrieving Role of User(" + idUser + ") in Level(" + idLevel + ").");
+    UserRoleLevel userRoleLevel = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser)
+            .orElseThrow( ()-> new HttpNoContentException("User don't have Roles in Level."));
 
     audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleLevel.entityToDto(userRoleLevelList);
+    return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
   }
 
@@ -437,34 +506,6 @@ public class ServiceLevel {
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevelList);
-
-  }
-
-  @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleLevel updateRoleOfUserInLevel(Integer idLevel, Integer idUser, Integer idRole, Integer newRole) {
-
-    audit.debug("Verifying if UserRoleLevel intended exists.");
-    if (accessUserRoleLevel.get(idLevel, idUser, newRole).isPresent()) {
-      throw new HttpBadRequestException("UserRoleLevel already exists.");
-    }
-
-    audit.debug("Verifying if new Role exists.");
-    Role role = accessRole.get(newRole)
-        .orElseThrow(() -> new HttpNoContentException("Role not found."));
-
-    audit.debug("Verifying if UserRoleLevel original exists.");
-    UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
-        .orElseThrow(() -> new HttpNoContentException("UserRoleLevel not found."));
-
-    audit.debug("Upating Rol of User in Level: from " + idRole + " to " + newRole);
-    userRoleLevel.setRole(role);
-
-    audit.debug("Saving updated UserRoleLevel " + userRoleLevel.getUrlId() + ".");
-    accessUserRoleLevel.save(userRoleLevel)
-        .orElseThrow(() -> new HttpNoContentException("Failed to update Role of User in Level."));
-
-    audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
   }
 

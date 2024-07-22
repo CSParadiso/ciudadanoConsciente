@@ -5,6 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
+import org.jose4j.jwk.Use;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,10 +62,10 @@ public class AccessUserRoleLevel implements PanacheRepositoryBase<UserRoleLevel,
 
     }
 
-    public List<UserRoleLevel> getByLevelAndUser(Integer idLevel, Integer idUser) {
+    public Optional<UserRoleLevel> getByLevelAndUser(Integer idLevel, Integer idUser) {
 
         audit.debug("Trying to retrieve User(" + idUser + ") Roles in Level(" + idLevel + ").");
-        return find("level.levelId = ?1 and user.userId = ?2", idLevel, idUser).stream().toList();
+        return find("level.levelId = ?1 and user.userId = ?2", idLevel, idUser).firstResultOptional();
 
     }
 
