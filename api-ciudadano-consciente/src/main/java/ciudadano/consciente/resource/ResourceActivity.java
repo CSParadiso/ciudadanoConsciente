@@ -5,6 +5,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceActivity;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -22,6 +23,7 @@ import java.io.LineNumberInputStream;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @RequestScoped
 @Tag(name = "Activity Resource")
 @Produces(MediaType.APPLICATION_JSON)

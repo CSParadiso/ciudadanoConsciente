@@ -11,7 +11,10 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +65,11 @@ public class ServiceAnswer {
             dtoAnswerOfChildrens.setContent((Integer) rawAnswer[3]);
             dtoAnswerOfChildrens.setAnswer((Integer) rawAnswer[4]);
             dtoAnswerOfChildrens.setUser((Integer) rawAnswer[5]);
-            dtoAnswerOfChildrens.setCreated((OffsetDateTime) rawAnswer[6]);
+            // TODO refactorizar INICIO
+            audit.debug("Fecha recuperada: " +  rawAnswer[6]);
+            Instant fecha = (Instant) rawAnswer[6];
+            dtoAnswerOfChildrens.setCreated(fecha.atZone(ZoneId.of("America/Argentina/Ushuaia")).toOffsetDateTime());
+            // TODO refactorizar FIN
             dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[7]);
             answerOfChildrens.add(dtoAnswerOfChildrens);
         }
@@ -92,7 +99,11 @@ public class ServiceAnswer {
             dtoAnswerOfChildrens.setContent((Integer) rawAnswer[3]);
             dtoAnswerOfChildrens.setAnswer((Integer) rawAnswer[4]);
             dtoAnswerOfChildrens.setUser((Integer) rawAnswer[5]);
-            dtoAnswerOfChildrens.setCreated((OffsetDateTime) rawAnswer[6]);
+            // TODO refactorizar INICIO
+            audit.debug("Fecha recuperada: " +  rawAnswer[6]);
+            Instant fecha = (Instant) rawAnswer[6];
+            dtoAnswerOfChildrens.setCreated(fecha.atZone(ZoneId.of("America/Argentina/Ushuaia")).toOffsetDateTime());
+            // TODO refactorizar FIN
             dtoAnswerOfChildrens.setStatus((Boolean) rawAnswer[7]);
             answerOfChildrens.add(dtoAnswerOfChildrens);
         }

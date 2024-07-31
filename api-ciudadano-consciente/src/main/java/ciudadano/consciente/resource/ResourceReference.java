@@ -4,6 +4,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceReference;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.ejb.Schedule;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -21,6 +22,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "Reference Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)

@@ -4,6 +4,10 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceLevel;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.AccessTokenCredential;
+import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.IdentityProvider;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -11,6 +15,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
 
+import jakarta.ws.rs.core.SecurityContext;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -22,6 +28,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "Level Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)

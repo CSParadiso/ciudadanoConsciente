@@ -5,6 +5,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceTag;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.runtime.annotations.ConvertWith;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -21,6 +22,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "Tags Resource")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

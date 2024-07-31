@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(schema = "app", name = "tagged_activity_type_versions")
+@Table(schema = "app", name = "v_tagged_activity_type_versions")
 public class TaggedActivityTypeVersion {
 
   @Column(name = "tagged_id")

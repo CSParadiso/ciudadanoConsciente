@@ -328,14 +328,25 @@ CHANGELOG 4053926:
     - Ahora todas las fechas de la API tienen además hora y timezone (GMT -3)
     - Ahora la DB tienes timezone
 
-- Commit
+- Commit b95d6cb
 refactor: un User solo puede tener un Role en una Organization en DB(unique constraint) y API(unique constraint del modelo, recursos: post, patch y delete, servicios y accesor)
 refactor: un User solo puede tener un Role en un Level en DB(unique constraint) y API(unique constraint del modelo, recursos: post, patch y delete, servicios y accesor)
 docs: añadido directorio 'configurationChanges' para scripts con eventuales cambios de configuraciones. Se añade un archivo inicial.
-CHANGELOG:
+CHANGELOG b95d6cb:
     * A partir de ahora los usuarios solo pueden tener un solo Rol en una Organización
     * A partir de ahora los usuarios solo pueden tener un solo Rol en un Nivel
     * Consideración: Verificar combinaciones de Roles en Organización y Levels
+
+- Commit
+refactor: casteado correctamente la fecha cuando se la recupera desde la DB a través de una nativeQuery (es necesario que de Instant pase a OffsetDateTime)
+refactor: modficados los nombres de las vistas en db y en los correspondientes lugares en la api. Ahora comienzan con "v_nombre_vista"
+feat: creada función en la DB get_ancestor(int) -> recupera el ancestro (path) de un nivel especifico. Retorna nivel ancestro
+feat: creada función en la DB get_genealogy(int) -> recupera el árbol genealógico de un nivel especifico. En tuplas(padre, hijo)
+feat-core: ahora todos los recursos están autenticados.
+feat-core: creados dos clientes para keycloak (api-ciudadano-consciente y desa-api-ciudadano-consciente)
+feat: añadido Filtro Web que loguea cliente de Keycloak que hace la request HTTP, el username y el id del usuario de Keycloak
+CHANGELOG:
+    - Ahora todos los recursos requieren autenticación (por ahora dos clientes: api-ciudadano-consciente y desa-api-ciudadano-consciente)
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------

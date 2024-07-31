@@ -3,6 +3,7 @@ package ciudadano.consciente.resource;
 import ciudadano.consciente.dto.DTOUser;
 import ciudadano.consciente.dto.DTOUserRoleLevel;
 import ciudadano.consciente.service.ServiceUserRoleLevel;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -19,6 +20,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 
+@Authenticated
 @Deprecated(since = "1.0.0")
 @RequestScoped
 @Path("user-role-level")

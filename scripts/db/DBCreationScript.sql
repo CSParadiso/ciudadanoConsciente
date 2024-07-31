@@ -249,7 +249,7 @@ create view app.voted_activity_types
 	from app.votes, app.users
 	where app.votes.user_id = app.users.user_id and app.votes.entity_type = 3;
 
-create view app.voted_concerns
+create view app.v_voted_concerns
         (vote_id, user_id, user_name, concern_id, active, "date") as
         select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
         app.votes.active, app.votes."date"
@@ -321,10 +321,23 @@ create view app.tagged_contents
         where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 7;
 
 
+create view app.v_uro 
+	(uro_id, user_id, user_name, user_email, role_id, role_name, organization_id, organization_name, organization_email) as 
+	select uro_id, uro.user_id, u.username, u.email, roles_id, r.name, uro.organization_id, o.name, o.email 
+	from app.users_roles_organizations as uro, app.users as u, app.roles as r, app.organizations as o 
+	where uro.user_id = u.user_id and uro.organization_id = o.organization_id and role_id = r.roles_id;
+	
+create view app.v_url 
+        (uro_id, user_id, user_name, user_email, role_id, role_name, level_id, level_name, level_parent, level_organization_id, level_organization_name) as  
+        select url_id, url.user_id, u.username, u.email, roles_id, r.name, url.level_id, l.name, l.parent, l.organization, o.name 
+        from app.users_roles_levels as url, app.users as u, app.roles as r, app.levels as l, app.organizations as o 
+        where url.user_id = u.user_id and url.level_id = l.level_id and role_id = r.roles_id and o.organization_id = l.organization;
+
 ----------------------
------| TRIGGERS |-----
+-----| FUNCTIONS |-----
 ----------------------
 
+-- Autoincrement versions
 CREATE OR REPLACE FUNCTION app.increment_activity_type_version()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -339,8 +352,59 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Get FirstOfLevel of level
+CREATE OR REPLACE FUNCTION get_ancestor(child_level INTEGER)
+RETURNS INTEGER AS $$
+DECLARE
+    oldest INTEGER;
+    parent INTEGER;
+BEGIN
+    -- Initialize the oldest level to the given child level
+    oldest := child_level;
+
+    -- Get the parent of the current level
+    SELECT l.parent INTO parent FROM app.levels l WHERE l.level_id = child_level;
+
+    -- Loop to find the top-most parent
+    WHILE parent IS NOT NULL LOOP
+        oldest := parent;
+        SELECT l.parent INTO parent FROM app.levels l WHERE l.level_id = oldest;
+    END LOOP;
+
+    -- Return the highest ancestor level
+    RETURN oldest;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function Call
+	-- select get_ancestor(23);
+-- Some usages
+	-- Get all descendency of level 12 
+	-- select * from app.levels where get_ancestor(level_id) = 12;
+	-- Get the ancestor of level 12
+	-- select * from app.levels where level_id = get_ancestor(12);
+
+-- Get the genalogy of a level: its parent and its parent parent and so on...
+CREATE OR REPLACE FUNCTION get_genealogy(child_level INTEGER)
+RETURNS table(child integer, parent integer) AS $$
+BEGIN
+    -- Initialize the parent_id with the given child_level_id
+    return query
+	with recursive parent_cte as (
+		select l.level_id, l.parent from app.levels l where l.level_id = child_level
+	UNION ALL
+		select l.level_id, l.parent
+		from app.levels l inner join parent_cte p on l.level_id = p.parent
+)
+ 	select * from parent_cte order by parent nulls first;
+END;
+$$ LANGUAGE plpgsql;
+-- Some usages
+	-- Get the genealogy of level 18
+	-- select * from get_genealogy(18);
+
 ----------------------
------| FUNCTIONS |----
+-----| TRIGGERS |----
 ----------------------
 
 create trigger app.autoincrement_of_activity_type_version 

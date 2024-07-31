@@ -5,6 +5,7 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceAnswer;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -21,6 +22,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @RequestScoped
 @Tag(name = "Answer Resource")
 @Produces(MediaType.APPLICATION_JSON)

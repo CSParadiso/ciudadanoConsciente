@@ -3,6 +3,7 @@ package ciudadano.consciente.resource;
 import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.service.ServiceVote;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -20,6 +21,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 
+@Authenticated
 @Tag(name = "Vote Resource")
 @Path("votes")
 @Produces(MediaType.APPLICATION_JSON)

@@ -3,7 +3,7 @@ package ciudadano.consciente.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(schema = "app", name = "tagged_organizations")
+@Table(schema = "app", name = "v_tagged_organizations")
 public class TaggedOrganization {
 
   @Column(name = "tagged_id")

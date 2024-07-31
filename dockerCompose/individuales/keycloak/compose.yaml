@@ -13,6 +13,7 @@ services:
     ports:
       - 3704:8080
     environment:
+      - TZ=America/Argentina/Ushuaia # Para la JVM
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=chipaParaguaya # esta clave solo se setea si no existe ninguna, debemos cambiar esta clave
       - KC_HOSTNAME_URL=http://localhost:3704 # Para poder acceder desde afuera de la red del contenedor

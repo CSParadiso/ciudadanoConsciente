@@ -6,6 +6,7 @@ import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;
 import ciudadano.consciente.dto.DTORole;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -23,6 +24,7 @@ import org.jboss.resteasy.reactive.common.jaxrs.RestResponseImpl;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "Role Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
