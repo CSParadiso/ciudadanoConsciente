@@ -289,25 +289,4 @@ public class ResourceUser {
 
   }
 
-  @Authenticated
-  @GET
-  @Path("{id}/votes")
-  @Operation(summary = "Retrieve votes of a User.")
-  @APIResponse(responseCode = "200", description = "Votes of User successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
-  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of User. Verify 'Warning' Header.")
-  public RestResponse<List<DTOVote>> getVotes(@PathParam("id") Integer id) {
-
-    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
-
-    if (userRequested) {
-      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to get votes of User " + id);
-    } else {
-      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to get votes of User " + id);
-    }
-
-    return RestResponse.ResponseBuilder.ok(serviceUser.getVotes(id, userInfo, userRequested)).build();
-
-  }
-
 }

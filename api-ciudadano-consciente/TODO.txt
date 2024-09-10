@@ -374,6 +374,14 @@ CHANGELOG:
     permitirles acceder o no a determinados recursos.
     * Ahora los enpoints de los Roles están protegidos para con el rol Ciuco Admin.
 
+- Commit:
+refactor: GET y GET ALL ahora está protegido (solo Ciuco-Admin)
+refactor: GET VotesByUser ahora está protegido (solo puede recuperar sus votos el usuario y Ciuco-Admin). Este 
+recurso se ha movido desde el recurso User (porque lo que se recupera son los votos).
+refactor: PATCH Vote ahora está protegido (solo el usuario puede cambiar su voto)
+refactor: POST Vote ahora está protegido y se depreca el endpoint que lleva el userId en el path
+CHANGELOG: 
+    * Ahora POST y PATH se realizan con el Access Token 
 
 
 -----------------------------------------

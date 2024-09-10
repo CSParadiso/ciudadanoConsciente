@@ -29,7 +29,6 @@ ROLES:
 * DELETE: Ciuco-Admin y cualquier usuario logueado como si mismo. @Authenticated. Exige verificación lógica. ==Exige petición Rest a la API del IdentityProvider== si lo manejamos nosotros.
 * GET-ALL: Ciuco-Admin.
 * GET \[id, username, email ] : Ciuco-Admin. (Quizás esto haya que modificarlo cuando se desee asignar roles a usuarios y también deba poder usar este recurso el otro Role que puede asignar roles: O-Divulgator. (Se puede verificar el path desde donde viene en el MainFilter). 
-* GET-votes: Ciuco-Admin y cualquier usuario logueado como si mismo. @Authenticated. Exige verificación lógica.
 
 /roles:
 * POST: Ciuco-Admin. ==Exige petición Rest a la API del IdentityProvider== si lo manejamos nosotros. En este caso usamos Kleycloak para mapear los roles (podríamos agregar a la DB de los roles el id del rol de keycloak).
@@ -37,6 +36,13 @@ ROLES:
 * DELETE: Ciuco-Admin. ==Exige petición Rest a la API del IdentityProvider== si lo manejamos nosotros. En este caso usamos Kleycloak para mapear los roles (podríamos agregar a la DB de los roles el id del rol de keycloak).
 * GET-ALL: Ciuco-Admin y O-Divulgator.  
 * GET: Ciuco-Admin y O-Divulgator.  
+
+/votes
+* GET-votesByUser: Ciuco-Admin y cualquier usuario logueado como si mismo. @Authenticated. Exige verificación lógica.
+* GET-ALL: Ciuco-Admin
+* GET: Ciuco-Admin
+* POST: @Authenticated. Vota con su AccessToken.
+* PATCH: @Authenticated. Exige verificación lógica con su AccessToken.
 
 ***NOT DONE***
 

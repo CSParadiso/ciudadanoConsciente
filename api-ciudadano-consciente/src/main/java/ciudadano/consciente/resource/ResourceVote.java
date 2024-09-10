@@ -3,12 +3,14 @@ package ciudadano.consciente.resource;
 import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.service.ServiceVote;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
 import java.util.List;
@@ -40,6 +42,10 @@ public class ResourceVote {
   @Inject
   ServiceVote serviceVote;
 
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all Votes.")
   @APIResponse(responseCode = "200", description = "Votes successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
@@ -51,6 +57,7 @@ public class ResourceVote {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a  Vote by its ID.")
@@ -63,6 +70,7 @@ public class ResourceVote {
 
   }
 
+  @Deprecated(since = "1.1.1. User Id should not be part of path")
   @POST
   @Path("{userId}/{entityTypeId}/{entityId}")
   @Operation(summary = "Vote an Entity.")
@@ -70,7 +78,7 @@ public class ResourceVote {
   @APIResponse(responseCode = "204", description = "Failed to Vote. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to Vote. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Vote. Verify 'Warning' Header.")
-  public RestResponse<DTOVote> tagEntity(@PathParam("userId") Integer userId,
+  public RestResponse<DTOVote> voteEntityDeprecated(@PathParam("userId") Integer userId,
       @PathParam("entityTypeId") Integer entityTypeId,
       @PathParam("entityId") Integer entityId) {
 
@@ -87,6 +95,33 @@ public class ResourceVote {
 
   }
 
+  @Authenticated
+  @POST
+  @Path("{entityTypeId}/{entityId}")
+  @Operation(summary = "Vote an Entity.")
+  @APIResponse(responseCode = "201", description = "Vote successfully performed.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
+  @APIResponse(responseCode = "204", description = "Failed to Vote. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to Vote. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to Vote. Verify 'Warning' Header.")
+  public RestResponse<DTOVote> voteEntity(@PathParam("entityTypeId") Integer entityTypeId,
+      @PathParam("entityId") Integer entityId) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
+    audit.debug("Votting Entity...");
+    DTOVote dtoVote = serviceVote.voteEntity(userInfo, entityTypeId, entityId);
+
+    audit.debug("Creating URI...");
+    URI uri = URI.create(PATH_BASE_RESOURCE + dtoVote.getVoteId());
+
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, dtoVote)
+        .location(uri)
+        .build();
+
+  }
+
+  @Authenticated
   @PATCH
   @Path("{id}/status")
   @Operation(summary = "Update Status of Vote.")
@@ -99,8 +134,32 @@ public class ResourceVote {
      * Quizás este endpoint podría ser cacheado y solo usarse una vez que se
      * desloguea el user.
      */
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
     audit.debug("Updating Vote Status" + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceVote.updateStatus(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceVote.updateStatus(id, userInfo.getPreferredUserName())).build();
+
+  }
+
+  @Authenticated
+  @GET
+  @Path("{user}")
+  @Operation(summary = "Retrieve votes of a User.")
+  @APIResponse(responseCode = "200", description = "Votes of User successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of User. Verify 'Warning' Header.")
+  public RestResponse<List<DTOVote>> getVotes(@PathParam("user") Integer userId) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to get votes of User " + userId);
+    } else {
+      audit.info("Admin " + userInfo.getPreferredUserName() + " is trying to get votes of User " + userId);
+    }
+
+    return RestResponse.ResponseBuilder.ok(serviceVote.getVotesByUserId(userId, userInfo, userRequested)).build();
 
   }
 

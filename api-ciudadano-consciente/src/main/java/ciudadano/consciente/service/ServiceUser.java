@@ -190,7 +190,7 @@ public class ServiceUser {
         audit.debug("User " + user.getUserId() + " is deleting himself.");
 
       } else {
-        audit.debug("Mismatch: NOT AUTHORIZED TO DELETE. User Claims doesn't match User data.");
+        audit.warn("Mismatch: NOT AUTHORIZED TO DELETE. User Claims doesn't match User data.");
         throw new AuthDenialSecurityException(
             "Mismatch: NOT AUTHORIZED TO DELETE. User Claims doesn't match User data.");
       }
@@ -209,26 +209,6 @@ public class ServiceUser {
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUser.entityToDto(user);
-
-  }
-
-  public List<DTOVote> getVotes(Integer id, UserInfo userInfo, boolean userRequested) {
-
-    User user = accessUser.get(id)
-        .orElseThrow(() -> new HttpNoContentException("User not found."));
-
-    if (userRequested) {
-      // Just for security double check
-      if (user.getAuthServerId().equals(userInfo.getSubject())) {
-        audit.debug("User " + user.getUserId() + " is retrieving his votes.");
-      } else {
-        audit.debug("Mismatch: NOT AUTHORIZED TO DELETE. User Claims doesn't match User data.");
-        throw new AuthDenialSecurityException(
-            "Mismatch: NOT AUTHORIZED TO GET VOTES. User Claims doesn't match User data.");
-      }
-    }
-
-    return mapperVote.entityToDto(accessVote.getByUser(user));
 
   }
 
