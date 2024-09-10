@@ -337,7 +337,7 @@ CHANGELOG b95d6cb:
     * A partir de ahora los usuarios solo pueden tener un solo Rol en un Nivel
     * Consideración: Verificar combinaciones de Roles en Organización y Levels
 
-- Commit
+- Commit f54ae1e
 refactor: casteado correctamente la fecha cuando se la recupera desde la DB a través de una nativeQuery (es necesario que de Instant pase a OffsetDateTime)
 refactor: modficados los nombres de las vistas en db y en los correspondientes lugares en la api. Ahora comienzan con "v_nombre_vista"
 feat: creada función en la DB get_ancestor(int) -> recupera el ancestro (path) de un nivel especifico. Retorna nivel ancestro
@@ -345,8 +345,36 @@ feat: creada función en la DB get_genealogy(int) -> recupera el árbol genealó
 feat-core: ahora todos los recursos están autenticados.
 feat-core: creados dos clientes para keycloak (api-ciudadano-consciente y desa-api-ciudadano-consciente)
 feat: añadido Filtro Web que loguea cliente de Keycloak que hace la request HTTP, el username y el id del usuario de Keycloak
+CHANGELOG f54ae1e:
+    * Ahora todos los recursos requieren autenticación (por ahora dos clientes: api-ciudadano-consciente y desa-api-ciudadano-consciente)
+
+- Commit:
+feat: añadido cliente Rest del servidor de Keycloak usando las credenciales del servicio.
+refactor: modificado el nombre del campo 'pass_word' de User a 'auth_server_id' en la DB.
+refactor: modificado el nombre del campo 'password' de User a 'authServerId' en la API.
+refactor: modificado en la DB la cantidad de caracteres de las columnas 'email' y 'user_name'. De 100 a 255.
+refactor: modificado el recurso POST User. Suprimido el bodyParam DTOCreateUser. Los datos vienen en el Access Token
+refactor: modificado ExceptionMappers. DTOException muestra en el campo 'detail' el mensaje de error de la Excepción.
+refactor: modificado el recurso PATCH User. Modificado el bodyParam, desde DTOUpdateUser a DTOUpdateUserAuthServerProvider
+refactor: modificado el recurso DELETE User. El usuario solo puede ser eliminado por un Administrador Authenticado o por sí mismo.
+refactor: modificado el recurso GET-VOTES User. Solo el propio usuario y un Administrador pueden los votos del usuario.
+feat: añadido el campo "description" a la entidad "Role", tanto en la DB como en la API.
+refactor: modificado los recursos GET-GET ALL, PATCH y POST de Role. Los roles solo pueden ser creados, modificados y 
+eliminados por el admin de Ciuco. 
 CHANGELOG:
-    - Ahora todos los recursos requieren autenticación (por ahora dos clientes: api-ciudadano-consciente y desa-api-ciudadano-consciente)
+    * Ahora el POST del Usuario se hace solamente con el AccessToken proveído por Keycloak.
+    * Ahora en el campo 'detail' del DTO de las Excepciones vá el mensaje de ERROR de la Excepción.
+    * Ahora el PATCH del Usuario solo se usaría si eventualmente se cambia de IdentityProvider, solo se cambia el valor
+    del atributo 'authServerId'.
+    * Ahora el DELETE del Usuario solo lo puede realizar un admin o el propio usuario a través de sus AccessToken.
+    * KEYCLOAK: se crea un cliente llamado 'desa-api-ciudadano-consciente' en el cual se crea un rol de cliente llamado
+    'desa-admin'. A su vez se crea un grupo llamado 'CLIENT-Administrator' el cual tiene mapeado el rol 'Ciuco-Admin'.
+    El grupo tiene un subgrupo llamado 'desa' que hereda los permisos del padre.
+    Esto permite agregar usuarios al grupo y que estos usuarios tengan los roles del grupo. Con estos roles podemos
+    permitirles acceder o no a determinados recursos.
+    * Ahora los enpoints de los Roles están protegidos para con el rol Ciuco Admin.
+
+
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -355,26 +383,6 @@ CHANGELOG:
 * ASINCRONÍA
 * Podríamos implementar asincronía en la compresión de los archivos de imágenes.
 * Que el usuario siga manipulando su imagen mientras por debajo comprimimos al persistir.
-*/
-
-
-/* #1
-* Si usáramos UUID como identificador de todas las entidades, se podría tener una tabla votos,
-* una tabla creator y asi.. para relaciones vinculadas a usuarios con distintas entidades. De
-* esta manera nos evitamos tener el usuario en cada instancia de un registro o mejor dicho
-* estarían centralizados los votos y las creaciones. NO QUEDA CLARO EL PLANTEO
-*/
-
-/* #2
-* Al usar una tabla para los votos perdemos búsqueda directa por entidad,
-* siempre hay que vincularla a su tipo. Esto tiene que consderar que si crece en tamaño no
-* estamos duplicando información por todos lados, o mejor dicho en tablas separadas. Pero las
-* operaciones deben identificar el tipo de entidad y el id de entidad.
-*/
-
-/* #3
-* Si User tuviera una lista de Votos, quizás sería muy pesada la entidad en comunicación.
-* Se elige manejarlo como endpoint y que solo quede en la tabla votes. AVERIGUAR
 */
 
 -----------------------------------------
@@ -398,6 +406,9 @@ MANEJO DE USUARIOS Y ROLES
 ----------------------------------------
 
 CORE
+TODO: feat: proteger Resources a través de Anotaciones @RolesAllowed y @Authenticated (User, Role, working en asignRoleOrganization y asignRoleLevel)
+
+TODO feat: mapear Users de KC con API
 // TODO: feat  ¿cómo comprender los roles inferiores dentro de lo superiores?
 //
 
@@ -428,6 +439,7 @@ TODO refactor: si se elimina un activityTypeVersion su voto aún sigue existiend
 
 OPTIMIZACIONES
 
+// FIXME refactor: verificar nivel de logueo apropiado. Ahora todos los logs son DEBUG
 // FIXME refactor: modificar los DTO de Levels para recuperar solo los datos que se necesitan
 // FIXME refactor: match up DB restrictions with api restriction anotations
 // FIXME refactor: hacer más genérico el voto de las entidades

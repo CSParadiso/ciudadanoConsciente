@@ -94,8 +94,8 @@ public class ServiceConcern {
       accessConcern.save(concern)
           .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Concern."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Concern already exists.");
-      throw new HttpBadRequestException("Concern already exists.");
+      audit.debug("Concern already exists: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Concern already exists: " + e.getErrorMessage());
     }
 
     audit.debug("Mapping EntityType into DTO.");

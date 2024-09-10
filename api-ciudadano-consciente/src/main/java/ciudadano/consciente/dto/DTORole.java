@@ -10,6 +10,9 @@ public class DTORole {
     @Schema
     private String name;
 
+    @Schema
+    private String description;
+
     public Integer getRoleId() {
         return roleId;
     }
@@ -24,5 +27,13 @@ public class DTORole {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

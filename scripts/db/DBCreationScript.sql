@@ -37,7 +37,8 @@ alter table app.levels alter column parent set default null;
 	-- Tabla roles
 create table app.roles (
 	roles_id integer generated always as identity primary key, 
-	name varchar(100) not null unique
+	name varchar(100) not null unique,
+	description varchar(255);
 );
 
 	-- Tabla users (luego definimos la contraseña)
@@ -228,21 +229,21 @@ create table app.file_names_required_version_server (
 -----| VIEWS |-----
 ----------------------
 
-create view app.voted_organizations
+create view app.v_voted_organizations
 (vote_id, user_id, user_name, organization_id, active, "date") as
 	select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
 	app.votes.active, app.votes."date"
 	from app.votes, app.users
 	where app.votes.user_id = app.users.user_id and app.votes.entity_type = 1;
 
-create view app.voted_levels
+create view app.v_voted_levels
 	(vote_id, user_id, user_name, level_id, active, "date") as
 	select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
 	app.votes.active, app.votes."date"
 	from app.votes, app.users
 	where app.votes.user_id = app.users.user_id and app.votes.entity_type = 2;
 
-create view app.voted_activity_types
+create view app.v_voted_activity_types
 	(vote_id, user_id, user_name, activity_type_id, active, "date") as
 	select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,   
 	app.votes.active, app.votes."date"
@@ -256,65 +257,65 @@ create view app.v_voted_concerns
         from app.votes, app.users
         where app.votes.user_id = app.users.user_id and app.votes.entity_type = 4;
 
-create view app.voted_references
+create view app.v_voted_references
         (vote_id, user_id, user_name, reference_id, active, "date") as
         select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
         app.votes.active, app.votes."date"
         from app.votes, app.users
         where app.votes.user_id = app.users.user_id and app.votes.entity_type = 5;
 
-create view app.voted_activity_type_versions
+create view app.v_voted_activity_type_versions
         (vote_id, user_id, user_name, activity_type_version_id, active, "date") as
         select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
         app.votes.active, app.votes."date"
         from app.votes, app.users
         where app.votes.user_id = app.users.user_id and app.votes.entity_type = 6;
 
-create view app.voted_contents
+create view app.v_voted_contents
         (vote_id, user_id, user_name, content_id, active, "date") as
         select app.votes.vote_id, app.votes.user_id, app.users.username, app.votes.entity_id,
         app.votes.active, app.votes."date"
         from app.votes, app.users
         where app.votes.user_id = app.users.user_id and app.votes.entity_type = 7;
 
-create view app.tagged_organizations
+create view app.v_tagged_organizations
 	(tagged_id, tag_id, tag_name, organization_id) as
 	select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id   
 	from app.tagged, app.tags
 	where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 1;
 
-create view app.tagged_levels
+create view app.v_tagged_levels
         (tagged_id, tag_id, tag_name, level_id) as
         select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
         from app.tagged, app.tags
         where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 2;
 
-create view app.tagged_activity_types
+create view app.v_tagged_activity_types
         (tagged_id, tag_id, tag_name, activity_type_id) as
         select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
         from app.tagged, app.tags
-        where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 3;
+		where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 3;
 
-create view app.tagged_concerns
+create view app.v_tagged_concerns
         (tagged_id, tag_id, tag_name, concern_id) as
         select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
         from app.tagged, app.tags
         where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 4;
 
 
-create view app.tagged_references
+create view app.v_tagged_references
         (tagged_id, tag_id, tag_name, reference_id) as
         select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
         from app.tagged, app.tags
         where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 5;
 
-create view app.tagged_activity_type_versions
+create view app.v_tagged_activity_type_versions
         (tagged_id, tag_id, tag_name, activity_type_version_id) as
         select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
         from app.tagged, app.tags
         where app.tags.tag_id = app.tagged.tag_id and app.tagged.entity_type_id = 6;
 
-create view app.tagged_contents
+create view app.v_tagged_contents
         (tagged_id, tag_id, tag_name, content_id) as
         select app.tagged.tagged_id, app.tagged.tag_id, app.tags."name", app.tagged.entity_id
         from app.tagged, app.tags

@@ -1,18 +1,17 @@
 package ciudadano.consciente.resource;
 
-import ciudadano.consciente.dto.DTOUser;
-import ciudadano.consciente.dto.DTOVote;
+import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceUser;
-import ciudadano.consciente.dto.DTOUpdateUser;
-import ciudadano.consciente.dto.DTOCreateUser;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -20,12 +19,10 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
-import org.jboss.resteasy.reactive.common.jaxrs.RestResponseImpl;
 
 import java.net.URI;
 import java.util.List;
 
-@Authenticated
 @Tag(name = "User Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,6 +33,9 @@ public class ResourceUser {
   final String BASE_PATH_RESOURCE = "/users/";
 
   @Inject
+  SecurityIdentity securityIdentity;
+
+  @Inject
   ServiceUser serviceUser;
 
   @Inject
@@ -44,6 +44,7 @@ public class ResourceUser {
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all users.")
   @APIResponse(responseCode = "200", description = "Users successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
@@ -54,6 +55,9 @@ public class ResourceUser {
 
   }
 
+  // TODO Quizás O-Divulgator cuando quiera asignar Roles (se puede verificar el
+  // path desde donde viene en el MainFilter)
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/{id}/")
   @Operation(summary = "Retrieve a specific User by its ID.")
@@ -66,6 +70,9 @@ public class ResourceUser {
 
   }
 
+  // TODO Quizás O-Divulgator cuando quiera asignar Roles (se puede verificar el
+  // path desde donde viene en el MainFilter)
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("username/{username}")
   @Operation(summary = "Retrieve a specific User by its username.")
@@ -78,6 +85,9 @@ public class ResourceUser {
 
   }
 
+  // TODO Quizás O-Divulgator cuando quiera asignar Roles (se puede verificar el
+  // path desde donde viene en el MainFilter)
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("email/{email}")
   @Operation(summary = "Retrieve a specific User by its email address.")
@@ -90,28 +100,72 @@ public class ResourceUser {
 
   }
 
+  // @Deprecated(since = "1.1.0. The data to create the User is in the
+  // AccessToken, not in a DTO")
+  // @Authenticated
+  // @POST
+  // @Operation(summary = "Create a new User.")
+  // @APIResponse(responseCode = "201", description = "User successfully
+  // created.", content = @Content(schema = @Schema(implementation =
+  // DTOUser.class)))
+  // @APIResponse(responseCode = "400", description = "Failed to create User.
+  // Verify 'Warning' Header.")
+  // @APIResponse(responseCode = "500", description = "Failed to create User.
+  // Verify 'Warning' Header.")
+  // public RestResponse<DTOUser> createUserDeprecated(DTOCreateUser
+  // dtoCreateUser) {
+
+  // if (dtoCreateUser == null) {
+  // throw new HttpBadRequestException("Body of request required.");
+  // }
+
+  // String email = dtoCreateUser.getEmail();
+  // String username = dtoCreateUser.getUsername();
+  // String password = dtoCreateUser.getPassword();
+  // if (!utilityVerifyRequestField.isValidField(email) ||
+  // !utilityVerifyRequestField.isValidField(username) ||
+  // !utilityVerifyRequestField.isValidField(password)) {
+  // throw new HttpBadRequestException("All fields required.");
+  // }
+
+  // audit.debug("Creating User...");
+  // DTOUser user = serviceUser.createUser(dtoCreateUser);
+
+  // audit.debug("Creating URI...");
+  // URI uri = URI.create(BASE_PATH_RESOURCE + user.getUserId());
+
+  // return RestResponse.ResponseBuilder
+  // .create(RestResponse.Status.CREATED, user)
+  // .location(uri)
+  // .build();
+
+  // }
+
+  @Authenticated
   @POST
   @Operation(summary = "Create a new User.")
   @APIResponse(responseCode = "201", description = "User successfully created.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
   @APIResponse(responseCode = "400", description = "Failed to create User. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create User. Verify 'Warning' Header.")
-  public RestResponse<DTOUser> create(DTOCreateUser dtoCreateUser) {
+  public RestResponse<DTOUser> create() {
 
-    if (dtoCreateUser == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
 
-    String email = dtoCreateUser.getEmail();
-    String username = dtoCreateUser.getUsername();
-    String password = dtoCreateUser.getPassword();
-    if (!utilityVerifyRequestField.isValidField(email) ||
+    String authServerId = userInfo.getSubject();
+    String username = userInfo.getPreferredUserName();
+    String email = userInfo.getEmail();
+    if (!utilityVerifyRequestField.isValidField(authServerId) ||
         !utilityVerifyRequestField.isValidField(username) ||
-        !utilityVerifyRequestField.isValidField(password)) {
-      throw new HttpBadRequestException("All fields required.");
+        !utilityVerifyRequestField.isValidField(email)) {
+      throw new HttpBadRequestException("Missing mandatory Claims (sub, preferred_username, email) from Access Token.");
     }
+
+    audit.debug("KC-ID: " + authServerId); // keycloak.user_entity.id
+    audit.debug("KC-PUN: " + username); // keycloak.user_entity.username
+    audit.debug("KC-EMAIL: " + email); // keycloak.user_entity.email_constraint
 
     audit.debug("Creating User...");
-    DTOUser user = serviceUser.create(dtoCreateUser);
+    DTOUser user = serviceUser.create(authServerId, username, email);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(BASE_PATH_RESOURCE + user.getUserId());
@@ -123,6 +177,49 @@ public class ResourceUser {
 
   }
 
+  // @Deprecated(since = "1.1.0. The only field that can be updated is
+  // 'authServerId' if IdentityProvider changes.")
+  // @PATCH
+  // @Path("{id}")
+  // @Operation(summary = "Update User.")
+  // @APIResponse(responseCode = "200", description = "User successfully
+  // updated.", content = @Content(schema = @Schema(implementation =
+  // DTOUser.class)))
+  // @APIResponse(responseCode = "204", description = "Failed to update User.
+  // Verify 'Warning' Header.")
+  // @APIResponse(responseCode = "400", description = "Failed to update User.
+  // Verify 'Warning' Header.")
+  // @APIResponse(responseCode = "500", description = "Failed to update User.
+  // Verify 'Warning' Header.")
+  // public RestResponse<DTOUser> updateUserDeprecated(@PathParam("id") Integer
+  // id,
+  // DTOUpdateUser dtoUpdateUser) {
+
+  // if (dtoUpdateUser == null) {
+  // throw new HttpBadRequestException("Body of request required.");
+  // }
+
+  // String email = dtoUpdateUser.getEmail();
+  // String username = dtoUpdateUser.getUsername();
+  // String password = dtoUpdateUser.getPassword();
+  // if (!utilityVerifyRequestField.isValidField(email) &&
+  // !utilityVerifyRequestField.isValidField(username) &&
+  // !utilityVerifyRequestField.isValidField(password)) {
+  // throw new HttpBadRequestException("No updates to make.");
+  // }
+
+  // audit.debug("Verifying if the ID of the Body and the Path are the same...");
+  // if (id.compareTo(dtoUpdateUser.getUserId()) != 0) {
+  // throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+  // }
+
+  // audit.debug("Updating User... " + id + "...");
+  // return RestResponse.ResponseBuilder.ok(serviceUser.updateUser(id,
+  // dtoUpdateUser)).build();
+
+  // }
+
+  @RolesAllowed("Ciuco-Admin")
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update User.")
@@ -130,43 +227,69 @@ public class ResourceUser {
   @APIResponse(responseCode = "204", description = "Failed to update User. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to update User. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update User. Verify 'Warning' Header.")
-  public RestResponse<DTOUser> update(@PathParam("id") Integer id, DTOUpdateUser dtoUpdateUser) {
+  public RestResponse<DTOUser> update(@PathParam("id") Integer id,
+      DTOUpdateUserIdentityProvider dtoUpdateUserIdentityProvider) {
 
-    if (dtoUpdateUser == null) {
+    if (dtoUpdateUserIdentityProvider == null) {
       throw new HttpBadRequestException("Body of request required.");
     }
 
-    String email = dtoUpdateUser.getEmail();
-    String username = dtoUpdateUser.getUsername();
-    String password = dtoUpdateUser.getPassword();
-    if (!utilityVerifyRequestField.isValidField(email) &&
-        !utilityVerifyRequestField.isValidField(username) &&
-        !utilityVerifyRequestField.isValidField(password)) {
+    String actualAuthServerID = dtoUpdateUserIdentityProvider.getActualAuthServerId();
+    String newAuthServerId = dtoUpdateUserIdentityProvider.getNewAuthServerId();
+    if (!utilityVerifyRequestField.isValidField(actualAuthServerID) &&
+        !utilityVerifyRequestField.isValidField(newAuthServerId)) {
       throw new HttpBadRequestException("No updates to make.");
     }
 
-    audit.debug("Verifying if the ID of the Body and the Path are the same...");
-    if (id.compareTo(dtoUpdateUser.getUserId()) != 0) {
-      throw new HttpBadRequestException("Body ID and Path ID must be the same.");
-    }
-
     audit.debug("Updating User... " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceUser.update(id, dtoUpdateUser)).build();
+    return RestResponse.ResponseBuilder.ok(serviceUser.update(id, dtoUpdateUserIdentityProvider)).build();
 
   }
 
+  // @Deprecated(since = "1.1.0. Only Admin and User upon request could delete
+  // User.")
+  // @DELETE
+  // @Path("{id}")
+  // @Operation(summary = "Delete a User.")
+  // @APIResponse(responseCode = "200", description = "User successfully
+  // deleted.", content = @Content(schema = @Schema(implementation =
+  // DTOUser.class)))
+  // @APIResponse(responseCode = "204", description = "Failed to create User.
+  // Verify 'Warning' Header.")
+  // public RestResponse<DTOUser> deleteUserDeprecated(@PathParam("id") Integer
+  // id) {
+
+  // audit.debug("Deleting User " + id + "...");
+  // return RestResponse.ResponseBuilder.ok(serviceUser.deleteUser(id)).build();
+
+  // }
+
+  @Authenticated
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a User.")
   @APIResponse(responseCode = "200", description = "User successfully deleted.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
   @APIResponse(responseCode = "204", description = "Failed to create User. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to create User. Verify 'Warning' Header.")
+  // REQUIRES UPDATE KEYCLOAK SERVER
   public RestResponse<DTOUser> delete(@PathParam("id") Integer id) {
 
     audit.debug("Deleting User " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceUser.delete(id)).build();
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to delete User " + id);
+    } else {
+      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to delete User " + id);
+    }
+
+    return RestResponse.ResponseBuilder.ok(serviceUser.delete(id, userInfo, userRequested)).build();
 
   }
 
+  @Authenticated
   @GET
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a User.")
@@ -174,8 +297,16 @@ public class ResourceUser {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of User. Verify 'Warning' Header.")
   public RestResponse<List<DTOVote>> getVotes(@PathParam("id") Integer id) {
 
-    audit.debug("Getting User " + id + " Votes...");
-    return RestResponse.ResponseBuilder.ok(serviceUser.getVotes(id)).build();
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to get votes of User " + id);
+    } else {
+      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to get votes of User " + id);
+    }
+
+    return RestResponse.ResponseBuilder.ok(serviceUser.getVotes(id, userInfo, userRequested)).build();
 
   }
 

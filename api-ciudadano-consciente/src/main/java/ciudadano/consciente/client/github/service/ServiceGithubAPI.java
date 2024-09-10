@@ -1,23 +1,20 @@
-package ciudadano.consciente.clients.github.service;
+package ciudadano.consciente.client.github.service;
 
 import ciudadano.consciente.access.AccessFileNameRequiredVersionServer;
-import ciudadano.consciente.clients.github.interfaces.APIGithubRawContent;
+import ciudadano.consciente.client.github.interfaces.APIGithubRawContent;
 import ciudadano.consciente.dto.DTOCreateActivityTypeVersionFromServer;
-import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.model.ActivityTypeVersion;
 import ciudadano.consciente.model.FileNameRequired;
 import ciudadano.consciente.model.VersionServer;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
 import java.util.*;
 
 @RequestScoped
-public class ServiceGithubApi {
+public class ServiceGithubAPI {
 
     @Inject
     Logger audit;
@@ -60,7 +57,7 @@ public class ServiceGithubApi {
 //                        case "thumbnail.png" : activityTypeVersion.setThumbnailDownloadUrl(uri.replace("{filename}", filename)); break;
 //                    }
 //                } else {
-//                    throw new HttpBadRequestException("Failde to retrive file " + filename + " from " + versionServer.getName() + " version server.");
+//                    throw new HttpBadRequestException("Failde to retrive file " + filename + " from " + versionServer.getDescription() + " version server.");
 //                }
 //            } catch (Exception e) {
 //                throw new HttpInternalServerException("Failed to fecth content from version server " + e);

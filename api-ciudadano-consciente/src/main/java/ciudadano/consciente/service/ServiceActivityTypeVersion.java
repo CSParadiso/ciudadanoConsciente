@@ -213,9 +213,9 @@ public class ServiceActivityTypeVersion {
           .orElseThrow(() -> new HttpInternalServerException("Failed to create new Activity Type Version."));
     } catch (ConstraintViolationException e) {
       audit.debug(
-          "Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
+          "Version of Activity Type already exists. (Hint: Commit and push changes before create a new version): " + e.getErrorMessage());
       throw new HttpBadRequestException(
-          "Version of Activity Type already exists. (Hint: Commit and push changes before create a new version).");
+          "Version of Activity Type already exists. (Hint: Commit and push changes before create a new version): " + e.getErrorMessage());
     }
 
     audit.debug("Mapping Entity into DTO.");
@@ -263,12 +263,12 @@ public class ServiceActivityTypeVersion {
       accessActivityTypeVersion.save(activityTypeVersion)
           .orElseThrow(() -> new HttpInternalServerException("Failed to create new Activity Type Version."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Version of Activity Type already exists. (Make some changes before create a new version).");
+      audit.debug("Version of Activity Type already exists. (Make some changes before create a new version): " + e.getErrorMessage());
       throw new HttpBadRequestException(
-          "Version of Activity Type already exists. (Make some changes before create a new version).");
+          "Version of Activity Type already exists. (Make some changes before create a new version): " + e.getErrorMessage());
     } catch (DataException e) {
-      audit.debug("Invalid files uploaded. " + e);
-      throw new HttpBadRequestException("Uploaded file content is not correct." + e);
+      audit.debug("Invalid files uploaded. " + e.getErrorMessage());
+      throw new HttpBadRequestException("Uploaded file content is not correct." + e.getErrorMessage());
     }
 
     audit.debug("Save thumbnail to file system.");

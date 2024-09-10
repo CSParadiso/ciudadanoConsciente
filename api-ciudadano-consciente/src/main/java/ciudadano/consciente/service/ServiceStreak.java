@@ -50,7 +50,7 @@ public class ServiceStreak {
                     .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Random Streak."));
         } catch (ConstraintViolationException e) {
             audit.debug("Random Streak exists for User " + randomStreak.getUser().getUserId());
-            throw new HttpBadRequestException("Random Streak already exists for User " + randomStreak.getUser().getUserId());
+            throw new HttpBadRequestException("Random Streak already exists for User " + randomStreak.getUser().getUserId()  + " ERROR: " + e.getErrorMessage());
         }
 
         audit.debug("Mapping EntityType into DTO.");

@@ -1,25 +1,21 @@
-2024-07-29 17:44:37,538 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz
-2024-07-29 17:44:41,588 INFO  [org.keycloak.quarkus.runtime.hostname.DefaultHostnameProvider] (main) Hostname settings: Base URL: http://localhost:3704, Hostname: localhost, Strict HTTPS: false, Path: /, Strict BackChannel: true, Admin URL: http://localhost:3704, Admin: localhost, Port: 3704, Proxied: true
-2024-07-29 17:44:49,252 WARN  [io.quarkus.agroal.runtime.DataSources] (main) Datasource <default> enables XA but transaction recovery is not enabled. Please enable transaction recovery by setting quarkus.transaction-manager.enable-recovery=true, otherwise data may be lost if the application is terminated abruptly
-2024-07-29 17:44:52,548 WARN  [org.infinispan.PERSISTENCE] (keycloak-cache-init) ISPN000554: jboss-marshalling is deprecated and planned for removal
-2024-07-29 17:44:53,117 INFO  [org.infinispan.CONTAINER] (keycloak-cache-init) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
-2024-07-29 17:44:53,619 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000088: Unable to use any JGroups configuration mechanisms provided in properties {}. Using default JGroups configuration!
-2024-07-29 17:44:54,145 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000078: Starting JGroups channel `ISPN`
-2024-07-29 17:44:54,161 INFO  [org.jgroups.JChannel] (keycloak-cache-init) local_addr: 75230f14-6092-48a2-bdd6-1799e2b79b7b, name: keycloak-35955
-2024-07-29 17:44:54,191 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-07-29 17:44:54,192 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
-2024-07-29 17:44:54,195 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
-2024-07-29 17:44:54,198 WARN  [org.jgroups.protocols.UDP] (keycloak-cache-init) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
-2024-07-29 17:44:54,268 INFO  [org.jgroups.protocols.FD_SOCK2] (keycloak-cache-init) server listening on *.30672
-2024-07-29 17:44:54,916 WARN  [io.quarkus.vertx.http.runtime.VertxHttpRecorder] (main) The X-Forwarded-* and Forwarded headers will be considered when determining the proxy address. This configuration can cause a security issue as clients can forge requests and send a forwarded header that is not overwritten by the proxy. Please consider use one of these headers just to forward the proxy address in requests.
-2024-07-29 17:44:54,928 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
-2024-07-29 17:44:56,313 INFO  [org.jgroups.protocols.pbcast.GMS] (keycloak-cache-init) keycloak-35955: no members discovered after 2016 ms: creating cluster as coordinator
-2024-07-29 17:44:56,329 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000094: Received new cluster view for channel ISPN: [keycloak-35955|0] (1) [keycloak-35955]
-2024-07-29 17:44:56,410 INFO  [org.infinispan.CLUSTER] (keycloak-cache-init) ISPN000079: Channel `ISPN` local address is `keycloak-35955`, physical addresses are `[172.22.0.2:46208]`
-2024-07-29 17:44:56,429 WARN  [org.infinispan.CONFIG] (keycloak-cache-init) ISPN000569: Unable to persist Infinispan internal caches as no global state enabled
-2024-07-29 17:44:57,766 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: keycloak-35955, Site name: null
-2024-07-29 17:45:01,067 INFO  [io.quarkus] (main) Keycloak 23.0.7 on JVM (powered by Quarkus 3.2.10.Final) started in 26.179s. Listening on: http://0.0.0.0:8080
-2024-07-29 17:45:01,069 INFO  [io.quarkus] (main) Profile prod activated. 
-2024-07-29 17:45:01,069 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-h2, jdbc-mariadb, jdbc-mssql, jdbc-mysql, jdbc-oracle, jdbc-postgresql, keycloak, logging-gelf, micrometer, narayana-jta, reactive-routes, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
-2024-07-30 01:42:37,894 INFO  [org.infinispan.CLUSTER] (main) ISPN000080: Disconnecting JGroups channel `ISPN`
-2024-07-30 01:42:38,202 INFO  [io.quarkus] (main) Keycloak stopped in 0.680s
+2024-09-05 14:06:31,012 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz:v1, organization:v1
+2024-09-05 14:06:31,505 INFO  [org.keycloak.common.Profile] (main) Preview features enabled: admin-fine-grained-authz:v1, organization:v1
+2024-09-05 14:06:39,226 INFO  [org.infinispan.CONTAINER] (ForkJoinPool.commonPool-worker-1) ISPN000556: Starting user marshaller 'org.infinispan.jboss.marshalling.core.JBossUserMarshaller'
+2024-09-05 14:06:39,820 INFO  [org.infinispan.CLUSTER] (ForkJoinPool.commonPool-worker-1) ISPN000078: Starting JGroups channel `ISPN` with stack `udp`
+2024-09-05 14:06:39,823 INFO  [org.jgroups.JChannel] (ForkJoinPool.commonPool-worker-1) local_addr: 0cc707af-7406-4e53-8d32-1f385d987844, name: keycloak25-43029
+2024-09-05 14:06:39,835 WARN  [org.jgroups.protocols.UDP] (ForkJoinPool.commonPool-worker-1) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-09-05 14:06:39,837 WARN  [org.jgroups.protocols.UDP] (ForkJoinPool.commonPool-worker-1) JGRP000015: the receive buffer of socket MulticastSocket was set to 20MB, but the OS only allocated 212.99KB
+2024-09-05 14:06:39,837 WARN  [org.jgroups.protocols.UDP] (ForkJoinPool.commonPool-worker-1) JGRP000015: the send buffer of socket MulticastSocket was set to 1MB, but the OS only allocated 212.99KB
+2024-09-05 14:06:39,838 WARN  [org.jgroups.protocols.UDP] (ForkJoinPool.commonPool-worker-1) JGRP000015: the receive buffer of socket MulticastSocket was set to 25MB, but the OS only allocated 212.99KB
+2024-09-05 14:06:39,852 INFO  [org.jgroups.protocols.FD_SOCK2] (ForkJoinPool.commonPool-worker-1) server listening on *.40363
+2024-09-05 14:06:41,861 INFO  [org.jgroups.protocols.pbcast.GMS] (ForkJoinPool.commonPool-worker-1) keycloak25-43029: no members discovered after 2005 ms: creating cluster as coordinator
+2024-09-05 14:06:41,878 INFO  [org.infinispan.CLUSTER] (ForkJoinPool.commonPool-worker-1) ISPN000094: Received new cluster view for channel ISPN: [keycloak25-43029|0] (1) [keycloak25-43029]
+2024-09-05 14:06:42,027 INFO  [org.infinispan.CLUSTER] (ForkJoinPool.commonPool-worker-1) ISPN000079: Channel `ISPN` local address is `keycloak25-43029`, physical addresses are `[172.22.0.4:55899]`
+2024-09-05 14:06:42,905 INFO  [org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory] (main) Node name: keycloak25-43029, Site name: null
+2024-09-05 14:06:42,922 INFO  [org.keycloak.broker.provider.AbstractIdentityProviderMapper] (main) Registering class org.keycloak.broker.provider.mappersync.ConfigSyncEventListener
+2024-09-05 14:06:45,288 INFO  [io.quarkus] (main) Keycloak 25.0.2 on JVM (powered by Quarkus 3.8.5) started in 16.736s. Listening on: http://0.0.0.0:8080. Management interface listening on http://0.0.0.0:9000.
+2024-09-05 14:06:45,289 INFO  [io.quarkus] (main) Profile prod activated. 
+2024-09-05 14:06:45,289 INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, jdbc-postgresql, keycloak, logging-gelf, micrometer, narayana-jta, reactive-routes, resteasy-reactive, resteasy-reactive-jackson, smallrye-context-propagation, smallrye-health, vertx]
+2024-09-05 20:40:26,089 INFO  [org.infinispan.CLUSTER] (Thread-15) ISPN000080: Disconnecting JGroups channel `ISPN`
+2024-09-05 20:40:26,289 INFO  [com.arjuna.ats.jbossatx] (Shutdown thread) ARJUNA032014: Stopping transaction recovery manager
+2024-09-05 20:40:26,555 INFO  [io.quarkus] (Shutdown thread) Keycloak stopped in 1.042s

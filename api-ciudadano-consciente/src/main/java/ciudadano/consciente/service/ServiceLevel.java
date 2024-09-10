@@ -329,8 +329,8 @@ public class ServiceLevel {
       accessUserRoleLevel.save(userRoleLevel)
               .orElseThrow(() -> new HttpInternalServerException("Failed to persist new UserRoleLevel."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Already exists Role for User in Level.");
-      throw new HttpBadRequestException("Already exists Role for User in Level.");
+      audit.debug("Already exists Role for User in Level: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Already exists Role for User in Level: " + e.getErrorMessage());
     }
     
     audit.debug("Mapping EntityType into DTO.");

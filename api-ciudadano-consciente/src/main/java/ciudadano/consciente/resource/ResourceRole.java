@@ -6,12 +6,11 @@ import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;
 import ciudadano.consciente.dto.DTORole;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
-import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -19,12 +18,10 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
-import org.jboss.resteasy.reactive.common.jaxrs.RestResponseImpl;
 
 import java.net.URI;
 import java.util.List;
 
-@Authenticated
 @Tag(name = "Role Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -43,6 +40,12 @@ public class ResourceRole {
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
 
+  /*
+   * Only Ciuco-Admin and O-Divulgator could get and assing Roles.
+   * TODO O-Divulgator cannot assign Ciuco-Admin, Button or Tester Roles, and ONLY
+   * in the Organizations that represents
+   */
+  @RolesAllowed({ "Ciuco-Admin", "O-Divulgator" })
   @GET
   @Operation(summary = "Retrieve all Roles.")
   @APIResponse(responseCode = "200", description = "Roles successfully retrieved.", content = @Content(schema = @Schema(implementation = DTORole.class)))
@@ -53,6 +56,12 @@ public class ResourceRole {
 
   }
 
+  /*
+   * Only Ciuco-Admin and O-Divulgator could get and assing Roles.
+   * TODO O-Divulgator cannot assign Ciuco-Admin, Button or Tester Roles, and ONLY
+   * in the Organizations that represents
+   */
+  @RolesAllowed({ "Ciuco-Admin", "O-Divulgator" })
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a specific Role by its ID.")
@@ -65,11 +74,13 @@ public class ResourceRole {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @POST
   @Operation(summary = "Create a new Role.")
   @APIResponse(responseCode = "201", description = "Role successfully created.", content = @Content(schema = @Schema(implementation = DTORole.class)))
   @APIResponse(responseCode = "400", description = "Failed to create Role.")
   @APIResponse(responseCode = "500", description = "Failed to create Role. Verify 'Warning' Header.")
+  // REQUIRES UPDATE KEYCLOAK SERVER
   public RestResponse<DTORole> create(DTOCreateRole dtoCreateRole) {
 
     if (dtoCreateRole == null) {
@@ -94,6 +105,7 @@ public class ResourceRole {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Role.")
@@ -107,8 +119,8 @@ public class ResourceRole {
       throw new HttpBadRequestException("Body of request required.");
     }
 
-    String name = dtoUpdateRole.getName();
-    if (!utilityVerifyRequestField.isValidField(name)) {
+    String description = dtoUpdateRole.getDescription();
+    if (!utilityVerifyRequestField.isValidField(description)) {
       throw new HttpBadRequestException("No updates to make.");
     }
 
@@ -122,6 +134,7 @@ public class ResourceRole {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a Role.")

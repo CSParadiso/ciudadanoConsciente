@@ -4,7 +4,14 @@ import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
 @Entity
-@Table(schema="app", name = "users")
+@Table(schema="app", name = "users", uniqueConstraints = {
+        @UniqueConstraint( // Keycloak ID must be unique
+                name = "auth_server_id_key", columnNames = { "auth_server_id" }),
+        @UniqueConstraint( // Email must be unique
+                name = "users_email_key", columnNames = { "email" }),
+        @UniqueConstraint( // Username must be unique
+                name = "users_username_key", columnNames = { "username" })
+})
 //@UserDefinition
 public class User {
 
@@ -13,14 +20,20 @@ public class User {
     @Id
     private Integer userId;
 
-    //@Username
+    @Column(name = "auth_server_id")
+    private String authServerId;
+
     private String username;
 
-    @Column(name = "pass_word")
-    //@Password
-    private String password;
-
     private String email;
+
+    public User() {}
+
+    public User(String authServerId, String username, String email) {
+        this.authServerId = authServerId;
+        this.username = username;
+        this.email = email;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -38,12 +51,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getAuthServerId() {
+        return authServerId;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAuthServerId(String authServerId) {
+        this.authServerId = authServerId;
     }
 
     public String getEmail() {

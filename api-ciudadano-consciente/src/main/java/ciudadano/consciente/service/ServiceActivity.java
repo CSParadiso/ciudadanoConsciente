@@ -94,8 +94,8 @@ public class ServiceActivity {
             accessActivity.save(activity)
                     .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity."));
         } catch (ConstraintViolationException e) {
-            audit.debug("Level already has an Activity.");
-            throw new HttpBadRequestException("Level already has an Activity.");
+            audit.debug("Level already has an Activity: " + e.getErrorMessage());
+            throw new HttpBadRequestException("Level already has an Activity: " + e.getErrorMessage());
         }
 
         audit.debug("Mapping EntityType into DTO.");
@@ -151,8 +151,8 @@ public class ServiceActivity {
             accessActivity.save(activity)
                     .orElseThrow( ()-> new HttpInternalServerException("Failed to persist new Activity."));
         } catch (ConstraintViolationException e) {
-            audit.debug("Level already has an Activity.");
-            throw new HttpBadRequestException("Level already has an Activity.");
+            audit.debug("Level already has an Activity: " + e.getErrorMessage());
+            throw new HttpBadRequestException("Level already has an Activity: " + e.getErrorMessage());
         }
 
         audit.debug("Mapping EntityType into DTO.");

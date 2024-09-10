@@ -1,5 +1,6 @@
 package ciudadano.consciente.mapper;
 
+import ciudadano.consciente.dto.DTOCreateRole;
 import ciudadano.consciente.dto.DTORole;
 import ciudadano.consciente.model.Role;
 import org.mapstruct.Mapper;
@@ -14,6 +15,7 @@ public interface MapperRole {
 
     DTORole entityToDto(Role role);
 
-    Role dtoToEntity(String name);
+    //Role dtoToEntity(String name);
 
+    Role dtoToEntity(DTOCreateRole dtoCreateRole);
 }

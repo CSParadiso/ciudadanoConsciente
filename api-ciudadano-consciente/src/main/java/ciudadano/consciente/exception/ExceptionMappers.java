@@ -19,7 +19,7 @@ public class ExceptionMappers {
         audit.debug("mapHttpNoContentException: " + x.getMessage());
         DTOException body = new DTOException();
         body.setStatus(204);
-        body.setTitle(x.getMessage());
+        body.setDetail(x.getMessage());
         body.setInstance(uriInfo.getPath());
         return RestResponse.ResponseBuilder.create(RestResponse.Status.NO_CONTENT, body).header("Warning", x.getMessage()).build();
 
@@ -31,7 +31,7 @@ public class ExceptionMappers {
         audit.debug("mapHttpBadRequestException: " + x.getMessage());
         DTOException body = new DTOException();
         body.setStatus(400);
-        body.setTitle(x.getMessage());
+        body.setDetail(x.getMessage());
         body.setInstance(uriInfo.getPath());
         return RestResponse.ResponseBuilder.create(RestResponse.Status.BAD_REQUEST, body).header("Warning", x.getMessage()).build();
 
@@ -43,9 +43,21 @@ public class ExceptionMappers {
         audit.debug("mapHttpInternalServerException: " + x.getMessage());
         DTOException body = new DTOException();
         body.setStatus(500);
-        body.setTitle(x.getMessage());
+        body.setDetail(x.getMessage());
         body.setInstance(uriInfo.getPath());
         return RestResponse.ResponseBuilder.create(RestResponse.Status.INTERNAL_SERVER_ERROR, body).header("Warning", x.getMessage()).build();
+
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<DTOException> mapAuthDenialSecurityException( AuthDenialSecurityException x, @Context UriInfo uriInfo ) {
+
+        audit.debug("mapAuthDenialSecurityException: " + x.getMessage());
+        DTOException body = new DTOException();
+        body.setStatus(401);
+        body.setDetail(x.getMessage());
+        body.setInstance(uriInfo.getPath());
+        return RestResponse.ResponseBuilder.create(RestResponse.Status.UNAUTHORIZED, body).header("Warning", x.getMessage()).build();
 
     }
 

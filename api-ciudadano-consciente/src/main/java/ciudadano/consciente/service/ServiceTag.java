@@ -60,8 +60,8 @@ public class ServiceTag {
       accessTag.save(tag)
           .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Tag."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Tag already exists.");
-      throw new HttpBadRequestException("Tag already exists.");
+      audit.debug("Tag already exists: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Tag already exists: " + e.getErrorMessage());
     }
 
     audit.debug("Mapping EntityType into DTO.");

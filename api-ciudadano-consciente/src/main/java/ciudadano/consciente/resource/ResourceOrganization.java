@@ -6,6 +6,7 @@ import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -21,7 +22,6 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
-@Authenticated
 @Tag(name = "Organization Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -41,6 +41,7 @@ public class ResourceOrganization {
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all Organizations.")
   @APIResponse(responseCode = "200", description = "Organizations retrieved successfully.", content = @Content(schema = @Schema(implementation = DTOOrganization.class)))

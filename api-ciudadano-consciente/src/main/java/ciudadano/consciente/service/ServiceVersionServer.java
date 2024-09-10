@@ -1,6 +1,6 @@
 package ciudadano.consciente.service;
 
-import ciudadano.consciente.clients.github.service.ServiceGithubApi;
+import ciudadano.consciente.client.github.service.ServiceGithubAPI;
 import ciudadano.consciente.dto.DTOCreateActivityTypeVersionFromServer;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.model.ActivityTypeVersion;
@@ -16,7 +16,7 @@ public class ServiceVersionServer {
     Logger audit;
 
     @Inject
-    ServiceGithubApi serviceGithubApi;
+    ServiceGithubAPI serviceGithubApi;
 
     public ActivityTypeVersion createVersion(VersionServer versionServer, DTOCreateActivityTypeVersionFromServer dtoCreateActivityTypeVersionFromServer) {
 

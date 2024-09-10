@@ -116,8 +116,8 @@ public class ServiceVote {
       accessVote.save(vote)
           .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Vote."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Vote already exists.");
-      throw new HttpBadRequestException("Vote already exists.");
+      audit.debug("Vote already exists: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Vote already exists: " + e.getErrorMessage());
     }
 
     audit.debug("Mapping EntityType into DTO.");

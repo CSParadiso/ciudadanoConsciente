@@ -203,8 +203,8 @@ public class ServiceContent {
       accessImage.save(image)
           .orElseThrow(() -> new HttpInternalServerException("Failed to save Image to DB."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Image name already exists in Content.");
-      throw new HttpBadRequestException("Image name already exists in Content.");
+      audit.debug("Image name already exists in Content: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Image name already exists in Content: " + e.getErrorMessage());
     }
 
     // Save to FileSystem (image)

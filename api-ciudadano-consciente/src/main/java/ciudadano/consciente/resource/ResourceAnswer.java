@@ -6,6 +6,7 @@ import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceAnswer;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -22,7 +23,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
-@Authenticated
+//@Authenticated
 @RequestScoped
 @Tag(name = "Answer Resource")
 @Produces(MediaType.APPLICATION_JSON)
@@ -41,6 +42,7 @@ public class ResourceAnswer {
     @Inject
     ServiceAnswer serviceAnswer;
 
+    //@RolesAllowed("all-access") // Realm Role
     @GET
     @Operation(summary = "Retrieve all Answers.")
     @APIResponse(
@@ -97,7 +99,7 @@ public class ResourceAnswer {
         return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswersOfUser(levelId, userId)).build();
 
     }
-
+    @RolesAllowed("client-all-access") // Client Role
     @GET
     @Path("{id}")
     @Operation(summary = "Retrieve a  Answer by its ID.")

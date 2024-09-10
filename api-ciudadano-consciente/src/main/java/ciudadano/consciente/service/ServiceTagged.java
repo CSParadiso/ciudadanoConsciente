@@ -113,8 +113,8 @@ public class ServiceTagged {
       accessTagged.save(tagged)
           .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Tagged Entity."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Tagged already exists.");
-      throw new HttpBadRequestException("Tagged already exists.");
+      audit.debug("Tagged already exists: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Tagged already exists: " + e.getErrorMessage());
     }
 
     audit.debug("Mapping EntityType into DTO.");

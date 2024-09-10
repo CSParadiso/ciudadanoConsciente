@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+
+  keycloak25:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: keycloak25
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    restart: always
+    ports:
+      - 3703:8080
+    environment:
+      - TZ=America/Argentina/Ushuaia # Para la JVM
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=chipaParaguaya # esta clave solo se setea si no existe ninguna, debemos cambiar esta clave
+      # DEPRECATED - KC_HOSTNAME_URL=http://localhost:3704 # Para poder acceder desde afuera de la red del contenedor
+      # DEPRECATED - KC_HOSTNAME_ADMIN_URL=http://localhost:3704 # Esta url debe poder ser accesible por fuera de la red del contenedor (si la mapeamos internamente, desde fuera no saben el nombre del servicio.)
+      - KC_HOSTNAME_STRICT=false
+      # DEPRECATED - KC_HOSTNAME_STRICT_BACKCHANNEL=true
+      - KC_HTTP_ENABLED=true # Migrado desde KC23 --> KC_PROXY=edge # permite HTTP (https://www.keycloak.org/docs/25.0.2/upgrading/#deprecated-proxy-option)
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak_25
+      - KC_DB_SCHEMA=keycloak
+      - KC_DB_USERNAME=saimon
+      - KC_DB_PASSWORD=chipaParaguaya
+      - KC_FEATURES=docker,admin-fine-grained-authz,organization
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+    command: start --log="console,file" 
+    volumes:
+       - ./logs:/opt/keycloak/data/log/ # mapeamos carpeta de logs para que se guarden fuera del contenedor
+    networks:
+      - citizen
+    hostname:
+      "keycloak25"
+
+networks:
+  citizen:
+    external: true

@@ -222,7 +222,7 @@ public class ServiceOrganization {
       accessUserRoleOrganization.save(userRolOrganization)
           .orElseThrow(() -> new HttpInternalServerException("Failed to persist UserRoleLevel."));
     } catch (ConstraintViolationException e) {
-      throw new HttpBadRequestException("Already exists Role for User in Organization.");
+      throw new HttpBadRequestException("Already exists Role for User in Organization: " + e.getErrorMessage());
     }
 
 
@@ -332,8 +332,8 @@ public class ServiceOrganization {
       accessUserRoleOrganization.save(userRoleOrganization)
               .orElseThrow(() -> new HttpInternalServerException("Failed to persist UserRoleLevel."));
     } catch (ConstraintViolationException e) {
-      audit.debug("Already exists Role for User in Organization.");
-      throw new HttpBadRequestException("Already exists Role for User in Organization.");
+      audit.debug("Already exists Role for User in Organization: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Already exists Role for User in Organization: " + e.getErrorMessage());
     }
 
     audit.debug("Mapping EntityType into DTO.");

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ciudadano.consciente</groupId>
   <artifactId>api-ciudadano-consciente</artifactId>
-  <version>1.0.3</version>
+  <version>1.1.0</version>
   <properties>
     <compiler-plugin.version>3.11.0</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
@@ -102,6 +102,12 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+
+    <!-- Para autenticación como cliente rest -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc-client-reactive-filter</artifactId>
     </dependency>
 
     <!-- Para poder consumir APIs externas -->
