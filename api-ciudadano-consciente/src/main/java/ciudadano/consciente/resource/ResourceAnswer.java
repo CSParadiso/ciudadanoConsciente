@@ -2,10 +2,11 @@ package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.model.Organization;
 import ciudadano.consciente.service.ServiceAnswer;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -23,7 +24,6 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
-//@Authenticated
 @RequestScoped
 @Tag(name = "Answer Resource")
 @Produces(MediaType.APPLICATION_JSON)
@@ -31,213 +31,248 @@ import java.util.List;
 @Path("answers")
 public class ResourceAnswer {
 
-    final String PATH_BASE_RESOURCE = "/answers/";
-    
-    @Inject
-    Logger audit;
-    
-    @Inject
-    UtilityVerifyRequestField utilityVerifyRequestField;
-    
-    @Inject
-    ServiceAnswer serviceAnswer;
+  final String PATH_BASE_RESOURCE = "/answers/";
 
-    //@RolesAllowed("all-access") // Realm Role
-    @GET
-    @Operation(summary = "Retrieve all Answers.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Answers successfully retrieved.",
-            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to retrieve all Answers. Verify 'Warning' Header."
-    )
-    public RestResponse<List<DTOAnswer>> getAll() {
+  @Inject
+  Logger audit;
 
-        audit.debug("Getting all Answers...");
-        return RestResponse.ResponseBuilder.ok(serviceAnswer.getAll()).build();
+  @Inject
+  UtilityVerifyRequestField utilityVerifyRequestField;
 
+  @Inject
+  ServiceAnswer serviceAnswer;
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @RolesAllowed("Ciuco-Admin")
+  @GET
+  @Operation(summary = "Retrieve all Answers.")
+  @APIResponse(responseCode = "200", description = "Answers successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOAnswer.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve all Answers. Verify 'Warning' Header.")
+  public RestResponse<List<DTOAnswer>> getAll() {
+
+    audit.debug("Getting all Answers...");
+    return RestResponse.ResponseBuilder.ok(serviceAnswer.getAll()).build();
+
+  }
+
+  @RolesAllowed({ "Ciuco-Admin", "O-Moderator, O-Divulgator", "L-Moderator", "L-Divulgator" })
+  @GET
+  @Path("levels/{levelId}/childrens")
+  @Operation(summary = "Retrieve all Answers from a Level and his childrens.")
+  @APIResponse(responseCode = "200", description = "Answers successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOAnswerOfChildrens.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Answers. Verify 'Warning' header.")
+  public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswers(@PathParam("levelId") Integer levelId) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean roleRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if (roleRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() +
+          " with role " + securityIdentity.getRoles() + "is trying to get answers of Level " + levelId
+          + " and his childrens.");
+    } else {
+      audit.info("Admin " + userInfo.getPreferredUserName() +
+          " is trying to get answers of Level " + levelId + " and his childrens.");
     }
 
-    @GET
-    @Path("levels/{levelId}/childrens")
-    @Operation(summary = "Retrieve all Answers from a Level and his childrens.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Answers successfully retrieved.",
-            content = @Content(schema = @Schema(implementation = DTOAnswerOfChildrens.class))
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to retrieve Answers. Verify 'Warning' header."
-    )
-    public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswers(@PathParam("levelId") Integer levelId) {
+    audit.debug("Retrieving all Children Levels Answers.");
+    return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswers(userInfo, levelId)).build();
 
-        audit.debug("Retrieving all Children Levels Answers.");
-        return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswers(levelId)).build();
+  }
 
+  @Deprecated(since = "UserId should not be in path.")
+  @GET
+  @Path("levels/{levelId}/users/{userId}/childrens")
+  @Operation(summary = "Retrieve all Answers of a User from a Level and his childrens.")
+  @APIResponse(responseCode = "200", description = "Answers successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOAnswerOfChildrens.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Answers. Verify 'Warning' header.")
+  public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswersOfUserDeprecated(
+      @PathParam("levelId") Integer levelId,
+      @PathParam("userId") Integer userId) {
+
+    audit.debug("Retrieving all Children Levels Answers of a User.");
+    return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswersOfUser(levelId, userId)).build();
+
+  }
+
+  @Authenticated
+  @GET
+  @Path("levels/{levelId}/childrens/user")
+  @Operation(summary = "Retrieve all Answers of a User from a Level and his childrens.")
+  @APIResponse(responseCode = "200", description = "Answers successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOAnswerOfChildrens.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Answers. Verify 'Warning' header.")
+  public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswersOfUser(
+      @PathParam("levelId") Integer levelId) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() +
+          " is trying to get answers of Level " + levelId + " and his childrens.");
+    } else {
+      audit.info("Admin " + userInfo.getPreferredUserName() +
+          " is trying to get answers of Level " + levelId + " and his childrens.");
     }
 
-    @GET
-    @Path("levels/{levelId}/users/{userId}/childrens")
-    @Operation(summary = "Retrieve all Answers of a User from a Level and his childrens.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Answers successfully retrieved.",
-            content = @Content(schema = @Schema(implementation = DTOAnswerOfChildrens.class))
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to retrieve Answers. Verify 'Warning' header."
-    )
-    public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswersOfUser(@PathParam("levelId") Integer levelId,
-                                                                                      @PathParam("userId") Integer userId) {
+    audit.debug("Retrieving all Children Levels Answers of a User.");
+    return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswersOfUser(userInfo, levelId)).build();
 
-        audit.debug("Retrieving all Children Levels Answers of a User.");
-        return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswersOfUser(levelId, userId)).build();
+  }
 
-    }
-    @RolesAllowed("client-all-access") // Client Role
-    @GET
-    @Path("{id}")
-    @Operation(summary = "Retrieve a  Answer by its ID.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Answer successfully retrieved.",
-            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to retrieve Answer. Verify 'Warning' Header."
-    )
-    public RestResponse<DTOAnswer> get(@PathParam("id") Integer id) {
+  @Authenticated
+  @GET
+  @Path("{id}")
+  @Operation(summary = "Retrieve a  Answer by its ID.")
+  @APIResponse(responseCode = "200", description = "Answer successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOAnswer.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Answer. Verify 'Warning' Header.")
+  public RestResponse<DTOAnswer> get(@PathParam("id") Integer id) {
 
-        audit.debug("Getting Answer " + id + "...");
-        return RestResponse.ResponseBuilder.ok(serviceAnswer.get(id)).build();
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
 
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() +
+          " is trying to get answers " + id);
+    } else {
+      audit.info("Admin " + userInfo.getPreferredUserName() +
+          " is trying to get answers " + id);
     }
 
-    @POST
-    @Operation(summary = "Create a Answer.")
-    @APIResponse(
-            responseCode = "201",
-            description = "Answer successfully created.",
-            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to create Answer. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to create Answer. Verify 'Warning' Header."
-    )
-    public RestResponse<DTOAnswer> create(DTOCreateAnswer dtoCreateAnswer) {
+    audit.debug("Getting Answer " + id + "...");
+    return RestResponse.ResponseBuilder.ok(serviceAnswer.get(userInfo, id)).build();
 
-        if(dtoCreateAnswer == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
+  }
 
-        Integer activity = dtoCreateAnswer.getActivity();
-        Integer user = dtoCreateAnswer.getUserId();
-        Boolean status = dtoCreateAnswer.getStatus();
-        if(!utilityVerifyRequestField.isValidField(activity) &&
-            !utilityVerifyRequestField.isValidField(user) &&
-            !utilityVerifyRequestField.isValidField(status)) {
-            throw new HttpBadRequestException("All fields required.");
-        }
+  // @Deprecated(since = "1.1.0. User should not be in DTO.")
+  // @POST
+  // @Operation(summary = "Create a Answer.")
+  // @APIResponse(responseCode = "201", description = "Answer successfully
+  // created.", content = @Content(schema = @Schema(implementation =
+  // DTOAnswer.class)))
+  // @APIResponse(responseCode = "400", description = "Failed to create Answer.
+  // Verify 'Warning' Header.")
+  // @APIResponse(responseCode = "500", description = "Failed to create Answer.
+  // Verify 'Warning' Header.")
+  // public RestResponse<DTOAnswer> createAnswerDeprecated(DTOCreateAnswerOld
+  // dtoCreateAnswer) {
 
-        audit.debug("Creating Answer...");
-        DTOAnswer answer = serviceAnswer.create(dtoCreateAnswer);
+  // if (dtoCreateAnswer == null) {
+  // throw new HttpBadRequestException("Body of request required.");
+  // }
 
-        audit.debug("Creating URI...");
-        URI uri = URI.create(PATH_BASE_RESOURCE + answer.getAnswerId());
+  // Integer activity = dtoCreateAnswer.getActivity();
+  // Integer user = dtoCreateAnswer.getUserId();
+  // Boolean status = dtoCreateAnswer.getStatus();
+  // if (!utilityVerifyRequestField.isValidField(activity) &&
+  // !utilityVerifyRequestField.isValidField(user) &&
+  // !utilityVerifyRequestField.isValidField(status)) {
+  // throw new HttpBadRequestException("All fields required.");
+  // }
 
-        return RestResponse.ResponseBuilder
-                .create(RestResponse.Status.CREATED, answer)
-                .location(uri)
-                .build();
+  // audit.debug("Creating Answer...");
+  // DTOAnswer answer = serviceAnswer.create(dtoCreateAnswer);
 
+  // audit.debug("Creating URI...");
+  // URI uri = URI.create(PATH_BASE_RESOURCE + answer.getAnswerId());
+
+  // return RestResponse.ResponseBuilder
+  // .create(RestResponse.Status.CREATED, answer)
+  // .location(uri)
+  // .build();
+
+  // }
+
+  @Authenticated
+  @POST
+  @Operation(summary = "Create a Answer.")
+  @APIResponse(responseCode = "201", description = "Answer successfully created.", content = @Content(schema = @Schema(implementation = DTOAnswer.class)))
+  @APIResponse(responseCode = "204", description = "Failed to create Answer. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to create Answer. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to create Answer. Verify 'Warning' Header.")
+  public RestResponse<DTOAnswer> createAnswer(DTOCreateAnswer dtoCreateAnswer) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
+    if (dtoCreateAnswer == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
 
-    @Deprecated(since = "The request should be atomic, not for a Collection.")
-    @POST
-    @Path("batch")
-    @Operation(summary = "Create Answers in Batch Mode.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Answers successfully created.",
-            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to create Answer. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to create Answer. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "500",
-            description = "Failed to create Answer. Verify 'Warning' Header."
-    )
-    public RestResponse<List<DTOAnswer>> createBatchAnswers(DTOCreateBatchAnswer dtoCreateBatchAnswers) {
-
-        if(dtoCreateBatchAnswers == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
-
-        Integer user = dtoCreateBatchAnswers.getUserId();
-        if(!utilityVerifyRequestField.isValidField(user)) {
-            throw new HttpBadRequestException("User Id field required.");
-        }
-
-        audit.debug("Creating Answers...");
-        List<DTOAnswer> answers = serviceAnswer.createBatchAnswers(dtoCreateBatchAnswers);
-
-        return RestResponse.ResponseBuilder.ok(answers).build();
-
+    Integer activity = dtoCreateAnswer.getActivity();
+    Boolean status = dtoCreateAnswer.getStatus();
+    if (!utilityVerifyRequestField.isValidField(activity) &&
+        !utilityVerifyRequestField.isValidField(status)) {
+      throw new HttpBadRequestException("All fields required.");
     }
 
-    @Deprecated(since = "1.0.3. The answers should not be modified.")
-    @PATCH
-    @Path("{id}/status")
-    @Operation(summary = "Update Status of Answer.")
-    @APIResponse(
-            responseCode = "200",
-            description = "Answer Status successfully updated.",
-            content = @Content(schema = @Schema(implementation = DTOAnswer.class))
-    )
-    @APIResponse(
-            responseCode = "400",
-            description = "Failed to update Answer Status. Verify 'Warning' Header."
-    )
-    @APIResponse(
-            responseCode = "204",
-            description = "Failed to update Answer Status. Verify 'Warning' Header."
-    )
-    public RestResponse<DTOAnswer> updateStatus(@PathParam("id") Integer id,
-                           DTOUpdateAnswerStatus dtoUpdateAnswerStatus) {
+    audit.debug("Creating Answer...");
+    DTOAnswer answer = serviceAnswer.createAnswer(userInfo, dtoCreateAnswer);
 
-        if(dtoUpdateAnswerStatus == null) {
-            throw new HttpBadRequestException("Body of request required.");
-        }
+    audit.debug("Creating URI...");
+    URI uri = URI.create(PATH_BASE_RESOURCE + answer.getAnswerId());
 
-        audit.debug("Verifying if the ID of the Body and the Path are the same...");
-        if(id.compareTo(dtoUpdateAnswerStatus.getAnswerStatusId()) != 0) {
-            throw new HttpBadRequestException("Body ID and Path ID must be the same.");
-        }
+    return RestResponse.ResponseBuilder
+        .create(RestResponse.Status.CREATED, answer)
+        .location(uri)
+        .build();
 
-        Boolean status = dtoUpdateAnswerStatus.getStatus();
-        if(!utilityVerifyRequestField.isValidField(status)) {
-            throw new HttpBadRequestException("Status required.");
-        }
-        // TODO Podría simplemente negar lo que ya estaba
-        audit.debug("Updating Answer Status" + id + "...");
-        return RestResponse.ResponseBuilder.ok(serviceAnswer.updateStatus(id, dtoUpdateAnswerStatus)).build();
+  }
 
+  @Deprecated(since = "The request should be atomic, not for a Collection.")
+  @POST
+  @Path("batch")
+  @Operation(summary = "Create Answers in Batch Mode.")
+  @APIResponse(responseCode = "200", description = "Answers successfully created.", content = @Content(schema = @Schema(implementation = DTOAnswer.class)))
+  @APIResponse(responseCode = "204", description = "Failed to create Answer. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to create Answer. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to create Answer. Verify 'Warning' Header.")
+  public RestResponse<List<DTOAnswer>> createBatchAnswers(DTOCreateBatchAnswer dtoCreateBatchAnswers) {
+
+    if (dtoCreateBatchAnswers == null) {
+      throw new HttpBadRequestException("Body of request required.");
     }
-    
+
+    Integer user = dtoCreateBatchAnswers.getUserId();
+    if (!utilityVerifyRequestField.isValidField(user)) {
+      throw new HttpBadRequestException("User Id field required.");
+    }
+
+    audit.debug("Creating Answers...");
+    List<DTOAnswer> answers = serviceAnswer.createBatchAnswers(dtoCreateBatchAnswers);
+
+    return RestResponse.ResponseBuilder.ok(answers).build();
+
+  }
+
+  @Deprecated(since = "1.0.3. The answers should not be modified.")
+  @PATCH
+  @Path("{id}/status")
+  @Operation(summary = "Update Status of Answer.")
+  @APIResponse(responseCode = "200", description = "Answer Status successfully updated.", content = @Content(schema = @Schema(implementation = DTOAnswer.class)))
+  @APIResponse(responseCode = "400", description = "Failed to update Answer Status. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "204", description = "Failed to update Answer Status. Verify 'Warning' Header.")
+  public RestResponse<DTOAnswer> updateStatus(@PathParam("id") Integer id,
+      DTOUpdateAnswerStatus dtoUpdateAnswerStatus) {
+
+    if (dtoUpdateAnswerStatus == null) {
+      throw new HttpBadRequestException("Body of request required.");
+    }
+
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (id.compareTo(dtoUpdateAnswerStatus.getAnswerStatusId()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+    }
+
+    Boolean status = dtoUpdateAnswerStatus.getStatus();
+    if (!utilityVerifyRequestField.isValidField(status)) {
+      throw new HttpBadRequestException("Status required.");
+    }
+    // TODO Podría simplemente negar lo que ya estaba
+    audit.debug("Updating Answer Status" + id + "...");
+    return RestResponse.ResponseBuilder.ok(serviceAnswer.updateStatus(id, dtoUpdateAnswerStatus)).build();
+
+  }
+
 }

@@ -348,7 +348,7 @@ feat: añadido Filtro Web que loguea cliente de Keycloak que hace la request HTT
 CHANGELOG f54ae1e:
     * Ahora todos los recursos requieren autenticación (por ahora dos clientes: api-ciudadano-consciente y desa-api-ciudadano-consciente)
 
-- Commit:
+- Commit: 40c6c51
 feat: añadido cliente Rest del servidor de Keycloak usando las credenciales del servicio.
 refactor: modificado el nombre del campo 'pass_word' de User a 'auth_server_id' en la DB.
 refactor: modificado el nombre del campo 'password' de User a 'authServerId' en la API.
@@ -374,7 +374,7 @@ CHANGELOG:
     permitirles acceder o no a determinados recursos.
     * Ahora los enpoints de los Roles están protegidos para con el rol Ciuco Admin.
 
-- Commit:
+- Commit 8dbce68: 
 refactor: GET y GET ALL ahora está protegido (solo Ciuco-Admin)
 refactor: GET VotesByUser ahora está protegido (solo puede recuperar sus votos el usuario y Ciuco-Admin). Este 
 recurso se ha movido desde el recurso User (porque lo que se recupera son los votos).
@@ -382,6 +382,12 @@ refactor: PATCH Vote ahora está protegido (solo el usuario puede cambiar su vot
 refactor: POST Vote ahora está protegido y se depreca el endpoint que lleva el userId en el path
 CHANGELOG: 
     * Ahora POST y PATH se realizan con el Access Token 
+
+- Commit: 
+refactor: ahora los endpoints del recurso ANSWERS están protegidos.
+El POST se hace con el AccessToken y los GET requieren autorización de 
+rol Ciuco-Admin o de Moderador o Divulgador. Esto exiige que se verifique
+lógicamente que el Moderador o Divulgador tenga ese rol en ese nivel o en el padre (get_genealogy).
 
 
 -----------------------------------------

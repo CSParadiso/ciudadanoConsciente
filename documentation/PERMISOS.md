@@ -44,6 +44,13 @@ ROLES:
 * POST: @Authenticated. Vota con su AccessToken.
 * PATCH: @Authenticated. Exige verificación lógica con su AccessToken.
 
+/answers:
+* GET-ALL: Ciuco-Admin
+* GET-y sus Childrens - "Ciuco-Admin", "O-Moderator, O-Divulgator", "L-Moderator", "L-Divulgator" Exige verificación lógica. El accessToken debe tener rol en genealogía (en el level o en sus antepasados)
+* GET- y sus childrens por usuario. @Authenticated. Solo el usuario o Ciuco-Admin.
+* GET: @Authenticated: solo Ciuco-Admin y el usuario logueado con su AccessToken. Exige verificación lógica.
+* POST: @Authenticated. El usuario logueado con su AccessToken persiste la respuesta.
+
 ***NOT DONE***
 
 /organizations:

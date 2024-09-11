@@ -92,4 +92,13 @@ public class AccessLevel implements PanacheRepositoryBase<Level, Integer> {
 
   }
 
+  public List<Integer> getGenealogy(Level level) {
+
+    audit.debug("Trying to retrieve genealogy of level...");
+    return entityManager.createNamedQuery("Level.getGenealogy")
+        .setParameter("levelId", level.getId())
+        .getResultList();
+
+  }
+
 }
