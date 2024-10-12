@@ -383,12 +383,17 @@ refactor: POST Vote ahora está protegido y se depreca el endpoint que lleva el 
 CHANGELOG: 
     * Ahora POST y PATH se realizan con el Access Token 
 
-- Commit: 
+- Commit 3400cfb: 
 refactor: ahora los endpoints del recurso ANSWERS están protegidos.
 El POST se hace con el AccessToken y los GET requieren autorización de 
 rol Ciuco-Admin o de Moderador o Divulgador. Esto exiige que se verifique
 lógicamente que el Moderador o Divulgador tenga ese rol en ese nivel o en el padre (get_genealogy).
 
+- Commit:
+feat: endpoint de asignar y remover role a usuario en ORGANIZACIÓN en KEYCLOAK API REST
+refactor: puentear servicio de Ciuco para que pase por KEYCLOAK para asignar y remover roles en ORGANIZACIÓN
+feat: endpoint de asignar y remover role a usuario en LEVEL en KEYCLOAK API REST
+refactor: puentear servicio de Ciuco para que pase por KEYCLOAK para asignar y remover roles en LEVEL
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -410,14 +415,12 @@ CORE
 
 MANEJO DE USUARIOS Y ROLES
 ¿Qué sucede si un usuario tiene rol Moderador en Org pero Divulgador en Level?
-// TODO feat: resolver autenticación
-// TODO feat: resolver logueo
 // TODO feat: resolver verificación de permisos (roles en organización y level)
-// TODO Podría hacer una API de Permisos (tipo Keykloak) que maneje los roles
 
 ----------------------------------------
 ------------------- DOING --------------
 ----------------------------------------
+
 
 CORE
 TODO: feat: proteger Resources a través de Anotaciones @RolesAllowed y @Authenticated (User, Role, working en asignRoleOrganization y asignRoleLevel)

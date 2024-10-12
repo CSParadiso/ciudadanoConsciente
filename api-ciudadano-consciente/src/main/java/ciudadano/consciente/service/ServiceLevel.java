@@ -1,6 +1,8 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
+import ciudadano.consciente.client.keycloak.service.ServiceKeycloakAPI;
+import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
@@ -8,6 +10,7 @@ import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -73,6 +76,9 @@ public class ServiceLevel {
 
   @Inject
   AccessUserRoleOrganization accessUserRoleOrganization;
+
+  @Inject
+  ServiceKeycloakAPI keycloak;
 
   public List<DTOLevel> getAll() {
 
@@ -302,6 +308,76 @@ public class ServiceLevel {
   // ROLE HANDLING IN LEVEL
 
   @Transactional(Transactional.TxType.REQUIRED)
+  public DTOUserRoleLevel assignRoleToUserInLevel(Integer idLevel, Integer idUser, Integer idRole, UserInfo userInfo) {
+
+    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
+    User authorizedUser = accessUser.getByUsername(userInfo.getPreferredUserName())
+            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
+
+    audit.debugv("Verifying if user {0} is authorized to assign role in Level {1}", authorizedUser.getUserId()
+            , idLevel);
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    Role authRole = accessRole.getByName("L-Moderator")
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    Optional<UserRoleLevel> authCredential = accessUserRoleLevel.get(level.getId(),
+            authorizedUser.getUserId(),
+            authRole.getRoleId());
+
+    if(authCredential.isEmpty()) {
+      audit.warn("Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
+      throw new AuthDenialSecurityException(
+              "Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
+    }
+
+    audit.debug("Verify if UserRoleLevel already exists.");
+    if (accessUserRoleOrganization.get(idLevel, idUser, idRole).isPresent()) {
+      throw new HttpBadRequestException("UserRoleLevel already exists.");
+    }
+
+    User user = accessUser.get(idUser)
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+    Role roleToAssign = accessRole.get(idRole)
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    if(!(roleToAssign.getName().equals("L-Moderator") || roleToAssign.getName().equals("L-Divulgator"))) {
+      audit.debugv("Role {0}", roleToAssign.getName());
+      audit.warnv("Mismatch: WRONG ATTEMPT TO ASSIGN ROLE.");
+      throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO ASSIGN ROLE.");
+    }
+
+    // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
+    audit.debug("Trying to assign Role to User tru the Keycloak API.");
+    if (!keycloak.assignRole(user.getAuthServerId(), roleToAssign.getName())) {
+      audit.debug("Failed to assign Role to User tru the Keycloak API");
+      throw new HttpInternalServerException("Failed to assign Role to User tru the Keycloak API");
+    }
+
+    audit.debug("Creating Role of User in Level.");
+    UserRoleLevel userRoleLevel = new UserRoleLevel();
+    userRoleLevel.setUser(user);
+    userRoleLevel.setLevel(level);
+    userRoleLevel.setRole(roleToAssign);
+
+    audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
+    try {
+      accessUserRoleLevel.save(userRoleLevel)
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist UserRoleLevel."));
+    } catch (ConstraintViolationException e) {
+      audit.debug("Already exists Role for User in Level: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Already exists Role for User in Level: " + e.getErrorMessage());
+    }
+
+    audit.debug("Mapping EntityType into DTO.");
+    return mapperUserRoleLevel.entityToDto(userRoleLevel);
+
+  }
+
+  @Deprecated
+  @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleLevel assignRoleToUserInLevel(Integer idLevel, Integer idUser, Integer idRole) {
 
     audit.debug("Verify if UserRoleLevel already exists.");
@@ -417,6 +493,7 @@ public class ServiceLevel {
 
   }
 
+  @Deprecated
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleLevel deleteRoleOfUserInLevel(Integer idLevel, Integer idUser) {
 
@@ -452,18 +529,64 @@ public class ServiceLevel {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole) {
+  public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole, UserInfo userInfo) {
 
-    audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idLevel + ".");
-    UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
-        .orElseThrow(() -> new HttpNoContentException("UserRoleLevel not found."));
+    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
+    User authorizedUser = accessUser.getByUsername(userInfo.getPreferredUserName())
+            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
 
-    if (!accessUserRoleLevel.remove(userRoleLevel.getUrlId())) {
+    audit.debugv("Verifying if user {0} is authorized to remove roles in Level {1}", authorizedUser.getUserId()
+            , idLevel);
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    Role authRole = accessRole.getByName("L-Moderator")
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    Optional<UserRoleLevel> authCredentials = accessUserRoleLevel.get(level.getId(),
+            authorizedUser.getUserId(),
+            authRole.getRoleId());
+
+    if(authCredentials.isEmpty()) {
+      audit.warn("Mismatch: NOT AUTHORIZED TO REMOVE ROLES IN LEVEL. User Claims doesn't match User data.");
+      throw new AuthDenialSecurityException(
+              "Mismatch: NOT AUTHORIZED TO REMOVE ROLES IN LEVEL. User Claims doesn't match User data.");
+    }
+
+    // Remove Role
+    audit.debug("Verify if UserRoleLevel exists.");
+    Optional<UserRoleLevel> userRoleLevel = accessUserRoleLevel.get(idLevel, idUser,
+            idRole);
+    if (userRoleLevel.isEmpty()) {
+      throw new HttpBadRequestException("UserRoleLevel doesn't already exists.");
+    }
+
+    User user = accessUser.get(idUser)
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+    Role roleToremove = accessRole.get(idRole)
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    if(!(roleToremove.getName().equals("L-Moderator") || roleToremove.getName().equals("L-Divulgator"))) {
+      audit.debugv("Role {0}", roleToremove.getName());
+      audit.warnv("Mismatch: WRONG ATTEMPT TO DELETE ROLE.");
+      throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO DELETE ROLE.");
+    }
+
+    // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
+    audit.debug("Trying to remove Role from User tru the Keycloak API.");
+    if (!keycloak.removeRole(user.getAuthServerId(), roleToremove.getName())) {
+      audit.debug("Failed to remove Role from User tru the Keycloak API");
+      throw new HttpInternalServerException("Failed to remove Role from User tru the Keycloak API");
+    }
+
+    audit.debug("Removing Role from User in Organization.");
+    if (!accessUserRoleLevel.remove(userRoleLevel.get().getUrlId())) {
       throw new HttpInternalServerException("Failed to remove UserRoleLevel.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleLevel.entityToDto(userRoleLevel);
+    return mapperUserRoleLevel.entityToDto(userRoleLevel.get());
 
   }
 

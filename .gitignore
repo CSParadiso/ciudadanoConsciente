@@ -1,4 +1,6 @@
 .idea/
 resources/*
-dockerCompose/keycloak/logs/*
-dockerCompose/individuales/*/logs/*
+dockerCompose/keycloak/logs
+dockerCompose/individuales/*/logs
+dockerCompose/individuales/keycloak/logs/*.log
+

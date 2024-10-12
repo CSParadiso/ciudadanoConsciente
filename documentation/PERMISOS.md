@@ -62,3 +62,6 @@ ROLES:
 /levels:
 * POST: 
 /level/roles/asign ==Exige petición Rest a la API del IdentityProvider== ONLY Ciuco-Admin could assign Role Ciuco-Admin, Tester and Button
+
+***IMPORTANTE***
+El Rol "Ciuco-Admin" no debería poder recuperarse desde la base de datos, ni siquiere debería estar en la misma, solamente en el Identity Provider.

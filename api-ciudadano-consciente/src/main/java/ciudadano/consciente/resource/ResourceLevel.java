@@ -5,9 +5,11 @@ import ciudadano.consciente.service.ServiceLevel;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.AccessTokenCredential;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.IdentityProvider;
 import io.quarkus.security.identity.SecurityIdentity;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -48,6 +50,10 @@ public class ResourceLevel {
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
 
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all Levels.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
@@ -59,6 +65,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("paths")
   @Operation(summary = "Retrieve all Levels without parent.")
@@ -71,6 +78,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a  Level by its ID.")
@@ -83,6 +91,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}/childrens")
   @Operation(summary = "Retrieve all childrens of a Level by its ID.")
@@ -95,6 +104,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("organizations/{organizationId}/paths")
   @Operation(summary = "Retrieve all Levels (without a parent) of an Organization by the Organization ID.")
@@ -107,6 +117,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("organizations/{organizationId}/users/{userId}/roles/{roleId}")
   @Operation(summary = "Retrieve all Levels of an Organization where the user has a specific role.")
@@ -123,6 +134,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/paths/favorites/users/{userId}")
   @Operation(summary = "Retrieve all Paths voted by a specific User.")
@@ -135,6 +147,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/paths/recently/users/{userId}")
   @Operation(summary = "Retrieve latest Paths used by a specific User.")
@@ -148,6 +161,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "L-Moderator", "L-Divulgator"})
   @POST
   @Operation(summary = "Create a Level.")
   @APIResponse(responseCode = "201", description = "Level successfully created.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
@@ -179,6 +193,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "L-Moderator", "L-Divulgator"})
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Level.")
@@ -213,6 +228,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a  Level by its ID.")
@@ -226,7 +242,7 @@ public class ResourceLevel {
   }
 
   // USER-ROLE HANDLING IN LEVEL
-
+  @RolesAllowed({"Ciuco-Admin"})
   @Deprecated
   @GET
   @Path("{id}/users")
@@ -240,6 +256,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin"})
   @Deprecated
   @GET
   @Path("{id}/users/{user}")
@@ -254,6 +271,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin"})
   @GET
   @Path("{id}/users/roles")
   @Operation(summary = "Retrieve Users with Role in Level.")
@@ -283,6 +301,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin"})
   @Deprecated
   @GET
   @Path("/{id}/users/{user}/roles/{role}")
@@ -298,6 +317,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
   @POST
   @Path("{id}/users/roles") // /{user}/roles/{role}")
   @Operation(summary = "Assign Role to User in Level.")
@@ -306,8 +326,6 @@ public class ResourceLevel {
   @APIResponse(responseCode = "204", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Assign Role to User in Level. Verify 'Warning' Header.")
   public RestResponse<DTOUserRoleLevel> assignRole(@PathParam("id") Integer idLevel,
-      // @PathParam("user") Integer idUser,
-      // @PathParam("role") Integer idRole,
       DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel) {
 
     if (dtoAssignRoleToUserLevel == null) {
@@ -328,10 +346,17 @@ public class ResourceLevel {
       throw new HttpBadRequestException("Body ID and Path ID must be the same for Level.");
     }
 
-    audit.debug("Assigning Role" + role
-        + " to User " + user
-        + " in Level " + idLevel + "...");
-    DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRoleToUserInLevel(idLevel, user, role);
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("L-Moderator");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
+              "Level " + level);
+    } else {
+      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
+              "Level " + level);
+    }
+    DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRoleToUserInLevel(idLevel, user, role, userInfo);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleLevel.getLevel() +
@@ -345,6 +370,8 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin"})
+  @Deprecated
   @PATCH
   @Path("{id}/users/roles") // {user}/roles/{role}")
   @Operation(summary = "Update Role of User in Level.")
@@ -353,8 +380,6 @@ public class ResourceLevel {
   @APIResponse(responseCode = "204", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Role to User in Level. Verify 'Warning' Header.")
   public RestResponse<DTOUserRoleLevel> updateRoleOfUserInLevel(@PathParam("id") Integer idLevel,
-      // @PathParam("user") Integer idUser,
-      // @PathParam("role") Integer idRole,
       DTOUpdateRoleUserLevel dtoUpdateRoleUserLevel) {
 
     if (dtoUpdateRoleUserLevel == null) {
@@ -384,6 +409,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin"})
   @Deprecated(since = "1.0.3 Roles of User in Level are deleted by identifier of relation.")
   @DELETE
   @Path("{id}/users/{user}")
@@ -398,6 +424,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
   @DELETE
   @Path("{id}/users/{user}/roles/{role}")
   @Operation(summary = "Delete a Role of a User in a Level.")
@@ -407,12 +434,22 @@ public class ResourceLevel {
       @PathParam("user") Integer idUser,
       @PathParam("role") Integer idRole) {
 
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("L-Moderator");
+
+    if (userRequested) {
+      audit.debugv("User {0} is trying to assign Role {1} to User {2}.", userInfo.getPreferredUserName(), idRole, idUser);
+    } else {
+      audit.debugv("Admin {0} is trying to assign Role {1} to User {2}.", userInfo.getPreferredUserName(), idRole, idLevel);
+    }
+
     audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Level(" + idUser + ") " + idLevel + "...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.deleteUserRoleLevel(idLevel, idUser, idRole)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.deleteUserRoleLevel(idLevel, idUser, idRole, userInfo)).build();
 
   }
 
   // VOTES HANDLING IN LEVEL
+  @RolesAllowed({"Ciuco-Admin"})
   @Deprecated(since = "1.0.1")
   @POST
   @Path("{id}/votes")
@@ -452,6 +489,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin"})
   @GET
   @Path("/votes")
   @Operation(summary = "Retrieve votes of Levels.")
@@ -464,6 +502,7 @@ public class ResourceLevel {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin"})
   @GET
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a Level.")

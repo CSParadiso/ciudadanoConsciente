@@ -31,6 +31,13 @@ public class AccessRole implements PanacheRepositoryBase<Role, Integer> {
 
     }
 
+    public Optional<Role> getByName(String name) {
+
+        audit.debug("Getting Role " + name + ".");
+        return find("name", name).stream().findFirst();
+
+    }
+
     public boolean existsName(String name) {
 
         audit.debug("Verifying if name already exists.");

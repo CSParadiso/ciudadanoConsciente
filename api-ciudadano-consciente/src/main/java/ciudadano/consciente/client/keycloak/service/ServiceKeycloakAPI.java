@@ -55,4 +55,16 @@ public class ServiceKeycloakAPI {
 
   }
 
+  public boolean assignRole(String authServerId, String role) {
+
+    return apiKeycloak.assignRole(realm, role, authServerId);
+
+  }
+
+  public boolean removeRole(String authServerId, String role) {
+
+    return apiKeycloak.removeRole(realm, role, authServerId);
+
+  }
+
 }

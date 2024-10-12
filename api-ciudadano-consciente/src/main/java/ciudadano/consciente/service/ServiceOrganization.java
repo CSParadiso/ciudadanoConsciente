@@ -1,13 +1,16 @@
 package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
+import ciudadano.consciente.client.keycloak.service.ServiceKeycloakAPI;
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
@@ -15,6 +18,7 @@ import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +71,9 @@ public class ServiceOrganization {
 
   @Inject
   MapperTaggedEntity mapperTaggedEntity;
+
+  @Inject
+  ServiceKeycloakAPI keycloak;
 
   public List<DTOOrganization> getAll() {
 
@@ -191,6 +198,78 @@ public class ServiceOrganization {
 
   }
 
+  // HANDLING ROLES IN ORGANIZATION
+
+  @Transactional(Transactional.TxType.REQUIRED)
+  public DTOUserRoleOrganization assignRoleToUserInOrganization(Integer idOrganization, Integer idUser,
+                                                                Integer idRole, UserInfo userInfo) {
+
+    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
+    User authorizedUser = accessUser.getByUsername(userInfo.getPreferredUserName())
+            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
+
+    audit.debugv("Verifying if user {0} is authorized to assign role in Organization {1}", authorizedUser.getUserId()
+            , idOrganization);
+    Organization organization = accessOrganization.get(idOrganization)
+            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+
+    Role authRole = accessRole.getByName("O-Moderator")
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    Optional<UserRolOrganization> userRolOrganization = accessUserRoleOrganization.get(organization.getId(),
+            authorizedUser.getUserId(),
+            authRole.getRoleId());
+
+    if(userRolOrganization.isEmpty()) {
+      audit.warn("Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN ORGANIZATION. User Claims doesn't match User data.");
+      throw new AuthDenialSecurityException(
+              "Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN ORGANIZATION. User Claims doesn't match User data.");
+    }
+
+    audit.debug("Verify if UserRoleOrganization already exists.");
+    if (accessUserRoleOrganization.get(idOrganization, idUser, idRole).isPresent()) {
+      throw new HttpBadRequestException("UserRoleOrganization already exists.");
+    }
+
+    User user = accessUser.get(idUser)
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+    Role roleToAssign = accessRole.get(idRole)
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    if(!(roleToAssign.getName().equals("O-Moderator") || roleToAssign.getName().equals("O-Divulgator"))) {
+      audit.debugv("Role {0}", roleToAssign.getName());
+      audit.warnv("Mismatch: WRONG ATTEMPT TO ASSIGN ROLE.");
+      throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO ASSIGN ROLE.");
+    }
+
+    // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
+    audit.debug("Trying to assign Role to User tru the Keycloak API.");
+    if (!keycloak.assignRole(user.getAuthServerId(), roleToAssign.getName())) {
+      audit.debug("Failed to assign Role to User tru the Keycloak API");
+      throw new HttpInternalServerException("Failed to assign Role to User tru the Keycloak API");
+    }
+
+    audit.debug("Creating Role of User in Organization.");
+    UserRolOrganization userRoleOrganization = new UserRolOrganization();
+    userRoleOrganization.setUser(user);
+    userRoleOrganization.setOrganization(organization);
+    userRoleOrganization.setRole(roleToAssign);
+
+    audit.debug("Saving UserRoleOrganization " + userRoleOrganization.getUroId() + ".");
+    try {
+      accessUserRoleOrganization.save(userRoleOrganization)
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist UserRoleLevel."));
+    } catch (ConstraintViolationException e) {
+      audit.debug("Already exists Role for User in Organization: " + e.getErrorMessage());
+      throw new HttpBadRequestException("Already exists Role for User in Organization: " + e.getErrorMessage());
+    }
+
+    audit.debug("Mapping EntityType into DTO.");
+    return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
+
+  }
+
   @Deprecated
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleOrganization assignRole(DTOAssingRoleToUserOrganization dtoAssingRoleToUserOrganization) {
@@ -303,44 +382,7 @@ public class ServiceOrganization {
 
   }
 
-  @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleOrganization assignRoleToUserInOrganization(Integer idOrganization, Integer idUser,
-      Integer idRole) {
-
-    audit.debug("Verify if UserRoleOrganization already exists.");
-    if (accessUserRoleOrganization.get(idOrganization, idUser, idRole).isPresent()) {
-      throw new HttpBadRequestException("UserRoleOrganization already exists.");
-    }
-
-    User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNoContentException("User not found."));
-
-    Organization organization = accessOrganization.get(idOrganization)
-        .orElseThrow(() -> new HttpNoContentException("Organization not found."));
-
-    Role role = accessRole.get(idRole)
-        .orElseThrow(() -> new HttpNoContentException("Role not found."));
-
-    audit.debug("Creating Role of User in Organization.");
-    UserRolOrganization userRoleOrganization = new UserRolOrganization();
-    userRoleOrganization.setUser(user);
-    userRoleOrganization.setOrganization(organization);
-    userRoleOrganization.setRole(role);
-
-    audit.debug("Saving UserRoleOrganization " + userRoleOrganization.getUroId() + ".");
-    try {
-      accessUserRoleOrganization.save(userRoleOrganization)
-              .orElseThrow(() -> new HttpInternalServerException("Failed to persist UserRoleLevel."));
-    } catch (ConstraintViolationException e) {
-      audit.debug("Already exists Role for User in Organization: " + e.getErrorMessage());
-      throw new HttpBadRequestException("Already exists Role for User in Organization: " + e.getErrorMessage());
-    }
-
-    audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
-
-  }
-
+  @Deprecated
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleOrganization updateRoleOfUserInOrganization(Integer idOrganization, Integer idUser, Integer newRoleId) {
 
@@ -403,18 +445,66 @@ public class ServiceOrganization {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleOrganization deleteUserRoleOrganization(Integer idOrganization, Integer idUser, Integer idRole) {
+  public DTOUserRoleOrganization deleteUserRoleOrganization(Integer idOrganization, Integer idUser, Integer idRole,
+                                                            UserInfo userInfo) {
 
-    audit.debug("Deleting User(" + idUser + ")Role(" + idRole + ")Organization(" + idOrganization + ".");
-    UserRolOrganization userRoleOrganization = accessUserRoleOrganization.get(idOrganization, idUser, idRole)
-        .orElseThrow(() -> new HttpNoContentException("UserRoleOrganization not found."));
+    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
+    User authorizedUser = accessUser.getByUsername(userInfo.getPreferredUserName())
+            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
 
-    if (!accessUserRoleOrganization.remove(userRoleOrganization.getUroId())) {
-      throw new HttpInternalServerException("Failed to remove UserRoleOrganization.");
+    audit.debugv("Verifying if user {0} is authorized to remove roles in Organization {1}", authorizedUser.getUserId()
+            , idOrganization);
+    Organization organization = accessOrganization.get(idOrganization)
+            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+
+    Role authRole = accessRole.getByName("O-Moderator")
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    Optional<UserRolOrganization> userRolOrganization = accessUserRoleOrganization.get(organization.getId(),
+            authorizedUser.getUserId(),
+            authRole.getRoleId());
+
+    if(userRolOrganization.isEmpty()) {
+      audit.warn("Mismatch: NOT AUTHORIZED TO REMOVE ROLES IN ORGANIZATION. User Claims doesn't match User data.");
+      throw new AuthDenialSecurityException(
+              "Mismatch: NOT AUTHORIZED TO REMOVE ROLES IN ORGANIZATION. User Claims doesn't match User data.");
+    }
+
+    // Remove Role
+
+    audit.debug("Verify if UserRoleOrganization exists.");
+    Optional<UserRolOrganization> userRoleOrganization = accessUserRoleOrganization.get(idOrganization, idUser,
+            idRole);
+    if (userRoleOrganization.isEmpty()) {
+      throw new HttpBadRequestException("UserRoleOrganization doesn't already exists.");
+    }
+
+    User user = accessUser.get(idUser)
+              .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+    Role roleToremove = accessRole.get(idRole)
+              .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    if(!(roleToremove.getName().equals("O-Moderator") || roleToremove.getName().equals("O-Divulgator"))) {
+      audit.debugv("Role {0}", roleToremove.getName());
+      audit.warnv("Mismatch: WRONG ATTEMPT TO REMOVE ROLE.");
+      throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO REMOVE ROLE.");
+    }
+
+    // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
+    audit.debug("Trying to remove Role from User tru the Keycloak API.");
+    if (!keycloak.removeRole(user.getAuthServerId(), roleToremove.getName())) {
+      audit.debug("Failed to remove Role from User tru the Keycloak API");
+      throw new HttpInternalServerException("Failed to remove Role from User tru the Keycloak API");
+    }
+
+    audit.debug("Removing Role from User in Organization.");
+    if (!accessUserRoleOrganization.remove(userRoleOrganization.get().getUroId())) {
+      throw new HttpInternalServerException("Failed to remove UserRoleLevel.");
     }
 
     audit.debug("Mapping EntityType into DTO.");
-    return mapperUserRoleOrganization.entityToDto(userRoleOrganization);
+    return mapperUserRoleOrganization.entityToDto(userRoleOrganization.get());
 
   }
 

@@ -5,7 +5,9 @@ import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -41,6 +43,9 @@ public class ResourceOrganization {
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
 
+  @Inject
+  SecurityIdentity securityIdentity;
+
   @RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all Organizations.")
@@ -52,6 +57,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}/")
   @Operation(summary = "Retrieve an specific Organization by its ID.")
@@ -64,6 +70,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("users/{userId}/")
   @Operation(summary = "Retrieve all Organization in which a User participate.")
@@ -76,6 +83,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @POST
   @Operation(summary = "Create a new Organization.")
   @APIResponse(responseCode = "201", description = "Organization successfully created.", content = @Content(schema = @Schema(implementation = DTOOrganization.class)))
@@ -107,6 +115,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update Organization.")
@@ -140,6 +149,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete an Organization.")
@@ -154,6 +164,7 @@ public class ResourceOrganization {
 
   // ROLE HANDLING IN ORGANIZATIONS
 
+  @RolesAllowed("Ciuco-Admin")
   @Deprecated
   @POST
   @Path("{id}/roles")
@@ -187,6 +198,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin") // "O-Moderator" --> Exige verificar si ese usuario puede ver en esta Orga
   @GET
   @Path("{id}/users/roles")
   @Operation(summary = "Retrieve Users with Role in Organization.")
@@ -220,6 +232,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator"})
   @POST
   @Path("{id}/users/roles") // /{user}/roles/{role}")
   @Operation(summary = "Assign Role to User in Organization.")
@@ -228,8 +241,6 @@ public class ResourceOrganization {
   @APIResponse(responseCode = "204", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to Assign Role to User in Organization. Verify 'Warning' Header.")
   public RestResponse<DTOUserRoleOrganization> assignRole(@PathParam("id") Integer idOrganization,
-      // @PathParam("user") Integer idUser,
-      // @PathParam("role") Integer idRole,
       DTOAssingRoleToUserOrganization dtoAssignRoleToUserOrganization) {
 
     if (dtoAssignRoleToUserOrganization == null) {
@@ -250,11 +261,19 @@ public class ResourceOrganization {
       throw new HttpBadRequestException("Body ID and Path ID must be the same for Organization.");
     }
 
-    audit.debug("Assigning Role" + role
-        + " to User " + user
-        + " in Organization " + idOrganization + "...");
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("O-Moderator");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
+              "Organization " + organization);
+    } else {
+      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
+              "Organization " + organization);
+    }
+
     DTOUserRoleOrganization dtoUserRoleOrganization = serviceOrganization.assignRoleToUserInOrganization(idOrganization,
-        user, role);
+        user, role, userInfo);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleOrganization.getOrganization() +
@@ -268,6 +287,8 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
+  @Deprecated
   @PATCH
   @Path("{id}/users/roles") // {user}/roles/{role}")
   @Operation(summary = "Update Role of User in Organization.")
@@ -276,8 +297,6 @@ public class ResourceOrganization {
   @APIResponse(responseCode = "204", description = "Failed to update Role to User in Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Role to User in Organization. Verify 'Warning' Header.")
   public RestResponse<DTOUserRoleOrganization> updateRoleOfUserInOrganization(@PathParam("id") Integer idOrganization,
-      // @PathParam("user") Integer idUser,
-      // @PathParam("role") Integer idRole,
       DTOUpdateRoleUserOrganization dtoUpdateRoleUserOrganization) {
 
     if (dtoUpdateRoleUserOrganization == null) {
@@ -308,6 +327,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @Deprecated(since = "1.0.3 Users should hace only one Role by Organization")
   @DELETE
   @Path("{id}/users/{user}")
@@ -324,6 +344,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator"})
   @DELETE
   @Path("{id}/users/{user}/roles/{role}")
   @Operation(summary = "Delete a Role of a User in a Organization.")
@@ -333,14 +354,27 @@ public class ResourceOrganization {
       @PathParam("user") Integer idUser,
       @PathParam("role") Integer idRole) {
 
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("O-Moderator");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role " + idRole + " to User " + idUser + " " +
+              "in " +
+              "Organization " + idOrganization);
+    } else {
+      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to assign Role " + idRole + " to User " + idUser + " in " +
+              "Organization " + idOrganization);
+    }
+
     audit.debug(
         "Deleting User(" + idUser + ")Role(" + idRole + ")Organization(" + idUser + ") " + idOrganization + "...");
     return RestResponse.ResponseBuilder
-        .ok(serviceOrganization.deleteUserRoleOrganization(idOrganization, idUser, idRole)).build();
+        .ok(serviceOrganization.deleteUserRoleOrganization(idOrganization, idUser, idRole, userInfo)).build();
 
   }
 
   // VOTES HANDLING IN ORGANIZATIONS
+  @RolesAllowed("Ciuco-Admin")
   @Deprecated(since = "1.0.1")
   @POST
   @Path("{id}/votes")
@@ -381,6 +415,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin") // O-Moderator --> Exige verificar si ese rol es de esa Orga
   @GET
   @Path("/votes")
   @Operation(summary = "Retrieve votes of Organizations.")
@@ -393,6 +428,7 @@ public class ResourceOrganization {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a Organization.")

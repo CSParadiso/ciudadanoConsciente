@@ -44,6 +44,42 @@ public class ResourceRole {
 
   }
 
+  @POST
+  @Path("assign")
+  @APIResponse(responseCode = "201", description = "Success to assign Role.")
+  @Operation(summary = "Assign a Role.")
+  public boolean assignRole(@PathParam("realm") String realm,
+                            @QueryParam("role") String role,
+                            @QueryParam("user") String user) {
+
+    if (role.isBlank() || user.isBlank()) {
+      audit.error("ROLE NAME AND USER ARE REQUIRED.");
+      return false;
+    }
+
+    audit.debug("Assigning Role.");
+    return serviceKeycloak25.assignRole(realm, role, user);
+
+  }
+
+  @DELETE
+  @Path("remove")
+  @APIResponse(responseCode = "201", description = "Success to remove Role from User.")
+  @Operation(summary = "Remove a Role from User.")
+  public boolean removeRole(@PathParam("realm") String realm,
+                            @QueryParam("role") String role,
+                            @QueryParam("user") String user) {
+
+    if (role.isBlank() || user.isBlank()) {
+      audit.error("ROLE NAME AND USER ARE REQUIRED.");
+      return false;
+    }
+
+    audit.debug("Remove Role from User.");
+    return serviceKeycloak25.removeRole(realm, role, user);
+
+  }
+
   @PUT
   @Path("{role}")
   @APIResponse(responseCode = "200", description = "Succed to update Role.")

@@ -25,6 +25,19 @@ public interface APIKeycloak {
       @QueryParam("role") String role,
       @QueryParam("description") String description);
 
+  // ROLE SYNCHRONIZATION WITH KEYCLOAK (name, description)
+  @POST
+  @Path("{realm}/roles/assign")
+  boolean assignRole(@PathParam("realm") String realm,
+                     @QueryParam("role") String role,
+                     @QueryParam("user") String user);
+
+  @DELETE
+  @Path("{realm}/roles/remove")
+  boolean removeRole(@PathParam("realm") String realm,
+                     @QueryParam("role") String role,
+                     @QueryParam("user") String user);
+
   @PUT
   @Path("{realm}/roles/{role}")
   boolean updateRole(@PathParam("realm") String realm,

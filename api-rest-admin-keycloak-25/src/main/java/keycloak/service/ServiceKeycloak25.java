@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.NoContentException;
+import jakarta.ws.rs.core.Response;
 import keycloak.exception.HttpNoContentException;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -17,6 +18,7 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RequestScoped
@@ -91,6 +93,41 @@ public class ServiceKeycloak25 {
       audit.debug("Role succesfully created.");
     } catch (Exception e) {
       audit.error("WHO KNOWS WHY");
+      return false;
+    }
+
+    return true;
+
+  }
+
+  @Transactional(Transactional.TxType.REQUIRED)
+  public boolean assignRole(String realm, String role, String user) {
+
+    RoleRepresentation roleRepresentation = keycloak.realm(realm).roles().get(role).toRepresentation();
+
+    try {
+      keycloak.realm(realm).users().get(user).roles().realmLevel().add(Arrays.asList(roleRepresentation));
+      audit.debug("Role succesfully assigned.");
+    } catch (Exception e) {
+      audit.errorv("WHO KNOWS WHY: {0}", e.getMessage());
+      return false;
+    }
+
+    return true;
+
+  }
+
+  @Transactional(Transactional.TxType.REQUIRED)
+  public boolean removeRole(String realm, String role, String user) {
+
+    audit.debugv("Role {0} - User {1}", role, user);
+    RoleRepresentation roleRepresentation = keycloak.realm(realm).roles().get(role).toRepresentation();
+
+    try {
+      keycloak.realm(realm).users().get(user).roles().realmLevel().remove(Arrays.asList(roleRepresentation));
+      audit.debug("Role succesfully removed.");
+    } catch (Exception e) {
+      audit.errorv("WHO KNOWS WHY: {0}", e.getMessage());
       return false;
     }
 
