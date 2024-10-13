@@ -4,10 +4,7 @@ import ciudadano.consciente.access.AccessUser;
 import ciudadano.consciente.access.AccessVote;
 import ciudadano.consciente.client.keycloak.service.ServiceKeycloakAPI;
 import ciudadano.consciente.dto.*;
-import ciudadano.consciente.exception.AuthDenialSecurityException;
-import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.MapperUser;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.User;
@@ -200,7 +197,7 @@ public class ServiceUser {
     audit.debug("Trying to delete User tru the Keycloak API.");
     if (!keycloak.deleteUser(user.getAuthServerId())) {
       audit.debug("Failed to delete User tru the Keycloak API");
-      throw new HttpInternalServerException("Failed to delete User tru the Keycloak API");
+      throw new HttpExternalServerException("Failed to delete User tru the Keycloak API");
     }
 
     if (!accessUser.remove(user.getUserId())) {

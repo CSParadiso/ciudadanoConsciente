@@ -2,10 +2,7 @@ package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
 import ciudadano.consciente.client.keycloak.service.ServiceKeycloakAPI;
-import ciudadano.consciente.exception.AuthDenialSecurityException;
-import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
@@ -351,9 +348,9 @@ public class ServiceLevel {
 
     // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
     audit.debug("Trying to assign Role to User tru the Keycloak API.");
-    if (!keycloak.assignRole(user.getAuthServerId(), roleToAssign.getName())) {
+    if (!keycloak.assignRoleInLevel(user.getAuthServerId(), roleToAssign.getName(), level.getLevelId())) {
       audit.debug("Failed to assign Role to User tru the Keycloak API");
-      throw new HttpInternalServerException("Failed to assign Role to User tru the Keycloak API");
+      throw new HttpExternalServerException("Failed to assign Role to User tru the Keycloak API");
     }
 
     audit.debug("Creating Role of User in Level.");
@@ -380,35 +377,58 @@ public class ServiceLevel {
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleLevel assignRoleToUserInLevel(Integer idLevel, Integer idUser, Integer idRole) {
 
-    audit.debug("Verify if UserRoleLevel already exists.");
-    if (accessUserRoleLevel.get(idLevel, idUser, idRole).isPresent()) {
-      throw new HttpBadRequestException("UserRoleLevel already exists.");
+    Role roleToAssign = accessRole.get(idRole)
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    if(!(roleToAssign.getName().equals("L-Moderator") || roleToAssign.getName().equals("L-Divulgator"))) {
+      audit.warnv("Mismatch: INCORRECT ATTEMPT TO ASSIGN ROLE.");
+      throw new AuthDenialSecurityException("Mismatch: INCORRECT ATTEMPT TO ASSIGN ROLE.");
     }
-    
+
     User user = accessUser.get(idUser)
-        .orElseThrow(() -> new HttpNoContentException("User not found."));
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     Level level = accessLevel.get(idLevel)
-        .orElseThrow(() -> new HttpNoContentException("Level not found."));
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
-    Role role = accessRole.get(idRole)
-        .orElseThrow(() -> new HttpNoContentException("Role not found."));
-    
+    audit.debug("Verify if UserRoleLevel already exists.");
+    Optional<UserRoleLevel> userRolLevel =
+            accessUserRoleLevel.get(level.getLevelId(), user.getUserId(), roleToAssign.getRoleId());
+    if (userRolLevel.isPresent()) {
+      throw new HttpBadRequestException("UserRoleLevel already exists.");
+    }
+
     audit.debug("Creating Role of User in Level.");
     UserRoleLevel userRoleLevel = new UserRoleLevel();
     userRoleLevel.setUser(user);
     userRoleLevel.setLevel(level);
-    userRoleLevel.setRole(role);
+    userRoleLevel.setRole(roleToAssign);
+
+    // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
+    audit.debug("Trying to assign Role to User tru the Keycloak API.");
+    if (!keycloak.assignRoleInLevel(user.getAuthServerId(), roleToAssign.getName(),
+            level.getLevelId())) {
+      audit.debug("Failed to assign Role to User tru the Keycloak API");
+      throw new HttpExternalServerException("Failed to assign Role to User tru the Keycloak API");
+    }
 
     audit.debug("Saving UserRoleLevel " + userRoleLevel.getUrlId() + ".");
     try {
       accessUserRoleLevel.save(userRoleLevel)
-              .orElseThrow(() -> new HttpInternalServerException("Failed to persist new UserRoleLevel."));
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist UserRoleLevel."));
     } catch (ConstraintViolationException e) {
       audit.debug("Already exists Role for User in Level: " + e.getErrorMessage());
+
+      // ROLLABACK KEYCLOAK SERVER (si no se puede revertir, falla)
+      audit.debug("Trying to ROLLBACK remove Role to User tru the Keycloak API.");
+      if (!keycloak.removeRoleFromLevel(user.getAuthServerId(), roleToAssign.getName(), level.getLevelId())) {
+        audit.debug("Failed to ROLLBACK remove Role to User tru the Keycloak API");
+        throw new HttpExternalServerException("Failed to ROLLBACK remove Role to User tru the Keycloak API");
+      }
+
       throw new HttpBadRequestException("Already exists Role for User in Level: " + e.getErrorMessage());
     }
-    
+
     audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
@@ -531,57 +551,46 @@ public class ServiceLevel {
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole, UserInfo userInfo) {
 
-    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
-    User authorizedUser = accessUser.getByUsername(userInfo.getPreferredUserName())
-            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
-
-    audit.debugv("Verifying if user {0} is authorized to remove roles in Level {1}", authorizedUser.getUserId()
-            , idLevel);
-    Level level = accessLevel.get(idLevel)
-            .orElseThrow(() -> new HttpNoContentException("Level not found."));
-
-    Role authRole = accessRole.getByName("L-Moderator")
+    Role roleToRemove = accessRole.get(idRole)
             .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
-    Optional<UserRoleLevel> authCredentials = accessUserRoleLevel.get(level.getId(),
-            authorizedUser.getUserId(),
-            authRole.getRoleId());
-
-    if(authCredentials.isEmpty()) {
-      audit.warn("Mismatch: NOT AUTHORIZED TO REMOVE ROLES IN LEVEL. User Claims doesn't match User data.");
-      throw new AuthDenialSecurityException(
-              "Mismatch: NOT AUTHORIZED TO REMOVE ROLES IN LEVEL. User Claims doesn't match User data.");
-    }
-
-    // Remove Role
-    audit.debug("Verify if UserRoleLevel exists.");
-    Optional<UserRoleLevel> userRoleLevel = accessUserRoleLevel.get(idLevel, idUser,
-            idRole);
-    if (userRoleLevel.isEmpty()) {
-      throw new HttpBadRequestException("UserRoleLevel doesn't already exists.");
+    if(!(roleToRemove.getName().equals("L-Moderator") || roleToRemove.getName().equals("L-Divulgator"))) {
+      audit.debugv("Role {0}", roleToRemove.getName());
+      audit.warnv("Mismatch: WRONG ATTEMPT TO REMOVE ROLE.");
+      throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO REMOVE ROLE.");
     }
 
     User user = accessUser.get(idUser)
             .orElseThrow(() -> new HttpNoContentException("User not found."));
 
-    Role roleToremove = accessRole.get(idRole)
-            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
-    if(!(roleToremove.getName().equals("L-Moderator") || roleToremove.getName().equals("L-Divulgator"))) {
-      audit.debugv("Role {0}", roleToremove.getName());
-      audit.warnv("Mismatch: WRONG ATTEMPT TO DELETE ROLE.");
-      throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO DELETE ROLE.");
+    audit.debug("Verify if UserRoleLevel exists.");
+    Optional<UserRoleLevel> userRoleLevel =
+            accessUserRoleLevel.get(level.getLevelId(), user.getUserId(),
+                    roleToRemove.getRoleId());
+    if (userRoleLevel.isEmpty()) {
+      throw new HttpBadRequestException("UserRoleLevel doesn't exists.");
     }
 
     // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
     audit.debug("Trying to remove Role from User tru the Keycloak API.");
-    if (!keycloak.removeRole(user.getAuthServerId(), roleToremove.getName())) {
+    if (!keycloak.removeRoleFromLevel(user.getAuthServerId(), roleToRemove.getName(),
+            level.getLevelId())) {
       audit.debug("Failed to remove Role from User tru the Keycloak API");
-      throw new HttpInternalServerException("Failed to remove Role from User tru the Keycloak API");
+      throw new HttpExternalServerException("Failed to remove Role from User tru the Keycloak API");
     }
 
-    audit.debug("Removing Role from User in Organization.");
+    audit.debug("Removing Role from User in Level.");
     if (!accessUserRoleLevel.remove(userRoleLevel.get().getUrlId())) {
+      // ROLLBACK UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
+      audit.debug("Trying to ROLLBACK assign Role from User tru the Keycloak API.");
+      if (!keycloak.assignRoleInLevel(user.getAuthServerId(), roleToRemove.getName(),
+              level.getLevelId())) {
+        audit.debug("Failed to ROLLBACK assign Role from User tru the Keycloak API");
+        throw new HttpExternalServerException("Failed to ROLLBACK assign Role from User tru the Keycloak API");
+      }
       throw new HttpInternalServerException("Failed to remove UserRoleLevel.");
     }
 

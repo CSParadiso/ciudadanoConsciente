@@ -27,16 +27,32 @@ public interface APIKeycloak {
 
   // ROLE SYNCHRONIZATION WITH KEYCLOAK (name, description)
   @POST
-  @Path("{realm}/roles/assign")
-  boolean assignRole(@PathParam("realm") String realm,
+  @Path("{realm}/roles/organization/assign")
+  boolean assignRoleInOrganization(@PathParam("realm") String realm,
                      @QueryParam("role") String role,
-                     @QueryParam("user") String user);
+                     @QueryParam("user") String user,
+                     @QueryParam("organization") Integer organizationId);
+
+  @POST
+  @Path("{realm}/roles/level/assign")
+  boolean assignRoleInLevel(@PathParam("realm") String realm,
+                                   @QueryParam("role") String role,
+                                   @QueryParam("user") String user,
+                                   @QueryParam("level") Integer levelId);
 
   @DELETE
-  @Path("{realm}/roles/remove")
-  boolean removeRole(@PathParam("realm") String realm,
+  @Path("{realm}/roles/organization/remove")
+  boolean removeRoleFromOrganization(@PathParam("realm") String realm,
                      @QueryParam("role") String role,
-                     @QueryParam("user") String user);
+                     @QueryParam("user") String user,
+                     @QueryParam("organization") Integer organizationId);
+
+  @DELETE
+  @Path("{realm}/roles/level/remove")
+  boolean removeRoleFromLevel(@PathParam("realm") String realm,
+                                     @QueryParam("role") String role,
+                                     @QueryParam("user") String user,
+                                     @QueryParam("level") Integer levelId);
 
   @PUT
   @Path("{realm}/roles/{role}")

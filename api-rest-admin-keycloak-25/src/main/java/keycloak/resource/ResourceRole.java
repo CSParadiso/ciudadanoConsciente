@@ -16,7 +16,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import keycloak.service.ServiceKeycloak25;
 
-@RolesAllowed("Keycloak-Admin")
+//@RolesAllowed("Keycloak-Admin")
 @RequestScoped
 @Path("{realm}/roles")
 public class ResourceRole {
@@ -45,38 +45,80 @@ public class ResourceRole {
   }
 
   @POST
-  @Path("assign")
+  @Path("/organization/assign")
   @APIResponse(responseCode = "201", description = "Success to assign Role.")
   @Operation(summary = "Assign a Role.")
-  public boolean assignRole(@PathParam("realm") String realm,
+  public boolean assignRoleInOrganization(@PathParam("realm") String realm,
                             @QueryParam("role") String role,
-                            @QueryParam("user") String user) {
+                            @QueryParam("user") String user,
+                            @QueryParam("organization") Integer organization) {
 
-    if (role.isBlank() || user.isBlank()) {
-      audit.error("ROLE NAME AND USER ARE REQUIRED.");
+    audit.debugv("Recibido {0}-{1}-{2}", role, user, organization);
+    if (role.isBlank() || user.isBlank() || organization == null) {
+      audit.error("ROLE NAME, USER AND ORGANIZATION ARE REQUIRED.");
       return false;
     }
 
     audit.debug("Assigning Role.");
-    return serviceKeycloak25.assignRole(realm, role, user);
+    return serviceKeycloak25.assignRoleInOrganization(realm, role, user, organization);
 
   }
 
   @DELETE
-  @Path("remove")
+  @Path("organization/remove")
   @APIResponse(responseCode = "201", description = "Success to remove Role from User.")
   @Operation(summary = "Remove a Role from User.")
-  public boolean removeRole(@PathParam("realm") String realm,
-                            @QueryParam("role") String role,
-                            @QueryParam("user") String user) {
+  public boolean removeRoleFromOrganization(@PathParam("realm") String realm,
+                                            @QueryParam("role") String role,
+                                            @QueryParam("user") String user,
+                                            @QueryParam("organization") Integer organization) {
 
-    if (role.isBlank() || user.isBlank()) {
-      audit.error("ROLE NAME AND USER ARE REQUIRED.");
+    if (role.isBlank() || user.isBlank() || organization == null) {
+      audit.error("ROLE NAME, USER AND ORGANIZATION ARE REQUIRED.");
       return false;
     }
 
     audit.debug("Remove Role from User.");
-    return serviceKeycloak25.removeRole(realm, role, user);
+    return serviceKeycloak25.removeRoleFromOrganization(realm, role, user, organization);
+
+  }
+
+  @POST
+  @Path("/level/assign")
+  @APIResponse(responseCode = "201", description = "Success to assign Role.")
+  @Operation(summary = "Assign a Role.")
+  public boolean assignRoleInLevel(@PathParam("realm") String realm,
+                                          @QueryParam("role") String role,
+                                          @QueryParam("user") String user,
+                                          @QueryParam("level") Integer level) {
+
+    audit.debugv("Recibido {0}-{1}-{2}", role, user, level);
+    if (role.isBlank() || user.isBlank() || level == null) {
+      audit.error("ROLE NAME, USER AND ORGANIZATION ARE REQUIRED.");
+      return false;
+    }
+
+    audit.debug("Assigning Role.");
+    return serviceKeycloak25.assignRoleInLevel(realm, role, user, level);
+
+  }
+
+  @DELETE
+  @Path("level/remove")
+  @APIResponse(responseCode = "201", description = "Success to remove Role from User.")
+  @Operation(summary = "Remove a Role from User.")
+  public boolean removeRoleFromLevel(@PathParam("realm") String realm,
+                                            @QueryParam("role") String role,
+                                            @QueryParam("user") String user,
+                                            @QueryParam("level") Integer level) {
+
+    if (role.isBlank() || user.isBlank() || level == null) {
+      audit.error("ROLE NAME, USER AND ORGANIZATION ARE REQUIRED.");
+      return false;
+    }
+
+    audit.debug("Remove Role from User.");
+    return serviceKeycloak25.removeRoleFromLevel(realm, role, user, level);
 
   }
 

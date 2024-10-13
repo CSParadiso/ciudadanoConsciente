@@ -389,11 +389,14 @@ El POST se hace con el AccessToken y los GET requieren autorización de
 rol Ciuco-Admin o de Moderador o Divulgador. Esto exiige que se verifique
 lógicamente que el Moderador o Divulgador tenga ese rol en ese nivel o en el padre (get_genealogy).
 
-- Commit:
+- Commit 6430a6b:
 feat: endpoint de asignar y remover role a usuario en ORGANIZACIÓN en KEYCLOAK API REST
 refactor: puentear servicio de Ciuco para que pase por KEYCLOAK para asignar y remover roles en ORGANIZACIÓN
 feat: endpoint de asignar y remover role a usuario en LEVEL en KEYCLOAK API REST
 refactor: puentear servicio de Ciuco para que pase por KEYCLOAK para asignar y remover roles en LEVEL
+
+- Commit :
+refactor: utilización de atributos del access token para asignar y remover roles de Moderador y Divulgador en Organizaciones y Niveles. Las verificaciones en los recursos utilizan esta característica.
 
 -----------------------------------------
 ------- CUESTIONES DE DISEÑO ------------
@@ -415,7 +418,6 @@ CORE
 
 MANEJO DE USUARIOS Y ROLES
 ¿Qué sucede si un usuario tiene rol Moderador en Org pero Divulgador en Level?
-// TODO feat: resolver verificación de permisos (roles en organización y level)
 
 ----------------------------------------
 ------------------- DOING --------------
@@ -425,8 +427,7 @@ MANEJO DE USUARIOS Y ROLES
 CORE
 TODO: feat: proteger Resources a través de Anotaciones @RolesAllowed y @Authenticated (User, Role, working en asignRoleOrganization y asignRoleLevel)
 
-TODO feat: mapear Users de KC con API
-// TODO: feat  ¿cómo comprender los roles inferiores dentro de lo superiores?
+// TODO: feat ¿cómo comprender los roles inferiores dentro de lo superiores?
 //
 
 // TODO: feat: las modificaciones del content las hacen los creators (si son public) y los moderadores (si tiene vinculada una org)

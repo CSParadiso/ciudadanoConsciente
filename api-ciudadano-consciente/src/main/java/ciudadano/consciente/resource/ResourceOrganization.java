@@ -1,6 +1,7 @@
 
 package ciudadano.consciente.resource;
 
+import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
@@ -11,6 +12,10 @@ import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonValue;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -20,8 +25,12 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
+import org.jose4j.json.internal.json_simple.JSONArray;
 
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 
 @Tag(name = "Organization Resource")
@@ -264,6 +273,20 @@ public class ResourceOrganization {
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
     boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("O-Moderator");
 
+    try {
+      JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+      boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(organization));
+      if(!isAuthorizedToAssignRole) {
+        audit.warnv("Moderator {0} is not allowed to assign Role {1} in Organization {2}.",
+                userInfo.getPreferredUserName(), role, organization);
+        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Organization.");
+      }
+    } catch (NullPointerException e){
+        audit.warn("Moderator has no Organizations assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
+                "have attribute 'mao'.");
+    }
+
     if (userRequested) {
       audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
               "Organization " + organization);
@@ -357,12 +380,26 @@ public class ResourceOrganization {
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
     boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("O-Moderator");
 
+    try {
+      JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+      boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(idOrganization));
+      if(!isAuthorizedToAssignRole) {
+        audit.warnv("Moderator {0} is not allowed to delete Role {1} in Organization {2}.",
+                userInfo.getPreferredUserName(), idRole, idOrganization);
+        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to delete Role in Organization.");
+      }
+    } catch (NullPointerException e){
+      audit.warn("Moderator has no Organizations assigned.");
+      throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
+              "have attribute 'mao'.");
+    }
+
     if (userRequested) {
-      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role " + idRole + " to User " + idUser + " " +
+      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to delete Role " + idRole + " from User " + idUser + " " +
               "in " +
               "Organization " + idOrganization);
     } else {
-      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to assign Role " + idRole + " to User " + idUser + " in " +
+      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to delete Role " + idRole + " from User " + idUser + " in " +
               "Organization " + idOrganization);
     }
 

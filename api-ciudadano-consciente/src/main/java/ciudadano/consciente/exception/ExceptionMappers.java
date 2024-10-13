@@ -54,6 +54,20 @@ public class ExceptionMappers {
   }
 
   @ServerExceptionMapper
+  public RestResponse<DTOException> mapHttpExternalServerException(HttpExternalServerException x,
+                                                                   @Context UriInfo uriInfo) {
+
+    audit.debug("mapHttpExternalServerException: " + x.getMessage());
+    DTOException body = new DTOException();
+    body.setStatus(502);
+    body.setDetail(x.getMessage());
+    body.setInstance(uriInfo.getPath());
+    return RestResponse.ResponseBuilder.create(RestResponse.Status.BAD_GATEWAY, body)
+            .header("Warning", x.getMessage()).build();
+
+  }
+
+  @ServerExceptionMapper
   public RestResponse<DTOException> mapAuthDenialSecurityException(AuthDenialSecurityException x,
       @Context UriInfo uriInfo) {
 

@@ -1,5 +1,6 @@
 package ciudadano.consciente.resource;
 
+import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceLevel;
 import ciudadano.consciente.dto.*;
@@ -12,6 +13,8 @@ import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -349,6 +352,20 @@ public class ResourceLevel {
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
     boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("L-Moderator");
 
+    try {
+      JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
+      boolean isAuthorizedToAssignRole = moderatorAtLevel.contains(Json.createValue(level));
+      if(!isAuthorizedToAssignRole) {
+        audit.warnv("Moderator {0} is not allowed to assign Role {1} in Level {2}.",
+                userInfo.getPreferredUserName(), role, level);
+        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Level.");
+      }
+    } catch (NullPointerException e){
+      audit.warn("Moderator has no Level assigned.");
+      throw new AuthDenialSecurityException("Mismatch: Moderator has no Level assigned. User Claims doesn't " +
+              "have attribute 'mal'.");
+    }
+
     if (userRequested) {
       audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
               "Level " + level);
@@ -436,6 +453,20 @@ public class ResourceLevel {
 
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
     boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("L-Moderator");
+
+    try {
+      JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
+      boolean isAuthorizedToAssignRole = moderatorAtLevel.contains(Json.createValue(idLevel));
+      if(!isAuthorizedToAssignRole) {
+        audit.warnv("Moderator {0} is not allowed to assign Role {1} in Level {2}.",
+                userInfo.getPreferredUserName(), idRole, idLevel);
+        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Level.");
+      }
+    } catch (NullPointerException e){
+      audit.warn("Moderator has no Level assigned.");
+      throw new AuthDenialSecurityException("Mismatch: Moderator has no Level assigned. User Claims doesn't " +
+              "have attribute 'mal'.");
+    }
 
     if (userRequested) {
       audit.debugv("User {0} is trying to assign Role {1} to User {2}.", userInfo.getPreferredUserName(), idRole, idUser);

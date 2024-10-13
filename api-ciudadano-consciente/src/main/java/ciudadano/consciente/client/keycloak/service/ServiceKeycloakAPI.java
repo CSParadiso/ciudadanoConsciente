@@ -55,15 +55,27 @@ public class ServiceKeycloakAPI {
 
   }
 
-  public boolean assignRole(String authServerId, String role) {
+  public boolean assignRoleInOrganization(String authServerId, String role, Integer organizationId) {
 
-    return apiKeycloak.assignRole(realm, role, authServerId);
+    return apiKeycloak.assignRoleInOrganization(realm, role, authServerId, organizationId);
 
   }
 
-  public boolean removeRole(String authServerId, String role) {
+  public boolean assignRoleInLevel(String authServerId, String role, Integer levelId) {
 
-    return apiKeycloak.removeRole(realm, role, authServerId);
+    return apiKeycloak.assignRoleInLevel(realm, role, authServerId, levelId);
+
+  }
+
+  public boolean removeRoleFromOrganization(String authServerId, String role, Integer organizationId) {
+
+    return apiKeycloak.removeRoleFromOrganization(realm, role, authServerId, organizationId);
+
+  }
+
+  public boolean removeRoleFromLevel(String authServerId, String role, Integer levelId) {
+
+    return apiKeycloak.removeRoleFromLevel(realm, role, authServerId, levelId);
 
   }
 

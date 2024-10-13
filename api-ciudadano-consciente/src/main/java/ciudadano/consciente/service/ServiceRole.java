@@ -4,6 +4,7 @@ import ciudadano.consciente.access.AccessRole;
 import ciudadano.consciente.client.keycloak.service.ServiceKeycloakAPI;
 import ciudadano.consciente.dto.DTORole;
 import ciudadano.consciente.exception.HttpBadRequestException;
+import ciudadano.consciente.exception.HttpExternalServerException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.model.Role;
@@ -64,7 +65,7 @@ public class ServiceRole {
     if (!keycloak.createRole(dtoCreateRole.getName(),
         dtoCreateRole.getDescription())) {
       audit.error("Failed to create Roles tru the Keycloak API");
-      throw new HttpInternalServerException("Failed to create Role tru the Keycloak API");
+      throw new HttpExternalServerException("Failed to create Role tru the Keycloak API");
     }
 
     // TODO Quizás estaría bueno añadir el id del rol de Keycloak (por ahora no)
@@ -97,7 +98,7 @@ public class ServiceRole {
     if (!keycloak.updateRole(role.getName(),
         dtoUpdateRole.getDescription())) {
       audit.error("Failed to update Role tru the Keycloak API");
-      throw new HttpInternalServerException("Failed to update Role tru the Keycloak API.");
+      throw new HttpExternalServerException("Failed to update Role tru the Keycloak API.");
     }
 
     role.setDescription(dtoUpdateRole.getDescription());
@@ -122,7 +123,7 @@ public class ServiceRole {
     audit.debug("Trying to delete Role tru the Keycloak API.");
     if (!keycloak.deleteRole(role.getName())) {
       audit.error("Failed to delete Role tru the Keycloak API");
-      throw new HttpInternalServerException("Failed to delete Role tru the Keycloak API.");
+      throw new HttpExternalServerException("Failed to delete Role tru the Keycloak API.");
     }
 
     if (!accessRole.remove(role.getRoleId())) {
