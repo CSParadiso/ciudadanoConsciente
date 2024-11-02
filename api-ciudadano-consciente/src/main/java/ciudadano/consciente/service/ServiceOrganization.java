@@ -12,13 +12,13 @@ import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.inject.Default;
+//import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
-import javax.swing.text.html.Option;
+//import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -156,14 +156,16 @@ public class ServiceOrganization {
     String name = dtoUpdateOrganization.getName();
     String description = dtoUpdateOrganization.getDescription();
     if (utilityVerifyRequestField.isValidField(name)) {
-      if (accessOrganization.existName(name)) {
-        throw new HttpBadRequestException("The name already exists.");
-      }
+        //Verifico si existe el nombre solo si cambió
+        if ((!organization.getName().equals(name)) && accessOrganization.existName(name)) {
+          throw new HttpBadRequestException("The name already exists.");
+        }
       organization.setName(name);
     }
 
     if (utilityVerifyRequestField.isValidField(email)) {
-      if (accessOrganization.existEmail(email)) {
+        //Verifico si existe el email solo si cambió
+      if ((!organization.getEmail().equals(email)) && accessOrganization.existEmail(email)) {
         throw new HttpBadRequestException("The email already exists.");
       }
       organization.setEmail(email);
@@ -463,7 +465,7 @@ public class ServiceOrganization {
     Optional<UserRolOrganization> userRolOrganization = accessUserRoleOrganization.get(organization.getId(),
             authorizedUser.getUserId(),
             authRole.getRoleId());
-
+//TODO: AGREGAR CIUCO_ADMIN
     if(userRolOrganization.isEmpty()) {
       audit.warn("Mismatch: NOT AUTHORIZED TO REMOVE ROLES IN ORGANIZATION. User Claims doesn't match User data.");
       throw new AuthDenialSecurityException(

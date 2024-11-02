@@ -4,3 +4,4 @@ dockerCompose/keycloak/logs
 dockerCompose/individuales/*/logs
 dockerCompose/individuales/keycloak/logs/*.log
 
+api-ciudadano-consciente/logs/api-ciudadano-consciente

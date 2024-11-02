@@ -65,7 +65,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("paths")
   @Operation(summary = "Retrieve all Levels without parent.")
@@ -78,7 +78,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a  Level by its ID.")
@@ -91,7 +91,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}/childrens")
   @Operation(summary = "Retrieve all childrens of a Level by its ID.")
@@ -104,7 +104,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("organizations/{organizationId}/paths")
   @Operation(summary = "Retrieve all Levels (without a parent) of an Organization by the Organization ID.")
@@ -117,7 +117,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("organizations/{organizationId}/users/{userId}/roles/{roleId}")
   @Operation(summary = "Retrieve all Levels of an Organization where the user has a specific role.")
@@ -134,7 +134,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/paths/favorites/users/{userId}")
   @Operation(summary = "Retrieve all Paths voted by a specific User.")
@@ -147,7 +147,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/paths/recently/users/{userId}")
   @Operation(summary = "Retrieve latest Paths used by a specific User.")
@@ -161,6 +161,7 @@ public class ResourceLevel {
 
   }
 
+  //L-moderator y L-divulgator son genericos, no indican que el usuario puede crear un level, deberia ser o dao o mao, o ser dal o mal del padre del level que quiere crear
   @RolesAllowed({"Ciuco-Admin", "L-Moderator", "L-Divulgator"})
   @POST
   @Operation(summary = "Create a Level.")
@@ -193,6 +194,7 @@ public class ResourceLevel {
 
   }
 
+  //Misma observacion que el POST
   @RolesAllowed({"Ciuco-Admin", "L-Moderator", "L-Divulgator"})
   @PATCH
   @Path("{id}")
@@ -228,6 +230,7 @@ public class ResourceLevel {
 
   }
 
+  //Misma observacion que el post
   @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
   @DELETE
   @Path("{id}")
@@ -317,6 +320,7 @@ public class ResourceLevel {
 
   }
 
+  //nuevamente, el Lmoderator es generico
   @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
   @POST
   @Path("{id}/users/roles") // /{user}/roles/{role}")
@@ -502,7 +506,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin"})
+ // @RolesAllowed({"Ciuco-Admin"})
   @GET
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a Level.")

@@ -72,7 +72,7 @@ public class ResourceUser {
 
   // TODO Quizás O-Divulgator cuando quiera asignar Roles (se puede verificar el
   // path desde donde viene en el MainFilter)
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("username/{username}")
   @Operation(summary = "Retrieve a specific User by its username.")
