@@ -259,7 +259,8 @@ public class ServiceLevel {
         .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     if (utilityVerifyRequestField.isValidField(name)) {
-      if (accessLevel.existName(name)) {
+      //TODO: quitar clave de nombre en levelName, esto impide que un subnivel de un path no se pueda llamar ocmo otro de otro path que nada que ver
+      if ((!level.getName().equals(name)) && accessLevel.existName(name)){
         throw new HttpBadRequestException("The name already exists.");
       }
       level.setName(name);
