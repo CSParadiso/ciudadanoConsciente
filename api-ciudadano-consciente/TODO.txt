@@ -395,7 +395,7 @@ refactor: puentear servicio de Ciuco para que pase por KEYCLOAK para asignar y r
 feat: endpoint de asignar y remover role a usuario en LEVEL en KEYCLOAK API REST
 refactor: puentear servicio de Ciuco para que pase por KEYCLOAK para asignar y remover roles en LEVEL
 
-- Commit :
+- Commit 4a4cc14:
 refactor: utilización de atributos del access token para asignar y remover roles de Moderador y Divulgador en Organizaciones y Niveles. Las verificaciones en los recursos utilizan esta característica.
 
 -----------------------------------------
@@ -410,10 +410,6 @@ refactor: utilización de atributos del access token para asignar y remover role
 -----------------------------------------
 ----------------- TODO ------------------
 -----------------------------------------
-
-CORE
-
-
 
 
 MANEJO DE USUARIOS Y ROLES

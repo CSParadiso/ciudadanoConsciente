@@ -263,7 +263,7 @@ public class ServiceOrganization {
     } catch (ConstraintViolationException e) {
       audit.debug("Already exists Role for User in Organization: " + e.getErrorMessage());
 
-      // ROLLABACK KEYCLOAK SERVER (si no se puede revertir, falla)
+      // ROLLBACK KEYCLOAK SERVER (si no se puede revertir, falla)
       audit.debug("Trying to ROLLBACK remove Role to User tru the Keycloak API.");
       if (!keycloak.removeRoleFromOrganization(user.getAuthServerId(), roleToAssign.getName(), organization.getOrganizationId())) {
         audit.debug("Failed to ROLLBACK remove Role to User tru the Keycloak API");

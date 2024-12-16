@@ -16,7 +16,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import keycloak.service.ServiceKeycloak25;
 
-//@RolesAllowed("Keycloak-Admin")
+@RolesAllowed("Keycloak-Admin")
 @RequestScoped
 @Path("{realm}/roles")
 public class ResourceRole {
