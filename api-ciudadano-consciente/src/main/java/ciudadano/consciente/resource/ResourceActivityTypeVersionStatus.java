@@ -154,7 +154,7 @@ public class ResourceActivityTypeVersionStatus {
         return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersionStatus.update(id, dtoUpdateActivityTypeVersionStatus)).build();
 
     }
-
+    
     @DELETE
     @Path("{id}")
     @Operation(summary = "Delete a category of Activity Type Version Status.")

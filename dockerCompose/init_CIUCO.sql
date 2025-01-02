@@ -52,7 +52,7 @@ create table app.users (
 	user_id integer generated always as identity primary key,
 	email varchar(100) not null unique,
 	username varchar(100) not null unique,
-	pass_word varchar(100) not null -- Luego guardamos hash (ver crypto)
+	auth_server_id varchar(100) not null unique
 );
 
 	-- Tabla references

@@ -79,6 +79,7 @@ public class ResourceRole {
   @Operation(summary = "Create a new Role.")
   @APIResponse(responseCode = "201", description = "Role successfully created.", content = @Content(schema = @Schema(implementation = DTORole.class)))
   @APIResponse(responseCode = "400", description = "Failed to create Role.")
+  @APIResponse(responseCode = "403", description = "Failed to create Role. User doesn't have enough permissions.")
   @APIResponse(responseCode = "500", description = "Failed to create Role. Verify 'Warning' Header.")
   // REQUIRES UPDATE KEYCLOAK SERVER
   public RestResponse<DTORole> create(DTOCreateRole dtoCreateRole) {
@@ -113,6 +114,7 @@ public class ResourceRole {
   @APIResponse(responseCode = "204", description = "Failed to update Role. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to update Role. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update Role. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "502", description = "Failed to update Role. Verify 'Warning' Header.")
   public RestResponse<DTORole> update(@PathParam("id") Integer id, DTOUpdateRole dtoUpdateRole) {
 
     if (dtoUpdateRole == null) {

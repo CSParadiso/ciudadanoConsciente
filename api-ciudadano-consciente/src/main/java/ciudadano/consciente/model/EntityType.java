@@ -8,11 +8,13 @@ import jakarta.persistence.*;
 public class EntityType {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "entity_type_id")
     @Id
+    @Column(name = "entity_type_id")
     private Integer entityTypeId;
 
     private String title;
+
+    private Boolean votable;
 
     public Integer getEntityTypeId() {
         return entityTypeId;
@@ -30,5 +32,11 @@ public class EntityType {
         this.title = title;
     }
 
+    public Boolean getVotable() {
+        return votable;
+    }
 
+    public void setVotable(Boolean votable) {
+        this.votable = votable;
+    }
 }

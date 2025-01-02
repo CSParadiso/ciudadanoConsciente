@@ -1,13 +1,17 @@
-ACLARACIÓN: por ahora, los roles no son compuestos, para ahorrarnos la complejidad inicial. Es necesario, por lo tanto que explicitemos con @RolesAllowed("rolName", "anotherRolName") si más de un rol tiene acceso al recurso. Si queremos un rol específico, podemos usar el método de SecurityIdentity hasRole("nombreRol").
+ACLARACIÓN: por ahora, los roles no son compuestos, para ahorrarnos la complejidad inicial. 
+Es necesario, por lo tanto que explicitemos con @RolesAllowed("rolName", "anotherRolName") si más de un rol tiene acceso al recurso. 
+Si queremos un rol específico, podemos usar el método de SecurityIdentity hasRole("nombreRol").
+***IMPORTANTE***
+Los roles "Ciuco-Admin" y "Keycloak Admin", no pueden recuperarse desde la base de datos, ni siquiera debería estar en la misma, solamente en el Identity Provider. Son creados a mano en el deploy inicial.
 
-ROLES:
-- Ciuco-Admin (puede acceder a todo)
-- O-Divulgator
-- O-Moderator
-- L-Divulgator
-- L-Moderator
-- Button
-- Tester 
+ROLES: -> Deberían estar en una API aparte
+- Ciuco-Admin (puede acceder a todo): Admin Role for Web App Ciudadano-Consciente
+- O-Divulgator: Divulgator Role for Organization entity in Web App Ciudadano-Consciente
+- O-Moderator: Moderator Role for Organization entity in Web App Ciudadano-Consciente
+- L-Divulgator: Divulgator Role for Level entity in Web App Ciudadano-Consciente
+- L-Moderator: Moderator Role for Level entity in Web App Ciudadano-Consciente
+- Button: Button Role for Web App Ciudadano-Consciente 
+- Tester: Tester Role for Web App Ciudadano-Consciente
 
 - ORGANIZATIONS: UserRoleOrganization
 	- O-Moderator: puede asignar, editar y quitar roles en la Organización y sus niveles.
@@ -51,17 +55,42 @@ ROLES:
 * GET: @Authenticated: solo Ciuco-Admin y el usuario logueado con su AccessToken. Exige verificación lógica.
 * POST: @Authenticated. El usuario logueado con su AccessToken persiste la respuesta.
 
-***NOT DONE***
-
 /organizations:
-* POST:
 * GET-ALL: Ciuco-Admin
-* GET: Ciuco-Admin
-/org/roles/asign ==Exige petición Rest a la API del IdentityProvider== ONLY Ciuco-Admin could assign Role Ciuco-Admin, Tester and Button
+* GET:  Ciuco-Admin
+* POST: Ciuco-Admin ==Exige resolver cómo verificamos veracidad de Organizaciones==
+* POST: /org/roles/asign Ciuco-Admin y O-Moderator ==Exige petición Rest a la API del IdentityProvider== y exige verificación lógica 
+```java
+if(!(roleToAssign.getName().equals("O-Moderator") || roleToAssign.getName().equals("O-Divulgator"))) {  
+  audit.warnv("Mismatch: INCORRECT ATTEMPT TO ASSIGN ROLE.");  
+  throw new AuthDenialSecurityException("Mismatch: INCORRECT ATTEMPT TO ASSIGN ROLE.");  
+}
+``` 
+* DELETE: Ciuco-Admin
+* GET: {id}/users/roles: Ciuco-Admin
+* DELETE: {id}/users/{user}/roles/{role}: Ciuco-Admin y O-Moderator ==Exige petición Rest a la API del IdentityProvider==
+* GET: votes y votes/{id} : Ciuco-Admin
+* GET: tags y tags/{id}: all
 
 /levels:
-* POST: 
-/level/roles/asign ==Exige petición Rest a la API del IdentityProvider== ONLY Ciuco-Admin could assign Role Ciuco-Admin, Tester and Button
+* GET-ALL: Ciuco-Admin
+* GET:  Ciuco-Admin
+* POST: Ciuco-Admin ==Exige resolver cómo verificamos veracidad de Organizaciones==
+* POST: /org/roles/asign Ciuco-Admin y L-Moderator ==Exige petición Rest a la API del IdentityProvider== y exige verificación lógica 
+```java
+if(!(roleToAssign.getName().equals("L-Moderator") || roleToAssign.getName().equals("L-Divulgator"))) {  
+  audit.warnv("Mismatch: INCORRECT ATTEMPT TO ASSIGN ROLE.");  
+  throw new AuthDenialSecurityException("Mismatch: INCORRECT ATTEMPT TO ASSIGN ROLE.");  
+}
+``` 
+* DELETE: Ciuco-Admin
+* GET: {id}/users/roles: Ciuco-Admin
+* DELETE: {id}/users/{user}/roles/{role}: Ciuco-Admin y L-Moderator ==Exige petición Rest a la API del IdentityProvider==
+* GET: votes y votes/{id} : Ciuco-Admin
+* GET: tags y tags/{id}: all
 
-***IMPORTANTE***
-El Rol "Ciuco-Admin" no debería poder recuperarse desde la base de datos, ni siquiere debería estar en la misma, solamente en el Identity Provider.
+***NOT DONE***
+
+/entity-types
+Ciuco-Admin
+

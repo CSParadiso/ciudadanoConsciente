@@ -33,7 +33,6 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
-@Authenticated
 @Tag(name = "Level Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -274,7 +273,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin"})
+  @RolesAllowed({"Ciuco-Admin"}) // Quizas tambien el L-Moderator pero exige verificacion logica
   @GET
   @Path("{id}/users/roles")
   @Operation(summary = "Retrieve Users with Role in Level.")
@@ -350,23 +349,22 @@ public class ResourceLevel {
     }
 
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("L-Moderator");
-
-    try {
-      JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
-      boolean isAuthorizedToAssignRole = moderatorAtLevel.contains(Json.createValue(level));
-      if(!isAuthorizedToAssignRole) {
-        audit.warnv("Moderator {0} is not allowed to assign Role {1} in Level {2}.",
-                userInfo.getPreferredUserName(), role, level);
-        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Level.");
-      }
-    } catch (NullPointerException e){
-      audit.warn("Moderator has no Level assigned.");
-      throw new AuthDenialSecurityException("Mismatch: Moderator has no Level assigned. User Claims doesn't " +
-              "have attribute 'mal'.");
-    }
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
 
     if (userRequested) {
+      try {
+        JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
+        boolean isAuthorizedToAssignRole = moderatorAtLevel.contains(Json.createValue(level));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("Moderator {0} is not allowed to assign Role {1} in Level {2}.",
+                  userInfo.getPreferredUserName(), role, level);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Level.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("Moderator has no Level assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Level assigned. User Claims doesn't " +
+                "have attribute 'mal'.");
+      }
       audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
               "Level " + level);
     } else {
@@ -452,23 +450,22 @@ public class ResourceLevel {
       @PathParam("role") Integer idRole) {
 
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("L-Moderator");
-
-    try {
-      JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
-      boolean isAuthorizedToAssignRole = moderatorAtLevel.contains(Json.createValue(idLevel));
-      if(!isAuthorizedToAssignRole) {
-        audit.warnv("Moderator {0} is not allowed to assign Role {1} in Level {2}.",
-                userInfo.getPreferredUserName(), idRole, idLevel);
-        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Level.");
-      }
-    } catch (NullPointerException e){
-      audit.warn("Moderator has no Level assigned.");
-      throw new AuthDenialSecurityException("Mismatch: Moderator has no Level assigned. User Claims doesn't " +
-              "have attribute 'mal'.");
-    }
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
 
     if (userRequested) {
+      try {
+        JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
+        boolean isAuthorizedToAssignRole = moderatorAtLevel.contains(Json.createValue(idLevel));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("Moderator {0} is not allowed to assign Role {1} in Level {2}.",
+                  userInfo.getPreferredUserName(), idRole, idLevel);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Level.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("Moderator has no Level assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Level assigned. User Claims doesn't " +
+                "have attribute 'mal'.");
+      }
       audit.debugv("User {0} is trying to assign Role {1} to User {2}.", userInfo.getPreferredUserName(), idRole, idUser);
     } else {
       audit.debugv("Admin {0} is trying to assign Role {1} to User {2}.", userInfo.getPreferredUserName(), idRole, idLevel);

@@ -10,6 +10,9 @@ public class DTOEntityType {
     @Schema(defaultValue = "")
     private String title;
 
+    @Schema(defaultValue = "")
+    private Boolean votable;
+
     public Integer getEntityTypeId() {
         return entityTypeId;
     }
@@ -24,5 +27,13 @@ public class DTOEntityType {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Boolean getVotable() {
+        return votable;
+    }
+
+    public void setVotable(Boolean votable) {
+        this.votable = votable;
     }
 }

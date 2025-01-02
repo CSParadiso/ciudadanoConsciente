@@ -1,10 +1,10 @@
-PERMISOS NECESARIOS: debe estar autenticado (logueado a través de Keycloak). 
+PERMISOS NECESARIOS: debe estar autenticado (logueado a través de #Keycloak). 
 
 Ahora que ya contamos con las bondades de Keycloak como servidor de autorizaciones podemos pensar la forma en que un nuevo usuario se crea.
 
 Como la identidad la provee el servidor (ya sea creando un nuevo usuario por sus medios o a través de otros IdentityProviders) podemos confiar en que a través de la Anotación de Java "@Authenticated" nos aseguramos de que los usuarios que soliciten un POST al endpoint /users estarán autenticados y tendrán en su Access Token los Claims que nos permiten persistirlo y mapearlo a nuestra entidad User que será luego persistida en la DB que utiliza la API Ciudadano Consciente. Este mapeo es el siguiente:
 1. user.authServerId = userInfo.getSubject();  
-2. user.username = userInfo.getPreferredUserName(); 
+2. user.username = userInfo.getName(); 
 3. user.email = userInfo.getEmail();
 
 Entonces, ya no es necesario tener un DTO de creación de Usuario (DTOCreateUser) que sea recibido como bodyParam en el recurso. Ahora simplemente:

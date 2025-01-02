@@ -9,7 +9,8 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 //@IfBuildProfile("dev")
-@RegisterRestClient(configKey = "api-keycloak")
+//@RegisterRestClient(configKey = "api-keycloak")
+@RegisterRestClient(configKey="desa-api-keycloak")
 @OidcClientFilter
 public interface APIKeycloak {
 

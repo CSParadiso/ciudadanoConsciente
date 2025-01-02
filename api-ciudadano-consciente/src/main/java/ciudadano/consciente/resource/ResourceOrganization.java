@@ -96,6 +96,8 @@ public class ResourceOrganization {
   @POST
   @Operation(summary = "Create a new Organization.")
   @APIResponse(responseCode = "201", description = "Organization successfully created.", content = @Content(schema = @Schema(implementation = DTOOrganization.class)))
+  @APIResponse(responseCode = "204", description = "Organization successfully created.", content = @Content(schema =
+  @Schema(implementation = DTOOrganization.class)))
   @APIResponse(responseCode = "400", description = "Failed to create new Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create new Organization. Verify 'Warning' Header.")
   public RestResponse<DTOOrganization> create(DTOCreateOrganization dtoCreateOrganization) {
@@ -124,6 +126,7 @@ public class ResourceOrganization {
 
   }
 
+  @Deprecated(forRemoval = true, since = "1.2.1. Organization data should not be modified.")
   @RolesAllowed("Ciuco-Admin")
   @PATCH
   @Path("{id}")
@@ -271,25 +274,26 @@ public class ResourceOrganization {
     }
 
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("O-Moderator");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
 
-    try {
-      JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
-      boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(organization));
-      if(!isAuthorizedToAssignRole) {
-        audit.warnv("Moderator {0} is not allowed to assign Role {1} in Organization {2}.",
-                userInfo.getPreferredUserName(), role, organization);
-        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Organization.");
-      }
-    } catch (NullPointerException e){
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(organization));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("Moderator {0} is not allowed to assign Role {1} in Organization {2}.",
+                  userInfo.getPreferredUserName(), role, organization);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to assign Role in Organization.");
+        }
+      } catch (NullPointerException e){
         audit.warn("Moderator has no Organizations assigned.");
         throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
                 "have attribute 'mao'.");
-    }
+      }
 
-    if (userRequested) {
       audit.debug("User " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
               "Organization " + organization);
+
     } else {
       audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
               "Organization " + organization);
@@ -378,23 +382,23 @@ public class ResourceOrganization {
       @PathParam("role") Integer idRole) {
 
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin") || !securityIdentity.hasRole("O-Moderator");
-
-    try {
-      JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
-      boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(idOrganization));
-      if(!isAuthorizedToAssignRole) {
-        audit.warnv("Moderator {0} is not allowed to delete Role {1} in Organization {2}.",
-                userInfo.getPreferredUserName(), idRole, idOrganization);
-        throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to delete Role in Organization.");
-      }
-    } catch (NullPointerException e){
-      audit.warn("Moderator has no Organizations assigned.");
-      throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
-              "have attribute 'mao'.");
-    }
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
 
     if (userRequested) {
+      try {
+        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(idOrganization));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("Moderator {0} is not allowed to delete Role {1} in Organization {2}.",
+                  userInfo.getPreferredUserName(), idRole, idOrganization);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to delete Role in Organization.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("Moderator has no Organizations assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
+                "have attribute 'mao'.");
+      }
+
       audit.debug("User " + userInfo.getPreferredUserName() + " is trying to delete Role " + idRole + " from User " + idUser + " " +
               "in " +
               "Organization " + idOrganization);

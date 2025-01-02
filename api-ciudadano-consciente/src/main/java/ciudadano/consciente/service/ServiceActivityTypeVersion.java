@@ -91,10 +91,6 @@ public class ServiceActivityTypeVersion {
         .orElseThrow(() -> new HttpNoContentException("Status of Version not found."));
 
     List<ActivityTypeVersion> activityTypeVersion = accessActivityTypeVersion.getAllByStatus(activityTypeVersionStatus);
-    if (activityTypeVersion.isEmpty()) {
-      throw new HttpNoContentException("Activity Type Version not found.");
-    }
-
     return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
 
   }
@@ -102,9 +98,6 @@ public class ServiceActivityTypeVersion {
   public List<DTOActivityTypeVersion> getAll() {
 
     List<ActivityTypeVersion> activityTypeVersion = accessActivityTypeVersion.getAll();
-    if (activityTypeVersion.isEmpty()) {
-      throw new HttpNoContentException("Activity Type Version not found.");
-    }
     return mapperActivityTypeVersion.entityToDto(activityTypeVersion);
 
   }

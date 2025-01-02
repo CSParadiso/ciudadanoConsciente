@@ -152,7 +152,8 @@ public class ResourceUser {
     UserInfo userInfo = securityIdentity.getAttribute("userinfo");
 
     String authServerId = userInfo.getSubject();
-    String username = userInfo.getPreferredUserName();
+    //String username = userInfo.getPreferredUserName();
+    String username = userInfo.getName();
     String email = userInfo.getEmail();
     if (!utilityVerifyRequestField.isValidField(authServerId) ||
         !utilityVerifyRequestField.isValidField(username) ||
@@ -280,9 +281,9 @@ public class ResourceUser {
     boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
 
     if (userRequested) {
-      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to delete User " + id);
+      audit.debug("User " + userInfo.getEmail() + " is trying to delete User " + id);
     } else {
-      audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to delete User " + id);
+      audit.debug("Admin " + userInfo.getEmail() + " is trying to delete User " + id);
     }
 
     return RestResponse.ResponseBuilder.ok(serviceUser.delete(id, userInfo, userRequested)).build();

@@ -77,6 +77,7 @@ public class ResourceActivityType {
           responseCode = "201",
           description = "Activity Type successfully created.",
           content = @Content(schema = @Schema(implementation = DTOActivityType.class)))
+  @APIResponse(responseCode = "204", description = "Failed to create Activity Type. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to create Activity Type. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Activity Type. Verify 'Warning' Header.")
   public RestResponse<DTOActivityType>create(DTOCreateActivityType dtoCreateActivityType) {
@@ -201,7 +202,7 @@ public class ResourceActivityType {
 
   @GET
   @Path("/votes")
-  @Operation(summary = "Retrieve votes of Activity Types.")
+  @Operation(summary = "Retrieve votes of all Activity Types.")
   @APIResponse(responseCode = "200", description = "Votes of Activity Types successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Activity Types. Verify 'Warning' Header.")
   public RestResponse<List<DTOVotedEntity>> getAllVotes() {
@@ -225,7 +226,7 @@ public class ResourceActivityType {
 
   @GET
   @Path("/tags")
-  @Operation(summary = "Retrieve tags of Activity Types.")
+  @Operation(summary = "Retrieve tags of all Activity Types.")
   @APIResponse(responseCode = "200", description = "Tags of Activity Types successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOTaggedEntity.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Activity Types. Verify 'Warning' Header.")
   public RestResponse<List<DTOTaggedEntity>> getAllTags() {

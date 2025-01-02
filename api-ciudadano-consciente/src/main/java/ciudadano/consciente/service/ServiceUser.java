@@ -182,7 +182,7 @@ public class ServiceUser {
       // Just for security double check
       if (user.getAuthServerId().equals(userInfo.getSubject()) &&
           user.getEmail().equals(userInfo.getEmail()) &&
-          user.getUsername().equals(userInfo.getPreferredUserName())) {
+          user.getUsername().equals(userInfo.getName())) {
 
         audit.debug("User " + user.getUserId() + " is deleting himself.");
 

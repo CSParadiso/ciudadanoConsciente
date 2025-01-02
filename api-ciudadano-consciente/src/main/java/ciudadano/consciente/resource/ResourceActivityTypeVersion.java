@@ -40,6 +40,26 @@ public class ResourceActivityTypeVersion {
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
 
+  @GET
+  @Operation(summary = "Retrieve all Versions (optional: status)")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @APIResponse(
+          responseCode = "200",
+          description = "Status of Versions successfully retrieved.",
+          content = @Content (schema = @Schema (implementation = DTOActivityTypeVersion.class))
+  )
+  public RestResponse<List<DTOActivityTypeVersion>> getAllByStatus(@QueryParam("status") Integer status) {
+
+    if (utilityVerifyRequestField.isValidField(status)) {
+      audit.debug("Getting all the Versions by status ...");
+      return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersion.getAllByStatus(status)).build();
+    }
+
+    audit.debug("Getting all the Versions without status ...");
+    return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersion.getAll()).build();
+
+  }
+
   @GET // This should be in Activity Type
   @Path("activity-type/{activity-type}")
   @Operation(summary = "Retrieve all Versions of a Activity Type.")
@@ -59,25 +79,6 @@ public class ResourceActivityTypeVersion {
     }
 
     return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersion.getAllByActivityType(activityType)).build();
-
-  }
-
-  @GET
-  @Operation(summary = "Retrieve all Versions (optional: status)")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @APIResponse(
-          responseCode = "200",
-          description = "Status of Versions successfully retrieved.",
-          content = @Content (schema = @Schema (implementation = DTOActivityTypeVersion.class))
-  )
-  public RestResponse<List<DTOActivityTypeVersion>> getAllByStatus(@QueryParam("status") Integer status) {
-
-    audit.debug("Getting all the Versions...");
-    if (utilityVerifyRequestField.isValidField(status)) {
-      return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersion.getAllByStatus(status)).build();
-    }
-
-    return RestResponse.ResponseBuilder.ok(serviceActivityTypeVersion.getAll()).build();
 
   }
 
