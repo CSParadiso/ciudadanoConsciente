@@ -31,6 +31,11 @@ public class AccessUser implements PanacheRepositoryBase<User, Integer> {
         return find("email", email).stream().findFirst();
     }
 
+    public Optional<User> getByAuthServerId(String authServerId) {
+        audit.debug("Trying to retrieve User with authServerId" + authServerId);
+        return find("authServerId", authServerId).stream().findFirst();
+    }
+
     public List<User> getAll() {
 
         audit.debug("Trying to retrieve all Users.");
@@ -66,4 +71,5 @@ public class AccessUser implements PanacheRepositoryBase<User, Integer> {
         return count("email", email) > 0;
 
     }
+
 }

@@ -1,6 +1,6 @@
 package ciudadano.consciente.dto;
 
-import ciudadano.consciente.model.Organization;
+import ciudadano.consciente.model.User;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOUserRoleOrganization {
@@ -9,7 +9,7 @@ public class DTOUserRoleOrganization {
     private Integer uroId;
 
     @Schema
-    private Integer user;
+    private DTOUser user;
 
     @Schema
     private Integer role;
@@ -25,11 +25,11 @@ public class DTOUserRoleOrganization {
         this.uroId = uroId;
     }
 
-    public Integer getUser() {
+    public DTOUser getUser() {
         return user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(DTOUser user) {
         this.user = user;
     }
 

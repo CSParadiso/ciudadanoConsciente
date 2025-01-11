@@ -33,6 +33,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "Organization Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +67,7 @@ public class ResourceOrganization {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}/")
   @Operation(summary = "Retrieve an specific Organization by its ID.")
@@ -79,16 +80,18 @@ public class ResourceOrganization {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  // Just himself, Maybe Ciuco could do it
   @GET
-  @Path("users/{userId}/")
+  @Path("users")
   @Operation(summary = "Retrieve all Organization in which a User participate.")
   @APIResponse(responseCode = "200", description = "Organization successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOOrganization.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Organizations. Verify 'Warning' Header.")
-  public RestResponse<List<DTOOrganization>> getOrganizationsByUser(@PathParam("userId") Integer userId) {
+  public RestResponse<List<DTOOrganization>> getOrganizationsByUser() {
 
-    audit.debug("Getting Organizations by userId " + userId + "...");
-    return RestResponse.ResponseBuilder.ok(serviceOrganization.getOrganizationsByUser(userId)).build();
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
+    audit.debug("Getting Organizations by user " + userInfo.getEmail() + "...");
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.getOrganizationsByUser(userInfo)).build();
 
   }
 
@@ -126,8 +129,10 @@ public class ResourceOrganization {
 
   }
 
-  @Deprecated(forRemoval = true, since = "1.2.1. Organization data should not be modified.")
-  @RolesAllowed("Ciuco-Admin")
+  //@Deprecated(forRemoval = true, since = "1.2.1. Organization data should not be modified.")
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator"})
+  // TODO Solo se puede editar email y descripcion. Es necesario verificar que el moderador sea de la org o ser CIUCO
+  //  ADMIN
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update Organization.")
@@ -143,10 +148,8 @@ public class ResourceOrganization {
     }
 
     String email = dtoUpdateOrganization.getEmail();
-    String name = dtoUpdateOrganization.getName();
     String description = dtoUpdateOrganization.getDescription();
     if (!utilityVerifyRequestField.isValidField(email) &&
-        !utilityVerifyRequestField.isValidField(name) &&
         !utilityVerifyRequestField.isValidField(description)) {
       throw new HttpBadRequestException("No updates to make.");
     }
@@ -154,6 +157,30 @@ public class ResourceOrganization {
     audit.debug("Verifying if the ID of the Body and the Path are the same...");
     if (id.compareTo(dtoUpdateOrganization.getOrganizationId()) != 0) {
       throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+    }
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(id));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("Moderator {0} is not allowed to update Organization {1}.",
+                  userInfo.getEmail(), id);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to update Organization.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("Moderator has no Organizations assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
+                "have attribute 'mao'.");
+      }
+
+      audit.debug("User " + userInfo.getEmail() + " is trying to update Organization " + id);
+
+    } else {
+      audit.debug("Admin " + userInfo.getEmail() + " is trying to update Organization " + id);
     }
 
     audit.debug("Updating Organization" + id + "...");
@@ -210,7 +237,7 @@ public class ResourceOrganization {
 
   }
 
-  @RolesAllowed("Ciuco-Admin") // "O-Moderator" --> Exige verificar si ese usuario puede ver en esta Orga
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator"})
   @GET
   @Path("{id}/users/roles")
   @Operation(summary = "Retrieve Users with Role in Organization.")
@@ -219,6 +246,30 @@ public class ResourceOrganization {
   public RestResponse<List<DTOUserRoleOrganization>> getUsersWithRole(@PathParam("id") Integer idOrganization,
       @QueryParam("role") Integer idRole,
       @QueryParam("user") Integer idUser) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(idOrganization));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("Moderator {0} is not allowed to retrieve users of Organization {1}.",
+                  userInfo.getEmail(), idOrganization);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to retrieve users of Organization.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("Moderator has no Organizations assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
+                "have attribute 'mao'.");
+      }
+
+      audit.debug("User " + userInfo.getEmail() + " is trying to retrieve users of Organization " + idOrganization);
+
+    } else {
+      audit.debug("Admin " + userInfo.getEmail() + " is trying to retrieve users Organization " + idOrganization);
+    }
 
     if (idRole == null && idUser == null) {
       audit.debug("Getting all the Users with Roles in Organization " + idOrganization + "...");
@@ -456,7 +507,7 @@ public class ResourceOrganization {
 
   }
 
-  @RolesAllowed("Ciuco-Admin") // O-Moderator --> Exige verificar si ese rol es de esa Orga
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/votes")
   @Operation(summary = "Retrieve votes of Organizations.")
@@ -469,13 +520,38 @@ public class ResourceOrganization {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator"})
   @GET
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a Organization.")
   @APIResponse(responseCode = "200", description = "Votes of Organization successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVotedEntity.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Organization. Verify 'Warning' Header.")
   public RestResponse<List<DTOVotedEntity>> getVotes(@PathParam("id") Integer id) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(id));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("Moderator {0} is not allowed to retrieve votes of Organization {1}.",
+                  userInfo.getEmail(), id);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to retrieve votes of Organization" +
+                  ".");
+        }
+      } catch (NullPointerException e){
+        audit.warn("Moderator has no Organizations assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
+                "have attribute 'mao'.");
+      }
+
+      audit.debug("User " + userInfo.getEmail() + " is trying to retrieve votes of Organization " + id);
+
+    } else {
+      audit.debug("Admin " + userInfo.getEmail() + " is trying to retrieve votes Organization " + id);
+    }
 
     audit.debug("Getting Organization " + id + " Votes...");
     return RestResponse.ResponseBuilder.ok(serviceOrganization.getVotes(id)).build();

@@ -6,6 +6,7 @@ import ciudadano.consciente.dto.DTOUpdateRole;
 import ciudadano.consciente.dto.DTOCreateRole;
 import ciudadano.consciente.dto.DTORole;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -22,6 +23,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "Role Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -42,10 +44,10 @@ public class ResourceRole {
 
   /*
    * Only Ciuco-Admin and O-Divulgator could get and assing Roles.
-   * TODO O-Divulgator cannot assign Ciuco-Admin, Button or Tester Roles, and ONLY
+  // * TODO O-Divulgator cannot assign Ciuco-Admin, Button or Tester Roles, and ONLY
    * in the Organizations that represents
    */
-  @RolesAllowed({ "Ciuco-Admin", "O-Divulgator" })
+  @RolesAllowed({ "Ciuco-Admin", "O-Moderator", "O-Divulgator" })
   @GET
   @Operation(summary = "Retrieve all Roles.")
   @APIResponse(responseCode = "200", description = "Roles successfully retrieved.", content = @Content(schema = @Schema(implementation = DTORole.class)))

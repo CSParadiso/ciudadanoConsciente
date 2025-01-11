@@ -33,12 +33,16 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "Level Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("levels/")
 public class ResourceLevel {
+
+  // TODO: agregar booleano de visibilidad a la entidad
+  // Esto corrobora si se esta disponible o no para los usuarios ajenos a la organizacion
 
   final String PATH_BASE_RESOURCE = "/levels/";
   final String PATH_BASE_RESOURCE_VOTE = "/votes/";
@@ -67,9 +71,13 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+
+  // //@RolesAllowed("Ciuco-Admin")
+  // Hacer endpoint clon del de abajo pero que devuleva todo con @CiucoAdmin
+  // paths/all
+
   @GET
-  @Path("paths")
+  @Path("paths") // TODO Solo debe devolver los visibles
   @Operation(summary = "Retrieve all Levels without parent.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPathWithVotes.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve all Levels. Verify 'Warning' Header.")
@@ -80,7 +88,10 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  // TODO Hacer otro endopoint para recuperar todos, incluso los privados y otro endpoint para las org
+
+  //@RolesAllowed("Ciuco-Admin")
+  // TODO este deberia traer solo los publicos
   @GET
   @Path("{id}")
   @Operation(summary = "Retrieve a  Level by its ID.")
@@ -93,7 +104,10 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+
+  // TODO Hacer otro endopoint para recuperar todos, incluso los privados y otro endpoint para las org
+  // TODO este deberia traer solo los publicos
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Path("{id}/childrens")
   @Operation(summary = "Retrieve all childrens of a Level by its ID.")
@@ -106,7 +120,8 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  // TODO Exige verificacion logica de que el MyO pertecenezcan a la org
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator"})
   @GET
   @Path("organizations/{organizationId}/paths")
   @Operation(summary = "Retrieve all Levels (without a parent) of an Organization by the Organization ID.")
@@ -163,7 +178,8 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin", "L-Moderator", "L-Divulgator"})
+  // TODO Exige verificacion logica de que el user authorizado pertenezca a la org
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator", "L-Divulgator"})
   @POST
   @Operation(summary = "Create a Level.")
   @APIResponse(responseCode = "201", description = "Level successfully created.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
@@ -371,7 +387,7 @@ public class ResourceLevel {
       audit.debug("Admin " + userInfo.getPreferredUserName() + " is trying to assign Role to User " + user + " in " +
               "Level " + level);
     }
-    DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRoleToUserInLevel(idLevel, user, role, userInfo);
+    DTOUserRoleLevel dtoUserRoleLevel = serviceLevel.assignRoleToUserInLevel(idLevel, user, role, userInfo, userRequested);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleLevel.getLevel() +

@@ -8,9 +8,7 @@ import jakarta.persistence.Entity;
         @UniqueConstraint( // Keycloak ID must be unique
                 name = "auth_server_id_key", columnNames = { "auth_server_id" }),
         @UniqueConstraint( // Email must be unique
-                name = "users_email_key", columnNames = { "email" }),
-        @UniqueConstraint( // Username must be unique
-                name = "users_username_key", columnNames = { "username" })
+                name = "users_email_key", columnNames = { "email" })
 })
 //@UserDefinition
 public class User {

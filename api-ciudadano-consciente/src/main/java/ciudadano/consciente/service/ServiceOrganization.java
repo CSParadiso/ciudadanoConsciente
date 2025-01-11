@@ -91,10 +91,10 @@ public class ServiceOrganization {
 
   }
 
-  public List<DTOOrganization> getOrganizationsByUser(Integer userId) {
+  public List<DTOOrganization> getOrganizationsByUser(UserInfo userInfo) {
 
-    audit.debug("Retrieving Organization by User " + userId);
-    User user = accessUser.get(userId)
+    audit.debug("Retrieving Organization by User " + userInfo.getEmail());
+    User user = accessUser.getByEmail(userInfo.getEmail())
             .orElseThrow( ()-> new HttpNoContentException("User not found.") );
 
     List<UserRolOrganization> userRolOrganizations = accessUserRoleOrganization.getByUser(user);
@@ -150,17 +150,10 @@ public class ServiceOrganization {
         .orElseThrow(() -> new HttpNoContentException("Organization not found"));
 
     String email = dtoUpdateOrganization.getEmail();
-    String name = dtoUpdateOrganization.getName();
     String description = dtoUpdateOrganization.getDescription();
-    if (utilityVerifyRequestField.isValidField(name)) {
-      if (accessOrganization.existName(name)) {
-        throw new HttpBadRequestException("The name already exists.");
-      }
-      organization.setName(name);
-    }
 
     if (utilityVerifyRequestField.isValidField(email)) {
-      if (accessOrganization.existEmail(email)) {
+      if ((!organization.getEmail().equals(email)) && accessOrganization.existEmail(email)) {
         throw new HttpBadRequestException("The email already exists.");
       }
       organization.setEmail(email);
@@ -466,6 +459,7 @@ public class ServiceOrganization {
     Role roleToRemove = accessRole.get(idRole)
             .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
+    // Verifica si el rol a borrar es de organizacion
     if(!(roleToRemove.getName().equals("O-Moderator") || roleToRemove.getName().equals("O-Divulgator"))) {
       audit.debugv("Role {0}", roleToRemove.getName());
       audit.warnv("Mismatch: WRONG ATTEMPT TO REMOVE ROLE.");

@@ -7,8 +7,8 @@ public class DTOUpdateOrganization {
     @Schema(defaultValue = "")
     private Integer organizationId;
 
-    @Schema(defaultValue = "")
-    private String name;
+    //@Schema(defaultValue = "")
+    //private String name;
     @Schema(defaultValue = "")
     private String email;
     @Schema(defaultValue = "")
@@ -22,13 +22,13 @@ public class DTOUpdateOrganization {
         this.organizationId = organizationId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
     public String getEmail() {
         return email;

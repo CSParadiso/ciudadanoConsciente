@@ -10,7 +10,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 //@IfBuildProfile("dev")
 //@RegisterRestClient(configKey = "api-keycloak")
-@RegisterRestClient(configKey="desa-api-keycloak")
+@RegisterRestClient(configKey="api-keycloak")
 @OidcClientFilter
 public interface APIKeycloak {
 

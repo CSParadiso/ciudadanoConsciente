@@ -9,7 +9,6 @@ import ciudadano.consciente.mapper.MapperUser;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.User;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
-import io.quarkus.arc.properties.IfBuildProperty;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -69,7 +68,7 @@ public class ServiceUser {
 
     audit.debug("Retrieving User with email " + email + ".");
     User user = accessUser.getByEmail(email)
-        .orElseThrow(() -> new HttpNoContentException("User not found."));
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUser.entityToDto(user);
@@ -113,35 +112,31 @@ public class ServiceUser {
 
   }
 
-  @Deprecated(since = "1.1.0. The only field that can be updated is 'authServerId' if IdentityProvider changes.")
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUser updateUser(Integer id, DTOUpdateUser dtoUpdateUser) {
+  public DTOUser update(Integer id, DTOUpdateUser dtoUpdateUser, UserInfo userInfo) {
+
+    audit.debug("Verifying if user that request the update is the same that the target.");
+    User userResquester = accessUser.getByEmail(userInfo.getEmail())
+                    .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Updating User " + id + ".");
     User user = accessUser.get(id)
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
-    String email = dtoUpdateUser.getEmail();
+    if(userResquester.getUserId() != user.getUserId()) {
+      audit.warnv("User {0} is not allowed to update username of User {1}.",
+              userResquester.getUserId(), user.getUserId());
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to update username of another User.");
+    }
+
     String username = dtoUpdateUser.getUsername();
-    String password = dtoUpdateUser.getPassword();
 
-    if (utilityVerifyRequestField.isValidField(username)) {
-      if (accessUser.existsUsername(username)) {
-        throw new HttpBadRequestException("Username already exists.");
-      }
-      user.setUsername(username);
+    if (accessUser.existsUsername(username)) {
+      throw new HttpBadRequestException("Username already exists.");
     }
 
-    if (utilityVerifyRequestField.isValidField(email)) {
-      if (accessUser.existsEmail(email)) {
-        throw new HttpBadRequestException("Email already exists.");
-      }
-      user.setEmail(email);
-    }
-
-    if (utilityVerifyRequestField.isValidField(password)) {
-      user.setAuthServerId(password);
-    }
+    // Update username
+    user.setUsername(username);
 
     audit.debug("Saving User " + user.getUserId() + ".");
     accessUser.save(user)
@@ -230,7 +225,7 @@ public class ServiceUser {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUser update(Integer id, DTOUpdateUserIdentityProvider dtoUpdateUserIdentityProvider) {
+  public DTOUser migrate(Integer id, DTOMigrateUserIdentityProvider dtoUpdateUserIdentityProvider) {
 
     audit.debug("Updating User " + id + ".");
     User user = accessUser.get(id)

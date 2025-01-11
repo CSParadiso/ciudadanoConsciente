@@ -9,7 +9,7 @@ public class DTOUserRoleLevel {
     private Integer urlId;
 
     @Schema
-    private Integer user;
+    private DTOUser user;
 
     @Schema
     private Integer role;
@@ -25,11 +25,11 @@ public class DTOUserRoleLevel {
         this.urlId = urlId;
     }
 
-    public Integer getUser() {
+    public DTOUser getUser() {
         return user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(DTOUser user) {
         this.user = user;
     }
 

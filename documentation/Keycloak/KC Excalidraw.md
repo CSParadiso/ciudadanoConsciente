@@ -732,7 +732,7 @@ t ^xKPMJSew
 #Keycloak ^FW4ugSKK
 
 ## Element Links
-4714Qhq4: [[KC Configuration]]
+4714Qhq4: [[0. Levantar KC, su DB y crear Reino]]
 
 %%
 ## Drawing

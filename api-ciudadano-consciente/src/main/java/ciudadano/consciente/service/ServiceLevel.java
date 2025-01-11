@@ -14,7 +14,6 @@ import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
-import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -305,28 +304,32 @@ public class ServiceLevel {
   // ROLE HANDLING IN LEVEL
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleLevel assignRoleToUserInLevel(Integer idLevel, Integer idUser, Integer idRole, UserInfo userInfo) {
+  public DTOUserRoleLevel assignRoleToUserInLevel(Integer idLevel, Integer idUser, Integer idRole,
+                                                  UserInfo userInfo, boolean userRequested) {
 
-    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
-    User authorizedUser = accessUser.getByUsername(userInfo.getPreferredUserName())
-            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
-
-    audit.debugv("Verifying if user {0} is authorized to assign role in Level {1}", authorizedUser.getUserId()
-            , idLevel);
     Level level = accessLevel.get(idLevel)
             .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     Role authRole = accessRole.getByName("L-Moderator")
             .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
-    Optional<UserRoleLevel> authCredential = accessUserRoleLevel.get(level.getId(),
-            authorizedUser.getUserId(),
-            authRole.getRoleId());
+    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
+    User authorizedUser = accessUser.getByEmail(userInfo.getEmail())
+            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
 
-    if(authCredential.isEmpty()) {
-      audit.warn("Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
-      throw new AuthDenialSecurityException(
-              "Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
+    if(userRequested) { // If request is not from "Ciuco-Admin"
+      audit.debugv("Verifying if user {0} is authorized to assign role in Level {1}", authorizedUser.getUserId()
+              , idLevel);
+
+      Optional<UserRoleLevel> authCredential = accessUserRoleLevel.get(level.getId(),
+              authorizedUser.getUserId(),
+              authRole.getRoleId());
+
+      if(authCredential.isEmpty()) {
+        audit.warn("Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
+        throw new AuthDenialSecurityException(
+                "Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
+      }
     }
 
     audit.debug("Verify if UserRoleLevel already exists.");

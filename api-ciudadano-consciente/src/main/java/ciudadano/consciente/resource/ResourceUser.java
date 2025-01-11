@@ -1,6 +1,7 @@
 package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceUser;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
@@ -10,6 +11,8 @@ import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -23,6 +26,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
+@Authenticated
 @Tag(name = "User Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
@@ -47,7 +51,8 @@ public class ResourceUser {
   @RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all users.")
-  @APIResponse(responseCode = "200", description = "Users successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "200", description = "Users successfully retrieved.",
+          content = @Content(schema = @Schema(implementation = DTOUser.class)))
   public RestResponse<List<DTOUser>> getAll() {
 
     audit.debug("Getting all Users...");
@@ -55,8 +60,6 @@ public class ResourceUser {
 
   }
 
-  // TODO Quizás O-Divulgator cuando quiera asignar Roles (se puede verificar el
-  // path desde donde viene en el MainFilter)
   @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/{id}/")
@@ -70,8 +73,7 @@ public class ResourceUser {
 
   }
 
-  // TODO Quizás O-Divulgator cuando quiera asignar Roles (se puede verificar el
-  // path desde donde viene en el MainFilter)
+  // TODO: NO SE UTILIZA DESDE EL FRONT
   @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("username/{username}")
@@ -85,9 +87,6 @@ public class ResourceUser {
 
   }
 
-  // TODO Quizás O-Divulgator cuando quiera asignar Roles (se puede verificar el
-  // path desde donde viene en el MainFilter)
-  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("email/{email}")
   @Operation(summary = "Retrieve a specific User by its email address.")
@@ -96,6 +95,16 @@ public class ResourceUser {
   public RestResponse<DTOUser> getByEmailAddress(@PathParam("email") String email) {
 
     audit.debug("Getting User with email address " + email + "...");
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if (userRequested) {
+      audit.debug("User " + userInfo.getEmail() + " is trying to retrieve User with email " + email);
+    } else {
+      audit.debug("Admin " + userInfo.getEmail() + " is trying to retrieve User with email " + email);
+    }
+
     return RestResponse.ResponseBuilder.ok(serviceUser.getByEmail(email)).build();
 
   }
@@ -141,7 +150,6 @@ public class ResourceUser {
 
   // }
 
-  @Authenticated
   @POST
   @Operation(summary = "Create a new User.")
   @APIResponse(responseCode = "201", description = "User successfully created.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
@@ -153,20 +161,20 @@ public class ResourceUser {
 
     String authServerId = userInfo.getSubject();
     //String username = userInfo.getPreferredUserName();
-    String username = userInfo.getName();
+    String name = userInfo.getName();
     String email = userInfo.getEmail();
     if (!utilityVerifyRequestField.isValidField(authServerId) ||
-        !utilityVerifyRequestField.isValidField(username) ||
+        !utilityVerifyRequestField.isValidField(name) ||
         !utilityVerifyRequestField.isValidField(email)) {
-      throw new HttpBadRequestException("Missing mandatory Claims (sub, preferred_username, email) from Access Token.");
+      throw new HttpBadRequestException("Missing mandatory Claims (sub, name, email) from Access Token.");
     }
 
     audit.debug("KC-ID: " + authServerId); // keycloak.user_entity.id
-    audit.debug("KC-PUN: " + username); // keycloak.user_entity.username
+    audit.debug("KC-NAME: " + name); // keycloak.user_entity.name
     audit.debug("KC-EMAIL: " + email); // keycloak.user_entity.email_constraint
 
     audit.debug("Creating User...");
-    DTOUser user = serviceUser.create(authServerId, username, email);
+    DTOUser user = serviceUser.create(authServerId, name, email);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(BASE_PATH_RESOURCE + user.getUserId());
@@ -222,28 +230,61 @@ public class ResourceUser {
 
   @RolesAllowed("Ciuco-Admin")
   @PATCH
+  @Path("migrate/{id}")
+  @Operation(summary = "Migrate Auth Server Identifier of User.")
+  @APIResponse(responseCode = "200", description = "User Auth Id successfully migrate.", content = @Content(schema =
+  @Schema(implementation = DTOUser.class)))
+  @APIResponse(responseCode = "204", description = "Failed to migrate User. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to migrate User. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to migrate User. Verify 'Warning' Header.")
+  public RestResponse<DTOUser> migrate(@PathParam("id") Integer id,
+      DTOMigrateUserIdentityProvider dtoMigrateUserIdentityProvider) {
+
+    if (dtoMigrateUserIdentityProvider == null) {
+      throw new HttpBadRequestException("Body of request required.");
+    }
+
+    String actualAuthServerID = dtoMigrateUserIdentityProvider.getActualAuthServerId();
+    String newAuthServerId = dtoMigrateUserIdentityProvider.getNewAuthServerId();
+    if (!utilityVerifyRequestField.isValidField(actualAuthServerID) &&
+        !utilityVerifyRequestField.isValidField(newAuthServerId)) {
+      throw new HttpBadRequestException("No migrations to make.");
+    }
+
+    audit.debug("Migrating User... " + id + "...");
+    return RestResponse.ResponseBuilder.ok(serviceUser.migrate(id, dtoMigrateUserIdentityProvider)).build();
+
+  }
+
+  @PATCH
   @Path("{id}")
-  @Operation(summary = "Update User.")
-  @APIResponse(responseCode = "200", description = "User successfully updated.", content = @Content(schema = @Schema(implementation = DTOUser.class)))
+  @Operation(summary = "Update a User.")
+  @APIResponse(responseCode = "200", description = "User successfully updated.", content = @Content(schema =
+  @Schema(implementation = DTOUser.class)))
   @APIResponse(responseCode = "204", description = "Failed to update User. Verify 'Warning' Header.")
   @APIResponse(responseCode = "400", description = "Failed to update User. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update User. Verify 'Warning' Header.")
   public RestResponse<DTOUser> update(@PathParam("id") Integer id,
-      DTOUpdateUserIdentityProvider dtoUpdateUserIdentityProvider) {
+                                       DTOUpdateUser dtoUpdateUser) {
 
-    if (dtoUpdateUserIdentityProvider == null) {
+    if (dtoUpdateUser == null) {
       throw new HttpBadRequestException("Body of request required.");
     }
 
-    String actualAuthServerID = dtoUpdateUserIdentityProvider.getActualAuthServerId();
-    String newAuthServerId = dtoUpdateUserIdentityProvider.getNewAuthServerId();
-    if (!utilityVerifyRequestField.isValidField(actualAuthServerID) &&
-        !utilityVerifyRequestField.isValidField(newAuthServerId)) {
-      throw new HttpBadRequestException("No updates to make.");
+    String username = dtoUpdateUser.getUsername();
+    if (!utilityVerifyRequestField.isValidField(username)) {
+      throw new HttpBadRequestException("No update to make.");
     }
 
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (id.compareTo(dtoUpdateUser.getUserId()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same for User.");
+    }
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
     audit.debug("Updating User... " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceUser.update(id, dtoUpdateUserIdentityProvider)).build();
+    return RestResponse.ResponseBuilder.ok(serviceUser.update(id, dtoUpdateUser, userInfo)).build();
 
   }
 

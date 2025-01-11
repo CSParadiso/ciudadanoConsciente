@@ -390,9 +390,20 @@
 - Commit 89088eb:
   - fix: anotaciones removidas y verificaciones instaladas por FEDE.
 
-- Commit :
+- Commit c78ec72:
   - refactor: Añadidas anotaciones de codigo HTTP API RESPONSE a algunos endpoints
+  - docs: Añadidos javadocs y documentación sobre protección de endpoints, vinculaciones de Identity Providers de Keycloak y algo de la estructura del modelo de negocio concerniente a las actividades, versiones, contenidos, etc.
+  - IMAGE BUILD: api-rest-admin-keycloak (1.0.1) y api-ciudadano-consciente (1.2.1)
 
+- Commit :
+  - refactor: modificado el DTOUserRoleOrganization (ahora el campo user retorna el DTO del usuario)
+  - refactor: modificado el DTOUserRoleLevel (ahora el campo user retorna el DTO del usuario)
+  - refactor: modificado el endpoint GET organizations/{id}/users/roles (ahora solo Ciuco y moderador de la ORG puede recuperar los datos)
+  - refactor: eliminada restricción unique en user.username en la DB y en la API
+  - feat: añadido endpoint de modificación de username de usuario (PATCH /users/{id})
+  - refactor: modificado el endpoint GET /organizations/users (ahora solo el propio usuario puede recuperar sus ORG)
+  - refactor: modificado el endpoint PATCH /organizations/update (ahora solo CIUCO y el moderador de la ORG pueden actualizar email y descripcion)
+  - refactor: modificado el endpoint GET /organizations/{id}/votes (ahora solo CIUCO y el moderador de la ORG pueden recuperar los datos)
 --- 
 
 ---
