@@ -7,13 +7,18 @@ public class DTOCreateLevel {
 
     @Schema(required = true, defaultValue = "")
     private String name;
+
     @Schema(required = true, defaultValue = "")
     private String description;
 
     @Schema(required = true, defaultValue = "")
     private Integer organization;
+
     @Schema(required = true, defaultValue = "")
     private Integer parent;
+
+    @Schema
+    private Boolean hidden;
 
     public String getName() {
         return name;
@@ -45,5 +50,13 @@ public class DTOCreateLevel {
 
     public void setParent(Integer parent) {
         this.parent = parent;
+    }
+
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }

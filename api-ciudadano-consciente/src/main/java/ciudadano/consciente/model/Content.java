@@ -3,8 +3,10 @@ package ciudadano.consciente.model;
 import ciudadano.consciente.utility.UtilityFileSystem;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,25 +20,33 @@ public class Content implements Taggable, Votable {
   @Column(name = "content_id")
   private Integer contentId;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "activity_type_version", referencedColumnName = "activity_type_version_id")
   private ActivityTypeVersion activityTypeVersion;
 
+  @NotNull
   @JsonIgnoreProperties(ignoreUnknown = true)
   @JdbcTypeCode(SqlTypes.JSON) // To automatically use the table as jsonb
   @Column(name = "model", columnDefinition = "jsonb")
   private String model;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "creator", referencedColumnName = "user_id")
   private User creator;
 
-  @Column(name = "public")
+  @NotNull
+  @Column(name = "is_public")
   private boolean publicContent;
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "organization", referencedColumnName = "organization_id")
   private Organization organization;
+
+  @NotNull
+  @Length(min = 1, max = 140)
+  private String description;
 
   @Transient
   private List<Image> images;
@@ -51,20 +61,17 @@ public class Content implements Taggable, Votable {
   }
 
   public Content(ActivityTypeVersion activityTypeVersion, String model) {
-
     this.activityTypeVersion = activityTypeVersion;
     this.model = model;
-
   }
 
-  public Content(ActivityTypeVersion activityTypeVersion, String model, User creator, Organization organization, boolean publicContent) {
- 	
+  public Content(ActivityTypeVersion activityTypeVersion, String model, User creator, boolean publicContent, Organization organization, String description) {
     this.activityTypeVersion = activityTypeVersion;
     this.model = model;
     this.creator = creator;
-    this.organization = organization;
     this.publicContent = publicContent;
-
+    this.organization = organization;
+    this.description = description;
   }
 
   public Integer getContentId() {
@@ -75,20 +82,28 @@ public class Content implements Taggable, Votable {
     this.contentId = contentId;
   }
 
-  public ActivityTypeVersion getActivityTypeVersion() {
+  public @NotNull ActivityTypeVersion getActivityTypeVersion() {
     return activityTypeVersion;
   }
 
-  public void setActivityTypeVersion(ActivityTypeVersion activityTypeVersion) {
+  public void setActivityTypeVersion(@NotNull ActivityTypeVersion activityTypeVersion) {
     this.activityTypeVersion = activityTypeVersion;
   }
 
-  public String getModel() {
+  public @NotNull String getModel() {
     return model;
   }
 
-  public void setModel(String model) {
+  public void setModel(@NotNull String model) {
     this.model = model;
+  }
+
+  public void setTags(List<Tag> tags) {
+    this.tags = tags;
+  }
+
+  public void setVotes(List<Vote> votes) {
+    this.votes = votes;
   }
 
   public List<Image> getImages() {
@@ -142,19 +157,19 @@ public class Content implements Taggable, Votable {
 
   }
 
-  public User getCreator() {
+  public @NotNull User getCreator() {
     return creator;
   }
 
-  public void setCreator(User creator) {
+  public void setCreator(@NotNull User creator) {
     this.creator = creator;
   }
 
-  public boolean isPublicContent() {
+  public @NotNull boolean isPublicContent() {
     return publicContent;
   }
 
-  public void setPublicContent(boolean publicContent) {
+  public void setPublicContent(@NotNull boolean publicContent) {
     this.publicContent = publicContent;
   }
 
@@ -164,5 +179,13 @@ public class Content implements Taggable, Votable {
 
   public void setOrganization(Organization organization) {
     this.organization = organization;
+  }
+
+  public @NotNull @Length(min = 1, max = 140) String getDescription() {
+    return description;
+  }
+
+  public void setDescription(@NotNull @Length(min = 1, max = 140) String description) {
+    this.description = description;
   }
 }

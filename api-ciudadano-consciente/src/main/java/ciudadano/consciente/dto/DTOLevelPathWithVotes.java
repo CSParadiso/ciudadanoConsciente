@@ -19,6 +19,9 @@ public class DTOLevelPathWithVotes {
   @Schema
   private Integer votes; // Calculated atribute in DB
 
+  @Schema
+  private Boolean hidden;
+
   public Integer getLevelId() {
     return levelId;
   }
@@ -59,4 +62,11 @@ public class DTOLevelPathWithVotes {
     this.votes = votes;
   }
 
+  public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
 }

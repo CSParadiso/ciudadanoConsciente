@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Comparator;
 
 @ApplicationScoped
 @Path("files")
@@ -213,18 +214,47 @@ public class UtilityFileSystem {
      * It won't work in the model
      */
     public void saveThumbnailToFileSystem(String filename, byte[] file) {
+        //String filePath = fileSystemThumbnailDirectory + File.separator + filename;
 
-        String filePath = fileSystemThumbnailDirectory + File.separator + filename;
+        // Current user
+        String userName = System.getProperty("user.name");
+        audit.debug("Current user: " + userName);
 
-        // Create a FileOutputStream to write the file
-        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+        // Ensure directory exists and has proper permissions
+        java.nio.file.Path path = Paths.get(fileSystemThumbnailDirectory);
 
-            // Converto to .webp
-           file = utilityFileCompression.compress(file);
+        try {
+            // Check if the directory exists, if not, create it
+            if (!Files.exists(path)) {
+                Files.createDirectories(path);
+                audit.debug("Directory created: " + fileSystemThumbnailDirectory);
+            }
 
-            // Write the file content to the output stream
-            outputStream.write(file);
+            // Check if the directory is writable
+            if (!Files.isWritable(path)) {
+                audit.error("No write permission for the directory: " + fileSystemThumbnailDirectory);
+                throw new HttpInternalServerException("No write permission for the directory.");
+            }
+
         } catch (IOException e) {
+            audit.error("Failed to create directory or check permissions: " + fileSystemThumbnailDirectory);
+            throw new HttpInternalServerException("Failed to create directory or check permissions.");
+        }
+
+        // Full file path to save the file
+        java.nio.file.Path fullFilePath = Paths.get(fileSystemThumbnailDirectory, filename);
+
+        try {
+            // Convert the file content to the desired format (e.g., webp)
+            file = utilityFileCompression.compress(file);
+            audit.debug("File converted to webp.");
+
+            // Write the file using NIO's Files.write (this is a more modern and efficient approach)
+            Files.write(fullFilePath, file);
+            audit.debug("Thumbnail saved successfully to: " + fullFilePath);
+
+        } catch (IOException e) {
+            audit.error("Failed to save thumbnail to: " + fullFilePath);
             throw new HttpInternalServerException("Failed to save thumbnail.");
         }
     }
@@ -237,27 +267,72 @@ public class UtilityFileSystem {
     public void saveContentImageToFileSystem(String content, String filename, byte[] file) {
 
         // Construct the directory path
-        File directory = new File(fileSystemContentImageDirectory, content);
+        //File directory = new File(fileSystemContentImageDirectory, content);
 
         // Create the directory if it doesn't exist
-        if (!directory.exists()) {
-            if (!directory.mkdirs()) {
-                throw new HttpInternalServerException("Failed to create directory.");
+        //if (!directory.exists()) {
+        //    if (!directory.mkdirs()) {
+        //        throw new HttpInternalServerException("Failed to create directory.");
+        //    }
+        //}
+
+        //String filePath = directory + File.separator + filename;
+
+        //System.out.println(fileSystemContentImageDirectory);
+        //System.out.println(File.separator);
+        //System.out.println(filename);
+        //System.out.println(filePath);
+        // Create a FileOutputStream to write the file
+        //try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+            // Write the file content to the output stream
+        //    outputStream.write(file);
+        //} catch (IOException e) {
+        //    throw new HttpInternalServerException("Failed to save content image.");
+        //}
+
+        // new
+        //String filePath = fileSystemContentImageDirectory + File.separator + content + File.separator + filename;
+
+        // Current user
+        String userName = System.getProperty("user.name");
+        audit.debug("Current user: " + userName);
+
+        // Ensure directory exists and has proper permissions
+        java.nio.file.Path path = Paths.get(fileSystemContentImageDirectory + File.separator + content);
+
+        try {
+            // Check if the directory exists, if not, create it
+            if (!Files.exists(path)) {
+                Files.createDirectories(path);
+                audit.debug("Directory created: " + fileSystemContentImageDirectory);
             }
+
+            // Check if the directory is writable
+            if (!Files.isWritable(path)) {
+                audit.error("No write permission for the directory: " + fileSystemContentImageDirectory);
+                throw new HttpInternalServerException("No write permission for the directory.");
+            }
+
+        } catch (IOException e) {
+            audit.error("Failed to create directory or check permissions: " + fileSystemContentImageDirectory);
+            throw new HttpInternalServerException("Failed to create directory or check permissions.");
         }
 
-        String filePath = directory + File.separator + filename;
+        // Full file path to save the file
+        java.nio.file.Path fullFilePath = Paths.get(fileSystemContentImageDirectory + File.separator + content, filename);
 
-        System.out.println(fileSystemContentImageDirectory);
-        System.out.println(File.separator);
-        System.out.println(filename);
-        System.out.println(filePath);
-        // Create a FileOutputStream to write the file
-        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
-            // Write the file content to the output stream
-            outputStream.write(file);
+        try {
+            // Convert the file content to the desired format (e.g., webp)
+            file = utilityFileCompression.compress(file);
+            audit.debug("File converted to webp.");
+
+            // Write the file using NIO's Files.write (this is a more modern and efficient approach)
+            Files.write(fullFilePath, file);
+            audit.debug("Content image saved successfully to: " + fullFilePath);
+
         } catch (IOException e) {
-            throw new HttpInternalServerException("Failed to save content image.");
+            audit.error("Failed to save content image to: " + fullFilePath);
+            throw new HttpInternalServerException("Failed to save Content image.");
         }
     }
 
@@ -273,28 +348,44 @@ public class UtilityFileSystem {
     }
 
     public void deleteContentDirectoryFromFileSystem(String content) {
-        // Create a File object representing the image file
-        String filePath = fileSystemContentImageDirectory + File.separator + content;
-        File file = new File(filePath);
+//        // Create a File object representing the image file
+//        String filePath = fileSystemContentImageDirectory + File.separator + content;
+//        File file = new File(filePath);
+//
+//        System.out.println(fileSystemContentImageDirectory);
+//        System.out.println(File.separator);
+//        System.out.println(content);
+//        System.out.println(filePath);
+//
+//        // Check if the file exists before attempting to delete it
+//        if (file.exists()) {
+//            // Attempt to delete the file
+//            boolean deleted = file.delete();
+//
+//            // Check if the deletion was successful
+//            if (!deleted) {
+//                throw new HttpInternalServerException("Failed to delete content directory.");
+//            }
+//        } else {
+//            // If the file does not exist, throw an exception or log a message
+//            throw new HttpInternalServerException("The directory does not exist.");
+//        }
 
-        System.out.println(fileSystemContentImageDirectory);
-        System.out.println(File.separator);
-        System.out.println(content);
-        System.out.println(filePath);
+        java.nio.file.Path directoryPath = Paths.get(fileSystemContentImageDirectory, content);
 
-        // Check if the file exists before attempting to delete it
-        if (file.exists()) {
-            // Attempt to delete the file
-            boolean deleted = file.delete();
-
-            // Check if the deletion was successful
-            if (!deleted) {
-                throw new HttpInternalServerException("Failed to delete content directory.");
+        if (Files.exists(directoryPath)) {
+            try {
+                Files.walk(directoryPath)
+                        .sorted(Comparator.reverseOrder())  // Ensure deletion from deepest files to top-level directory
+                        .map(java.nio.file.Path::toFile)
+                        .forEach(File::delete);  // Delete each file and directory
+            } catch (Exception e) {
+                throw new HttpInternalServerException("The directory does not exist.");
             }
         } else {
-            // If the file does not exist, throw an exception or log a message
             throw new HttpInternalServerException("The directory does not exist.");
         }
+
     }
 
     public void deleteContentImageFromFileSystem(String content, String filename) {

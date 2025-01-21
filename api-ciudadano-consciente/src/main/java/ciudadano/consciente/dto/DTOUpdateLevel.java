@@ -11,13 +11,18 @@ public class DTOUpdateLevel {
 
     @Schema(defaultValue = "")
     private String name;
+
     @Schema(defaultValue = "")
     private String description;
 
-    @Schema(defaultValue = "")
-    private Integer organization;
+    //@Schema(defaultValue = "")
+    //private Integer organization;
+
     @Schema(defaultValue = "")
     private Integer parent;
+
+    @Schema
+    private Boolean hidden;
 
     public Integer getLevelId() {
         return levelId;
@@ -43,13 +48,13 @@ public class DTOUpdateLevel {
         this.description = description;
     }
 
-    public Integer getOrganization() {
-        return organization;
-    }
+    //public Integer getOrganization() {
+    //    return organization;
+    //}
 
-    public void setOrganization(Integer organization) {
-        this.organization = organization;
-    }
+    //public void setOrganization(Integer organization) {
+    //    this.organization = organization;
+    //}
 
     public Integer getParent() {
         return parent;
@@ -57,5 +62,13 @@ public class DTOUpdateLevel {
 
     public void setParent(Integer parent) {
         this.parent = parent;
+    }
+
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }

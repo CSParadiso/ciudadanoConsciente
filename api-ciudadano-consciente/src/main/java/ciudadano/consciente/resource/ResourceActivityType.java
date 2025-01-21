@@ -4,7 +4,9 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceActivityType;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -19,6 +21,7 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 
 import java.net.URI;
+import java.security.Security;
 import java.util.List;
 
 @Authenticated
@@ -40,6 +43,9 @@ public class ResourceActivityType {
 
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
+
+  @Inject
+  SecurityIdentity securityIdentity;
 
   @GET
   @Operation(summary = "Retrieve all Activity Types.")
@@ -71,6 +77,7 @@ public class ResourceActivityType {
 
   }
 
+  // TODO Obtener el creador desde del token
   @POST
   @Operation(summary = "Create an Activity Type.")
   @APIResponse(
@@ -88,15 +95,15 @@ public class ResourceActivityType {
 
     String name = dtoCreateActivityType.getName();
     String description = dtoCreateActivityType.getDescription();
-    Integer creator = dtoCreateActivityType.getCreator();
     if (!utilityVerifyRequestField.isValidField(name) ||
-        !utilityVerifyRequestField.isValidField(description) ||
-        !utilityVerifyRequestField.isValidField(creator)) {
+        !utilityVerifyRequestField.isValidField(description)) {
       throw new HttpBadRequestException("All fields required.");
     }
 
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
     audit.debug("Creating Activity Type...");
-    DTOActivityType activityType = serviceActivityType.create(dtoCreateActivityType);
+    DTOActivityType activityType = serviceActivityType.create(dtoCreateActivityType, userInfo);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(BASE_PATH_RESOURCE + activityType.getActivityTypeId());

@@ -227,7 +227,7 @@ public class ServiceAnswer {
     Activity activity = accessActivity.get(activityDto)
         .orElseThrow(() -> new HttpNoContentException("Activity not found."));
 
-    User user = accessUser.getByUsername(userInfo.getPreferredUserName())
+    User user = accessUser.getByEmail(userInfo.getEmail())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Creating Answer.");

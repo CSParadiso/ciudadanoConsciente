@@ -20,6 +20,9 @@ public class DTOLevelWithChildrens {
     @Schema
     private Integer parent;
 
+    @Schema
+    private Boolean hidden;
+
     public Integer getLevelId() {
         return levelId;
     }
@@ -58,5 +61,13 @@ public class DTOLevelWithChildrens {
 
     public void setParent(Integer parent) {
         this.parent = parent;
+    }
+
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 }

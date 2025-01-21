@@ -20,13 +20,13 @@ import jakarta.persistence.Transient;
 @Table(schema = "app", name = "levels")
 @NamedNativeQueries({
     @NamedNativeQuery(name = "Level.getAllChildrens", query = "WITH RECURSIVE LevelHierarchy AS (\n" +
-        "    SELECT level_id, name, description, organization, parent\n" +
+        "    SELECT level_id, name, description, organization, parent, hidden\n" +
         "    FROM app.levels\n" +
         "    WHERE level_id = :parentLevelId" +
         "\n" +
         "    UNION ALL\n" +
         "\n" +
-        "    SELECT l.level_id, l.name, l.description, l.organization, l.parent\n" +
+        "    SELECT l.level_id, l.name, l.description, l.organization, l.parent, l.hidden\n" +
         "    FROM app.levels l\n" +
         "    INNER JOIN LevelHierarchy lh ON l.parent = lh.level_id\n" +
         ")\n" +
@@ -62,6 +62,8 @@ public class Level implements Taggable, Votable {
   @ManyToOne(fetch = FetchType.EAGER) // or FetchType.EAGER
   @JoinColumn(name = "parent", referencedColumnName = "level_id")
   private Level parent;
+
+  private Boolean hidden;
 
   // private boolean isOrdered; // The childrens of the level are displayed in
   // order in the webapp
@@ -144,4 +146,11 @@ public class Level implements Taggable, Votable {
 
   }
 
+  public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
 }

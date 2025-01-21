@@ -138,7 +138,7 @@ public class ServiceVote {
   public DTOVote voteEntity(UserInfo userInfo, Integer entityTypeId, Integer entityId) {
 
     audit.debug("Retrieving User.");
-    User user = accessUser.getByUsername(userInfo.getPreferredUserName())
+    User user = accessUser.getByEmail(userInfo.getEmail())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Retrieving Entity Type.");
@@ -193,7 +193,7 @@ public class ServiceVote {
         return accessContent.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Content not found."));
       default:
-        throw new HttpNoContentException("Entity Type can't be tagged");
+        throw new HttpNoContentException("Entity Type can't be voted.");
     }
 
   }

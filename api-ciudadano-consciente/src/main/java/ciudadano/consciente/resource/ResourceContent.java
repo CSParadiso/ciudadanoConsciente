@@ -1,23 +1,35 @@
 package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceContent;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
+import io.quarkus.security.jpa.Roles;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.List;
 
@@ -41,7 +53,15 @@ public class ResourceContent {
   @Inject
   ServiceContent serviceContent;
 
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @Inject
+  UtilityAuthVerifier utilityAuthVerifier;
+
+  @RolesAllowed("Ciuco-Admin")
   @GET
+  @Path("all")
   @Operation(summary = "Retrieve all Contents.")
   @APIResponse(
           responseCode = "200",
@@ -51,8 +71,63 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to retrieve all Contents. Verify 'Warning' header.")
   public RestResponse<List<DTOContent>> getAll() {
 
-    audit.debug("Getting all Contents.");
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
     return RestResponse.ResponseBuilder.ok(serviceContent.getAll()).build();
+
+  }
+
+  @GET
+  @Operation(summary = "Retrieve all public Contents.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Public contents successfully retrieved.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
+  @APIResponse(responseCode = "204", description = "Failed to retrieve all public contents. Verify 'Warning' header.")
+  public RestResponse<List<DTOContent>> getAllPublic() {
+
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAllPublic()).build();
+
+  }
+
+  @GET
+  @Path("organizations/{organization}")
+  @Operation(summary = "Retrieve all Contents of Organization.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Contents of Organization successfully retrieved.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
+  @APIResponse(responseCode = "204", description = "Failed to retrieve all Contents. Verify 'Warning' header.")
+  public RestResponse<List<DTOContent>> getByOrganization(@PathParam("organization") Integer organizationId,
+                                                          @QueryParam("public") Boolean isPublic) {
+
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAllByOrganization(organizationId, isPublic, userAuthData)).build();
+
+  }
+
+  @GET
+  @Path("users/{userId}")
+  @Operation(summary = "Retrieve all Contents of a User.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Contents of User successfully retrieved.",
+          content = @Content (schema = @Schema(implementation = DTOContent.class))
+  )
+  @APIResponse(responseCode = "204", description = "Failed to retrieve all Contents. Verify 'Warning' header.")
+  public RestResponse<List<DTOContent>> getByUser(@PathParam("userId") Integer userId,
+                                                  @QueryParam("public") Boolean isPublic) {
+
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAllByUser(userId, isPublic, userAuthData)).build();
 
   }
 
@@ -67,11 +142,13 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Content. Verify 'Warning' header.")
   public RestResponse<DTOContent> get(@PathParam("id") Integer id) {
 
-    audit.debug("Getting Content.");
-    return RestResponse.ResponseBuilder.ok(serviceContent.get(id)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceContent.get(id, userAuthData)).build();
 
   }
 
+  @Authenticated
   @POST
   @Operation(summary = "Create a new Content for a Activity Type Version.")
   @Consumes({ MediaType.MULTIPART_FORM_DATA })
@@ -83,32 +160,13 @@ public class ResourceContent {
   @APIResponse(responseCode = "400", description = "Failed to create Content. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to create Content. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create new Content. Verify 'Warning' Header.")
-  public RestResponse<DTOContent> create(DTOCreateContent dtoCreateContent) {
+  public RestResponse<DTOContent> create(@RequestBody @Valid DTOCreateContent dtoCreateContent) {
 
-    if (dtoCreateContent == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
 
-    audit.debug(dtoCreateContent.getActivityTypeVersionId());
-    Integer activityTypeVersionId = dtoCreateContent.getActivityTypeVersionId();
-    audit.debug("ActivityType: " + activityTypeVersionId);
-    Integer creator = dtoCreateContent.getCreator();
-    audit.debug("Creator " + creator);
-    boolean publicContent = dtoCreateContent.isPublicContent();
-    audit.debug("Public Content?: " + publicContent);
-    byte[] model = dtoCreateContent.getModel();
-    audit.debug("Model: " + model);
-    if (!utilityVerifyRequestField.isValidField(activityTypeVersionId) ||
-        !utilityVerifyRequestField.isValidField(model) ||
-        !utilityVerifyRequestField.isValidField(creator) ||
-        !utilityVerifyRequestField.isValidField(publicContent)) {
-      throw new HttpBadRequestException("Missing require field.");
-    }
+    DTOContent dtoContent = serviceContent.create(dtoCreateContent, userAuthData);
 
-    audit.debug("Creating new Content...");
-    DTOContent dtoContent = serviceContent.create(dtoCreateContent);
-
-    audit.debug("Creating URI for new Activity Type Version");
     URI uri = URI.create(BASE_PATH_RESOURCE + dtoContent.getContentId());
 
     return RestResponse.ResponseBuilder
@@ -131,28 +189,13 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to add Image. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to add Image. Verify 'Warning' Header.")
   // public Response create(DTOCreateContent dtoCreateContent) {
-  public RestResponse<DTOImage> addImageToContent(DTOCreateImage dtoCreateImage) {
+  public RestResponse<DTOImage> addImageToContent(@RequestBody @Valid DTOCreateImage dtoCreateImage) {
 
-    if (dtoCreateImage == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
 
-    Integer content = dtoCreateImage.getContent();
-    audit.debug("Content: " + content);
-    String imageName = dtoCreateImage.getImageName();
-    audit.debug("Image name: " + imageName);
-    byte[] image = dtoCreateImage.getImage();
-    audit.debug("Image: " + image);
-    if (!utilityVerifyRequestField.isValidField(content) ||
-        !utilityVerifyRequestField.isValidField(imageName) ||
-        !utilityVerifyRequestField.isValidField(image)) {
-      throw new HttpBadRequestException("All fields required. (No empty files allowed.)");
-    }
+    DTOImage dtoImage = serviceContent.addImage(dtoCreateImage, userAuthData);
 
-    audit.debug("Adding Image to Content...");
-    DTOImage dtoImage = serviceContent.addImage(dtoCreateImage);
-
-    audit.debug("Creating URI for new Image");
     URI uri = URI.create(BASE_PATH_RESOURCE + dtoImage.getContentId() + "/images/" + dtoImage.getImageId());
 
     return RestResponse.ResponseBuilder
@@ -162,7 +205,6 @@ public class ResourceContent {
 
   }
 
-  // TODO Verificar que sea el creator o el moderador del content que lo modifica
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a specific Content by its ID.")
@@ -172,10 +214,13 @@ public class ResourceContent {
           content = @Content (schema = @Schema(implementation = DTOContent.class))
   )
   @APIResponse(responseCode = "204", description = "Failed to delete Content. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to delete Content. Verify 'Warning' Header.")
   public RestResponse<DTOContent> delete(@PathParam("id") Integer id) {
 
-    audit.debug("Deleting Content " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceContent.delete(id)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceContent.delete(id, userAuthData)).build();
 
   }
 
@@ -188,10 +233,12 @@ public class ResourceContent {
           content = @Content (schema = @Schema(implementation = DTOImage.class))
   )
   @APIResponse(responseCode = "204", description = "Failed to retrieve images. Verify 'Warning' header.")
-  public RestResponse<List<DTOImage>> getAllImage(@PathParam("content") Integer content) {
+  public RestResponse<List<DTOImage>> getAllImages(@PathParam("content") Integer content) {
 
-    audit.debug("Getting all Images from Content.");
-    return RestResponse.ResponseBuilder.ok(serviceContent.getAllImages(content))
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceContent.getAllImages(content, userAuthData))
         .build();
 
   }
@@ -199,14 +246,16 @@ public class ResourceContent {
   @GET
   @Path("{content}/images/{id}")
   @Operation(summary = "Retrieve a Image File from Content.")
-  @Produces({ MediaType.APPLICATION_JSON, "image/png" })
+  @Produces({ "application/json", "image/png" })
   @APIResponse(responseCode = "200", description = "Image successfully retrieved.", content = @Content(mediaType = "image/png"))
   @APIResponse(responseCode = "204", description = "Failed to retrieve image. Verify 'Warning' header.", content = @Content(mediaType = "application.json"))
   public Response getImage(@PathParam("content") Integer content,
       @PathParam("id") Integer image) {
 
-    audit.debug("Getting Image from Content.");
-    Object imageFile = serviceContent.getImage(content, image);
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    Object imageFile = serviceContent.getImage(content, image, userAuthData);
     String type = imageFile != null ? "image/png" : "application/json"; // TODO Corregir esta asignación de respuesta
                                                                         // (anda bien el endpoint pero la documentación
                                                                         // de la respuesta no es correcta)
@@ -223,14 +272,15 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Model file. Verify 'Warning' header.")
   public Response getModel(@PathParam("content") Integer content) {
 
-    audit.debug("Getting Model from Content.");
-    return Response.ok(serviceContent.getModel(content))
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return Response.ok(serviceContent.getModel(content, userAuthData))
         .type("application/json")
         .build();
 
   }
 
-  // TODO Verificar que sea el creator o el moderador del content que lo modifica
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Content.")
@@ -241,26 +291,17 @@ public class ResourceContent {
           content = @Content (schema = @Schema(implementation = DTOContent.class))
   )
   @APIResponse(responseCode = "204", description = "Failed to update Content. Verify 'Warning' header.")
-  public RestResponse<DTOContent> update(@PathParam("id") Integer id, DTOUpdateContent dtoUpdateContent) {
+  public RestResponse<DTOContent> update(@PathParam("id") Integer id,
+                                         @RequestBody @Valid DTOUpdateContent dtoUpdateContent) {
 
-    if (dtoUpdateContent == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
-
-    Integer content = dtoUpdateContent.getContent();
-    byte[] model = dtoUpdateContent.getModel();
-    if (!utilityVerifyRequestField.isValidField(content) &&
-        !utilityVerifyRequestField.isValidField(model)) {
-      throw new HttpBadRequestException("No updates to make.");
-    }
-
-    audit.debug("Verifying if the ID of the Body and the Path are the same...");
     if (id.compareTo(dtoUpdateContent.getContent()) != 0) {
       throw new HttpBadRequestException("Body ID and Path ID must be the same.");
     }
 
-    audit.debug("Updating Content " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceContent.update(id, dtoUpdateContent)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceContent.update(id, dtoUpdateContent, userAuthData)).build();
 
   }
 
@@ -271,20 +312,7 @@ public class ResourceContent {
   @APIResponse(responseCode = "200", description = "Image File updated successfully.")
   @APIResponse(responseCode = "204", description = "Failed to update Image File. Verify 'Warning' header.")
   public Response updateImage(@PathParam("content") Integer contentId, @PathParam("id") Integer imageId,
-      DTOUpdateContentImage dtoUpdateContentImage) {
-
-    if (dtoUpdateContentImage == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
-
-    Integer content = dtoUpdateContentImage.getContent();
-    Integer image = dtoUpdateContentImage.getImage();
-    byte[] imageFile = dtoUpdateContentImage.getImageFile();
-    if (!utilityVerifyRequestField.isValidField(content) &&
-        !utilityVerifyRequestField.isValidField(image) &&
-        !utilityVerifyRequestField.isValidField(imageFile)) {
-      throw new HttpBadRequestException("No updates to make.");
-    }
+      @RequestBody @Valid DTOUpdateContentImage dtoUpdateContentImage) {
 
     audit.debug("Verifying if the ID of the Body and the Path are the same...");
     if (contentId.compareTo(dtoUpdateContentImage.getContent()) != 0 ||
@@ -292,8 +320,10 @@ public class ResourceContent {
       throw new HttpBadRequestException("Body ID and Path ID must be the same.");
     }
 
-    audit.debug("Updating Image " + imageId + " from Content " + contentId + "...");
-    return Response.ok(serviceContent.updateImage(dtoUpdateContentImage)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return Response.ok(serviceContent.updateImage(dtoUpdateContentImage, userAuthData)).build();
 
   }
 
@@ -342,6 +372,7 @@ public class ResourceContent {
 
   }
 
+  @RolesAllowed("Ciuco-Admin")
   @GET
   @Path("/votes")
   @Operation(summary = "Retrieve votes of Contents.")
@@ -349,7 +380,8 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Contents. Verify 'Warning' Header.")
   public RestResponse<List<DTOVotedEntity>> getAllVotes() {
 
-    audit.debug("Getting Contents Votes...");
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
     return RestResponse.ResponseBuilder.ok(serviceContent.getAllVotes()).build();
 
   }
@@ -361,7 +393,8 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Content. Verify 'Warning' Header.")
   public RestResponse<List<DTOVotedEntity>> getVotes(@PathParam("id") Integer id) {
 
-    audit.debug("Getting Content " + id + " Votes...");
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
     return RestResponse.ResponseBuilder.ok(serviceContent.getVotes(id)).build();
 
   }
@@ -373,7 +406,8 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Contents. Verify 'Warning' Header.")
   public RestResponse<List<DTOTaggedEntity>> getAllTags() {
 
-    audit.debug("Getting Contents Tags...");
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
     return RestResponse.ResponseBuilder.ok(serviceContent.getAllTags()).build();
 
   }
@@ -385,9 +419,10 @@ public class ResourceContent {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Tags of Content. Verify 'Warning' Header.")
   public RestResponse<List<DTOTaggedEntity>> getTags(@PathParam("id") Integer id) {
 
-    audit.debug("Getting Content " + id + " Tags...");
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
     return RestResponse.ResponseBuilder.ok(serviceContent.getTags(id)).build();
 
   }
-  
+
 }

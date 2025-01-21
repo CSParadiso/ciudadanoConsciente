@@ -18,7 +18,7 @@ public interface MapperActivityType {
 
     List<DTOActivityType> entityToDto(List<ActivityType> activityTypes);
 
-    @Mapping(target = "creator.userId", source = "creator")
-    ActivityType dtoToEntity(DTOCreateActivityType dtoCreateActivityType);
+    @Mapping(target = "creator", source = "user")
+    ActivityType dtoToEntity(DTOCreateActivityType dtoCreateActivityType, User user);
 
 }

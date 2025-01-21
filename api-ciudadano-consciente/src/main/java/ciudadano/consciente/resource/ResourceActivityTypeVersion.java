@@ -4,7 +4,10 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceActivityTypeVersion;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -14,6 +17,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.RestResponse;
@@ -25,7 +29,7 @@ import java.util.List;
 @Tag(name = "Activity Type Version Resource")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
-@Path("activity-type-version")
+@Path("activity-type-versions")
 public class ResourceActivityTypeVersion {
 
   final String BASE_PATH_RESOURCE = "/activity-type-version/";
@@ -39,6 +43,9 @@ public class ResourceActivityTypeVersion {
 
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
+
+  @Inject
+  SecurityIdentity securityIdentity;
 
   @GET
   @Operation(summary = "Retrieve all Versions (optional: status)")
@@ -60,6 +67,7 @@ public class ResourceActivityTypeVersion {
 
   }
 
+  @SecurityRequirement(name = "Keycloak")
   @GET // This should be in Activity Type
   @Path("activity-type/{activity-type}")
   @Operation(summary = "Retrieve all Versions of a Activity Type.")
@@ -125,6 +133,7 @@ public class ResourceActivityTypeVersion {
 
   }
 
+  @RolesAllowed("default-roles-ciudadano")
   @POST
   @Operation(summary = "Create Activity Type Version. Upload local files.")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -154,6 +163,8 @@ public class ResourceActivityTypeVersion {
         !utilityVerifyRequestField.isValidField(thumbnail)) {
       throw new HttpBadRequestException("All fields required. (No empty files allowed.)");
     }
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
 
     audit.debug("Creating new version...");
     DTOActivityTypeVersion activityTypeVersion = serviceActivityTypeVersion.create(dtoCreateActivityTypeVersion);
@@ -205,7 +216,7 @@ public class ResourceActivityTypeVersion {
     }
 
     audit.debug("Verifying files for new version...");
-    DTOActivityTypeVersion activityTypeVersion = serviceActivityTypeVersion.create(versionServerProvider,
+    DTOActivityTypeVersion activityTypeVersion = serviceActivityTypeVersion.createFromVersionServer(versionServerProvider,
         dtoCreateActivityTypeVersionFromServer);
 
     audit.debug("Creating URI for new Activity Type Version");

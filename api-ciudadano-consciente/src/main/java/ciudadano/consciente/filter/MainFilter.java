@@ -2,8 +2,12 @@ package ciudadano.consciente.filter;
 
 import io.vertx.ext.web.RoutingContext;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.UriInfo;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.server.ServerRequestFilter;
+
+import java.util.stream.Collectors;
 
 public class MainFilter {
 
@@ -20,7 +24,9 @@ public class MainFilter {
 
         // This item allow us to retrieve information related to the request
         // TODO: THINK POSSIBILITIES WITH THIS FEATURE
-        audit.debug("RoutingContext.normalizedPath(): " + routingContext.normalizedPath());
+        //[HTTP_METHOD][ABSOLUTE_URI]
+        audit.infov("[{0}][{1}]", routingContext.request().method(),
+                routingContext.request().absoluteURI());
 
     }
 

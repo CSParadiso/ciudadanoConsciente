@@ -11,9 +11,6 @@ public class DTOCreateActivityType {
     @Schema(defaultValue = "")
     private String description;
 
-    @Schema(defaultValue = "")
-    private Integer creator;
-
     public String getName() {
         return name;
     }
@@ -28,14 +25,6 @@ public class DTOCreateActivityType {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Integer creator) {
-        this.creator = creator;
     }
 
 }

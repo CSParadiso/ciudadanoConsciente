@@ -11,6 +11,7 @@ import ciudadano.consciente.mapper.MapperTaggedEntity;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequestScoped
 public class ServiceConcern {
 
-  final String ENTITY_NAME = "Concern";
+  final String ENTITY_NAME = UtilityMetadataClasses.getTableName(Concern.class);
 
   @Inject
   Logger audit;

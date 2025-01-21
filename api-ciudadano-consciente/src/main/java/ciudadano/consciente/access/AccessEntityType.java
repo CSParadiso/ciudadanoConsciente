@@ -58,4 +58,11 @@ public class AccessEntityType implements PanacheRepositoryBase<EntityType, Integ
 
   }
 
+  public Optional<EntityType> getByClassName(String className) {
+
+    audit.debug("Trying to retrieve class name " + className + ".");
+    return find("className", className).firstResultOptional();
+
+  }
+
 }

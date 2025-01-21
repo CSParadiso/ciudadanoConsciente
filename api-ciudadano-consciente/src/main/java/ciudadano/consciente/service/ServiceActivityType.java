@@ -10,7 +10,9 @@ import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.mapper.MapperActivityType;
+import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -21,7 +23,7 @@ import java.util.List;
 @RequestScoped
 public class ServiceActivityType {
 
-  final String ENTITY_NAME = "ActivityType";
+  final String ENTITY_NAME = UtilityMetadataClasses.getTableName(ActivityType.class);
 
   @Inject
   Logger audit;
@@ -60,22 +62,21 @@ public class ServiceActivityType {
   MapperTaggedEntity mapperTaggedEntity;
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOActivityType create(DTOCreateActivityType dtoCreateActivityType) {
+  public DTOActivityType create(DTOCreateActivityType dtoCreateActivityType, UserInfo userInfo) {
 
     audit.debug("Creating Activity Type.");
     String name = dtoCreateActivityType.getName();
-    Integer creator = dtoCreateActivityType.getCreator();
 
     if (accessActivityType.existsName(name)) {
       throw new HttpBadRequestException("The name of the Activity Type already exists.");
     }
 
     // Verify if user exists
-    accessUser.get(creator)
+    User user = accessUser.getByEmail(userInfo.getEmail())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Mapping DTO into EntityType.");
-    ActivityType activityType = mapperActivityType.dtoToEntity(dtoCreateActivityType);
+    ActivityType activityType = mapperActivityType.dtoToEntity(dtoCreateActivityType, user);
 
     audit.debug("Saving Activity Type " + activityType.getActivityTypeId() + ".");
     accessActivityType.save(activityType)

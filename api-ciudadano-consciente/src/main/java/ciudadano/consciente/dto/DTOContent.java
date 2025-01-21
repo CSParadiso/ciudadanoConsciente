@@ -17,6 +17,8 @@ public class DTOContent {
 
     private boolean publicContent;
 
+    private String description;
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JdbcTypeCode(SqlTypes.JSON) // To automatically use the table as jsonb
     private String model;
@@ -67,5 +69,13 @@ public class DTOContent {
 
     public void setPublicContent(boolean publicContent) {
         this.publicContent = publicContent;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

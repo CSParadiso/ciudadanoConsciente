@@ -18,7 +18,6 @@ public class AccessVotedContent implements PanacheRepositoryBase<VotedContent, I
 
     public List<VotedContent> getAllVotes() {
 
-        audit.debug("Trying to retrieve all Votes.");
         return findAll().stream().toList();
 
     }

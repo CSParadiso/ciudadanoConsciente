@@ -6,6 +6,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @RequestScoped
 public class ServiceOrganization {
 
-  final String ENTITY_NAME = "Organization";
+  final String ENTITY_NAME = UtilityMetadataClasses.getTableName(Organization.class);
 
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;

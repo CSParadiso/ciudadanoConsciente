@@ -41,9 +41,6 @@ import java.util.List;
 @Path("levels/")
 public class ResourceLevel {
 
-  // TODO: agregar booleano de visibilidad a la entidad
-  // Esto corrobora si se esta disponible o no para los usuarios ajenos a la organizacion
-
   final String PATH_BASE_RESOURCE = "/levels/";
   final String PATH_BASE_RESOURCE_VOTE = "/votes/";
 
@@ -75,6 +72,7 @@ public class ResourceLevel {
   // //@RolesAllowed("Ciuco-Admin")
   // Hacer endpoint clon del de abajo pero que devuleva todo con @CiucoAdmin
   // paths/all
+  // ¿Qué pasa si un usuario tiene roles en una Org pero tiene roles de nivel en otra ORG?
 
   @GET
   @Path("paths") // TODO Solo debe devolver los visibles
@@ -120,7 +118,6 @@ public class ResourceLevel {
 
   }
 
-  // TODO Exige verificacion logica de que el MyO pertecenezcan a la org
   @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator"})
   @GET
   @Path("organizations/{organizationId}/paths")
@@ -128,6 +125,33 @@ public class ResourceLevel {
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPathWithVotes.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
   public RestResponse<List<DTOLevelPathWithVotes>> getPathsByOrganization(@PathParam("organizationId") Integer id) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(id))
+                || divulgatorAtOrganization.contains(Json.createValue(id));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("User {0} is not allowed to retrieve paths of Organization {1}.",
+                  userInfo.getEmail(), id);
+          throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve paths of Organization.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("User has no Organizations Roles assigned.");
+        throw new AuthDenialSecurityException("Mismatch: User has no Organization Roles assigned. User Claims doesn't" +
+                " " +
+                "have attribute 'mao' or 'dao'.");
+      }
+
+      audit.debug("User " + userInfo.getEmail() + " is trying to retrieve paths of Organization " + id);
+
+    } else {
+      audit.debug("Admin " + userInfo.getEmail() + " is trying to retrieve paths Organization " + id);
+    }
 
     audit.debug("Getting paths of Organization " + id + "...");
     return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsByOrganization(id)).build();
@@ -151,35 +175,36 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
   @GET
-  @Path("/paths/favorites/users/{userId}")
+  @Path("/paths/favorites/users")
   @Operation(summary = "Retrieve all Paths voted by a specific User.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPath.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
-  public RestResponse<List<DTOLevelPath>> getPathsByUserFavorite(@PathParam("userId") Integer userId) {
+  public RestResponse<List<DTOLevelPath>> getPathsByUserFavorite() {
 
-    audit.debug("Getting favorite paths of User " + userId + "...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsByUserFavorite(userId)).build();
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
+    audit.debug("Getting favorite paths of User " + userInfo.getEmail() + "...");
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsByUserFavorite(userInfo)).build();
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
   @GET
-  @Path("/paths/recently/users/{userId}")
+  @Path("/paths/recently/users")
   @Operation(summary = "Retrieve latest Paths used by a specific User.")
   @APIResponse(responseCode = "200", description = "Levels successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOLevelPathUsedRecentlyByUser.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
   public RestResponse<List<DTOLevelPathUsedRecentlyByUser>> getPathsUsedByUserRecently(
       @PathParam("userId") Integer userId) {
 
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
     audit.debug("Getting favorite paths of User " + userId + "...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsUsedByUserRecently(userId)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsUsedByUserRecently(userInfo)).build();
 
   }
 
-  // TODO Exige verificacion logica de que el user authorizado pertenezca a la org
-  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator", "L-Divulgator"})
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator"})
   @POST
   @Operation(summary = "Create a Level.")
   @APIResponse(responseCode = "201", description = "Level successfully created.", content = @Content(schema = @Schema(implementation = DTOLevel.class)))
@@ -193,10 +218,40 @@ public class ResourceLevel {
 
     String name = dtoCreateLevel.getName();
     Integer organization = dtoCreateLevel.getOrganization();
+    Boolean hidden = dtoCreateLevel.getHidden();
     if (!utilityVerifyRequestField.isValidField(name) ||
-        !utilityVerifyRequestField.isValidField(organization)) {
-      throw new HttpBadRequestException("Name and organization fields required.");
+        !utilityVerifyRequestField.isValidField(organization) ||
+            !utilityVerifyRequestField.isValidField(hidden)) {
+      throw new HttpBadRequestException("Name, organization and visibility fields required.");
     }
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(organization))
+                || divulgatorAtOrganization.contains(Json.createValue(organization));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("User {0} is not allowed to create Levels in Organization {1}.",
+                  userInfo.getEmail(), organization);
+          throw new AuthDenialSecurityException("Mismatch: User is not allowed to create Levels in Organization.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("User has no Organizations Roles assigned.");
+        throw new AuthDenialSecurityException("Mismatch: User has no Organization Roles assigned. User Claims doesn't" +
+                " " +
+                "have attribute 'mao' or 'dao'.");
+      }
+
+      audit.debug("User " + userInfo.getEmail() + " is trying to create Level in Organization " + organization);
+
+    } else {
+      audit.debug("Admin " + userInfo.getEmail() + " is trying to create Level Organization " + organization);
+    }
+
 
     audit.debug("Creating Level...");
     DTOLevel level = serviceLevel.create(dtoCreateLevel);
@@ -211,7 +266,8 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin", "L-Moderator", "L-Divulgator"})
+
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator", "L-Divulgator"})
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Level.")
@@ -231,22 +287,56 @@ public class ResourceLevel {
     }
 
     String name = dtoUpdateLevel.getName();
-    Integer organization = dtoUpdateLevel.getOrganization();
+    //Integer organization = dtoUpdateLevel.getOrganization();
     Integer parent = dtoUpdateLevel.getParent();
     String description = dtoUpdateLevel.getDescription();
     if (!utilityVerifyRequestField.isValidField(name) &&
         !utilityVerifyRequestField.isValidField(parent) &&
-        !utilityVerifyRequestField.isValidField(organization) &&
+        //!utilityVerifyRequestField.isValidField(organization) &&
         !utilityVerifyRequestField.isValidField(description)) {
       throw new HttpBadRequestException("No updates to make.");
     }
 
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        //JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+        //JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+        JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
+        JsonArray divulgatorAtLevel = (JsonArray) userInfo.get("dal");
+        boolean isAuthorizedToAssignRole = //moderatorAtOrganization.contains(Json.createValue(organization))
+                //|| divulgatorAtOrganization.contains(Json.createValue(organization))
+                moderatorAtLevel.contains(Json.createValue(id))
+                || divulgatorAtLevel.contains(Json.createValue(id));
+        if(!isAuthorizedToAssignRole) {
+          audit.warnv("User {0} is not allowed to update Level {1}.",
+                  userInfo.getEmail(), id);
+          //throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Level.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("User has no Level Roles assigned.");
+        //throw new AuthDenialSecurityException("Mismatch: User has no Level Roles assigned. User " +
+        //        "Claims doesn't" +
+        //        " " +
+        //        "have attribute 'mao', 'dao', 'mal' or 'dal'.");
+      }
+
+      audit.debugv("User {0} is trying to update Level {1}.",
+              userInfo.getEmail(), id);
+
+    } else {
+      audit.debugv("Admin {0} is trying to update Level {1}.",
+              userInfo.getEmail(), id);
+    }
+
     audit.debug("Updating Level" + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.update(id, dtoUpdateLevel)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.update(id, dtoUpdateLevel, userInfo)).build();
 
   }
 
-  @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator"})
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a  Level by its ID.")
@@ -254,8 +344,31 @@ public class ResourceLevel {
   @APIResponse(responseCode = "204", description = "Failed to delete Level. Verify 'Warning' Header.")
   public RestResponse<DTOLevel> delete(@PathParam("id") Integer id) {
 
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if(userRequested) { // Si no es CIUCO-ADMIN
+      try {
+        JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
+        boolean isAuthorized = moderatorAtLevel.contains(Json.createValue(id));
+        if (!isAuthorized) {
+          audit.warnv("User {0} is not allowed to delete Level {1}.",
+                  userInfo.getEmail(), id);
+          throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Level.");
+        }
+      } catch (NullPointerException e) {
+        audit.warn("User has no Level Roles assigned.");
+        throw new AuthDenialSecurityException("Mismatch: User has no Level Roles assigned. User " +
+                "Claims doesn't" +
+                " " +
+                "have attribute 'mao', 'dao' or 'mal'.");
+      }
+    } else {
+        audit.debugv("Admin {0} is trying to delete Level {1}.", userInfo.getEmail(), id);
+      }
+
     audit.debug("Deleting Level " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.delete(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.delete(id, userInfo)).build();
 
   }
 
@@ -335,7 +448,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator","L-Moderator"})
   @POST
   @Path("{id}/users/roles") // /{user}/roles/{role}")
   @Operation(summary = "Assign Role to User in Level.")
@@ -455,7 +568,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin", "L-Moderator"})
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator"})
   @DELETE
   @Path("{id}/users/{user}/roles/{role}")
   @Operation(summary = "Delete a Role of a User in a Level.")
@@ -546,7 +659,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin"})
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator"})
   @GET
   @Path("{id}/votes")
   @Operation(summary = "Retrieve votes of a Level.")
@@ -554,8 +667,30 @@ public class ResourceLevel {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of Level. Verify 'Warning' Header.")
   public RestResponse<List<DTOVotedEntity>> getVotes(@PathParam("id") Integer id) {
 
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+
+    if (userRequested) {
+      try {
+        JsonArray moderatorAtLevel = (JsonArray) userInfo.get("mal");
+        boolean isAuthorized = moderatorAtLevel.contains(Json.createValue(id));
+        if(!isAuthorized) {
+          audit.warnv("Moderator {0} is not allowed to retrieve votes in Level {1}.",
+                  userInfo.getPreferredUserName(), id);
+          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to retrieve votes in Level.");
+        }
+      } catch (NullPointerException e){
+        audit.warn("Moderator has no Level assigned.");
+        throw new AuthDenialSecurityException("Mismatch: Moderator has no Level assigned. User Claims doesn't " +
+                "have attribute 'mal'.");
+      }
+      audit.debugv("User {0} is trying to retrieve votes of Level {1}.", userInfo.getPreferredUserName(),id);
+    } else {
+      audit.debugv("Admin {0} is trying to retrieve votes of Level {2}.", userInfo.getPreferredUserName(), id);
+    }
+
     audit.debug("Getting Level " + id + " Votes...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.getVotes(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getVotes(id, userInfo)).build();
 
   }
 

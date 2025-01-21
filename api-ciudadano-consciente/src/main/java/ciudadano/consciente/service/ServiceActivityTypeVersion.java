@@ -12,6 +12,8 @@ import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityFileSignature;
 import ciudadano.consciente.utility.UtilityFileSystem;
+import ciudadano.consciente.utility.UtilityMetadataClasses;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -28,7 +30,7 @@ import java.util.stream.Collectors;
 @RequestScoped
 public class ServiceActivityTypeVersion {
 
-  final String ENTITY_NAME = "ActivityTypeVersion";
+  final String ENTITY_NAME = UtilityMetadataClasses.getTableName(ActivityTypeVersion.class);
 
   @Inject
   Logger audit;
@@ -179,7 +181,7 @@ public class ServiceActivityTypeVersion {
 
   @Deprecated
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOActivityTypeVersion create(String versionServerProvider,
+  public DTOActivityTypeVersion createFromVersionServer(String versionServerProvider,
       DTOCreateActivityTypeVersionFromServer dtoCreateActivityTypeVersionFromServer) {
 
     audit.debug("Retrieving Activity Type.");

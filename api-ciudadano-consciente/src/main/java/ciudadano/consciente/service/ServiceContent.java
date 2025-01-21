@@ -2,16 +2,16 @@ package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.*;
-import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.exception.*;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
-import ciudadano.consciente.utility.UtilityFileSignature;
-import ciudadano.consciente.utility.UtilityFileSystem;
+import ciudadano.consciente.utility.*;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
 import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.DataException;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequestScoped
 public class ServiceContent {
 
-  final String ENTITY_NAME = "Content";
+  final String ENTITY_NAME = UtilityMetadataClasses.getTableName(Content.class);
 
   @Inject
   Logger audit;
@@ -76,6 +76,12 @@ public class ServiceContent {
   @Inject
   MapperTaggedEntity mapperTaggedEntity;
 
+  @Inject
+  UtilityVerifyRequestField utilityVerifyRequestField;
+
+  @Inject
+  AccessActivity accessActivity;
+
   public List<DTOContent> getAll() {
 
     audit.debug("Retrieving all Contents.");
@@ -83,37 +89,87 @@ public class ServiceContent {
 
   }
 
-  public DTOContent get(Integer id) {
+  public List<DTOContent> getAllPublic() {
 
-    audit.debug("Retrieving Content.");
+    audit.debug("Retrieving all public Contents.");
+    return mapperContent.entityToDto(accessContent.getAllPublic());
+
+  }
+
+  public List<DTOContent> getAllByOrganization(Integer organizationId, Boolean isPublic,
+                                               UtilityAuthVerifier.UserAuthData userAuthData) {
+
+    Organization organization = accessOrganization.get(organizationId)
+                    .orElseThrow(()-> new HttpNoContentException("Organization not found."));
+
+    if (isPublic == null && !userAuthData.hasOrgRoles(organization.getOrganizationId())) {
+      isPublic = true;
+    }
+
+    if (isPublic != null && !isPublic && !userAuthData.hasOrgRoles(organization.getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve private Contents of " +
+              "Organization.");
+    }
+
+    return mapperContent.entityToDto(accessContent.getAllByOrganization(organization, isPublic));
+
+  }
+
+  public List<DTOContent> getAllByUser(Integer userId, Boolean isPublic, UtilityAuthVerifier.UserAuthData userAuthData) {
+
+    User userRequester = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+            .orElseThrow(()-> new HttpNoContentException("User not found not found."));
+
+    User user = accessUser.get(userId)
+            .orElseThrow(()-> new HttpNoContentException("User not found not found."));
+
+    boolean selfRequested = userRequester.getAuthServerId() == user.getAuthServerId();
+
+    // If trying to retrieve all, verify if requester is the same user as creator
+    if (isPublic == null && !selfRequested) {
+      isPublic = true;
+    }
+
+    if (isPublic != null && !isPublic && !selfRequested) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve private Contents of another " +
+              "Creator.");
+    }
+
+    return mapperContent.entityToDto(accessContent.getAllByUser(user, isPublic));
+
+  }
+
+  public DTOContent get(Integer id, UtilityAuthVerifier.UserAuthData userAuthData) {
+
     Content content = accessContent.get(id)
-        .orElseThrow(() -> new HttpNoContentException("Content not found."));
+            .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    audit.debug("Mapping Entity into DTO.");
+    // If user is not Ciuco-Admin and content is private
+    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
+
+      // If Content doesn't have ORG, User must be Creator to see private Content
+      if(content.getOrganization() == null) {
+        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+                .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+        // Verify is User is creator of Content
+        if(user.getUserId() != content.getCreator().getUserId()) {
+          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+        }
+        // Verify if User belongs to ORG of Content
+      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Contents of Organization.");
+      }
+
+    }
+
+    //audit.debug("Mapping Entity into DTO.");
     return mapperContent.entityToDto(content);
 
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOContent create(DTOCreateContent dtoCreateContent) {
-
-    audit.debug("Verifying if ActivityTypeVersion exists.");
-    Integer version = dtoCreateContent.getActivityTypeVersionId();
-    ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(version)
-        .orElseThrow(() -> new HttpNoContentException("Activity Type Version not found."));
-
-    if (activityTypeVersion.getActivityTypeVersionStatusId().getTitle().equals("DELETED")) {
-      throw new HttpNoContentException("Activity Type Version has been deleted.");
-    }
-
-    User creator = accessUser.get(dtoCreateContent.getCreator())
-                    .orElseThrow( ()-> new HttpNoContentException("User not found.") );
-
-    Organization organization = null;
-    if(dtoCreateContent.getOrganization() != null) {
-       organization = accessOrganization.get(dtoCreateContent.getOrganization())
-              .orElseThrow( ()-> new HttpNoContentException("Organization not found.") );
-    }
+  public DTOContent create(DTOCreateContent dtoCreateContent, UtilityAuthVerifier.UserAuthData userAuthData) {
 
     audit.debug("Verifying files format.");
     byte[] modelFile = dtoCreateContent.getModel();
@@ -122,9 +178,36 @@ public class ServiceContent {
     }
     // Make it String to allow save it as json
     String model = new String(modelFile);
+    String description = dtoCreateContent.getDescription();
+
+    //audit.debug("Verifying if ActivityTypeVersion exists.");
+    //Integer version = dtoCreateContent.getActivityTypeVersionId();
+    ActivityTypeVersion activityTypeVersion = accessActivityTypeVersion.get(dtoCreateContent.getActivityTypeVersionId())
+        .orElseThrow(() -> new HttpNoContentException("Activity Type Version not found."));
+
+    if (activityTypeVersion.getActivityTypeVersionStatusId().getTitle().equals("DELETED")) {
+      throw new HttpNoContentException("Activity Type Version has been deleted.");
+    }
+
+    User creator = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+                    .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    Organization organization = null;
+    if(dtoCreateContent.getOrganization() != null) {
+
+      organization = accessOrganization.get(dtoCreateContent.getOrganization())
+              .orElseThrow( ()-> new HttpNoContentException("Organization not found.") );
+
+       // If User doesn't have role in ORG
+       if (!userAuthData.hasOrgRoles(organization.getOrganizationId())) {
+         throw new AuthDenialSecurityException("Mismatch: User is not allowed to submit Content to Organization.");
+       }
+
+    }
 
     audit.debug("Creating Content.");
-    Content content = new Content(activityTypeVersion, model, creator, organization, dtoCreateContent.isPublicContent());
+    Content content = new Content(activityTypeVersion, model, creator, dtoCreateContent.isPublicContent(),
+            organization, description);
 
     audit.debug("Saving new Content.");
     try {
@@ -141,49 +224,69 @@ public class ServiceContent {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOContent update(Integer id, DTOUpdateContent dtoUpdateContent) {
+  public DTOContent update(Integer id, DTOUpdateContent dtoUpdateContent, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    Integer contentId = dtoUpdateContent.getContent();
-    byte[] modelFile = dtoUpdateContent.getModel();
-
-    Content content = accessContent.get(contentId)
+    Content content = accessContent.get(dtoUpdateContent.getContent())
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    audit.debug("Verifying file format.");
-    if (!utilityFileSignature.detectFileType(modelFile).equals("json")) {
-      throw new HttpBadRequestException("Model file is not a valid .json file");
+    // If Content doesn't have ORG, User must be Creator to update Content
+    if(content.getOrganization() == null) {
+      User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+              .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+      // Verify is User is creator of Content
+      if(user.getUserId() != content.getCreator().getUserId()) {
+        throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+      }
+      // Verify if User belongs to ORG of Content
+    } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Content of Organization.");
     }
-    // Make it String to allow save it as json
-    String model = new String(modelFile);
 
-    audit.debug("Updating Content " + id);
-    content.setModel(model);
+    byte[] modelFile = dtoUpdateContent.getModel();
+    if (modelFile.length != 0) {
+      if (!utilityFileSignature.detectFileType(modelFile).equals("json")) {
+        throw new HttpBadRequestException("Model file is not a valid .json file");
+      } else {
+        // Make it String to allow save it as json
+        String model = new String(modelFile);
+        content.setModel(model);
+      }
+    }
 
-    audit.debug("Saving updated Content.");
+
+    String description = dtoUpdateContent.getDescription();
+    if(utilityVerifyRequestField.isValidField(description)) {
+      content.setDescription(description);
+    }
+
+    Boolean publicContent = dtoUpdateContent.getPublicContent();
+    if(utilityVerifyRequestField.isValidField(publicContent)) {
+      content.setPublicContent(publicContent);
+    }
+
     try {
       accessContent.save(content)
           .orElseThrow(() -> new HttpInternalServerException("Failed to update Content."));
     } catch (DataException e) {
-      audit.debug("Invalid files uploaded. " + e);
       throw new HttpBadRequestException("Uploaded model file is not correct." + e);
     }
 
-    audit.debug("Mapping Entity into DTO.");
     return mapperContent.entityToDto(content);
 
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOImage addImage(DTOCreateImage dtoCreateImage) {
+  public DTOImage addImage(DTOCreateImage dtoCreateImage, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Verifying if Content exists.");
-    Integer contentId = dtoCreateImage.getContent();
-    Content content = accessContent.get(contentId)
+    //audit.debug("Verifying if Content exists.");
+    //Integer contentId = dtoCreateImage.getContent();
+    Content content = accessContent.get(dtoCreateImage.getContent())
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
     audit.debug("Verifying extension and size of file."); // Todo esto podría ir en FileSystem (incluso la extension de
                                                           // los files allowed)
-    List<String> allowedImagesExtensions = Arrays.asList("png", "webp", "gif", "jpg", "jpeg"); // Allowed images
+    List<String> allowedImagesExtensions = Arrays.asList("png", "gif", "jpg", "jpeg"); // Allowed images
     byte[] imageFile = dtoCreateImage.getImage();
     String fileType = utilityFileSignature.detectFileType(imageFile);
     if (!allowedImagesExtensions.contains(fileType)) {
@@ -192,6 +295,21 @@ public class ServiceContent {
     if (!utilityFileSystem.smallerThanMaxMbAllowed(imageFile.length)) {
       throw new HttpBadRequestException(
           "File size is larger than allowed (" + utilityFileSystem.getImageMaxMbFileSize() + "MB).");
+    }
+
+    // If Content doesn't have ORG, User must be Creator to add Image
+    if(content.getOrganization() == null) {
+      User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+              .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+      // Verify is User is creator of Content
+      if(user.getUserId() != content.getCreator().getUserId()) {
+        throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+      }
+      // Verify if User belongs to ORG of Content
+    } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to submit Image to Content of " +
+              "Organization.");
     }
 
     audit.debug("Mapping DTO into Entity");
@@ -216,13 +334,31 @@ public class ServiceContent {
 
   }
 
-  public Object getImage(Integer contentId, Integer imageId) {
+  public Object getImage(Integer contentId, Integer imageId, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Verifying if Content exists.");
     Content content = accessContent.get(contentId)
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    audit.debug("Verifying if Image exists.");
+    // If user is not Ciuco-Admin and content is private
+    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
+
+      // If Content doesn't have ORG, User must be Creator to retrieve Image of private Content
+      if (content.getOrganization() == null) {
+        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+                .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+        // Verify is User is creator of Content
+        if (user.getUserId() != content.getCreator().getUserId()) {
+          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+        }
+        // Verify if User belongs to ORG of Content
+      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Image of " +
+                "Organization.");
+      }
+
+    }
+
     Image image = accessImage.get(imageId)
         .orElseThrow(() -> new HttpNoContentException("Image not found."));
     // TODO Quizás se deba persistir el nombre compuesto y no normalizado para no
@@ -231,67 +367,124 @@ public class ServiceContent {
 
   }
 
-  public List<DTOImage> getAllImages(Integer contentId) {
+  public List<DTOImage> getAllImages(Integer contentId, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Verifying if Content exists.");
     Content content = accessContent.get(contentId)
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    audit.debug("Verifying if Images exists.");
+    // If user is not Ciuco-Admin and content is private
+    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
+
+      // If Content doesn't have ORG, User must be Creator to retrieve Images of private Content
+      if(content.getOrganization() == null) {
+        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+                .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+        // Verify is User is creator of Content
+        if(user.getUserId() != content.getCreator().getUserId()) {
+          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+        }
+        // Verify if User belongs to ORG of Content
+      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Images of " +
+                "Organization.");
+      }
+
+    }
+
     List<Image> imageList = accessImage.getImageByContent(content);
 
     return mapperImage.dtoToEntity(imageList);
 
   }
 
-  public Object getModel(Integer contentId) {
+  public Object getModel(Integer contentId, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Verifying if Content exists.");
     Content content = accessContent.get(contentId)
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
+
+    // If Content doesn't have ORG, User must be Creator to retrieve Images of private Content
+    if(content.getOrganization() == null) {
+      User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+              .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+      // Verify is User is creator of Content
+      if(user.getUserId() != content.getCreator().getUserId()) {
+        throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+      }
+      // Verify if User belongs to ORG of Content
+    } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Model of " +
+              "Organization.");
+    }
 
     return content.getModel();
 
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOContent delete(Integer id) {
+  public DTOContent delete(Integer id, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Verifying if Content exists.");
     Content content = accessContent.get(id)
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    List<Image> imageList = accessImage.getImageByContent(content);
-    audit.debug("Deleting Content images from File System");
-    for (Image image : imageList) {
+    // If Content doesn't have ORG, User must be Creator to delete Content
+    if(content.getOrganization() == null) {
+      User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+              .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+      // Verify is User is creator of Content
+      if(user.getUserId() != content.getCreator().getUserId()) {
+        throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+      }
+      // Verify if User belongs to ORG of Content
+    } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Content of Organization.");
+    }
+
+    // DB Restriction. If the content is in an Activity, cant be deleted.
+    if(!accessActivity.getByContent(content).isEmpty()) {
+      audit.warn("[Content is currently available in an Activity. Can't be deleted.]");
+      throw new HttpInternalServerException("Content is currently available in an Activity. Can't be deleted.");
+    }
+
+    //audit.debug("Deleting Content " + id + ".");
+    accessContent.remove(content.getContentId());
+
+    if(!accessImage.getImageByContent(content).isEmpty()) {
       utilityFileSystem.deleteContentDirectoryFromFileSystem(content.getContentId().toString());
     }
 
-    audit.debug("Deleting Content " + id + ".");
-    if (!accessContent.remove(content.getContentId())) {
-      throw new HttpInternalServerException("Failed to delete Content");
-    }
-
-    audit.debug("Mapping EntityType into DTO.");
+    //audit.debug("Mapping EntityType into DTO.");
     return mapperContent.entityToDto(content);
 
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public Object updateImage(DTOUpdateContentImage dtoUpdateContentImage) {
+  public Object updateImage(DTOUpdateContentImage dtoUpdateContentImage, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Verifying if Content exists.");
-    Integer contentId = dtoUpdateContentImage.getContent();
-    Content content = accessContent.get(contentId)
+    Content content = accessContent.get(dtoUpdateContentImage.getContent())
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    audit.debug("Verifying if Image exists.");
+    // If Content doesn't have ORG, User must be Creator to update Contents Image
+    if(content.getOrganization() == null) {
+      User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+              .orElseThrow( () -> new HttpNoContentException("User not found."));
+
+      // Verify is User is creator of Content
+      if(user.getUserId() != content.getCreator().getUserId()) {
+        throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+      }
+      // Verify if User belongs to ORG of Content
+    } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Contents Image of Organization.");
+    }
+
     Integer imageId = dtoUpdateContentImage.getImage();
     Image image = accessImage.get(imageId)
         .orElseThrow(() -> new HttpNoContentException("Image not found."));
 
-    audit.debug("Verifying extension and size of file."); // Todo esto podría ir en FileSystem (incluso la extension de
-                                                          // los files allowed)
+    // Todo esto podría ir en FileSystem (incluso la extension de los files allowed)
     List<String> allowedImagesExtensions = Arrays.asList("png", "webp", "gif", "jpg", "jpeg"); // Allowed images
     byte[] imageFile = dtoUpdateContentImage.getImageFile();
     String fileType = utilityFileSignature.detectFileType(imageFile);
@@ -303,12 +496,9 @@ public class ServiceContent {
           "File size is larger than allowed (" + utilityFileSystem.getImageMaxMbFileSize() + "MB).");
     }
 
-    audit.debug("Deleting existing Image.");
     utilityFileSystem.deleteContentImageFromFileSystem(content.getContentId().toString(), image.getImageName());
-    audit.debug("Saving new Image.");
     utilityFileSystem.saveContentImageToFileSystem(content.getContentId().toString(), image.getImageName(), imageFile);
 
-    audit.debug("Mapping Entity into DTO.");
     return mapperImage.entityToDto(image);
 
   }
@@ -347,7 +537,6 @@ public class ServiceContent {
 
   public List<DTOVotedEntity> getAllVotes() {
 
-    audit.debug("Retrieving all votes from Contents.");
     return mapperVotedEntity.votedContentEntityToDto((accessVotedContent.getAllVotes()));
 
   }

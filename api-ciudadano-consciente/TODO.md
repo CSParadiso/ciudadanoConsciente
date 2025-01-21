@@ -395,7 +395,7 @@
   - docs: Añadidos javadocs y documentación sobre protección de endpoints, vinculaciones de Identity Providers de Keycloak y algo de la estructura del modelo de negocio concerniente a las actividades, versiones, contenidos, etc.
   - IMAGE BUILD: api-rest-admin-keycloak (1.0.1) y api-ciudadano-consciente (1.2.1)
 
-- Commit :
+- Commit 4578b84:
   - refactor: modificado el DTOUserRoleOrganization (ahora el campo user retorna el DTO del usuario)
   - refactor: modificado el DTOUserRoleLevel (ahora el campo user retorna el DTO del usuario)
   - refactor: modificado el endpoint GET organizations/{id}/users/roles (ahora solo Ciuco y moderador de la ORG puede recuperar los datos)
@@ -404,6 +404,22 @@
   - refactor: modificado el endpoint GET /organizations/users (ahora solo el propio usuario puede recuperar sus ORG)
   - refactor: modificado el endpoint PATCH /organizations/update (ahora solo CIUCO y el moderador de la ORG pueden actualizar email y descripcion)
   - refactor: modificado el endpoint GET /organizations/{id}/votes (ahora solo CIUCO y el moderador de la ORG pueden recuperar los datos)
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.2)
+
+- Commit : 
+  - feat: añadido campo "hidden" a entidad "Level" con el propósito de identificar si es visible o no el nivel. Añadido en DB y en API
+  - feat: creada clase de Utilidad 'MetadataClasses" con método para recuperar el nombre de la tabla en la DB de la clase
+  - refactor: modificado el endpoint 'levels/organizations/{organizationId}/paths' (ahora solo los usuarios de la ORG a la que pertenece el level pueden acceder)
+  - refactor: modificados los endpoint GET 'paths recientes y favoritos' (Ahora los usuarios acceden con su token).
+  - refactor: modificado el endpoint POST '/levels' (Ahora solo CIUCO y los DyM pueden crear levels en una ORG)
+  - feat: agregado campo 'description' a Content (en la API y en la DB) para poder identificar de que va el contenido.
+  - feat: agregado endpoint GET '/file-name-required/' para selector de campo {filename} en endpoint GET /activity-type-versions/{id}/{filename}
+  - feat: agregada clase utilitaria manejadora de permisos de usuario y loggeo de eventos de peticiones a recursos. (UtilityAuthVerifier.java)
+  - stage: barridos los permisos de la entidad "Content".
+  - feat: añadidas anotaciones de validacion en la clase ResourceContent
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.3)
+
+
 --- 
 
 ---
@@ -423,6 +439,14 @@
 
 ---
 ### CUESTIONES DE DISEÑO
+
+##### Niveles de loggeo
+- La clase MainFilter loggea a nivel de INFO las solicitudes http
+- La clase KCFilter loggea a nivel de INFO los accesos de usuarios
+- La clase UtilityAuthVerifier loggea a nivel de INFO las solicitudes de los usuarios a un recurso y a nivel de WARN si no se pasan las verificaciones
+- El paquete service loggea a nivel de WARN las verificaciones de permisos de usuarios que no se pasan
+
+
 ##### API de ADMIN separada
 - Quizás sea necesario una nueva API de ADMINISTRACIÓN que nuclee los endpoints relacionados a gestion
     - ENDPOINTS DE ENTIDADES NOMINALES: STATUS de ActivityTypeVersion, EntityTypes (Deberían crearse automáticamente)
@@ -666,4 +690,6 @@ Diseñando Subscripción de ActivityType por parte del Dev.
 |POST|votes/{entityTypeId}/{entityId}|Authenticated|x|Vote an Entity.|
 |PATCH|votes/{id}/status|Authenticated|x|Update Status of Vote.|
 |GET|votes/{user}|Authenticated|x|Retrieve votes of a User.|
+
+
 

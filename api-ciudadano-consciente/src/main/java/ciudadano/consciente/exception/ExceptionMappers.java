@@ -16,7 +16,7 @@ public class ExceptionMappers {
   @ServerExceptionMapper
   public RestResponse<DTOException> mapHttpNoContentException(HttpNoContentException x, @Context UriInfo uriInfo) {
 
-    audit.debug("mapHttpNoContentException: " + x.getMessage());
+    audit.errorv("[{0}]", x.getMessage());
     DTOException body = new DTOException();
     body.setStatus(204);
     body.setDetail(x.getMessage());
@@ -29,7 +29,7 @@ public class ExceptionMappers {
   @ServerExceptionMapper
   public RestResponse<DTOException> mapHttpBadRequestException(HttpBadRequestException x, @Context UriInfo uriInfo) {
 
-    audit.debug("mapHttpBadRequestException: " + x.getMessage());
+    audit.errorv("[{0}]", x.getMessage());
     DTOException body = new DTOException();
     body.setStatus(400);
     body.setDetail(x.getMessage());
@@ -43,7 +43,7 @@ public class ExceptionMappers {
   public RestResponse<DTOException> mapHttpInternalServerException(HttpInternalServerException x,
       @Context UriInfo uriInfo) {
 
-    audit.debug("mapHttpInternalServerException: " + x.getMessage());
+    audit.errorv("[{0}]", x.getMessage());
     DTOException body = new DTOException();
     body.setStatus(500);
     body.setDetail(x.getMessage());
@@ -57,7 +57,7 @@ public class ExceptionMappers {
   public RestResponse<DTOException> mapHttpExternalServerException(HttpExternalServerException x,
                                                                    @Context UriInfo uriInfo) {
 
-    audit.debug("mapHttpExternalServerException: " + x.getMessage());
+    audit.errorv("[{0}]", x.getMessage());
     DTOException body = new DTOException();
     body.setStatus(502);
     body.setDetail(x.getMessage());
@@ -71,7 +71,7 @@ public class ExceptionMappers {
   public RestResponse<DTOException> mapAuthDenialSecurityException(AuthDenialSecurityException x,
       @Context UriInfo uriInfo) {
 
-    audit.warn("mapAuthDenialSecurityException: " + x.getMessage());
+    audit.warnv("[{0}]", x.getMessage());
     DTOException body = new DTOException();
     body.setStatus(401);
     body.setDetail(x.getMessage());

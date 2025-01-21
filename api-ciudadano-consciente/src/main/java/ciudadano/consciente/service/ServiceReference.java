@@ -10,6 +10,7 @@ import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.mapper.MapperReference;
+import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequestScoped
 public class ServiceReference {
 
-  final String ENTITY_NAME = "Reference";
+  final String ENTITY_NAME = UtilityMetadataClasses.getTableName(Reference.class);
 
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;

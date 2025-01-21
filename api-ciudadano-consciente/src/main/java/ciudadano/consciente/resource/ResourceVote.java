@@ -121,6 +121,33 @@ public class ResourceVote {
 
   }
 
+  // Vote entity new
+  @Authenticated
+  @POST
+  @Path("entity-types/{entityTypeId}/entities/{entityId}")
+  @Operation(summary = "Vote an Entity.")
+  @APIResponse(responseCode = "201", description = "Vote successfully performed.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
+  @APIResponse(responseCode = "204", description = "Failed to Vote. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "400", description = "Failed to Vote. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to Vote. Verify 'Warning' Header.")
+  public RestResponse<DTOVote> voteEntityNew(@PathParam("entityTypeId") Integer entityTypeId,
+                                          @PathParam("entityId") Integer entityId) {
+
+    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+
+    audit.debug("Votting Entity...");
+    DTOVote dtoVote = serviceVote.voteEntity(userInfo, entityTypeId, entityId);
+
+    audit.debug("Creating URI...");
+    URI uri = URI.create(PATH_BASE_RESOURCE + dtoVote.getVoteId());
+
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, dtoVote)
+            .location(uri)
+            .build();
+
+  }
+
   @Authenticated
   @PATCH
   @Path("{id}/status")

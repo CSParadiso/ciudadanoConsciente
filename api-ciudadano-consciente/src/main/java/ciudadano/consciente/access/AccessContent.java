@@ -2,6 +2,7 @@ package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Content;
 import ciudadano.consciente.model.Organization;
+import ciudadano.consciente.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -35,6 +36,31 @@ public class AccessContent implements PanacheRepositoryBase<Content, Integer> {
 
         audit.debug("Trying to retrieve all Contents.");
         return findAll().stream().toList();
+
+    }
+
+    public List<Content> getAllPublic() {
+
+        audit.debug("Trying to retrieve all Contents.");
+        return find("publicContent", true).stream().toList();
+
+    }
+
+    public List<Content> getAllByOrganization(Organization organization, Boolean isPublic) {
+
+        if (isPublic == null) {
+            return find("organization = ?1", organization).stream().toList();
+        }
+        return find("organization = ?1 and publicContent = ?2", organization, isPublic).stream().toList();
+
+    }
+
+    public List<Content> getAllByUser(User user, Boolean isPublic) {
+
+        if (isPublic == null) {
+            return find("creator = ?1", user).stream().toList();
+        }
+        return find("creator = ?1 and publicContent = ?2", user, isPublic).stream().toList();
 
     }
 

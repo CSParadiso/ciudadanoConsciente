@@ -6,10 +6,16 @@ import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
@@ -20,7 +26,7 @@ import java.util.*;
 @RequestScoped
 public class ServiceLevel {
 
-  final String ENTITY_NAME = "Level";
+  final String ENTITY_NAME = UtilityMetadataClasses.getTableName(Level.class);
 
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
@@ -152,10 +158,10 @@ public class ServiceLevel {
 
   }
 
-  public List<DTOLevelPath> getPathsByUserFavorite(Integer userId) {
+  public List<DTOLevelPath> getPathsByUserFavorite(UserInfo userInfo) {
 
-    audit.debug("Getting User " + userId + ".");
-    User user = accessUser.get(userId)
+    audit.debug("Getting User " + userInfo.getEmail() + ".");
+    User user = accessUser.getByEmail(userInfo.getEmail())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Retrieving entityType");
@@ -182,10 +188,10 @@ public class ServiceLevel {
 
   }
 
-  public List<DTOLevelPathUsedRecentlyByUser> getPathsUsedByUserRecently(Integer userId) {
+  public List<DTOLevelPathUsedRecentlyByUser> getPathsUsedByUserRecently(UserInfo userInfo) {
 
-    audit.debug("Getting User " + userId + ".");
-    User user = accessUser.get(userId)
+    audit.debug("Getting User " + userInfo.getEmail() + ".");
+    User user = accessUser.getByEmail(userInfo.getEmail())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     audit.debug("Retrieving Paths recently used by User.");
@@ -211,9 +217,6 @@ public class ServiceLevel {
   public DTOLevel create(DTOCreateLevel dtoCreateLevel) {
 
     String name = dtoCreateLevel.getName();
-    if (accessLevel.existName(name)) { // TODO Se podría agregar un alias que no sea único, que se usaría en la app.
-      throw new HttpBadRequestException("The name already exists.");
-    }
 
     Integer organizationDto = dtoCreateLevel.getOrganization();
     Organization organization = accessOrganization.get(organizationDto)
@@ -230,7 +233,12 @@ public class ServiceLevel {
 
     String description = dtoCreateLevel.getDescription();
     if (utilityVerifyRequestField.isValidField(description)) {
-      level.setDescription(dtoCreateLevel.getDescription());
+      level.setDescription(description);
+    }
+
+    Boolean hidden = dtoCreateLevel.getHidden();
+    if (utilityVerifyRequestField.isValidField(hidden)) {
+      level.setHidden(hidden);
     }
 
     audit.debug("Saving Level " + level.getLevelId() + ".");
@@ -243,28 +251,30 @@ public class ServiceLevel {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOLevel update(Integer id, DTOUpdateLevel dtoUpdateLevel) {
+  public DTOLevel update(Integer id, DTOUpdateLevel dtoUpdateLevel, UserInfo userInfo) {
 
     audit.debug("Updating Level " + id + ".");
     String name = dtoUpdateLevel.getName();
-    Integer organization = dtoUpdateLevel.getOrganization();
     Integer parent = dtoUpdateLevel.getParent();
     String description = dtoUpdateLevel.getDescription();
+    Boolean hidden = dtoUpdateLevel.getHidden();
 
     Level level = accessLevel.get(id)
         .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
-    if (utilityVerifyRequestField.isValidField(name)) {
-      if (accessLevel.existName(name)) {
-        throw new HttpBadRequestException("The name already exists.");
-      }
-      level.setName(name);
+    JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+    JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+    boolean isAuthorizedToUpdateLevel =
+            moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
+            || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
+    if(!isAuthorizedToUpdateLevel) {
+      audit.warnv("User {0} is not allowed to update Level {1} in Organization {2}",
+              userInfo.getEmail(), id, level.getOrganization().getOrganizationId());
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Level in Organization.");
     }
 
-    if (utilityVerifyRequestField.isValidField(organization)) {
-      Organization organizationEntity = accessOrganization.get(dtoUpdateLevel.getOrganization())
-          .orElseThrow(() -> new HttpNoContentException("Organization not found."));
-      level.setOrganization(organizationEntity);
+    if (utilityVerifyRequestField.isValidField(name)) {
+      level.setName(name);
     }
 
     if (utilityVerifyRequestField.isValidField(parent)) {
@@ -274,6 +284,10 @@ public class ServiceLevel {
 
     if (utilityVerifyRequestField.isValidField(description)) {
       level.setDescription(description);
+    }
+
+    if (utilityVerifyRequestField.isValidField(hidden)) {
+      level.setHidden(hidden);
     }
 
     audit.debug("Saving Level " + level.getLevelId() + ".");
@@ -286,11 +300,22 @@ public class ServiceLevel {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOLevel delete(Integer id) {
+  public DTOLevel delete(Integer id, UserInfo userInfo) {
 
     audit.debug("Deleting Level " + id + ".");
     Level level = accessLevel.get(id)
         .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+    JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+    boolean isAuthorizedToUpdateLevel =
+            moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
+                    || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
+    if(!isAuthorizedToUpdateLevel) {
+      audit.warnv("User {0} is not allowed to delete Level {1} in Organization {2}",
+              userInfo.getEmail(), id, level.getOrganization().getOrganizationId());
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Level in Organization.");
+    }
 
     if (!accessLevel.remove(level.getLevelId())) {
       throw new HttpInternalServerException("Failed to delete Level");
@@ -310,26 +335,21 @@ public class ServiceLevel {
     Level level = accessLevel.get(idLevel)
             .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
-    Role authRole = accessRole.getByName("L-Moderator")
-            .orElseThrow(() -> new HttpNoContentException("Role not found."));
-
-    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
-    User authorizedUser = accessUser.getByEmail(userInfo.getEmail())
-            .orElseThrow(() -> new HttpNoContentException("Authorized User not found."));
-
     if(userRequested) { // If request is not from "Ciuco-Admin"
-      audit.debugv("Verifying if user {0} is authorized to assign role in Level {1}", authorizedUser.getUserId()
+      audit.debugv("Verifying if user {0} is authorized to assign role in Level {1}", userInfo.getEmail()
               , idLevel);
 
-      Optional<UserRoleLevel> authCredential = accessUserRoleLevel.get(level.getId(),
-              authorizedUser.getUserId(),
-              authRole.getRoleId());
-
-      if(authCredential.isEmpty()) {
-        audit.warn("Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
-        throw new AuthDenialSecurityException(
-                "Mismatch: NOT AUTHORIZED TO ASSIGN ROLE IN LEVEL. User Claims doesn't match User data.");
+      JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+      JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+      boolean isAuthorizedToUpdateLevel =
+              moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
+                      || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
+      if(!isAuthorizedToUpdateLevel) {
+        audit.warnv("User {0} is not allowed to delete Level {1} in Organization {2}",
+                userInfo.getEmail(), level.getLevelId(), level.getOrganization().getOrganizationId());
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Level in Organization.");
       }
+
     }
 
     audit.debug("Verify if UserRoleLevel already exists.");
@@ -554,6 +574,21 @@ public class ServiceLevel {
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole, UserInfo userInfo) {
 
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    audit.debugv("Verifying if User {0} has Roles in Organization {1}", userInfo.getEmail(), level.getOrganization().getOrganizationId());
+    JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+    JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+    boolean isAuthorizedToUpdateLevel =
+            moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
+                    || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
+    if(!isAuthorizedToUpdateLevel) {
+      audit.warnv("User {0} is not allowed to delete Level {1} in Organization {2}",
+              userInfo.getEmail(), level.getLevelId(), level.getOrganization().getOrganizationId());
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Level in Organization.");
+    }
+
     Role roleToRemove = accessRole.get(idRole)
             .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
@@ -565,9 +600,6 @@ public class ServiceLevel {
 
     User user = accessUser.get(idUser)
             .orElseThrow(() -> new HttpNoContentException("User not found."));
-
-    Level level = accessLevel.get(idLevel)
-            .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     audit.debug("Verify if UserRoleLevel exists.");
     Optional<UserRoleLevel> userRoleLevel =
@@ -705,10 +737,22 @@ public class ServiceLevel {
 
   }
 
-  public List<DTOVotedEntity> getVotes(Integer id) {
+  public List<DTOVotedEntity> getVotes(Integer id, UserInfo userInfo) {
 
     Level level = accessLevel.get(id)
             .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    audit.debugv("Verifying if User {0} has Roles in Organization {1}", userInfo.getEmail(), level.getOrganization().getOrganizationId());
+    JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
+    JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
+    boolean isAuthorizedToUpdateLevel =
+            moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
+                    || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
+    if(!isAuthorizedToUpdateLevel) {
+      audit.warnv("User {0} is not allowed to delete Level {1} in Organization {2}",
+              userInfo.getEmail(), level.getLevelId(), level.getOrganization().getOrganizationId());
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Level in Organization.");
+    }
 
     return mapperVotedEntity.votedLevelEntityToDto(accessVotedLevel.getVotes(level));
 
@@ -728,6 +772,6 @@ public class ServiceLevel {
 
     return mapperTaggedEntity.taggedLevelEntityToDto(accessTaggedLevel.getTags(level));
 
-  }  
+  }
 
 }
