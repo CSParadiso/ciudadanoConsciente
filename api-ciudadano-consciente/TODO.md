@@ -406,18 +406,24 @@
   - refactor: modificado el endpoint GET /organizations/{id}/votes (ahora solo CIUCO y el moderador de la ORG pueden recuperar los datos)
   - IMAGE BUILD: api-ciudadano-consciente (1.2.2)
 
-- Commit : 
-  - feat: añadido campo "hidden" a entidad "Level" con el propósito de identificar si es visible o no el nivel. Añadido en DB y en API
-  - feat: creada clase de Utilidad 'MetadataClasses" con método para recuperar el nombre de la tabla en la DB de la clase
+- Commit dd15ce7: 
+  - feat: añadido campo 'hidden' a entidad 'Level' con el propósito de identificar si es visible o no el nivel. Añadido en DB y en API
+  - feat: creada clase de Utilidad 'MetadataClasses' con método para recuperar el nombre de la tabla en la DB de la clase
   - refactor: modificado el endpoint 'levels/organizations/{organizationId}/paths' (ahora solo los usuarios de la ORG a la que pertenece el level pueden acceder)
   - refactor: modificados los endpoint GET 'paths recientes y favoritos' (Ahora los usuarios acceden con su token).
   - refactor: modificado el endpoint POST '/levels' (Ahora solo CIUCO y los DyM pueden crear levels en una ORG)
   - feat: agregado campo 'description' a Content (en la API y en la DB) para poder identificar de que va el contenido.
   - feat: agregado endpoint GET '/file-name-required/' para selector de campo {filename} en endpoint GET /activity-type-versions/{id}/{filename}
   - feat: agregada clase utilitaria manejadora de permisos de usuario y loggeo de eventos de peticiones a recursos. (UtilityAuthVerifier.java)
-  - stage: barridos los permisos de la entidad "Content".
+  - stage: barridos los permisos de la entidad 'Content'.
   - feat: añadidas anotaciones de validacion en la clase ResourceContent
   - IMAGE BUILD: api-ciudadano-consciente (1.2.3)
+
+- Commit: 
+  - refactor: corregidos permisos de endpoints de Level.
+  - feat: añadida NamedNativeQuery para UserRoleLevel (verifica permisos hacia arriba)
+  - feat: añadida funcionalidad de envío de correos desde la API.
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.4)
 
 
 --- 

@@ -4,6 +4,7 @@ import ciudadano.consciente.model.*;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import org.jboss.logging.Logger;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public class AccessUserRoleLevel implements PanacheRepositoryBase<UserRoleLevel,
 
   @Inject
   Logger audit;
+
+  @Inject
+  EntityManager entityManager;
 
   public Optional<UserRoleLevel> save(UserRoleLevel userRoleLevel) {
 
@@ -88,5 +92,13 @@ public class AccessUserRoleLevel implements PanacheRepositoryBase<UserRoleLevel,
     return find("user.userId = ?1 and role.roleId = ?2", user.getUserId(), role.getRoleId()).stream().toList();
 
   }
+
+    public List<UserRoleLevel> getAncestorByLevel(Level level) {
+
+      return entityManager.createNamedQuery("URL.getGenealogyByRole")
+              .setParameter("levelId", level.getId())
+              .getResultList();
+
+    }
 
 }

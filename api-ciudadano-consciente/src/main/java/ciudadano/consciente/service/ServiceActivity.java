@@ -19,6 +19,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequestScoped
 public class ServiceActivity {
@@ -128,8 +129,11 @@ public class ServiceActivity {
         if(utilityVerifyRequestField.isValidField(levelDTO)) {
             Level level = accessLevel.get(levelDTO)
                     .orElseThrow( ()-> new HttpNoContentException("Level not found.") );
-            if(accessActivity.getByLevel(level).isEmpty()) {
+            Optional<Activity> activityOfLevel = accessActivity.getByLevel(level);
+            if(activityOfLevel.isEmpty()) {
                 activity.setLevel(level);
+            } else if (activityOfLevel.get().getActivityId() == activity.getActivityId()){
+                // do nothing
             } else {
                 throw new HttpBadRequestException("Level already has an Activity.");
             }

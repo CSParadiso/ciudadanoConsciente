@@ -3,16 +3,23 @@ package ciudadano.consciente.resource;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceAnswer;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.mailer.Mail;
+import io.quarkus.mailer.Mailer;
 import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
+import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import org.eclipse.microprofile.config.inject.ConfigProperties;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -45,6 +52,15 @@ public class ResourceAnswer {
   @Inject
   SecurityIdentity securityIdentity;
 
+  @Inject
+  Mailer mailer;
+
+  @ConfigProperty(name = "quarkus.mailer.from")
+  String emailSender;
+
+  @Inject
+  UtilityAuthVerifier utilityAuthVerifier;
+
   @RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all Answers.")
@@ -52,7 +68,8 @@ public class ResourceAnswer {
   @APIResponse(responseCode = "204", description = "Failed to retrieve all Answers. Verify 'Warning' Header.")
   public RestResponse<List<DTOAnswer>> getAll() {
 
-    audit.debug("Getting all Answers...");
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object() {
+    });
     return RestResponse.ResponseBuilder.ok(serviceAnswer.getAll()).build();
 
   }
@@ -65,20 +82,10 @@ public class ResourceAnswer {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Answers. Verify 'Warning' header.")
   public RestResponse<List<DTOAnswerOfChildrens>> getAllChildrenLevelsAnswers(@PathParam("levelId") Integer levelId) {
 
-    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean roleRequested = !securityIdentity.hasRole("Ciuco-Admin");
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity, new Object() {
+    });
 
-    if (roleRequested) {
-      audit.debug("User " + userInfo.getPreferredUserName() +
-          " with role " + securityIdentity.getRoles() + "is trying to get answers of Level " + levelId
-          + " and his childrens.");
-    } else {
-      audit.info("Admin " + userInfo.getPreferredUserName() +
-          " is trying to get answers of Level " + levelId + " and his childrens.");
-    }
-
-    audit.debug("Retrieving all Children Levels Answers.");
-    return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswers(userInfo, levelId)).build();
+    return RestResponse.ResponseBuilder.ok(serviceAnswer.getAllChildrenLevelsAnswers(levelId, userAuthData)).build();
 
   }
 
@@ -274,5 +281,28 @@ public class ResourceAnswer {
     return RestResponse.ResponseBuilder.ok(serviceAnswer.updateStatus(id, dtoUpdateAnswerStatus)).build();
 
   }
+
+//  @Authenticated
+//  @GET
+//  @Path("mail")
+//  @Operation(summary = "Send all  Answer from User to email.")
+//  @Blocking
+//  public void sendEmail() {
+//
+//    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity, new Object() {
+//    });
+//
+//    audit.debugv("Sending email to {0}", userAuthData.getUserInfo().getEmail());
+//
+//    mailer.send(
+//        Mail.withText(userAuthData.getUserInfo().getEmail(),
+//            "Notificacion personalizada para Fede",
+//            "Hola, Fede. Si has recibido este correo significa que somos capaces de enviar correos desde la API, no solo desde Keycloak. Cuando puedas nos juntamos a ver algunas cositas. Saludos, Saimon.")
+//            // .setFrom(userAuthData.getUserInfo().getPreferredUserName() + "<" +
+//            // emailSender + ">"));
+//            .setFrom("Ciudadano Consciente" + "<" + emailSender + ">"));
+//    ;
+//
+//  }
 
 }

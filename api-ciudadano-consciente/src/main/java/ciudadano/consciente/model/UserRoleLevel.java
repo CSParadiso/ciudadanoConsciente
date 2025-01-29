@@ -2,6 +2,8 @@ package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(schema = "app", name = "users_roles_levels", uniqueConstraints = {
@@ -11,6 +13,9 @@ import jakarta.persistence.Entity;
 }
 )
 @NamedQuery(name = "UserRoleLevel", query = "from UserRoleLevel as u where u.user = :user and u.role = :role and u.level = :level")
+@NamedNativeQuery(name = "URL.getGenealogyByRole", query = "SELECT *\n" +
+        "FROM app.users_roles_levels AS url\n" +
+        "WHERE url.level_id IN (SELECT child FROM app.get_genealogy(:levelId))", resultClass = UserRoleLevel.class)
 public class UserRoleLevel {
 
     //@JoinColumn (nombreEnTablaPropia, nombreEnTablaAjena)
@@ -20,14 +25,17 @@ public class UserRoleLevel {
     @Id
     private Integer urlId;
 
+    @NotNull
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private User user;
 
+    @NotNull
     @JoinColumn(name = "role_id", referencedColumnName = "roles_id")
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Role role;
 
+    @NotNull
     @JoinColumn(name = "level_id", referencedColumnName = "level_id")
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Level level;
@@ -40,27 +48,27 @@ public class UserRoleLevel {
         this.urlId = urlId;
     }
 
-    public User getUser() {
+    public @NotNull User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(@NotNull User user) {
         this.user = user;
     }
 
-    public Role getRole() {
+    public @NotNull Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(@NotNull Role role) {
         this.role = role;
     }
 
-    public Level getLevel() {
+    public @NotNull Level getLevel() {
         return level;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(@NotNull Level level) {
         this.level = level;
     }
 }

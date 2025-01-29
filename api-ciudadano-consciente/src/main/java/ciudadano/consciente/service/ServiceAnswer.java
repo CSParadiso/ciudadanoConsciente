@@ -7,6 +7,7 @@ import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperAnswer;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityAuthVerifier.UserAuthData;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -52,13 +53,12 @@ public class ServiceAnswer {
 
   }
 
-  public List<DTOAnswerOfChildrens> getAllChildrenLevelsAnswers(UserInfo userInfo, Integer levelId) {
+  public List<DTOAnswerOfChildrens> getAllChildrenLevelsAnswers(Integer levelId, UserAuthData userAuthData) {
 
-    audit.debug("Verifying if parent Level exists " + levelId);
     Level level = accessLevel.get(levelId)
         .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
-    User user = accessUser.getByUsername(userInfo.getPreferredUserName())
+    User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     // TODO ESTO ESTÁ HORRIBLE PERO FUNCIONÓ RÁPIDO

@@ -12,6 +12,7 @@ public interface MapperContent {
 
     @Mapping(target = "activityTypeVersionId", source = "activityTypeVersion.activityTypeVersionId")
     @Mapping(target = "creator", source = "creator.userId")
+    @Mapping(target = "username", source = "creator.username")
     @Mapping(target = "organization", source = "organization.organizationId")
     DTOContent entityToDto(Content content);
 

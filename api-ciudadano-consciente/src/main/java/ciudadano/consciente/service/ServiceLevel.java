@@ -6,6 +6,7 @@ import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
@@ -251,7 +252,10 @@ public class ServiceLevel {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOLevel update(Integer id, DTOUpdateLevel dtoUpdateLevel, UserInfo userInfo) {
+  public DTOLevel update(Integer id, DTOUpdateLevel dtoUpdateLevel, UtilityAuthVerifier.UserAuthData userAuthData) {
+
+    Level level = accessLevel.get(id)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
     audit.debug("Updating Level " + id + ".");
     String name = dtoUpdateLevel.getName();
@@ -259,19 +263,23 @@ public class ServiceLevel {
     String description = dtoUpdateLevel.getDescription();
     Boolean hidden = dtoUpdateLevel.getHidden();
 
-    Level level = accessLevel.get(id)
-        .orElseThrow(() -> new HttpNoContentException("Level not found."));
+    User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+            .orElseThrow( () -> new HttpNoContentException("User not found."));
 
-    JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
-    JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
-    boolean isAuthorizedToUpdateLevel =
-            moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
-            || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
-    if(!isAuthorizedToUpdateLevel) {
-      audit.warnv("User {0} is not allowed to update Level {1} in Organization {2}",
-              userInfo.getEmail(), id, level.getOrganization().getOrganizationId());
-      throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Level in Organization.");
+    // Can edit if is :
+      // - Moderator of ORG
+    // Si no lo es, debe ser Divul
+    if (!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Level of Organization.");
     }
+    //boolean isAuthorizedToUpdateLevel =
+    //        moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
+    //        || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
+    //if(!isAuthorizedToUpdateLevel) {
+    //  audit.warnv("User {0} is not allowed to update Level {1} in Organization {2}",
+    //          userInfo.getEmail(), id, level.getOrganization().getOrganizationId());
+    //  throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Level in Organization.");
+    //}
 
     if (utilityVerifyRequestField.isValidField(name)) {
       level.setName(name);
@@ -329,45 +337,46 @@ public class ServiceLevel {
   // ROLE HANDLING IN LEVEL
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleLevel assignRoleToUserInLevel(Integer idLevel, Integer idUser, Integer idRole,
-                                                  UserInfo userInfo, boolean userRequested) {
+  public DTOUserRoleLevel assignRoleToUserInLevel(DTOAssignRoleToUserLevel dtoAssignRoleToUserLevel,
+                                                  UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    Level level = accessLevel.get(idLevel)
-            .orElseThrow(() -> new HttpNoContentException("Level not found."));
-
-    if(userRequested) { // If request is not from "Ciuco-Admin"
-      audit.debugv("Verifying if user {0} is authorized to assign role in Level {1}", userInfo.getEmail()
-              , idLevel);
-
-      JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
-      JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
-      boolean isAuthorizedToUpdateLevel =
-              moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
-                      || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
-      if(!isAuthorizedToUpdateLevel) {
-        audit.warnv("User {0} is not allowed to delete Level {1} in Organization {2}",
-                userInfo.getEmail(), level.getLevelId(), level.getOrganization().getOrganizationId());
-        throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Level in Organization.");
-      }
-
-    }
-
-    audit.debug("Verify if UserRoleLevel already exists.");
-    if (accessUserRoleOrganization.get(idLevel, idUser, idRole).isPresent()) {
-      throw new HttpBadRequestException("UserRoleLevel already exists.");
-    }
-
-    User user = accessUser.get(idUser)
+    User user = accessUser.get(dtoAssignRoleToUserLevel.getUser())
             .orElseThrow(() -> new HttpNoContentException("User not found."));
 
-    Role roleToAssign = accessRole.get(idRole)
+    Role roleToAssign = accessRole.get(dtoAssignRoleToUserLevel.getRole())
             .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
+    Level level = accessLevel.get(dtoAssignRoleToUserLevel.getLevel())
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // Only could assign L-Moderator and L-Divulgator
     if(!(roleToAssign.getName().equals("L-Moderator") || roleToAssign.getName().equals("L-Divulgator"))) {
       audit.debugv("Role {0}", roleToAssign.getName());
       audit.warnv("Mismatch: WRONG ATTEMPT TO ASSIGN ROLE.");
       throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO ASSIGN ROLE.");
     }
+
+    Optional<UserRoleLevel> userRolLevel =
+            accessUserRoleLevel.get(level.getLevelId(), user.getUserId(), roleToAssign.getRoleId());
+    if (userRolLevel.isPresent()) {
+      throw new HttpBadRequestException("UserRoleLevel already exists.");
+    }
+
+    boolean authorizedAsLevelModerator = false;
+    // Has does not have requester ORG Roles, verify if requester is L-Moderator in Level or its parents?
+    if (!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getAncestorByLevel(level);
+      for (UserRoleLevel url : userRoleLevelList) {
+        if(userAuthData.isLevelModerator(url.getLevel().getLevelId())) {
+          authorizedAsLevelModerator = true;
+          break;
+        }
+      }
+      if (!authorizedAsLevelModerator) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to assign Roles in Level.");
+      }
+    }
+
 
     // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
     audit.debug("Trying to assign Role to User tru the Keycloak API.");
@@ -457,6 +466,7 @@ public class ServiceLevel {
 
   }
 
+  @Deprecated
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleLevel updateRoleOfUserInLevel(Integer idLevel, Integer idUser, Integer newRoleId) {
 
@@ -560,7 +570,16 @@ public class ServiceLevel {
 
   }
 
-  public DTOUserRoleLevel getUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole) {
+  public DTOUserRoleLevel getUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole,
+                                           UtilityAuthVerifier.UserAuthData userAuthData) {
+
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // Requester belongs to ORG?
+    if(!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Roles of Organization.");
+    }
 
     audit.debug("Retrieving UserRoleLevel");
     UserRoleLevel userRoleLevel = accessUserRoleLevel.get(idLevel, idUser, idRole)
@@ -572,42 +591,45 @@ public class ServiceLevel {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole, UserInfo userInfo) {
+  public DTOUserRoleLevel deleteUserRoleLevel(Integer idLevel, Integer idUser, Integer idRole,
+                                              UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    Level level = accessLevel.get(idLevel)
-            .orElseThrow(() -> new HttpNoContentException("Level not found."));
-
-    audit.debugv("Verifying if User {0} has Roles in Organization {1}", userInfo.getEmail(), level.getOrganization().getOrganizationId());
-    JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
-    JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
-    boolean isAuthorizedToUpdateLevel =
-            moderatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()))
-                    || divulgatorAtOrganization.contains(Json.createValue(level.getOrganization().getOrganizationId()));
-    if(!isAuthorizedToUpdateLevel) {
-      audit.warnv("User {0} is not allowed to delete Level {1} in Organization {2}",
-              userInfo.getEmail(), level.getLevelId(), level.getOrganization().getOrganizationId());
-      throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Level in Organization.");
+    Optional<UserRoleLevel> userRoleLevel =
+            accessUserRoleLevel.get(idLevel, idUser, idRole);
+    if (userRoleLevel.isEmpty()) {
+      throw new HttpBadRequestException("UserRoleLevel does not exists.");
     }
 
     Role roleToRemove = accessRole.get(idRole)
             .orElseThrow(() -> new HttpNoContentException("Role not found."));
 
+    // Only could remove L-Moderator and L-Divulgator
     if(!(roleToRemove.getName().equals("L-Moderator") || roleToRemove.getName().equals("L-Divulgator"))) {
       audit.debugv("Role {0}", roleToRemove.getName());
       audit.warnv("Mismatch: WRONG ATTEMPT TO REMOVE ROLE.");
       throw new AuthDenialSecurityException("Mismatch: WRONG ATTEMPT TO REMOVE ROLE.");
     }
 
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // Has does not have requester ORG Roles, verify if requester is L-Moderator in Level or its parents?
+    if (!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getAncestorByLevel(level);
+      boolean authorizedAsLevelModerator = false;
+      for (UserRoleLevel url : userRoleLevelList) {
+        if(userAuthData.isLevelModerator(url.getLevel().getLevelId())) {
+          authorizedAsLevelModerator = true;
+          break;
+        }
+      }
+      if (!authorizedAsLevelModerator) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to remove Roles in Level.");
+      }
+    }
+
     User user = accessUser.get(idUser)
             .orElseThrow(() -> new HttpNoContentException("User not found."));
-
-    audit.debug("Verify if UserRoleLevel exists.");
-    Optional<UserRoleLevel> userRoleLevel =
-            accessUserRoleLevel.get(level.getLevelId(), user.getUserId(),
-                    roleToRemove.getRoleId());
-    if (userRoleLevel.isEmpty()) {
-      throw new HttpBadRequestException("UserRoleLevel doesn't exists.");
-    }
 
     // UPDATE KEYCLOAK SERVER (si no se puede actualizar, falla)
     audit.debug("Trying to remove Role from User tru the Keycloak API.");
@@ -634,24 +656,56 @@ public class ServiceLevel {
 
   }
 
-  public DTOUserRoleLevel getRoleInLevelByUser(Integer idLevel, Integer idUser) {
+  public DTOUserRoleLevel getRoleInLevelByUser(Integer idLevel, Integer idUser, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Retrieving Role of User(" + idUser + ") in Level(" + idLevel + ").");
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // Belongs to ORG?
+    if(!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Roles of Organization.");
+    } //else {
+
+    //   if(!userAuthData.isOrgModerator(level.getOrganization().getOrganizationId())) {
+    //      if(!userAuthData.isLevelModerator(level.getLevelId())) {
+    //         throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Roles of Level.");
+//        }
+//      }
+
+    //userRoleLevelList = accessUserRoleLevel.getByLevel(level);
+
+    //
+    //
+
     UserRoleLevel userRoleLevel = accessUserRoleLevel.getByLevelAndUser(idLevel, idUser)
             .orElseThrow( ()-> new HttpNoContentException("User don't have Roles in Level."));
 
-    audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevel);
 
   }
 
-  public List<DTOUserRoleLevel> getAllUsersWithRoleByLevel(Integer idLevel) {
+  public List<DTOUserRoleLevel> getAllUsersWithRoleByLevel(Integer idLevel, UtilityAuthVerifier.UserAuthData userAuthData) {
 
     Level level = accessLevel.get(idLevel)
         .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
-    audit.debug("Retrieving all Users with Roles in Level(" + idLevel + ").");
-    List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevel(level);
+    // Belongs to ORG?
+    if(!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Roles of Organization.");
+    } //else {
+
+   //   if(!userAuthData.isOrgModerator(level.getOrganization().getOrganizationId())) {
+  //      if(!userAuthData.isLevelModerator(level.getLevelId())) {
+ //         throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Roles of Level.");
+//        }
+//      }
+
+      //userRoleLevelList = accessUserRoleLevel.getByLevel(level);
+
+      //
+      //
+
+    List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getAncestorByLevel(level);
 
     if (userRoleLevelList.isEmpty()) {
       throw new HttpNoContentException("Level without Roles assigned.");
@@ -662,16 +716,23 @@ public class ServiceLevel {
 
   }
 
-  public List<DTOUserRoleLevel> getAllUsersWithRoleInLevel(Integer idLevel, Integer idRole) {
+  public List<DTOUserRoleLevel> getAllUsersWithRoleInLevel(Integer idLevel, Integer idRole,
+                                                           UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Retrieving all Users with Role(" + idRole + ") in Level(" + idLevel + ").");
+    Level level = accessLevel.get(idLevel)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // Belongs to ORG?
+    if(!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Roles of Organization.");
+    }
+
     List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getByLevelAndRole(idLevel, idRole);
 
     if (userRoleLevelList.isEmpty()) {
       throw new HttpNoContentException("Role don't have Users in Level.");
     }
 
-    audit.debug("Mapping EntityType into DTO.");
     return mapperUserRoleLevel.entityToDto(userRoleLevelList);
 
   }

@@ -13,6 +13,8 @@ public class DTOContent {
 
     private Integer creator;
 
+    private String username;
+
     private Integer organization;
 
     private boolean publicContent;
@@ -53,6 +55,14 @@ public class DTOContent {
 
     public void setCreator(Integer creator) {
         this.creator = creator;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getOrganization() {

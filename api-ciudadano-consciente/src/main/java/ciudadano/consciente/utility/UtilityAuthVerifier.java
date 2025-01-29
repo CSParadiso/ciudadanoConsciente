@@ -109,26 +109,82 @@ public class UtilityAuthVerifier {
         public boolean isCiucoAdmin() {
             return roles.contains("Ciuco-Admin");
         }
+        public boolean isOrgModerator() {
+            return roles.contains("O-Moderator");
+        }
+        public boolean isOrgDivulgator() {
+            return roles.contains("O-Divulgator");
+        }
+        public boolean isLevelModerator() {
+            return roles.contains("L-Moderator");
+        }
+        public boolean isLevelDivulgator() {
+            return roles.contains("L-Divulgator");
+        }
 
-        public boolean hasOrgRoles(Integer organizationId) {
-
-            boolean isAuthorized;
-            boolean authorizedAsModerator = false, authorizedAsDivulgator = false;
-
+        public boolean isOrgModerator(Integer organizationId) {
+            boolean authorizedAsModerator = false;
             try {
                 authorizedAsModerator =
                         this.getMao().contains(Json.createValue(organizationId));
-            } catch (NullPointerException ignored) {}
+            } catch (NullPointerException e) {
+                audit.warnv("[USER AUTH MISMATCH: User {0} is not allowed to " +
+                                "retrieve data of Organization {1} ('mao': {2}).]",
+                        userInfo.getEmail(), organizationId, authorizedAsModerator);
+            }
 
+            return authorizedAsModerator;
+        }
+
+        public boolean isOrgDivulgator(Integer organizationId) {
+            boolean authorizedAsDivulgator = false;
             try {
-                authorizedAsDivulgator = this.getDao().contains(Json.createValue(organizationId));
-            } catch (NullPointerException ignored) {}
+                authorizedAsDivulgator =
+                        this.getDao().contains(Json.createValue(organizationId));
+            } catch (NullPointerException e) {
+                audit.warnv("[USER AUTH MISMATCH: User {0} is not allowed to " +
+                                "retrieve data of Organization {1} ('dao': {2}).]",
+                        userInfo.getEmail(), organizationId, authorizedAsDivulgator);
+            }
 
-            isAuthorized = authorizedAsModerator || authorizedAsDivulgator;
-            if (!isAuthorized) audit.warnv("[USER AUTH MISMATCH: User {0} is not allowed to " +
-                            "retrieve data of Organization {1} ('mao': {2} and 'dao':{3}).]",
-                    userInfo.getEmail(), organizationId, authorizedAsModerator, authorizedAsDivulgator);
-            return isAuthorized;
+            return authorizedAsDivulgator;
+        }
+
+        public boolean isLevelModerator(Integer levelId) {
+            boolean authorizedAsModerator = false;
+            try {
+                authorizedAsModerator =
+                        this.getMal().contains(Json.createValue(levelId));
+            } catch (NullPointerException e) {
+                audit.warnv("[USER AUTH MISMATCH: User {0} is not allowed to " +
+                                "retrieve data of Level {1} ('mal': {2}).]",
+                        userInfo.getEmail(), levelId, authorizedAsModerator);
+            }
+
+            return authorizedAsModerator;
+        }
+        public boolean isLevelDivulgator(Integer levelId) {
+            boolean authorizedAsDivulgator = false;
+            try {
+                authorizedAsDivulgator =
+                        this.getDal().contains(Json.createValue(levelId));
+            } catch (NullPointerException e) {
+                audit.warnv("[USER AUTH MISMATCH: User {0} is not allowed to " +
+                                "retrieve data of Level {1} ('dao': {2}).]",
+                        userInfo.getEmail(), levelId, authorizedAsDivulgator);
+            }
+
+            return authorizedAsDivulgator;
+        }
+
+        public boolean hasOrgRoles(Integer organizationId) {
+            audit.debugv("Es moderador de Organizacion: {0}", isOrgModerator(organizationId) || isOrgDivulgator(organizationId));
+            return isOrgModerator(organizationId) || isOrgDivulgator(organizationId);
+        }
+
+        public boolean hasLevelRoles(Integer levelId) {
+
+            return isLevelModerator(levelId) || isLevelDivulgator(levelId);
         }
 
     }

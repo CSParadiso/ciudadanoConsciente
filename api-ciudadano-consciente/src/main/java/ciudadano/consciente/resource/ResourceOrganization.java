@@ -5,6 +5,7 @@ import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
@@ -16,11 +17,13 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonNumber;
 import jakarta.json.JsonValue;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
@@ -56,7 +59,10 @@ public class ResourceOrganization {
   @Inject
   SecurityIdentity securityIdentity;
 
-  @RolesAllowed("Ciuco-Admin")
+  @Inject
+  UtilityAuthVerifier utilityAuthVerifier;
+
+  //@RolesAllowed("Ciuco-Admin")
   @GET
   @Operation(summary = "Retrieve all Organizations.")
   @APIResponse(responseCode = "200", description = "Organizations retrieved successfully.", content = @Content(schema = @Schema(implementation = DTOOrganization.class)))
@@ -95,31 +101,21 @@ public class ResourceOrganization {
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  //@RolesAllowed("Ciuco-Admin")
   @POST
   @Operation(summary = "Create a new Organization.")
   @APIResponse(responseCode = "201", description = "Organization successfully created.", content = @Content(schema = @Schema(implementation = DTOOrganization.class)))
   @APIResponse(responseCode = "204", description = "Organization successfully created.", content = @Content(schema =
   @Schema(implementation = DTOOrganization.class)))
   @APIResponse(responseCode = "400", description = "Failed to create new Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "403", description = "Failed to create new Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create new Organization. Verify 'Warning' Header.")
-  public RestResponse<DTOOrganization> create(DTOCreateOrganization dtoCreateOrganization) {
+  public RestResponse<DTOOrganization> create(@RequestBody @Valid DTOCreateOrganization dtoCreateOrganization) {
 
-    if (dtoCreateOrganization == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
 
-    String email = dtoCreateOrganization.getEmail();
-    String name = dtoCreateOrganization.getName();
-    if (!utilityVerifyRequestField.isValidField(email) ||
-        !utilityVerifyRequestField.isValidField(name)) {
-      throw new HttpBadRequestException("Email and name required.");
-    }
-
-    audit.debug("Creating Organization...");
     DTOOrganization organization = serviceOrganization.create(dtoCreateOrganization);
 
-    audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + organization.getOrganizationId());
 
     return RestResponse.ResponseBuilder

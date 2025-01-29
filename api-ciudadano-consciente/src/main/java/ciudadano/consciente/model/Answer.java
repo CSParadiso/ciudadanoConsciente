@@ -2,97 +2,102 @@ package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.OffsetDateTime;
 
 @Entity
 @Table(schema = "app", name = "answers")
 @NamedNativeQueries({
-        @NamedNativeQuery(name = "Answer.getAllChildrenLevelsAnswers",
-                query = "WITH RECURSIVE LevelHierarchy AS " +
-                        "(SELECT level_id, parent FROM app.levels WHERE level_id = :parentLevelId UNION ALL " +
-                        "SELECT l.level_id, l.parent FROM app.levels l INNER JOIN " +
-                        "LevelHierarchy lh ON l.parent = lh.level_id) " +
-                        "SELECT LevelHierarchy.level_id, LevelHierarchy.parent as parent_id, ac.activity_id, ac.content as content_id," +
-                        " s.answer_id, s.user_id, s.created, s.status FROM LevelHierarchy join " +
-                        "app.activities ac on (ac.level_id = LevelHierarchy.level_id) inner join " +
-                        "app.answers s on (s.activity = ac.activity_id);"),
-        @NamedNativeQuery(name = "Answer.getAllChildrenLevelsAnswersOfUser",
-                query = "WITH RECURSIVE LevelHierarchy AS " +
-                        "(SELECT level_id, parent FROM app.levels WHERE level_id = :parentLevelId UNION ALL" +
-                        "                        SELECT l.level_id, l.parent FROM app.levels l INNER JOIN" +
-                        "                        LevelHierarchy lh ON l.parent = lh.level_id)  " +
-                        "                        SELECT LevelHierarchy.level_id, LevelHierarchy.parent as parent_id, ac.activity_id, ac.content as content_id," +
-                        "                        s.answer_id, s.user_id, s.created, s.status FROM LevelHierarchy join" +
-                        "                        app.activities ac on (ac.level_id = LevelHierarchy.level_id) inner join" +
-                        "                        app.answers s on (s.activity = ac.activity_id and s.user_id = :userId);")
+    @NamedNativeQuery(name = "Answer.getAllChildrenLevelsAnswers", query = "WITH RECURSIVE LevelHierarchy AS " +
+        "(SELECT level_id, parent FROM app.levels WHERE level_id = :parentLevelId UNION ALL " +
+        "SELECT l.level_id, l.parent FROM app.levels l INNER JOIN " +
+        "LevelHierarchy lh ON l.parent = lh.level_id) " +
+        "SELECT LevelHierarchy.level_id, LevelHierarchy.parent as parent_id, ac.activity_id, ac.content as content_id,"
+        +
+        " s.answer_id, s.user_id, s.created, s.status FROM LevelHierarchy join " +
+        "app.activities ac on (ac.level_id = LevelHierarchy.level_id) inner join " +
+        "app.answers s on (s.activity = ac.activity_id);"),
+    @NamedNativeQuery(name = "Answer.getAllChildrenLevelsAnswersOfUser", query = "WITH RECURSIVE LevelHierarchy AS " +
+        "(SELECT level_id, parent FROM app.levels WHERE level_id = :parentLevelId UNION ALL" +
+        "                        SELECT l.level_id, l.parent FROM app.levels l INNER JOIN" +
+        "                        LevelHierarchy lh ON l.parent = lh.level_id)  " +
+        "                        SELECT LevelHierarchy.level_id, LevelHierarchy.parent as parent_id, ac.activity_id, ac.content as content_id,"
+        +
+        "                        s.answer_id, s.user_id, s.created, s.status FROM LevelHierarchy join" +
+        "                        app.activities ac on (ac.level_id = LevelHierarchy.level_id) inner join" +
+        "                        app.answers s on (s.activity = ac.activity_id and s.user_id = :userId);")
 })
 public class Answer {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    @Column(name = "answer_id")
-    private Integer answerId;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @Column(name = "answer_id")
+  private Integer answerId;
 
-    private OffsetDateTime created;
+  private OffsetDateTime created;
 
-    // @JoinColumn(nombreClaveForanea en Modelo, nombreClavePrimaria en BD)
-    @OneToOne
-    @JoinColumn(name = "activity", referencedColumnName = "activity_id")
-    private Activity activity;
+  // @JoinColumn(nombreClaveForanea en Modelo, nombreClavePrimaria en BD)
+  @NotNull(message = "Activity cannot be null.")
+  @OneToOne
+  @JoinColumn(name = "activity", referencedColumnName = "activity_id")
+  private Activity activity;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User userId;
+  @NotNull(message = "User cannot be null.")
+  @OneToOne
+  @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+  private User userId;
 
-    private Boolean status;
+  @NotNull(message = "Status cannot be null.")
+  private Boolean status;
 
-    public Answer() {}
+  public Answer() {
+  }
 
-    public Answer(Activity activity, User userId, Boolean status) {
-        this.activity = activity;
-        this.userId = userId;
-        this.status = status;
-        this.created = OffsetDateTime.now();
-    }
+  public Answer(Activity activity, User userId, Boolean status) {
+    this.activity = activity;
+    this.userId = userId;
+    this.status = status;
+    this.created = OffsetDateTime.now();
+  }
 
-    public Integer getAnswerId() {
-        return answerId;
-    }
+  public Integer getAnswerId() {
+    return answerId;
+  }
 
-    public void setAnswerId(Integer answerId) {
-        this.answerId = answerId;
-    }
+  public void setAnswerId(Integer answerId) {
+    this.answerId = answerId;
+  }
 
-    public OffsetDateTime getCreated() {
-        return created;
-    }
+  public OffsetDateTime getCreated() {
+    return created;
+  }
 
-    public void setCreated(OffsetDateTime created) {
-        this.created = created;
-    }
+  public void setCreated(OffsetDateTime created) {
+    this.created = created;
+  }
 
-    public Activity getActivity() {
-        return activity;
-    }
+  public @NotNull(message = "Activity cannot be null.") Activity getActivity() {
+    return activity;
+  }
 
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
+  public void setActivity(@NotNull(message = "Activity cannot be null.") Activity activity) {
+    this.activity = activity;
+  }
 
-    public User getUserId() {
-        return userId;
-    }
+  public @NotNull(message = "User cannot be null.") User getUserId() {
+    return userId;
+  }
 
-    public void setUserId(User userId) {
-        this.userId = userId;
-    }
+  public void setUserId(@NotNull(message = "User cannot be null.") User userId) {
+    this.userId = userId;
+  }
 
-    public Boolean getStatus() {
-        return status;
-    }
+  public @NotNull(message = "Status cannot be null.") Boolean getStatus() {
+    return status;
+  }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
+  public void setStatus(@NotNull(message = "Status cannot be null.") Boolean status) {
+    this.status = status;
+  }
 }
