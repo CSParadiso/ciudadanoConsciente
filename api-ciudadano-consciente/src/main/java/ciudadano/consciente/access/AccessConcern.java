@@ -2,11 +2,13 @@ package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Concern;
 import ciudadano.consciente.model.Organization;
+import ciudadano.consciente.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,4 +46,11 @@ public class AccessConcern implements PanacheRepositoryBase<Concern, Integer> {
         return deleteById(concernId);
 
     }
+
+    public List<Concern> getByUser(User user) {
+
+        return find("user", user).stream().toList();
+
+    }
+
 }

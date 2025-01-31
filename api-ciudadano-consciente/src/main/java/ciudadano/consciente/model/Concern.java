@@ -1,6 +1,8 @@
 package ciudadano.consciente.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -16,12 +18,15 @@ public class Concern implements Taggable, Votable {
   @Column(name = "concern_id")
   private Integer concernId;
 
+  @NotNull
+  @Size(min = 1, max = 140)
   private String description;
 
   private String explanation;
 
   private OffsetDateTime date;
 
+  @NotNull
   // @JoinColumn(name = nombreClaveForanea, referencedColumnName =
   // nombreClavePrimaria referenciada)
   @ManyToOne(fetch = FetchType.EAGER)
@@ -48,11 +53,11 @@ public class Concern implements Taggable, Votable {
     this.concernId = concernId;
   }
 
-  public String getDescription() {
+  public @NotNull @Size(min = 1, max = 140) String getDescription() {
     return description;
   }
 
-  public void setDescription(String description) {
+  public void setDescription(@NotNull @Size(min = 1, max = 140) String description) {
     this.description = description;
   }
 
@@ -72,11 +77,11 @@ public class Concern implements Taggable, Votable {
     this.date = date;
   }
 
-  public User getUser() {
+  public @NotNull User getUser() {
     return user;
   }
 
-  public void setUser(User user) {
+  public void setUser(@NotNull User user) {
     this.user = user;
   }
 

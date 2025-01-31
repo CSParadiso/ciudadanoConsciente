@@ -419,13 +419,18 @@
   - feat: añadidas anotaciones de validacion en la clase ResourceContent
   - IMAGE BUILD: api-ciudadano-consciente (1.2.3)
 
-- Commit: 
+- Commit a2a2625: 
   - refactor: corregidos permisos de endpoints de Level.
   - feat: añadida NamedNativeQuery para UserRoleLevel (verifica permisos hacia arriba)
   - feat: añadida funcionalidad de envío de correos desde la API.
   - IMAGE BUILD: api-ciudadano-consciente (1.2.4)
 
-
+- Commit:
+  - feat: añadido endpoint de statistics para usuario 'GET users/statistics'
+  - refactor: modificados los permisos de autorización de creación y actualización de Concern
+  - feat: añadido endpoint de statistics para organizaciones 'GET organizations/statistics'
+  - refactor: retiradas las restricciones de 'GET content/{id}' (a pedido de Fede). Hay que resolver esto luego.
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.5)
 --- 
 
 ---
@@ -463,17 +468,9 @@
 ---
 # TODO 
 
-MANEJO DE USUARIOS Y ROLES
-¿Qué sucede si un usuario tiene rol Moderador en Org pero Divulgador en Level?
-
 ---
 # DOING 
 
-CORE
-TODO: feat: proteger Resources a través de Anotaciones @RolesAllowed y @Authenticated (User, Role, working en asignRoleOrganization y asignRoleLevel)
-
-// TODO: feat ¿cómo comprender los roles inferiores dentro de lo superiores?
-//
 
 // TODO: feat: las modificaciones del content las hacen los creators (si son public) y los moderadores (si tiene vinculada una org)
 // TODO: El content ahora tiene un creator (User not null),

@@ -6,6 +6,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
@@ -13,6 +14,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
@@ -72,6 +74,15 @@ public class ServiceOrganization {
 
   @Inject
   ServiceKeycloakAPI keycloak;
+
+  @Inject
+  AccessLevel accessLevel;
+
+  @Inject
+  AccessContent accessContent;
+
+  @Inject
+  AccessActivity accessActivity;
 
   public List<DTOOrganization> getAll() {
 
@@ -583,6 +594,45 @@ public class ServiceOrganization {
 
     return mapperTaggedEntity.taggedOrganizationEntityToDto(accessTaggedOrganization.getTags(organization));
 
-  }  
-  
+  }
+
+    public DTOOrganizationStatistics getStatistics(Integer organizationId,
+                                                   UtilityAuthVerifier.UserAuthData userAuthData) {
+
+      Organization organization = accessOrganization.get(organizationId)
+              .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+
+      if (!userAuthData.hasOrgRoles(organization.getOrganizationId())) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to get statistics of Organization.");
+      }
+
+      Integer moderators, divulgators, paths, levels, activities, contents;
+      Role oModerator = accessRole.getByName("O-Moderator").orElseThrow(() -> new HttpNoContentException("Role not " +
+              "found."));
+      Role oDivulgator = accessRole.getByName("O-Divulgator").orElseThrow(() -> new HttpNoContentException("Role not" +
+              " " +
+              "found."));
+
+      List<UserRolOrganization> userRolOrganizationList = accessUserRoleOrganization.getByOrganization(organization);
+      moderators = (int) userRolOrganizationList.stream()
+              .filter(uro -> oModerator.equals(uro.getRole())) // Use .equals() for object comparison
+              .count();
+
+      divulgators = (int) userRolOrganizationList.stream()
+              .filter(uro -> oDivulgator.equals(uro.getRole())) // Use .equals() for object comparison
+              .count();
+
+      List<Level> levelList = accessLevel.getByOrganization(organization);
+      List<Activity> activityList = accessActivity.getAll();
+      paths = accessLevel.getAllPathsByOrganization(organization).size();
+      levels = levelList.size();
+      activities = (int) activityList.stream()
+              .filter(activity -> levelList.contains(activity.getLevel()))
+              .count();
+      contents = accessContent.getAllByOrganization(organization, null).size();
+
+      return new DTOOrganizationStatistics(organization, moderators, divulgators, paths, levels, activities, contents);
+
+    }
+
 }

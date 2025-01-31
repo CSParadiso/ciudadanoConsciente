@@ -144,24 +144,24 @@ public class ServiceContent {
     Content content = accessContent.get(id)
             .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    // If user is not Ciuco-Admin and content is private
-    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
-
-      // If Content doesn't have ORG, User must be Creator to see private Content
-      if(content.getOrganization() == null) {
-        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
-                .orElseThrow( () -> new HttpNoContentException("User not found."));
-
-        // Verify is User is creator of Content
-        if(user.getUserId() != content.getCreator().getUserId()) {
-          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
-        }
-        // Verify if User belongs to ORG of Content
-      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
-        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Contents of Organization.");
-      }
-
-    }
+//    // If user is not Ciuco-Admin and content is private
+//    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
+//
+//      // If Content doesn't have ORG, User must be Creator to see private Content
+//      if(content.getOrganization() == null) {
+//        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+//                .orElseThrow( () -> new HttpNoContentException("User not found."));
+//
+//        // Verify is User is creator of Content
+//        if(user.getUserId() != content.getCreator().getUserId()) {
+//          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+//        }
+//        // Verify if User belongs to ORG of Content
+//      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+//        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Contents of Organization.");
+//      }
+//
+//    }
 
     //audit.debug("Mapping Entity into DTO.");
     return mapperContent.entityToDto(content);

@@ -3,16 +3,20 @@ package ciudadano.consciente.resource;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceConcern;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.logging.Logger;
@@ -40,6 +44,12 @@ public class ResourceConcern {
 
   @Inject
   ServiceConcern serviceConcern;
+
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @Inject
+  UtilityAuthVerifier utilityAuthVerifier;
 
   @GET
   @Operation(summary = "Retrieve all Concerns")
@@ -80,21 +90,12 @@ public class ResourceConcern {
   )
   @APIResponse(responseCode = "204", description = "Failed to create Concern. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to create Concern. Verify 'Warning' Header.")
-  public RestResponse<DTOConcern> create(DTOCreateConcern dtoCreateConcern) {
+  public RestResponse<DTOConcern> create(@RequestBody @Valid DTOCreateConcern dtoCreateConcern) {
 
-    if (dtoCreateConcern == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
 
-    String description = dtoCreateConcern.getDescription();
-    Integer user = dtoCreateConcern.getUser();
-    if (!utilityVerifyRequestField.isValidField(description) &&
-        !utilityVerifyRequestField.isValidField(user)) {
-      throw new HttpBadRequestException("Description and user fields required.");
-    }
-
-    audit.debug("Creating Concern...");
-    DTOConcern concern = serviceConcern.create(dtoCreateConcern);
+    DTOConcern concern = serviceConcern.create(dtoCreateConcern, userAuthData);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + concern.getConcernId());
@@ -117,11 +118,8 @@ public class ResourceConcern {
   @APIResponse(responseCode = "400", description = "Failed to update Concern. Verify 'Warning' Header.")
   @APIResponse(responseCode = "204", description = "Failed to update Concern. Verify 'Warning' Header.")
   public RestResponse<DTOConcern> update(@PathParam("id") Integer id,
-      DTOUpdateConcern dtoUpdateConcern) {
+      @RequestBody @Valid DTOUpdateConcern dtoUpdateConcern) {
 
-    if (dtoUpdateConcern == null) {
-      throw new HttpBadRequestException("Body of request required.");
-    }
 
     audit.debug("Verifying if the ID of the Body and the Path are the same...");
     if (id.compareTo(dtoUpdateConcern.getConcernId()) != 0) {
@@ -135,8 +133,10 @@ public class ResourceConcern {
       throw new HttpBadRequestException("No updates to make.");
     }
 
-    audit.debug("Updating Concern" + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceConcern.update(id, dtoUpdateConcern)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceConcern.update(dtoUpdateConcern, userAuthData)).build();
 
   }
 

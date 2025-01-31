@@ -1,6 +1,7 @@
 package ciudadano.consciente.access;
 
 import ciudadano.consciente.model.Answer;
+import ciudadano.consciente.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
@@ -58,6 +59,12 @@ public class AccessAnswer implements PanacheRepositoryBase<Answer, Integer> {
                 .setParameter("parentLevelId", levelId)
                 .setParameter("userId", userId)
                 .getResultList();
+
+    }
+
+    public List<Answer> getByUser(User user) {
+
+        return find("userId", user).stream().toList();
 
     }
 

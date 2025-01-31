@@ -1,10 +1,12 @@
 package ciudadano.consciente.dto;
 
+import jakarta.validation.constraints.NotNull;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public class DTOUpdateConcern {
 
-    @Schema(defaultValue = "")
+    @NotNull
+    @Schema(defaultValue = "", required = true)
     private Integer concernId;
 
     @Schema(defaultValue = "")
@@ -13,11 +15,11 @@ public class DTOUpdateConcern {
     @Schema(defaultValue = "")
     private String explanation;
 
-    public Integer getConcernId() {
+    public @NotNull Integer getConcernId() {
         return concernId;
     }
 
-    public void setConcernId(Integer concernId) {
+    public void setConcernId(@NotNull Integer concernId) {
         this.concernId = concernId;
     }
 
@@ -36,5 +38,4 @@ public class DTOUpdateConcern {
     public void setExplanation(String explanation) {
         this.explanation = explanation;
     }
-
 }

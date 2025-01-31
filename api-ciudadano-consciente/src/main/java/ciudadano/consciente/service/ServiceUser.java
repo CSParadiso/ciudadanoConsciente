@@ -1,13 +1,13 @@
 package ciudadano.consciente.service;
 
-import ciudadano.consciente.access.AccessUser;
-import ciudadano.consciente.access.AccessVote;
+import ciudadano.consciente.access.*;
 import ciudadano.consciente.client.keycloak.service.ServiceKeycloakAPI;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.MapperUser;
-import ciudadano.consciente.mapper.MapperVote;
+import ciudadano.consciente.model.Answer;
 import ciudadano.consciente.model.User;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
@@ -25,22 +25,28 @@ public class ServiceUser {
   Logger audit;
 
   @Inject
-  UtilityVerifyRequestField utilityVerifyRequestField;
-
-  @Inject
   AccessUser accessUser;
 
   @Inject
   MapperUser mapperUser;
 
   @Inject
+  ServiceKeycloakAPI keycloak;
+
+  @Inject
+  AccessAnswer accessAnswer;
+
+  @Inject
   AccessVote accessVote;
 
   @Inject
-  MapperVote mapperVote;
+  AccessConcern accessConcern;
 
   @Inject
-  ServiceKeycloakAPI keycloak;
+  AccessContent accessContent;
+
+  @Inject
+  AccessActivity accessActivity;
 
   public DTOUser get(Integer id) {
 
@@ -251,6 +257,31 @@ public class ServiceUser {
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUser.entityToDto(user);
+
+  }
+
+  public DTOUserStatistics getStatistics(UtilityAuthVerifier.UserAuthData userAuthData) {
+
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+      Integer answersOK, answers, levelsCompleted, votes, concerns, contents;
+
+      List<Answer> answersList = accessAnswer.getByUser(user);
+      answers = answersList.size();
+      answersOK = (int) answersList.stream()
+              .filter(Answer::getStatus)
+              .count();
+      levelsCompleted = (int) answersList.stream()
+              .filter(Answer::getStatus)
+              .map(answer -> answer.getActivity().getActivityId())
+              .distinct()
+              .count();
+      votes = accessVote.getByUser(user).size();
+      concerns = accessConcern.getByUser(user).size();
+      contents = accessContent.getAllByUser(user, null).size();
+
+      return new DTOUserStatistics(user, answersOK, answers, levelsCompleted, votes, concerns, contents);
 
   }
 

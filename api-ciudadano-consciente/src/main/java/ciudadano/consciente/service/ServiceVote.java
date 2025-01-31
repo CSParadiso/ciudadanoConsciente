@@ -171,25 +171,25 @@ public class ServiceVote {
 
     String title = entityType.getTitle();
     switch (title) {
-      case "Organization":
+      case "organizations":
         return accessOrganization.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Organization not found."));
-      case "Concern":
+      case "concerns":
         return accessConcern.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Concern not found."));
-      case "Reference":
+      case "references":
         return accessReference.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Reference not found."));
-      case "Level":
+      case "levels":
         return accessLevel.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Level not found."));
-      case "ActivityType":
+      case "activity_types":
         return accessActivityType.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
-      case "ActivityTypeVersion":
+      case "activity_type_versions":
         return accessActivityTypeVersion.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Activity Type Version not found."));
-      case "Content":
+      case "content":
         return accessContent.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Content not found."));
       default:

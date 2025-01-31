@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.jboss.logging.Logger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,6 +99,12 @@ public class AccessLevel implements PanacheRepositoryBase<Level, Integer> {
     return entityManager.createNamedQuery("Level.getGenealogy")
         .setParameter("levelId", level.getId())
         .getResultList();
+
+  }
+
+  public List<Level> getByOrganization(Organization organization) {
+
+    return find("organization", organization).stream().toList();
 
   }
 

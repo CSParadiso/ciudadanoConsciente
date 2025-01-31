@@ -101,6 +101,22 @@ public class ResourceOrganization {
 
   }
 
+  @GET
+  @Path("{id}/statistics")
+  @Operation(summary = "Retrieve statistics of Organization.")
+  @APIResponse(responseCode = "200", description = "Organization statistics successfully retrieved.", content =
+  @Content(schema = @Schema(implementation = DTOOrganizationStatistics.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Organization statistics. Verify 'Warning' " +
+          "Header.")
+  public RestResponse<DTOOrganizationStatistics> getStatistics(@PathParam("id") Integer idOrganization) {
+
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.getStatistics(idOrganization, userAuthData)).build();
+
+  }
+
   //@RolesAllowed("Ciuco-Admin")
   @POST
   @Operation(summary = "Create a new Organization.")

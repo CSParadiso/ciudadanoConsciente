@@ -4,6 +4,7 @@ import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceUser;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
@@ -47,6 +48,9 @@ public class ResourceUser {
 
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
+
+  @Inject
+  UtilityAuthVerifier utilityAuthVerifier;
 
   @RolesAllowed("Ciuco-Admin")
   @GET
@@ -149,6 +153,20 @@ public class ResourceUser {
   // .build();
 
   // }
+
+  @GET
+  @Path("statistics")
+  @Operation(summary = "Retrieve statistics of User.")
+  @APIResponse(responseCode = "200", description = "User statistics successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOUserStatistics.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve User statistics. Verify 'Warning' Header.")
+  public RestResponse<DTOUserStatistics> getStatistics() {
+
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceUser.getStatistics(userAuthData)).build();
+
+  }
 
   @POST
   @Operation(summary = "Create a new User.")

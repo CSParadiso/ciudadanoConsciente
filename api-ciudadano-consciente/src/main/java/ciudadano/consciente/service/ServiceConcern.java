@@ -2,15 +2,14 @@ package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.*;
-import ciudadano.consciente.exception.HttpBadRequestException;
-import ciudadano.consciente.exception.HttpInternalServerException;
-import ciudadano.consciente.exception.HttpNoContentException;
+import ciudadano.consciente.exception.*;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperConcern;
 import ciudadano.consciente.mapper.MapperTaggedEntity;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import jakarta.enterprise.context.RequestScoped;
@@ -81,14 +80,12 @@ public class ServiceConcern {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOConcern create(DTOCreateConcern dtoCreateConcern) {
+  public DTOConcern create(DTOCreateConcern dtoCreateConcern, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    Integer userDto = dtoCreateConcern.getUser();
-    accessUser.get(userDto)
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
-    audit.debug("Creating Concern.");
-    Concern concern = mapperConcern.dtoToEntity(dtoCreateConcern);
+    Concern concern = mapperConcern.dtoToEntity(dtoCreateConcern, user);
 
     audit.debug("Saving Concern.");
     try {
@@ -105,11 +102,17 @@ public class ServiceConcern {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOConcern update(Integer id, DTOUpdateConcern dtoUpdateConcern) {
+  public DTOConcern update(DTOUpdateConcern dtoUpdateConcern, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Retrieving Concern.");
-    Concern concern = accessConcern.get(id)
+    Concern concern = accessConcern.get(dtoUpdateConcern.getConcernId())
         .orElseThrow(() -> new HttpNoContentException("Concern not found."));
+
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+    if (concern.getUser().getUserId() != user.getUserId()) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to update Concern.");
+    }
 
     // audit.debug("Retrieving User.");
     // User user = accessUser.get(dtoUpdateConcern.getUser())
@@ -121,7 +124,6 @@ public class ServiceConcern {
     // it.");
     // }
 
-    audit.debug("Updating Concern " + id + ".");
     String description = dtoUpdateConcern.getDescription();
     if (utilityVerifyRequestField.isValidField(description)) {
       concern.setDescription(description);
@@ -132,11 +134,9 @@ public class ServiceConcern {
       concern.setExplanation(explanation);
     }
 
-    audit.debug("Saving Concern " + concern.getConcernId() + ".");
     accessConcern.save(concern)
         .orElseThrow(() -> new HttpInternalServerException("Failed to persist updated Concern."));
 
-    audit.debug("Mapping EntityType into DTO.");
     return mapperConcern.entityToDto(concern);
 
   }
