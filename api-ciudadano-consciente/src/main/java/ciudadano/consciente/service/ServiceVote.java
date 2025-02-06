@@ -189,7 +189,7 @@ public class ServiceVote {
       case "activity_type_versions":
         return accessActivityTypeVersion.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Activity Type Version not found."));
-      case "content":
+      case "contents":
         return accessContent.get(entityId)
             .orElseThrow(() -> new HttpNoContentException("Content not found."));
       default:

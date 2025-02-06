@@ -175,26 +175,11 @@ public class ResourceUser {
   @APIResponse(responseCode = "500", description = "Failed to create User. Verify 'Warning' Header.")
   public RestResponse<DTOUser> create() {
 
-    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
 
-    String authServerId = userInfo.getSubject();
-    //String username = userInfo.getPreferredUserName();
-    String name = userInfo.getName();
-    String email = userInfo.getEmail();
-    if (!utilityVerifyRequestField.isValidField(authServerId) ||
-        !utilityVerifyRequestField.isValidField(name) ||
-        !utilityVerifyRequestField.isValidField(email)) {
-      throw new HttpBadRequestException("Missing mandatory Claims (sub, name, email) from Access Token.");
-    }
+    DTOUser user = serviceUser.create(userAuthData);
 
-    audit.debug("KC-ID: " + authServerId); // keycloak.user_entity.id
-    audit.debug("KC-NAME: " + name); // keycloak.user_entity.name
-    audit.debug("KC-EMAIL: " + email); // keycloak.user_entity.email_constraint
-
-    audit.debug("Creating User...");
-    DTOUser user = serviceUser.create(authServerId, name, email);
-
-    audit.debug("Creating URI...");
     URI uri = URI.create(BASE_PATH_RESOURCE + user.getUserId());
 
     return RestResponse.ResponseBuilder

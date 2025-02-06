@@ -29,10 +29,10 @@ import java.util.List;
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("activity-type")
+@Path("activity-types")
 public class ResourceActivityType {
 
-  final String BASE_PATH_RESOURCE = "/activity-type/";
+  final String BASE_PATH_RESOURCE = "/activity-types/";
   final String BASE_PATH_RESOURCE_VOTE = "/votes/";
 
   @Inject

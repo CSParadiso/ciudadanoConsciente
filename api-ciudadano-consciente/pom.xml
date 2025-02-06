@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ciudadano.consciente</groupId>
   <artifactId>api-ciudadano-consciente</artifactId>
-  <version>1.2.5</version>
+  <version>1.2.7</version>
   <properties>
     <compiler-plugin.version>3.11.0</compiler-plugin.version>
     <maven.compiler.release>17</maven.compiler.release>
@@ -143,6 +143,13 @@
       <artifactId>jboss-logging</artifactId>
       <version>3.4.1.Final</version>
     </dependency>
+
+    <!-- Para servir los templates desde URLs -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-qute</artifactId>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>

@@ -29,6 +29,10 @@ public class Organization implements Taggable, Votable {
   @Size(min = 1, max = 140, message = "Description must be between 1 and 100 characters.")
   private String description;
 
+  @NotNull
+  @Column(name = "verified")
+  private Boolean isVerified;
+
   @Transient
   List<Tag> tags = new ArrayList<>();
 
@@ -65,6 +69,14 @@ public class Organization implements Taggable, Votable {
 
   public void setDescription(@Size(min = 1, max = 140, message = "Description must be between 1 and 100 characters.") String description) {
     this.description = description;
+  }
+
+  public @NotNull Boolean getIsVerified() {
+    return isVerified;
+  }
+
+  public void setIsVerified(@NotNull Boolean verified) {
+    isVerified = verified;
   }
 
   @Override

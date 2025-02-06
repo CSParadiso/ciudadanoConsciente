@@ -425,7 +425,7 @@
   - feat: añadida funcionalidad de envío de correos desde la API.
   - IMAGE BUILD: api-ciudadano-consciente (1.2.4)
 
-- Commit:
+- Commit af563dc:
   - feat: añadido endpoint de statistics para usuario 'GET users/statistics'
   - refactor: modificados los permisos de autorización de creación y actualización de Concern
   - feat: añadido endpoint de statistics para organizaciones 'GET organizations/statistics'

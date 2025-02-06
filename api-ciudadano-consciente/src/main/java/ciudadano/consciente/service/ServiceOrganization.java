@@ -7,18 +7,19 @@ import ciudadano.consciente.exception.*;
 import ciudadano.consciente.mapper.*;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.utility.UtilityAuthVerifier;
+import ciudadano.consciente.utility.UtilityMailSender;
 import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
+import io.smallrye.common.annotation.Blocking;
+import io.vertx.core.VertxException;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import jakarta.validation.Valid;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.logging.Logger;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,6 +85,12 @@ public class ServiceOrganization {
   @Inject
   AccessActivity accessActivity;
 
+  @Inject
+  UtilityMailSender utilityMailSender;
+
+  @Inject
+  AccessVerifyToken accessVerifyToken;
+
   public List<DTOOrganization> getAll() {
 
     audit.debug("Getting all Organizations.");
@@ -121,14 +128,28 @@ public class ServiceOrganization {
 
   }
 
+  /**
+   * To create an Organization, user must be registered in the App.
+   * After complete the form, an email with a code is sent to the created Organization. The code must be valid to post
+   * the organization.
+   *
+   * @param dtoCreateOrganization
+   * @param userAuthData
+   * @return
+   */
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOOrganization create(DTOCreateOrganization dtoCreateOrganization) {
+  public DTOOrganization create(DTOCreateOrganization dtoCreateOrganization, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Creating Organization.");
+    // Verify that authenticated user is User of the App
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    audit.debugv("User {0} is trying to create  Organization.", user.getEmail());
     String email = dtoCreateOrganization.getEmail();
     String name = dtoCreateOrganization.getName();
 
-    if (accessOrganization.existEmail(email)) {
+    // Email should not exist nor as Organization nor as User
+    if (accessOrganization.existEmail(email) || accessUser.getByEmail(email).isPresent()) {
       throw new HttpBadRequestException("Email already exists.");
     }
 
@@ -137,7 +158,7 @@ public class ServiceOrganization {
     }
 
     audit.debug("Mapping DTO into EntityType.");
-    Organization organization = mapperOrganization.dtoToEntity(email, name);
+    Organization organization = mapperOrganization.dtoToEntity(email, name, false);
 
     // TODO Quizás se pueda asignar directamente el DTO en las creaciones
     String description = dtoCreateOrganization.getDescription();
@@ -146,19 +167,120 @@ public class ServiceOrganization {
     }
 
     audit.debug("Saving Organization " + organization.getOrganizationId() + ".");
-    accessOrganization.save(organization)
-        .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Organization."));
+    try {
+      accessOrganization.save(organization)
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Organization."));
+    } catch (ConstraintViolationException e) {
+      throw new HttpBadRequestException("Organization already exists: " + e.getErrorMessage());
+    }
+
+    // Generate and save token
+    try {
+      accessVerifyToken.save(VerifyToken.generateToken(organization))
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist new VerifyToken."));
+    } catch (ConstraintViolationException e) {
+      throw new HttpBadRequestException("VerifyToken already exists: " + e.getErrorMessage());
+    }
+
+    VerifyToken verifyToken = accessVerifyToken.getByOrganization(organization)
+            .orElseThrow(() -> new HttpInternalServerException("VerifyToken not found."));
+
+    // Send token by email
+    utilityMailSender.sendVerifyTokenToOrganization(verifyToken, organization);
+
+    // PRUEBA DE OBTENER UN ACCESS TOKEN DEL USER
+
+     //
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperOrganization.entityToDto(organization);
 
   }
 
-  @Transactional(Transactional.TxType.REQUIRED)
-  public DTOOrganization update(Integer id, DTOUpdateOrganization dtoUpdateOrganization) {
+  @Transactional(value = Transactional.TxType.REQUIRED)
+  public DTOOrganization verify(@Valid DTOVerifyOrganization dtoVerifyOrganization, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Updating Organization " + id + ".");
-    Organization organization = accessOrganization.get(id)
+    // Verify that authenticated user is User of the App
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    Organization organization = accessOrganization.get(dtoVerifyOrganization.getOrganizationId())
+            .orElseThrow(() -> new HttpNoContentException("Organization not found"));
+
+    VerifyToken verifyToken = accessVerifyToken.getByOrganization(organization)
+            .orElseThrow(() -> new HttpNoContentException("VerifyToken not found"));
+
+    if (!dtoVerifyOrganization.getToken().equals(verifyToken.getToken())) {
+      throw new AuthDenialSecurityException(
+              "Mismatch: INCORRECT TOKEN. Incorrect token submitted.");
+    }
+
+    // Verify ORG
+    organization.setIsVerified(true);
+
+    accessOrganization.save(organization)
+              .orElseThrow(() -> new HttpInternalServerException("Failed to persist new Organization."));
+
+    // Assign O-Moderator Role to verifier User
+    Role oModerator = accessRole.getByName("O-Moderator")
+            .orElseThrow(() -> new HttpNoContentException("Role not found."));
+
+    // Intentar asignar rol O-Moderador
+    if(accessUserRoleOrganization.getByOrganizationAndUser(organization.getOrganizationId(), user.getUserId()).isEmpty()) {
+      assignRoleToUserInOrganization(organization.getOrganizationId(),
+              user.getUserId(),
+              oModerator.getRoleId());
+    }
+
+    // Eliminar token de la DB
+    accessVerifyToken.remove(verifyToken.getVerifyTokenId());//) {
+    //  throw new HttpInternalServerException("Failed to delete VerifyToken ");
+    //}
+
+    // Send confirmation by email and catch the exception
+    try {
+      utilityMailSender.sendConfirmationToNewOrganization(organization, user);
+    } catch (Exception e) {
+      audit.debugv("EXCEPCION: ", e.getLocalizedMessage());
+    }
+
+    return mapperOrganization.entityToDto(organization);
+
+  }
+
+  @Transactional(Transactional.TxType.REQUIRED)
+  public DTOOrganization verifyDeleteToken(@Valid DTOVerifyOrganization dtoVerifyOrganization,
+                                 UtilityAuthVerifier.UserAuthData userAuthData) {
+
+    // Verify that authenticated user is User of the App
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
+    Organization organization = accessOrganization.get(dtoVerifyOrganization.getOrganizationId())
+            .orElseThrow(() -> new HttpNoContentException("Organization not found"));
+
+    VerifyToken verifyToken = accessVerifyToken.getByOrganization(organization)
+            .orElseThrow(() -> new HttpNoContentException("VerifyToken not found"));
+
+    if (!dtoVerifyOrganization.getToken().equals(verifyToken.getToken())) {
+      throw new AuthDenialSecurityException(
+              "Mismatch: INCORRECT TOKEN. Incorrect token submitted.");
+    }
+
+    if (!accessOrganization.remove(organization.getOrganizationId())) {
+      throw new HttpInternalServerException("Failed to delete Organization.");
+    }
+    // Send confirmation by email
+    utilityMailSender.sendConfirmationToDeletedOrganization(organization, user);
+
+    return mapperOrganization.entityToDto(organization);
+
+  }
+
+  @Transactional(Transactional.TxType.REQUIRED)
+  public DTOOrganization update(DTOUpdateOrganization dtoUpdateOrganization, UtilityAuthVerifier.UserAuthData userAuthData) {
+
+    Organization organization = accessOrganization.get(dtoUpdateOrganization.getOrganizationId())
         .orElseThrow(() -> new HttpNoContentException("Organization not found"));
 
     String email = dtoUpdateOrganization.getEmail();
@@ -169,6 +291,21 @@ public class ServiceOrganization {
         throw new HttpBadRequestException("The email already exists.");
       }
       organization.setEmail(email);
+      // if email changes, it must verify it
+      organization.setIsVerified(false);
+      // Generate and save token
+      try {
+        accessVerifyToken.save(VerifyToken.generateToken(organization))
+                .orElseThrow(() -> new HttpInternalServerException("Failed to persist new VerifyToken."));
+      } catch (ConstraintViolationException e) {
+        throw new HttpBadRequestException("VerifyToken already exists: " + e.getErrorMessage());
+      }
+
+      VerifyToken verifyToken = accessVerifyToken.getByOrganization(organization)
+              .orElseThrow(() -> new HttpInternalServerException("VerifyToken not found."));
+
+      // Send token by email
+      utilityMailSender.sendVerifyTokenToOrganization(verifyToken, organization);
     }
 
     if (utilityVerifyRequestField.isValidField(description)) {
@@ -185,16 +322,42 @@ public class ServiceOrganization {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOOrganization delete(Integer id) {
+  public DTOOrganization delete(Integer id, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Deleting Organization " + id);
+    // Verify that authenticated user is User of the App
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow( ()-> new HttpNoContentException("User not found.") );
+
     Organization organization = accessOrganization.get(id)
-        .orElseThrow(() -> new HttpNoContentException("Organization not found"));
+            .orElseThrow(() -> new HttpNoContentException("Organization not found"));
 
-    if (!accessOrganization.remove(organization.getOrganizationId())) {
-      throw new HttpInternalServerException("Failed to delete Organization.");
+    if (!userAuthData.hasOrgRoles(organization.getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to delete Organization.");
     }
 
+    if(organization.getIsVerified()) {
+
+      // Generate and save token
+      try {
+        accessVerifyToken.save(VerifyToken.generateToken(organization))
+                .orElseThrow(() -> new HttpInternalServerException("Failed to persist new VerifyToken."));
+      } catch (ConstraintViolationException e) {
+        throw new HttpBadRequestException("VerifyToken already exists: " + e.getErrorMessage());
+      }
+
+      VerifyToken verifyToken = accessVerifyToken.getByOrganization(organization)
+              .orElseThrow(() -> new HttpInternalServerException("VerifyToken not found."));
+
+      // Send token by email
+      utilityMailSender.sendDeleteTokenToOrganization(verifyToken, organization);
+
+    } else {
+      if (!accessOrganization.remove(organization.getOrganizationId())) {
+        throw new HttpInternalServerException("Failed to delete Organization.");
+      }
+    }
+
+    // TODO Verificar si se borran todas las referencias en la DB (las restricciones existen, deberia)
     audit.debug("Mapping EntityType into DTO.");
     return mapperOrganization.entityToDto(organization);
 
@@ -204,7 +367,7 @@ public class ServiceOrganization {
 
   @Transactional(Transactional.TxType.REQUIRED)
   public DTOUserRoleOrganization assignRoleToUserInOrganization(Integer idOrganization, Integer idUser,
-                                                                Integer idRole, UserInfo userInfo) {
+                                                                Integer idRole) {
 
 //    audit.debug("Verifying Authorized User " + userInfo.getPreferredUserName() + ".");
 //    User authorizedUser = accessUser.getByUsername(userInfo.getPreferredUserName())
@@ -634,5 +797,6 @@ public class ServiceOrganization {
       return new DTOOrganizationStatistics(organization, moderators, divulgators, paths, levels, activities, contents);
 
     }
+
 
 }

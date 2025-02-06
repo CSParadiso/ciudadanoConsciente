@@ -124,7 +124,7 @@ public class ResourceLevel {
 
   }
 
-  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator"})
+  @RolesAllowed({"O-Moderator", "O-Divulgator"})
   @GET
   @Path("organizations/{organizationId}/paths")
   @Operation(summary = "Retrieve all Levels (without a parent) of an Organization by the Organization ID.")
@@ -132,35 +132,11 @@ public class ResourceLevel {
   @APIResponse(responseCode = "204", description = "Failed to retrieve Levels. Verify 'Warning' Header.")
   public RestResponse<List<DTOLevelPathWithVotes>> getPathsByOrganization(@PathParam("organizationId") Integer id) {
 
-    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
-
-    if(userRequested) { // Si no es CIUCO-ADMIN
-      try {
-        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
-        JsonArray divulgatorAtOrganization = (JsonArray) userInfo.get("dao");
-        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(id))
-                || divulgatorAtOrganization.contains(Json.createValue(id));
-        if(!isAuthorizedToAssignRole) {
-          audit.warnv("User {0} is not allowed to retrieve paths of Organization {1}.",
-                  userInfo.getEmail(), id);
-          throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve paths of Organization.");
-        }
-      } catch (NullPointerException e){
-        audit.warn("User has no Organizations Roles assigned.");
-        throw new AuthDenialSecurityException("Mismatch: User has no Organization Roles assigned. User Claims doesn't" +
-                " " +
-                "have attribute 'mao' or 'dao'.");
-      }
-
-      audit.debug("User " + userInfo.getEmail() + " is trying to retrieve paths of Organization " + id);
-
-    } else {
-      audit.debug("Admin " + userInfo.getEmail() + " is trying to retrieve paths Organization " + id);
-    }
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
 
     audit.debug("Getting paths of Organization " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsByOrganization(id)).build();
+    return RestResponse.ResponseBuilder.ok(serviceLevel.getPathsByOrganization(id, userAuthData)).build();
 
   }
 

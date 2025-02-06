@@ -125,29 +125,29 @@ public class ServiceTagged {
   private Taggable retrieveEntity(EntityType entityType, Integer entityId) {
     String title = entityType.getTitle();
     switch (title) {
-      case "Organization":
+      case "organizations":
         return accessOrganization.get(entityId)
-            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
-      case "Concern":
+                .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+      case "concerns":
         return accessConcern.get(entityId)
-            .orElseThrow(() -> new HttpNoContentException("Concern not found."));
-      case "Reference":
+                .orElseThrow(() -> new HttpNoContentException("Concern not found."));
+      case "references":
         return accessReference.get(entityId)
-            .orElseThrow(() -> new HttpNoContentException("Reference not found."));
-      case "Level":
+                .orElseThrow(() -> new HttpNoContentException("Reference not found."));
+      case "levels":
         return accessLevel.get(entityId)
-            .orElseThrow(() -> new HttpNoContentException("Level not found."));
-      case "ActivityType":
+                .orElseThrow(() -> new HttpNoContentException("Level not found."));
+      case "activity_types":
         return accessActivityType.get(entityId)
-            .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
-      case "ActivityTypeVersion":
+                .orElseThrow(() -> new HttpNoContentException("Activity Type not found."));
+      case "activity_type_versions":
         return accessActivityTypeVersion.get(entityId)
-            .orElseThrow(() -> new HttpNoContentException("Activity Type Version not found."));
-      case "Content":
+                .orElseThrow(() -> new HttpNoContentException("Activity Type Version not found."));
+      case "contents":
         return accessContent.get(entityId)
-            .orElseThrow(() -> new HttpNoContentException("Content not found."));
+                .orElseThrow(() -> new HttpNoContentException("Content not found."));
       default:
-        throw new HttpNoContentException("Entity Type can't be tagged");
+        throw new HttpNoContentException("Entity Type can't be tagged.");
     }
   }
 

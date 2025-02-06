@@ -48,7 +48,7 @@ public class AccessUserRoleOrganization implements PanacheRepositoryBase<UserRol
 
     public Optional<UserRolOrganization> get(Integer idOrganization, Integer idUser, Integer idRole) {
 
-        audit.debug("Trying to retrieve User(" + idUser + ")Role(" + idRole + ")Organization(" + idUser + ") " + idOrganization + ".");
+        audit.debug("Trying to retrieve User(" + idUser + ")Role(" + idRole + ")Organization(" + idOrganization + ").");
         return find("organization.organizationId = ?1 and user.userId = ?2 and role.roleId = ?3", idOrganization, idUser, idRole).firstResultOptional();
         
     }

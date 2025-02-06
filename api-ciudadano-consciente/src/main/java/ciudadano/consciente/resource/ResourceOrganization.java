@@ -7,8 +7,10 @@ import ciudadano.consciente.service.ServiceOrganization;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.oidc.AccessTokenCredential;
 import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.credential.TokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
@@ -128,9 +130,10 @@ public class ResourceOrganization {
   @APIResponse(responseCode = "500", description = "Failed to create new Organization. Verify 'Warning' Header.")
   public RestResponse<DTOOrganization> create(@RequestBody @Valid DTOCreateOrganization dtoCreateOrganization) {
 
-    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
 
-    DTOOrganization organization = serviceOrganization.create(dtoCreateOrganization);
+    DTOOrganization organization = serviceOrganization.create(dtoCreateOrganization, userAuthData);
 
     URI uri = URI.create(PATH_BASE_RESOURCE + organization.getOrganizationId());
 
@@ -138,6 +141,69 @@ public class ResourceOrganization {
         .create(RestResponse.Status.CREATED, organization)
         .location(uri)
         .build();
+
+  }
+
+  @POST
+  @Path("{id}/verify")
+  @Operation(summary = "Verify Organization.")
+  @APIResponse(responseCode = "201", description = "Organization successfully verified.", content = @Content(schema =
+  @Schema(implementation = DTOOrganization.class)))
+  @APIResponse(responseCode = "204", description = "Organization successfully verified.", content = @Content(schema =
+  @Schema(implementation = DTOOrganization.class)))
+  @APIResponse(responseCode = "400", description = "Failed to verified new Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "403", description = "Failed to verified new Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to verified new Organization. Verify 'Warning' Header.")
+  public RestResponse<DTOOrganization> verify(@PathParam("id") Integer idOrganization,
+                                              @RequestBody @Valid DTOVerifyOrganization dtoVerifyOrganization) {
+
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (idOrganization.compareTo(dtoVerifyOrganization.getOrganizationId()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+    }
+
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
+
+    DTOOrganization organization = serviceOrganization.verify(dtoVerifyOrganization, userAuthData);
+
+    URI uri = URI.create(PATH_BASE_RESOURCE + organization.getOrganizationId());
+
+    return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.CREATED, organization)
+            .location(uri)
+            .build();
+
+  }
+
+  @POST
+  @Path("{id}/verify/delete")
+  @Operation(summary = "Verify delete token from Organization.")
+  @APIResponse(responseCode = "201", description = "Organization delete token successfully verified.", content = @Content(schema =
+  @Schema(implementation = DTOOrganization.class)))
+  @APIResponse(responseCode = "204", description = "Organization delete token successfully verified.", content =
+  @Content(schema =
+  @Schema(implementation = DTOOrganization.class)))
+  @APIResponse(responseCode = "400", description = "Failed to verified delete token Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "403", description = "Failed to verified delete token Organization. Verify 'Warning' Header.")
+  @APIResponse(responseCode = "500", description = "Failed to verified delete token Organization. Verify 'Warning' Header.")
+  public RestResponse<DTOOrganization> verifyDeleteToken(@PathParam("id") Integer idOrganization,
+                                              @RequestBody @Valid DTOVerifyOrganization dtoVerifyOrganization) {
+
+    audit.debug("Verifying if the ID of the Body and the Path are the same...");
+    if (idOrganization.compareTo(dtoVerifyOrganization.getOrganizationId()) != 0) {
+      throw new HttpBadRequestException("Body ID and Path ID must be the same.");
+    }
+
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
+
+    DTOOrganization organization = serviceOrganization.verifyDeleteToken(dtoVerifyOrganization, userAuthData);
+
+
+    return RestResponse.ResponseBuilder
+            .ok(organization)
+            .build();
 
   }
 
@@ -153,7 +219,7 @@ public class ResourceOrganization {
   @APIResponse(responseCode = "400", description = "Failed to update new Organization. Verify 'Warning' Header.")
   @APIResponse(responseCode = "500", description = "Failed to update new Organization. Verify 'Warning' Header.")
   public RestResponse<DTOOrganization> update(@PathParam("id") Integer id,
-      DTOUpdateOrganization dtoUpdateOrganization) {
+      @RequestBody @Valid DTOUpdateOrganization dtoUpdateOrganization) {
 
     if (dtoUpdateOrganization == null) {
       throw new HttpBadRequestException("Body of request required.");
@@ -171,36 +237,14 @@ public class ResourceOrganization {
       throw new HttpBadRequestException("Body ID and Path ID must be the same.");
     }
 
-    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
 
-    if(userRequested) { // Si no es CIUCO-ADMIN
-      try {
-        JsonArray moderatorAtOrganization = (JsonArray) userInfo.get("mao");
-        boolean isAuthorizedToAssignRole = moderatorAtOrganization.contains(Json.createValue(id));
-        if(!isAuthorizedToAssignRole) {
-          audit.warnv("Moderator {0} is not allowed to update Organization {1}.",
-                  userInfo.getEmail(), id);
-          throw new AuthDenialSecurityException("Mismatch: Moderator is not allowed to update Organization.");
-        }
-      } catch (NullPointerException e){
-        audit.warn("Moderator has no Organizations assigned.");
-        throw new AuthDenialSecurityException("Mismatch: Moderator has no Organization assigned. User Claims doesn't " +
-                "have attribute 'mao'.");
-      }
-
-      audit.debug("User " + userInfo.getEmail() + " is trying to update Organization " + id);
-
-    } else {
-      audit.debug("Admin " + userInfo.getEmail() + " is trying to update Organization " + id);
-    }
-
-    audit.debug("Updating Organization" + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceOrganization.update(id, dtoUpdateOrganization)).build();
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.update(dtoUpdateOrganization, userAuthData)).build();
 
   }
 
-  @RolesAllowed("Ciuco-Admin")
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator"})
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete an Organization.")
@@ -208,8 +252,10 @@ public class ResourceOrganization {
   @APIResponse(responseCode = "204", description = "Failed to delete new Organization. Verify 'Warning' Header.")
   public RestResponse<DTOOrganization> delete(@PathParam("id") Integer id) {
 
-    audit.debug("Deleting Organization " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceOrganization.delete(id)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.delete(id, userAuthData)).build();
 
   }
 
@@ -363,7 +409,7 @@ public class ResourceOrganization {
     }
 
     DTOUserRoleOrganization dtoUserRoleOrganization = serviceOrganization.assignRoleToUserInOrganization(idOrganization,
-        user, role, userInfo);
+        user, role);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + dtoUserRoleOrganization.getOrganization() +

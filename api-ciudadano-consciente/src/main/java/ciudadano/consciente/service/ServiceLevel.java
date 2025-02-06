@@ -133,13 +133,18 @@ public class ServiceLevel {
 
   }
 
-  public List<DTOLevelPathWithVotes> getPathsByOrganization(Integer id) {
+  public List<DTOLevelPathWithVotes> getPathsByOrganization(Integer id, UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    audit.debug("Getting Organization " + id + ".");
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow( () -> new HttpNoContentException("User not found."));
+
     Organization organization = accessOrganization.get(id)
-        .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
 
-    audit.debug("Getting paths of Organization.");
+    if (!userAuthData.hasOrgRoles(organization.getOrganizationId())) {
+      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve paths of Organization.");
+    }
+
     List<DTOLevelPathWithVotes> paths = mapperLevel
         .entityToPathWithVotesDto(accessLevel.getAllPathsByOrganization(organization));
 

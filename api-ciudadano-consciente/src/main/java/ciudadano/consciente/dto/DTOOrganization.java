@@ -18,6 +18,9 @@ public class DTOOrganization {
     @Schema
     private String description;
 
+    @Schema
+    private Boolean verified;
+
     public Integer getOrganizationId() {
         return organizationId;
     }
@@ -48,6 +51,14 @@ public class DTOOrganization {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 }
 

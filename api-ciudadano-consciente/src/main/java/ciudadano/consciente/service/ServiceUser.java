@@ -8,6 +8,7 @@ import ciudadano.consciente.mapper.MapperUser;
 import ciudadano.consciente.model.Answer;
 import ciudadano.consciente.model.User;
 import ciudadano.consciente.utility.UtilityAuthVerifier;
+import ciudadano.consciente.utility.UtilityMailSender;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
@@ -46,7 +47,7 @@ public class ServiceUser {
   AccessContent accessContent;
 
   @Inject
-  AccessActivity accessActivity;
+  UtilityMailSender utilityMailSender;
 
   public DTOUser get(Integer id) {
 
@@ -205,18 +206,19 @@ public class ServiceUser {
       throw new HttpInternalServerException("Failed to delete User.");
     }
 
+    utilityMailSender.sendGoodbyeToUser(user);
+
     audit.debug("Mapping EntityType into DTO.");
     return mapperUser.entityToDto(user);
 
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOUser create(String authServerId, String username, String email) {
+  public DTOUser create(UtilityAuthVerifier.UserAuthData userAuthData) {
 
     audit.debug("Creating new User.");
-    User user = new User(authServerId, username, email);
+    User user = new User(userAuthData.getUserInfo().getSubject(), userAuthData.getUserInfo().getName(), userAuthData.getUserInfo().getEmail());
 
-    audit.debug("Saving User with authServerId " + authServerId + ".");
     try {
       accessUser.save(user)
           .orElseThrow(() -> new HttpInternalServerException("Failed to persist new User."));
@@ -224,6 +226,8 @@ public class ServiceUser {
       audit.debug("User already exists: " + e.getErrorMessage());
       throw new HttpBadRequestException("User already exists: " + e.getErrorMessage());
     }
+
+    utilityMailSender.sendWelcomeToNewUser(user);
 
     audit.debug("Mapping EntityType into DTO.");
     return mapperUser.entityToDto(user);

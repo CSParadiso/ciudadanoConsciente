@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="none">
+    <title>Verifica tu organización</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #292929;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #ffc017;
+            padding: 20px;
+            text-align: center;
+        }
+        .header img {
+            max-width: 120px;
+            border-radius: 50%;
+        }
+        .content {
+            padding: 24px;
+            text-align: center;
+        }
+        .content h2 {
+            font-family: Georgia, serif;
+            font-size: 28px;
+            color: #181818;
+            margin-bottom: 16px;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 24px;
+            color: #4a4a4a;
+            margin-bottom: 20px;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #181818;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .cta-button:hover {
+            background: #333;
+        }
+        .footer {
+            background: #ffc017;
+            padding: 20px;
+            text-align: center;
+        }
+        .footer h2 {
+            font-size: 22px;
+            color: #181818;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <img src="https://ciuco.paradisoft.site/logo.jpg" alt="Ciudadano Consciente logo">
+    </div>
+    <div class="content">
+        <h2>¡Bienvenidx, {organizationName}!</h2>
+        <p>Para verificar la dirección de correo electrónico asociada a la organización, es necesario que utilices este token para confirmar tu cuenta:</p>
+        <a href="" class="cta-button">{token}</a>
+    </div>
+    <div class="footer">
+        <h2>¡Gracias por unirte a nuestra vecindad!</h2>
+    </div>
+</div>
+</body>
+</html>

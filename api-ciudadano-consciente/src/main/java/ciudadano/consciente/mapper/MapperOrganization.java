@@ -12,10 +12,12 @@ import java.util.List;
 public interface MapperOrganization {
     // target = "nombreEnTransferible" source = "nombreEnModelo"
 
+    @Mapping(target = "verified", source = "isVerified")
     DTOOrganization entityToDto(Organization organization);
 
     List<DTOOrganization> entityToDto(List<Organization> organizationList);
 
-    Organization dtoToEntity(String email, String name);
+    @Mapping(target = "isVerified", source = "verified" )
+    Organization dtoToEntity(String email, String name, Boolean verified);
 
 }
