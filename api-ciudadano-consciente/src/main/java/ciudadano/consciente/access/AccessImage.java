@@ -50,4 +50,11 @@ public class AccessImage implements PanacheRepositoryBase<Image, Integer> {
 
     }
 
+    public boolean remove(Integer imageId) {
+
+        audit.debug("Trying to delete Image");
+        return deleteById(imageId);
+
+    }
+
 }

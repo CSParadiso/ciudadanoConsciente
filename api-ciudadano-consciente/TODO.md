@@ -431,6 +431,18 @@
   - feat: añadido endpoint de statistics para organizaciones 'GET organizations/statistics'
   - refactor: retiradas las restricciones de 'GET content/{id}' (a pedido de Fede). Hay que resolver esto luego.
   - IMAGE BUILD: api-ciudadano-consciente (1.2.5)
+
+- Commit 75f19d0:
+  - feat: Añadida entidad NotificationTemaplate (templates de email).
+  - feat: Añadidos templates a la DB. (Ahora es posible modificar los templates de los emails enviados).
+  - feat: Añadida entidad VerificationToken (tokens temporales de verificación)
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.8)
+--- 
+
+- Commit :
+  - feat: Añadido endpoint DELETE de content/{contentId}/image/{id}
+  - refactor: removido el soporte de posteo de imagenes webp (fallaba la verificacion)
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.9)
 --- 
 
 ---

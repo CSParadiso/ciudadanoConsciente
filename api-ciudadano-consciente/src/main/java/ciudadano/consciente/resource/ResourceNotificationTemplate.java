@@ -27,8 +27,8 @@ import org.jboss.resteasy.reactive.RestResponse;
 import java.net.URI;
 import java.util.List;
 
-//@RolesAllowed("Ciuco-Admin")
-@Authenticated
+@RolesAllowed("Ciuco-Admin")
+//@Authenticated
 @Tag(name = "Notification Template Resource")
 @Path("notification-templates")
 @Produces(MediaType.APPLICATION_JSON)

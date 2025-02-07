@@ -1,7 +1,7 @@
 quarkus.analytics.timeout=3000
 quarkus.application.name=api-ciudadano-consciente
 quarkus.application.ui-header={applicationName} (powered by Quarkus)
-quarkus.application.version=1.2.7
+quarkus.application.version=1.2.8
 quarkus.arc.auto-inject-fields=true
 quarkus.arc.auto-producer-methods=true
 quarkus.arc.context-propagation.enabled=true
@@ -33,7 +33,7 @@ quarkus.container-image.build=true
 quarkus.container-image.group=saimon
 quarkus.container-image.insecure=false
 quarkus.container-image.name=api-ciudadano-consciente
-quarkus.container-image.tag=1.2.7
+quarkus.container-image.tag=1.2.8
 quarkus.datasource.*.health-exclude=false
 quarkus.datasource.*.jdbc=true
 quarkus.datasource.*.jdbc.telemetry=false

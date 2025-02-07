@@ -265,6 +265,24 @@ public class ResourceContent {
 
   }
 
+  @DELETE
+  @Path("{content}/images/{id}")
+  @Operation(summary = "Delete a Image File from Content.")
+  @Produces("application/json")
+  @APIResponse(responseCode = "200", description = "Image successfully deleted.")
+  @APIResponse(responseCode = "204", description = "Failed to delete image. Verify 'Warning' header.", content =
+  @Content (schema = @Schema(implementation = DTOImage.class)))
+  public RestResponse<DTOImage> deleteImage(@PathParam("content") Integer content,
+                           @PathParam("id") Integer image) {
+
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+
+    DTOImage dtoImage = serviceContent.deleteImage(content, image, userAuthData);
+    return RestResponse.ResponseBuilder.ok(dtoImage).build();
+
+  }
+
   @GET
   @Path("{content}/model")
   @Operation(summary = "Retrieve a Model file from Content.")

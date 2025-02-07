@@ -43,8 +43,6 @@ public class UtilityFileSignature {
                 return "gif";
             } else if (isPDF(signatureBytes)) {
                 return "pdf";
-            } else if (isWebP(signatureBytes)) {
-                return "webp";
             } else if (isJSON(fileBytes)) {
                 return "json";
             } else if (isBMP(signatureBytes)) {
@@ -98,14 +96,6 @@ public class UtilityFileSignature {
         // Check for PDF file signature
         return signatureBytes[0] == (byte) 0x25 && signatureBytes[1] == (byte) 0x50 &&
                 signatureBytes[2] == (byte) 0x44 && signatureBytes[3] == (byte) 0x46;
-    }
-
-    private boolean isWebP(byte[] signatureBytes) {
-        // Check for WebP file signature
-        return signatureBytes[0] == 'R' && signatureBytes[1] == 'I' &&
-                signatureBytes[2] == 'F' && signatureBytes[3] == 'F' &&
-                signatureBytes[8] == 'W' && signatureBytes[9] == 'E' &&
-                signatureBytes[10] == 'B' && signatureBytes[11] == 'P';
     }
 
     private boolean isBMP(byte[] signatureBytes) {
