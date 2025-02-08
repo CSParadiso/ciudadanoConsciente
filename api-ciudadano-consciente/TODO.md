@@ -439,7 +439,7 @@
   - IMAGE BUILD: api-ciudadano-consciente (1.2.8)
 --- 
 
-- Commit :
+- Commit 1263706:
   - feat: Añadido endpoint DELETE de content/{contentId}/image/{id}
   - refactor: removido el soporte de posteo de imagenes webp (fallaba la verificacion)
   - IMAGE BUILD: api-ciudadano-consciente (1.2.9)

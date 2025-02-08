@@ -1,7 +1,4 @@
 .idea/
 resources/*
-dockerCompose/keycloak/logs
-dockerCompose/.*
-dockerCompose/individuales/*/logs
-dockerCompose/individuales/keycloak/logs/*.log
-
+dockerCompose 
+PruebaWeb

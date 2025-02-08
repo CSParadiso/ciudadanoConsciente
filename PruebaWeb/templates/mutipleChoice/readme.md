@@ -1,1 +1,0 @@
-Otro texto de README.
