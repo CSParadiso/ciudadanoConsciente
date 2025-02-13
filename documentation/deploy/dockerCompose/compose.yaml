@@ -1,0 +1,222 @@
+services:
+
+  ciuco_db:
+    image: postgres:16
+    container_name: ciuco_db
+    deploy:
+      resources:
+        limits:
+          memory: 100M # Limita a 100MB máximo de RAM
+    restart: always
+    environment:
+      TZ: America/Argentina/Ushuaia
+      POSTGRES_PASSWORD: ${PASSWORD_DB} # Si se explicita acá, no lo ponemos en el script
+      POSTGRES_USER: ${USERNAME_DB} # Si se explicita acá, no lo ponemos en el script
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 3700:5432
+    volumes:
+      - ciuco_data:/var/lib/postgresql/data
+      - ./init_CIUCO.sql:/docker-entrypoint-initdb.d/init.sql  # Montar los scripts de inicialización (solo sirve si no hay nada en el directorio de datos mencionados arriba).
+    networks: 
+      - citizen_network
+    hostname: ciuco_db # El nombre con el que aparace en la red principal
+ 
+  kc_db:
+    image: postgres:16
+    container_name: kc_db
+    deploy:
+      resources:
+        limits:
+          memory: 100M # Limita a 100MB máximo de RAM
+    restart: always
+    environment:
+      TZ: America/Argentina/Ushuaia
+      POSTGRES_PASSWORD: ${PASSWORD_DB_KC} 
+      POSTGRES_USER: ${USERNAME_DB_KC}
+      POSTGRES_DB: ${KEYCLOAK_DB}
+    ports:
+      - 3701:5432
+    volumes:
+      - kc_data:/var/lib/postgresql/data
+      - ./init_KC.sql:/docker-entrypoint-initdb.d/init.sql  # Montar los scripts de inicialización (solo sirve si no hay nada en el directorio de datos mencionados arriba).
+    networks: 
+      - citizen_network
+    hostname: kc_db # El nombre con el que aparace en la red principal
+    depends_on: 
+      - ciuco_db
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: keycloak
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    restart: always
+    ports:
+      - 3703:8080
+    environment:
+      - TZ=America/Argentina/Ushuaia # Para la JVM
+      - QUARKUS_LOG_LEVEL=TRACE
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD} # esta clave solo se setea si no existe ninguna, debemos cambiar esta clave
+      - KC_HOSTNAME_STRICT=false
+      - KC_HTTP_ENABLED=true 
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_PROXY_PROTOCOL_ENABLED=true
+      - PROXY_ADDRESS_FORWARDING=true
+      - KC_DB_URL=${KEYCLOAK_DB_URL}
+      - KC_DB=postgres
+      - KC_DB_SCHEMA=${KEYCLOAK_DB_SCHEMA}
+      - KC_DB_USERNAME=${USERNAME_DB}
+      - KC_DB_PASSWORD=${PASSWORD_DB}
+      - KC_FEATURES=docker,admin-fine-grained-authz,organization
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+    command: start --log="console,file" 
+    volumes:
+      - ${LOGS_KEYCLOAK}:/opt/keycloak/data/log/ # mapeamos carpeta de logs para que se guarden fuera del contenedor
+    networks: 
+      - citizen_network
+    hostname: keycloak
+    depends_on: 
+      - kc_db
+  
+  kc_admin_api:
+    image: csparadiso/api-rest-admin-keycloak:1.0.1
+    container_name: kc_admin_api
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    restart: always
+    ports:
+      - 3702:5960
+    environment:      
+      - TZ=America/Argentina/Ushuaia
+      - QUARKUS_LOG_LEVEL=TRACE
+      - QUARKUS_KEYCLOAK_ADMIN_CLIENT_ENABLED=true
+      - QUARKUS_KEYCLOAK_ADMIN_CLIENT_SERVER_URL=https://keycloak.paradisoft.site # Quizás se puede obviar el colocar el reino en el programa y tomarlo de acá
+      - QUARKUS_KEYCLOAK_ADMIN_CLIENT_REALM=${REST_CLIENT_API_ADMIN_KEYCLOAK_REALM}
+      - QUARKUS_KEYCLOAK_ADMIN_CLIENT_CLIENT_ID=${REST_CLIENT_API_ADMIN_KEYCLOAK_CLIENT_ID}
+      - QUARKUS_KEYCLOAK_ADMIN_CLIENT_CLIENT_SECRET=${REST_CLIENT_API_ADMIN_KEYCLOAK_SECRET}
+      - QUARKUS_KEYCLOAK_ADMIN_CLIENT_GRANT_TYPE=CLIENT_CREDENTIALS
+      - QUARKUS_OIDC_AUTH_SERVER_URL=${QUARKUS_OIDC_AUTH_SERVER_URL}
+      - QUARKUS_OIDC_CLIENT_ID=${QUARKUS_OIDC_CLIENT_ID}
+      - QUARKUS_OIDC_CREDENTIALS_SECRET=${QUARKUS_OIDC_CREDENTIALS_SECRET}
+    volumes:
+      - ${LOGS_KC_ADMIN}:/home/jboss/logs
+    networks: 
+      - citizen_network
+    hostname: kc_admin_api
+    depends_on: 
+      - keycloak
+
+  ciuco_api:
+    #image: csparadiso/api-ciudadano-consciente:1.2.4
+    #image: csparadiso/api-ciudadano-consciente:1.2.5
+    #image: csparadiso/api-ciudadano-consciente:1.2.6
+    #image: csparadiso/api-ciudadano-consciente:1.2.7
+    #image: csparadiso/api-ciudadano-consciente:1.2.8
+    image: csparadiso/api-ciudadano-consciente:1.2.9
+    container_name: ciuco_api
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    restart: always
+    ports:
+      - 3705:5909
+    environment:
+      - QUARKUS_HTTP_CORS_ENABLED=true
+      - QUARKUS_HTTP_CORS_ORIGINS=*
+      - QUARKUS_HTTP_CORS_METHODS=GET,POST,PATCH,DELETE,OPTIONS
+      - QUARKUS_HTTP_CORS_HEADERS=Authorization,Content-Type
+      - QUARKUS_HTTP_CORS_EXPOSED_HEADERS=Authorization,Content-Type
+      - QUARKUS_HTTP_CORS_ALLOW_CREDENTIALS=true
+      - TZ=America/Argentina/Ushuaia # Para la JVM
+      - QUARKUS_HIBERNATE_ORM_JDBC_TIMEZONE=America/Argentina/Ushuaia # Para el ORM
+      - QUARKUS_HIBERNATE_ORM_MAPPING_TIMEZONE_DEFAULT_STORAGE=normalize # Toma el timezone de la JDBC al mapear
+      - QUARKUS_DATASOURCE_USERNAME=${USERNAME_DB}
+      - QUARKUS_DATASOURCE_PASSWORD=${PASSWORD_DB} 
+      - QUARKUS_DATASOURCE_JDBC_URL=${JDBC_URL}
+      - QUARKUS_DATASOURCE_JDBC_MAX_SIZE=16
+        # KEYCLOAK OIDC SERVER
+      - QUARKUS_OIDC_AUTH_SERVER_URL=${OIDC_AUTH_SERVER_URL} # localhost:3703
+      - QUARKUS_OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+      - QUARKUS_OIDC_CREDENTIALS_SECRET=${OIDC_SECRET}
+      - QUARKUS_OIDC_AUTHENTICATION_USER_INFO_REQUIRE=true
+        # FILESYSTEM MAPPING PROPERTY
+      - FILE_SYSTEM_IMAGES_VERSION_THUMBNAIL=/var/tmp/CiudadanoConsciente/resources/images/activity-type-version/thumbnail
+      - FILE_SYSTEM_IMAGES_CONTENT=/var/tmp/CiudadanoConsciente/resources/images/content
+      - IMAGE_MAX_MB_SIZE=5
+        # LOG FILE
+      - QUARKUS_LOG_LEVEL=WARN
+      - QUARKUS_LOG_FILE_ENABLE=true
+      - QUARKUS_LOG_FILE_PATH=logs/api_ciudadano_consciente/api_ciudadano_consciente # Path relativo al archivo de log
+        # FECHA_Y_HORA_AL_MS|HOST|CATEGORIA_LOG|THREAD|paquete.CLASE|METODO()|LOG|EXCEPCION
+      - QUARKUS_LOG_FILE_FORMAT=%d{yyyyMMddHHmmssSSS}|%h|%-5p|%t|%c{2}|%M()|%s|%e|%n
+      - QUARKUS_LOG_FILE_ROTATE_ON_BOOT=true
+      - QUARKUS_LOG_FILE_ROTATION_FILE_SUFFIX=.yyyyMMdd
+       # Cuenta de servicio del Cliente OIDC
+      - REALM=${REALM}
+      - QUARKUS_OIDC_CLIENT_AUTH_SERVER_URL=${OIDC_AUTH_SERVER_URL}
+      - QUARKUS_OIDC_CLIENT_CLIENT_ID=${OIDC_CLIENT_ID}
+      - QUARKUS_OIDC_CLIENT_CREDENTIALS_SECRET=${OIDC_SECRET}
+      - QUARKUS_OIDC_CLIENT_GRANT_TYPE=client
+      - QUARKUS_REST_CLIENT_API_KEYCLOAK_URL=${REST_CLIENT_API_ADMIN_KEYCLOAK_URL}
+        # SMPT gmail
+      - QUARKUS_MAILER_AUTH_METHODS=DIGEST-MD5 CRAM-SHA256 CRAM-SHA1 CRAM-MD5 PLAIN LOGIN
+      - QUARKUS_MAILER_FROM=${EMAIL_FROM}
+      - QUARKUS_MAILER_HOST=smtp.gmail.com
+      - QUARKUS_MAILER_PORT=587
+      - QUARKUS_MAILER_START_TLS=REQUIRED
+      - QUARKUS_MAILER_USERNAME=${EMAIL_FROM}
+      - QUARKUS_MAILER_PASSWORD=${EMAIL_APP_PASSWORD}
+    volumes: # volumeName:containerFileSystem
+      #- logs_ciuco:/home/jboss/logs
+           #- type: bind
+           #source: ${LOGS_CIUCO}
+           #target: /home/jboss/logs
+      - logs_ciuco:/home/jboss/logs/api_ciudadano_consciente
+      - thumbnail_images:/var/tmp/CiudadanoConsciente/resources/images/activity-type-version/thumbnail
+      - content_images:/var/tmp/CiudadanoConsciente/resources/images/content
+    networks: 
+      - citizen_network
+    hostname: ciuco_api
+    depends_on: 
+      - kc_admin_api
+    
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://keycloak:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  ciuco_data:
+  kc_data:
+  logs_ciuco: # Esto permite que Docker se encargue del volumen (permisos) pero con mapeo manual
+    driver: local
+    driver_opts:
+      type: none
+      device: ${LOGS_CIUCO}  # Local path to use for the volume
+      #    device: /var/log/ciuco  # Local path to use for the volume
+      o: bind
+  thumbnail_images: 
+    driver: local
+    driver_opts:
+      type: none
+      device: ${THUMBNAIL_DIRECTORY} # Local path to use for the volume
+      o: bind
+  content_images:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${CONTENT_IMAGES_DIRECTORY} # Local path to use for the volume
+      o: bind
+
+networks:
+  citizen_network:
+    driver: bridge
