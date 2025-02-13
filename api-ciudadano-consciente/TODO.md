@@ -447,7 +447,7 @@
   - feat: añadido endpoint de recupero de organizacion por email (GET organizations/email/{email})
   - IMAGE BUILD: api-ciudadano-consciente (1.2.10)
 
-- Commit:
+- Commit f75578f:
   - feat: añadido endpoint de recupero de concerns por usuario y de references por level (GET concerns/users/{userId} y references/levels/{levelId})
   - refactor: añadidos permisos de autorización en POST, PATCH y DELETE de References
   - refactor: añadido borrado de atributo O-Moderator a través de Keycloak cuando se borra la ORGA.

@@ -1,5 +1,4 @@
 .idea/
 resources/*
-dockerCompose 
 PruebaWeb
 api-ciudadano-consciente/.quarkus/
