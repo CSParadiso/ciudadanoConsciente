@@ -3,8 +3,11 @@ package ciudadano.consciente.resource;
 import ciudadano.consciente.dto.*;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.service.ServiceReference;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.security.Authenticated;
+import io.quarkus.security.identity.SecurityIdentity;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Schedule;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -42,6 +45,12 @@ public class ResourceReference {
   @Inject
   UtilityVerifyRequestField utilityVerifyRequestField;
 
+  @Inject
+  SecurityIdentity securityIdentity;
+
+  @Inject
+  UtilityAuthVerifier utilityAuthVerifier;
+
   @GET
   @Operation(summary = "Retrieve all References.")
   @APIResponse(responseCode = "200", description = "References successfully retrieved.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
@@ -64,6 +73,20 @@ public class ResourceReference {
 
   }
 
+  @GET
+  @Path("level/{levelId}")
+  @Operation(summary = "Retrieve all References of Level.")
+  @APIResponse(responseCode = "200", description = "References successfully retrieved.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve References. Verify 'Warning' Header.")
+  public RestResponse<List<DTOReference>> getByLevel(@PathParam("levelId") Integer levelId) {
+
+    utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceReference.getByLevel(levelId)).build();
+
+  }
+
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator", "L-Divulgator" })
   @POST
   @Operation(summary = "Create a new Reference.")
   @APIResponse(responseCode = "201", description = "Reference successfully created.", content = @Content(schema = @org.eclipse.microprofile.openapi.annotations.media.Schema(implementation = DTOReference.class)))
@@ -85,8 +108,9 @@ public class ResourceReference {
       throw new HttpBadRequestException("Title, URL and Level required.");
     }
 
-    audit.debug("Creating Reference...");
-    DTOReference reference = serviceReference.create(dtoCreateReference);
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
+    DTOReference reference = serviceReference.create(dtoCreateReference, userAuthData);
 
     audit.debug("Creating URI...");
     URI uri = URI.create(PATH_BASE_RESOURCE + reference.getReferenceId());
@@ -98,6 +122,7 @@ public class ResourceReference {
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator", "L-Divulgator" })
   @PATCH
   @Path("{id}")
   @Operation(summary = "Update a Reference.")
@@ -128,11 +153,13 @@ public class ResourceReference {
       throw new HttpBadRequestException("Body ID and Path ID must be the same.");
     }
 
-    audit.debug("Updating Reference " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceReference.update(id, dtoUpdateReference)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceReference.update(id, dtoUpdateReference, userAuthData)).build();
 
   }
 
+  @RolesAllowed({"Ciuco-Admin", "O-Moderator", "O-Divulgator", "L-Moderator", "L-Divulgator" })
   @DELETE
   @Path("{id}")
   @Operation(summary = "Delete a Reference.")
@@ -140,8 +167,9 @@ public class ResourceReference {
   @APIResponse(responseCode = "204", description = "Failed to delete Reference. Verify 'Warning' Header.")
   public RestResponse<DTOReference> delete(@PathParam("id") Integer id) {
 
-    audit.debug("Deleting Reference " + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceReference.delete(id)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData = utilityAuthVerifier.getPermissions(securityIdentity,
+            new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceReference.delete(id, userAuthData)).build();
 
   }
 

@@ -220,4 +220,13 @@ public class ServiceConcern {
 
   }
 
+  public List<DTOConcern> getAllByUser(Integer userId) {
+
+    User user = accessUser.get(userId)
+            .orElseThrow(()-> new HttpNoContentException("User not found not found."));
+
+    return mapperConcern.entityToDto(accessConcern.getByUser(user));
+
+  }
+
 }

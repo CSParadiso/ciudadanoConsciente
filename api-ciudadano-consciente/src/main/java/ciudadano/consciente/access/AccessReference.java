@@ -46,10 +46,17 @@ public class AccessReference implements PanacheRepositoryBase<Reference, Integer
 
     }
 
+    public List<Reference> getByLevel(Level level) {
+
+        return find("level", level).stream().toList();
+
+    }
+
     public boolean remove(Integer id) {
 
         audit.debug("Trying to delete Reference " + id + ".");
         return deleteById(id);
 
     }
+
 }

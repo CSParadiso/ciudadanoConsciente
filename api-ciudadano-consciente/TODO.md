@@ -437,12 +437,23 @@
   - feat: Añadidos templates a la DB. (Ahora es posible modificar los templates de los emails enviados).
   - feat: Añadida entidad VerificationToken (tokens temporales de verificación)
   - IMAGE BUILD: api-ciudadano-consciente (1.2.8)
---- 
 
 - Commit 1263706:
   - feat: Añadido endpoint DELETE de content/{contentId}/image/{id}
   - refactor: removido el soporte de posteo de imagenes webp (fallaba la verificacion)
   - IMAGE BUILD: api-ciudadano-consciente (1.2.9)
+
+- Commit 08359cf:
+  - feat: añadido endpoint de recupero de organizacion por email (GET organizations/email/{email})
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.10)
+
+- Commit:
+  - feat: añadido endpoint de recupero de concerns por usuario y de references por level (GET concerns/users/{userId} y references/levels/{levelId})
+  - refactor: añadidos permisos de autorización en POST, PATCH y DELETE de References
+  - refactor: añadido borrado de atributo O-Moderator a través de Keycloak cuando se borra la ORGA.
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.11)
+--- 
+
 --- 
 
 ---

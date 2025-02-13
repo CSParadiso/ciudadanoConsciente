@@ -88,6 +88,19 @@ public class ResourceOrganization {
 
   }
 
+  //@RolesAllowed("Ciuco-Admin")
+  @GET
+  @Path("email/{email}")
+  @Operation(summary = "Retrieve an specific Organization by its email.")
+  @APIResponse(responseCode = "200", description = "Organization successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOOrganization.class)))
+  @APIResponse(responseCode = "204", description = "Failed to retrieve Organization. Verify 'Warning' Header.")
+  public RestResponse<DTOOrganization> getByEmail(@PathParam("email") String email) {
+
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceOrganization.getByEmail(email)).build();
+
+  }
+
   // Just himself, Maybe Ciuco could do it
   @GET
   @Path("users")

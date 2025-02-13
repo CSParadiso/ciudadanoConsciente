@@ -81,6 +81,23 @@ public class ResourceConcern {
 
   }
 
+  @GET
+  @Path("users/{userId}")
+  @Operation(summary = "Retrieve all Concerns of a User.")
+  @APIResponse(
+          responseCode = "200",
+          description = "Concerns of User successfully retrieved.",
+          content = @Content (schema = @Schema(implementation = DTOConcern.class))
+  )
+  @APIResponse(responseCode = "204", description = "Failed to retrieve all Concerns. Verify 'Warning' header.")
+  public RestResponse<List<DTOConcern>> getByUser(@PathParam("userId") Integer userId) {
+
+
+    utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceConcern.getAllByUser(userId)).build();
+
+  }
+
   @POST
   @Operation(summary = "Create a Concern.")
   @APIResponse(

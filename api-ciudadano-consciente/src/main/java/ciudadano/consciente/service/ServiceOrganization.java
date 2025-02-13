@@ -110,6 +110,15 @@ public class ServiceOrganization {
 
   }
 
+  public DTOOrganization getByEmail(String email) {
+
+    Organization organization = accessOrganization.getByEmail(email)
+            .orElseThrow(() -> new HttpNoContentException("Organization not found."));
+
+    return mapperOrganization.entityToDto(organization);
+
+  }
+
   public List<DTOOrganization> getOrganizationsByUser(UserInfo userInfo) {
 
     audit.debug("Retrieving Organization by User " + userInfo.getEmail());
@@ -357,7 +366,14 @@ public class ServiceOrganization {
       }
     }
 
-    // TODO Verificar si se borran todas las referencias en la DB (las restricciones existen, deberia)
+    // Las referencias en la DB se borran pero en Keycloak hay que actualizarlas
+    // UPDATE KEYCLOAK SERVER (si no se puede actualizar, no pasa nada. Regularmente se puede realizar limpieza, con
+    // la feature @Scheduled de Quarkus)
+    // Deberian borrarse tambien todos los Moderadores y Divulgadores de Orga y Levels de esa ORGA
+    audit.debug("Trying to remove Role from User tru the Keycloak API.");
+    keycloak.removeRoleFromOrganization(user.getAuthServerId(), "O-Moderator", organization.getOrganizationId());
+
+
     audit.debug("Mapping EntityType into DTO.");
     return mapperOrganization.entityToDto(organization);
 

@@ -30,6 +30,12 @@ public class AccessOrganization implements PanacheRepositoryBase<Organization, I
 
     }
 
+    public Optional<Organization> getByEmail(String email) {
+
+        return find("email", email).stream().findFirst();
+
+    }
+
     public Optional<Organization> save(Organization organization) {
 
         audit.debug("Trying to persist Organization " + organization.getOrganizationId() + ".");
@@ -58,5 +64,6 @@ public class AccessOrganization implements PanacheRepositoryBase<Organization, I
         return count("email", email) > 0;
 
     }
+
 
 }

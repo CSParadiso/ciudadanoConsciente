@@ -2,6 +2,7 @@ package ciudadano.consciente.service;
 
 import ciudadano.consciente.access.*;
 import ciudadano.consciente.dto.*;
+import ciudadano.consciente.exception.AuthDenialSecurityException;
 import ciudadano.consciente.exception.HttpBadRequestException;
 import ciudadano.consciente.exception.HttpInternalServerException;
 import ciudadano.consciente.exception.HttpNoContentException;
@@ -10,8 +11,10 @@ import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.mapper.MapperVotedEntity;
 import ciudadano.consciente.model.*;
 import ciudadano.consciente.mapper.MapperReference;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityMetadataClasses;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -63,6 +66,9 @@ public class ServiceReference {
   @Inject
   MapperTaggedEntity mapperTaggedEntity;
 
+  @Inject
+  AccessUserRoleLevel accessUserRoleLevel;
+
   public List<DTOReference> getAll() {
 
     audit.debug("Retrieving all References.");
@@ -80,12 +86,35 @@ public class ServiceReference {
 
   }
 
+  public List<DTOReference> getByLevel(Integer levelId) {
+
+    Level level = accessLevel.get(levelId)
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+    return mapperReference.entityToDto(accessReference.getByLevel(level));
+
+  }
+
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOReference create(DTOCreateReference dtoCreateReference) {
+  public DTOReference create(DTOCreateReference dtoCreateReference, UtilityAuthVerifier.UserAuthData userAuthData) {
 
     Integer levelDto = dtoCreateReference.getLevel();
     Level level = accessLevel.get(levelDto)
         .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // If user doesnt have ORG Roles, mut have levels roles
+    if (!userAuthData.hasOrgRoles(level.getOrganization().getOrganizationId())) {
+      boolean authorizedInLevel = false;
+      List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getAncestorByLevel(level);
+      for (UserRoleLevel url : userRoleLevelList) {
+        if (userAuthData.hasLevelRoles(level.getLevelId())) {
+          authorizedInLevel = true;
+          break;
+        }
+      }
+      if (!authorizedInLevel) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to create References in Level.");
+      }
+    }
 
     String title = dtoCreateReference.getTitle();
     audit.debug("Verifying if title " + title + " of Reference already exists in Level " + levelDto);
@@ -106,15 +135,52 @@ public class ServiceReference {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOReference update(Integer id, DTOUpdateReference dtoUpdateReference) {
+  public DTOReference update(Integer id, DTOUpdateReference dtoUpdateReference, UtilityAuthVerifier.UserAuthData userAuthData) {
 
     Reference reference = accessReference.get(id)
         .orElseThrow(() -> new HttpNoContentException("Reference not found."));
 
+
+    Level referenceLevel = accessLevel.get(reference.getLevel().getLevelId())
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // If user doesnt have ORG Roles, mut have levels roles
+    if (!userAuthData.hasOrgRoles(referenceLevel.getOrganization().getOrganizationId())) {
+      boolean authorizedInLevel = false;
+      List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getAncestorByLevel(referenceLevel);
+      for (UserRoleLevel url : userRoleLevelList) {
+        if (userAuthData.hasLevelRoles(referenceLevel.getLevelId())) {
+          authorizedInLevel = true;
+          break;
+        }
+      }
+      if (!authorizedInLevel) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to update References in Level.");
+      }
+    }
+
     Integer level = dtoUpdateReference.getLevel();
     if (utilityVerifyRequestField.isValidField(level)) {
-      reference.setLevel(accessLevel.get(level)
-          .orElseThrow(() -> new HttpNoContentException("Level not found.")));
+
+      Level newLevel = accessLevel.get(level)
+              .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+      // If user doesnt have ORG Roles, mut have levels roles
+      if (!userAuthData.hasOrgRoles(newLevel.getOrganization().getOrganizationId())) {
+        boolean authorizedInNewLevel = false;
+        List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getAncestorByLevel(newLevel);
+        for (UserRoleLevel url : userRoleLevelList) {
+          if (userAuthData.hasLevelRoles(newLevel.getLevelId())) {
+            authorizedInNewLevel = true;
+            break;
+          }
+        }
+        if (!authorizedInNewLevel) {
+          throw new AuthDenialSecurityException("Mismatch: User is not allowed to update References in Level.");
+        }
+      }
+
+      reference.setLevel(newLevel);
     }
 
     String title = dtoUpdateReference.getTitle();
@@ -147,11 +213,29 @@ public class ServiceReference {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOReference delete(Integer id) {
+  public DTOReference delete(Integer id, UtilityAuthVerifier.UserAuthData userAuthData) {
 
     audit.debug("Deleting Reference " + id + ".");
     Reference reference = accessReference.get(id)
         .orElseThrow(() -> new HttpNoContentException("Reference not found."));
+
+    Level referenceLevel = accessLevel.get(reference.getLevel().getLevelId())
+            .orElseThrow(() -> new HttpNoContentException("Level not found."));
+
+    // If user doesnt have ORG Roles, mut have levels roles
+    if (!userAuthData.hasOrgRoles(referenceLevel.getOrganization().getOrganizationId())) {
+      boolean authorizedInLevel = false;
+      List<UserRoleLevel> userRoleLevelList = accessUserRoleLevel.getAncestorByLevel(referenceLevel);
+      for (UserRoleLevel url : userRoleLevelList) {
+        if (userAuthData.hasLevelRoles(referenceLevel.getLevelId())) {
+          authorizedInLevel = true;
+          break;
+        }
+      }
+      if (!authorizedInLevel) {
+        throw new AuthDenialSecurityException("Mismatch: User is not allowed to update References in Level.");
+      }
+    }
 
     if (!accessReference.remove(reference.getReferenceId())) {
       throw new HttpInternalServerException("Failed to delete Reference");
@@ -224,5 +308,5 @@ public class ServiceReference {
     return mapperTaggedEntity.taggedReferenceEntityToDto(accessTaggedReference.getTags(reference));
 
   }
-  
+
 }
