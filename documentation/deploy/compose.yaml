@@ -74,7 +74,7 @@ services:
       - KC_FEATURES=docker,admin-fine-grained-authz,organization
       - KC_HEALTH_ENABLED=true
       - KC_METRICS_ENABLED=true
-    command: start --log="console,file" 
+    command: start --import-realm --log="console,file"
     volumes:
       - ./realm_export.json:/opt/keycloak/data/import
       - ${LOGS_KEYCLOAK}:/opt/keycloak/data/log/ # mapeamos carpeta de logs para que se guarden fuera del contenedor
