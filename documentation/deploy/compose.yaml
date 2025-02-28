@@ -76,6 +76,7 @@ services:
       - KC_METRICS_ENABLED=true
     command: start --log="console,file" 
     volumes:
+      - ./realm_export.json:/opt/keycloak/data/import
       - ${LOGS_KEYCLOAK}:/opt/keycloak/data/log/ # mapeamos carpeta de logs para que se guarden fuera del contenedor
     networks: 
       - citizen_network
@@ -119,7 +120,14 @@ services:
     #image: csparadiso/api-ciudadano-consciente:1.2.6
     #image: csparadiso/api-ciudadano-consciente:1.2.7
     #image: csparadiso/api-ciudadano-consciente:1.2.8
-    image: csparadiso/api-ciudadano-consciente:1.2.9
+    #image: csparadiso/api-ciudadano-consciente:1.2.9
+    #image: csparadiso/api-ciudadano-consciente:1.2.10
+    #image: csparadiso/api-ciudadano-consciente:1.2.11
+    #image: csparadiso/api-ciudadano-consciente:1.2.12
+    #image: csparadiso/api-ciudadano-consciente:1.2.13
+    #image: csparadiso/api-ciudadano-consciente:1.2.14
+    #image: csparadiso/api-ciudadano-consciente:1.2.15
+    image: csparadiso/api-ciudadano-consciente:1.2.16
     container_name: ciuco_api
     deploy:
       resources:

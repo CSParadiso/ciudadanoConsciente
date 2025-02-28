@@ -182,7 +182,7 @@ create table app.activities (
 create table app.answers(
 	answer_id integer generated always as identity primary key,
 	created timestamp with time zone default CURRENT_DATE not null, 	-- Puede ser localDateTime
-	activity integer default 1 references app.activities on delete set default not null, -- Este fallback es para no borrrarle la racha al usuario. REVISAR (quizas se pueda hacer cascade, ¿para que quisiéramos la respuesta de algo que no existe?)
+	activity integer default 0 references app.activities on delete set default not null, -- Este fallback es para no borrrarle la racha al usuario. REVISAR (quizas se pueda hacer cascade, ¿para que quisiéramos la respuesta de algo que no existe?)
 	status boolean default false not null,
         -- add percentage double default 0.0 not null, PARA DETERMINAR EL PORCENTAJE DE COMPLETADO TANTO PARA FALLO COMO PARA EXITO (quizás implica que la version explicite en el model el procentaje)
 	user_id integer references app.users on delete cascade not null
@@ -460,4 +460,10 @@ insert into app.entity_types(title, votable) values
 
 -- Filename required
 insert into app.file_name_required (file_name, extension, mime_type, alias, in_db) values ('model', '.json', 'application/json', 'JSON', true), ('template', '.js', 'text/javascript', 'JAVASCRIPT', true), ('README', '.md', 'text/markdown', 'MARKDOWN', true), ('thumbnail', '.png', 'image/png', 'THUMBNAIL', false);	
+
+-- FALLBACK ACTIVITY PARA CUANDO SE ELIMINA LA ACTIVITY DE UNA ANSWER (es necesario que exista el level 1 y el content 1 -- cambiar ambos a cero)
+INSERT INTO app.activities (activity_id, description, level_id, content)
+OVERRIDING SYSTEM VALUE
+VALUES (0, 'DEFAULT', 1, 1);
+
 -----------------------------------------------------------------------

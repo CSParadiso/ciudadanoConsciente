@@ -1,0 +1,177 @@
+**********************************************
+************** USERS IN KEYCLOAK DB **********
+**********************************************
+
+keycloak=# \dS+ keycloak.user_entity;
+                                                        Table "keycloak.user_entity"
+           Column            |          Type          | Collation | Nullable | Default | Storage  | Compression | Stats target | Description 
+-----------------------------+------------------------+-----------+----------+---------+----------+-------------+--------------+-------------
+ id                          | character varying(36)  |           | not null |         | extended |             |              | 
+ email                       | character varying(255) |           |          |         | extended |             |              | 
+ email_constraint            | character varying(255) |           |          |         | extended |             |              | 
+ email_verified              | boolean                |           | not null | false   | plain    |             |              | 
+ enabled                     | boolean                |           | not null | false   | plain    |             |              | 
+ federation_link             | character varying(255) |           |          |         | extended |             |              | 
+ first_name                  | character varying(255) |           |          |         | extended |             |              | 
+ last_name                   | character varying(255) |           |          |         | extended |             |              | 
+ realm_id                    | character varying(255) |           |          |         | extended |             |              | 
+ username                    | character varying(255) |           |          |         | extended |             |              | 
+ created_timestamp           | bigint                 |           |          |         | plain    |             |              | 
+ service_account_client_link | character varying(255) |           |          |         | extended |             |              | 
+ not_before                  | integer                |           | not null | 0       | plain    |             |              | 
+Indexes:
+    "constraint_fb" PRIMARY KEY, btree (id)
+    "idx_user_email" btree (email)
+    "idx_user_service_account" btree (realm_id, service_account_client_link)
+    "uk_dykn684sl8up1crfei6eckhd7" UNIQUE CONSTRAINT, btree (realm_id, email_constraint)
+    "uk_ru8tt6t700s9v50bu18ws5ha6" UNIQUE CONSTRAINT, btree (realm_id, username)
+Referenced by:
+    TABLE "keycloak.federated_identity" CONSTRAINT "fk404288b92ef007a6" FOREIGN KEY (user_id) REFERENCES keycloak.user_entity(id)
+    TABLE "keycloak.user_attribute" CONSTRAINT "fk_5hrm2vlf9ql5fu043kqepovbr" FOREIGN KEY (user_id) REFERENCES keycloak.user_entity(id)
+    TABLE "keycloak.user_required_action" CONSTRAINT "fk_6qj3w1jw9cvafhe19bwsiuvmd" FOREIGN KEY (user_id) REFERENCES keycloak.user_entity(id)
+    TABLE "keycloak.user_role_mapping" CONSTRAINT "fk_c4fqv34p1mbylloxang7b1q3l" FOREIGN KEY (user_id) REFERENCES keycloak.user_entity(id)
+    TABLE "keycloak.user_consent" CONSTRAINT "fk_grntcsnt_user" FOREIGN KEY (user_id) REFERENCES keycloak.user_entity(id)
+    TABLE "keycloak.credential" CONSTRAINT "fk_pfyr0glasqyl0dei3kl69r6v0" FOREIGN KEY (user_id) REFERENCES keycloak.user_entity(id)
+    TABLE "keycloak.user_group_membership" CONSTRAINT "fk_user_group_user" FOREIGN KEY (user_id) REFERENCES keycloak.user_entity(id)
+Access method: heap
+
+
+*********************************************************
+************** USERS IN CIUDADANO_CONSCIENTE DB *********
+*********************************************************
+
+keycloak=# \c ciudadano_consciente; \dS+ app.users;
+You are now connected to database "ciudadano_consciente" as user "saimon".
+                                                               Table "app.users"
+  Column   |          Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target | Description 
+-----------+------------------------+-----------+----------+------------------------------+----------+-------------+--------------+-------------
+ user_id   | integer                |           | not null | generated always as identity | plain    |             |              | 
+ email     | character varying(100) |           | not null |                              | extended |             |              | 
+ username  | character varying(100) |           | not null |                              | extended |             |              | 
+ pass_word | character varying(100) |           | not null |                              | extended |             |              | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (user_id)
+    "users_email_key" UNIQUE CONSTRAINT, btree (email)
+    "users_username_key" UNIQUE CONSTRAINT, btree (username)
+Referenced by:
+    TABLE "app.activity_types" CONSTRAINT "activity_types_creator_fkey" FOREIGN KEY (creator) REFERENCES app.users(user_id) ON DELETE SET DEFAULT
+    TABLE "app.answers" CONSTRAINT "answers_user_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id) ON DELETE SET DEFAULT
+    TABLE "app.concerns" CONSTRAINT "concerns_user_id_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id) ON DELETE SET DEFAULT
+    TABLE "app.contents" CONSTRAINT "contents_creator_fkey" FOREIGN KEY (creator) REFERENCES app.users(user_id)
+    TABLE "app.users_roles_organizations" CONSTRAINT "fk_new_user" FOREIGN KEY (user_id) REFERENCES app.users(user_id)
+    TABLE "app.users_roles_levels" CONSTRAINT "fk_new_user" FOREIGN KEY (user_id) REFERENCES app.users(user_id)
+    TABLE "app.random_streak" CONSTRAINT "streak_user_id_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id)
+    TABLE "app.votes" CONSTRAINT "votes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id) ON DELETE CASCADE
+Access method: heap
+
+
+*********************************************************
+******************* ACCESS TOKEN DECODED ****************
+*********************************************************
+
+{
+    "alg": "RS256",
+    "typ": "JWT",
+    "kid": "JZjqfVsyhZlYomKbRV5KoQs7VuRc7rg66aPTEn7mv_k"
+}
+{
+    "exp": 1722388499,
+    "iat": 1722388199,
+    "auth_time": 1722388196,
+    "jti": "4f92d78e-cb4f-4271-84eb-541c8a641ea7",
+    "iss": "http://localhost:3704/realms/Ciudadano",
+    "aud": "account",
+    "sub": "f1680a20-41b8-412b-bfaf-6b7836053eb1",
+    "typ": "Bearer",
+    "azp": "desa-api-ciudadano-consciente",
+    "nonce": "DGthhNa",
+    "session_state": "3522c5ce-9c6e-4238-b9fe-632931e5e10c",
+    "acr": "1",
+    "allowed-origins": [
+        "",
+        "*"
+    ],
+    "realm_access": {
+        "roles": [
+            "offline_access",
+            "default-roles-ciudadano",
+            "uma_authorization"
+        ]
+    },
+    "resource_access": {
+        "account": {
+            "roles": [
+                "manage-account",
+                "manage-account-links",
+                "view-profile"
+            ]
+        }
+    },
+    "scope": "openid email profile",
+    "sid": "3522c5ce-9c6e-4238-b9fe-632931e5e10c",
+    "email_verified": false,
+    "name": "Cayetano SimÃ³n Paradiso",
+    "preferred_username": "saimon",
+    "given_name": "Cayetano SimÃ³n",
+    "family_name": "Paradiso",
+    "email": "cayetanosimonparadiso@protonmail.com"
+}
+
+
+*********************************************************
+******************* FILTRO EN API ***********************
+*********************************************************
+
+ @ServerRequestFilter(preMatching = true)
+    public void logUser() {
+
+        audit.debug("KC-Cliente : " + jsonWebToken.getClaim("azp"));
+        audit.debug("KC-Id: " + jsonWebToken.getClaim("sub"));
+        audit.debug("KC-Username: " + securityIdentity.getPrincipal().getName());
+
+    }
+
+*********************************************************
+******************* RAZONAMIENTO ************************
+*********************************************************
+Ambas DB tienen la restricción unique tanto en el email como en el username, sirven como identificador.
+El claim (atributo) "sub" nos recupera el identificador de la DB del user_entity. Es lo más serio usar este identificador.
+Si se elige el email, no permitiremos que el usuario modofique su correo electrónico en el futuro pues es el identificador.
+Si se elige el username, pasará lo mismo, no tendremos donde agarrarnos para mapear. 
+	--> Entonces, la DB de la API debería tener su user_id mapeado con el id de la DB de Keycloak que recuperamos en cada petición a través del claim "sub". 
+	--> Los campos adicionales que guarde la tabla de user de la API serán redundantes o complelemtarios con los de la DB de keycloak.
+	--> La responsabilidad recae en la DB de keycloak y la API solo tiene su user_id para su lógica interna, el auth_server_id y los campos email y username, proveídos en el access Token.
+	--> El campo pass_word se reemplaza por auth_server_id que será el identificador del usuario en keyloak y nuestro mapeo entre las dos DB.
+	--> La cantidad de caracteres de la DB de la API no puede ser menor a los de KC, ya que si se crea uno largo en KC y la API lo rebota, queda creado en KC.
+
+----------------\
+------------------\
+-------------------> RESULTADO: vamos a mapear las dos DB a través del campo keycloak.user_entity.id = app.users.auth_server_id. Modificar: llevar a 255 el varchar de email y username en ciuco.
+------------------/  Ventaja de este aproach: nos permite independizarnos del servidor de autorización, sólo necesitamos un punto de anclaje para mapear.
+----------------/
+
+ciudadano_consciente=# alter table app.users rename column pass_word to auth_server_id;
+ALTER TABLE
+ciudadano_consciente=# \dS+ app.users;
+                                                                  Table "app.users"
+     Column     |          Type          | Collation | Nullable |           Default            | Storage  | Compression | Stats target | Description 
+----------------+------------------------+-----------+----------+------------------------------+----------+-------------+--------------+-------------
+ user_id        | integer                |           | not null | generated always as identity | plain    |             |              | 
+ email          | character varying(100) |           | not null |                              | extended |             |              | 
+ username       | character varying(100) |           | not null |                              | extended |             |              | 
+ auth_server_id | character varying(100) |           | not null |                              | extended |             |              | 
+Indexes:
+    "users_pkey" PRIMARY KEY, btree (user_id)
+    "users_email_key" UNIQUE CONSTRAINT, btree (email)
+    "users_username_key" UNIQUE CONSTRAINT, btree (username)
+Referenced by:
+    TABLE "app.activity_types" CONSTRAINT "activity_types_creator_fkey" FOREIGN KEY (creator) REFERENCES app.users(user_id) ON DELETE SET DEFAULT
+    TABLE "app.answers" CONSTRAINT "answers_user_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id) ON DELETE SET DEFAULT
+    TABLE "app.concerns" CONSTRAINT "concerns_user_id_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id) ON DELETE SET DEFAULT
+    TABLE "app.contents" CONSTRAINT "contents_creator_fkey" FOREIGN KEY (creator) REFERENCES app.users(user_id)
+    TABLE "app.users_roles_organizations" CONSTRAINT "fk_new_user" FOREIGN KEY (user_id) REFERENCES app.users(user_id)
+    TABLE "app.users_roles_levels" CONSTRAINT "fk_new_user" FOREIGN KEY (user_id) REFERENCES app.users(user_id)
+    TABLE "app.random_streak" CONSTRAINT "streak_user_id_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id)
+    TABLE "app.votes" CONSTRAINT "votes_user_id_fkey" FOREIGN KEY (user_id) REFERENCES app.users(user_id) ON DELETE CASCADE
+Access method: heap
+
