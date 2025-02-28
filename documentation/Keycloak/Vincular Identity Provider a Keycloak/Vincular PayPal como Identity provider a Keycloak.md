@@ -22,6 +22,6 @@ Para agregar un IdentityProvider a nuestro reino es el siguiente:
 4. Registrar el Client ID y Client Secret del IdentityProvider en Keycloak. Podemos tildar la casilla de verificación de email así nos queda verificado email si lo ha hecho a través del IdentityProvider (esto nos permite por ahora asegurarnos de que el correo exista sin todavía tener un servidor SMTP propio).
    ![[VincularIdentityProviderLinkedin-Paso4.png]]
    6. Crear cuentas de prueba del sandbox
-      ![[VincularIdentityProviderPaypal-Paso5.png]]
+      ![[VincularIdentityProviderPayPal-Paso5.png]]
    7. Verificar 
        ![[VincularIdentityProviderPayPal-Paso6.png]]

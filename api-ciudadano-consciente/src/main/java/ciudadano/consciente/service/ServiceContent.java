@@ -340,24 +340,24 @@ public class ServiceContent {
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
     // If user is not Ciuco-Admin and content is private
-    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
-
-      // If Content doesn't have ORG, User must be Creator to retrieve Image of private Content
-      if (content.getOrganization() == null) {
-        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
-                .orElseThrow(() -> new HttpNoContentException("User not found."));
-
-        // Verify is User is creator of Content
-        if (user.getUserId() != content.getCreator().getUserId()) {
-          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
-        }
-        // Verify if User belongs to ORG of Content
-      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
-        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Image of " +
-                "Organization.");
-      }
-
-    }
+//    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
+//
+//      // If Content doesn't have ORG, User must be Creator to retrieve Image of private Content
+//      if (content.getOrganization() == null) {
+//        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+//                .orElseThrow(() -> new HttpNoContentException("User not found."));
+//
+//        // Verify is User is creator of Content
+//        if (user.getUserId() != content.getCreator().getUserId()) {
+//          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+//        }
+//        // Verify if User belongs to ORG of Content
+//      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+//        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Image of " +
+//                "Organization.");
+//      }
+//
+//    }
 
     Image image = accessImage.get(imageId)
         .orElseThrow(() -> new HttpNoContentException("Image not found."));
@@ -372,25 +372,25 @@ public class ServiceContent {
     Content content = accessContent.get(contentId)
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
-    // If user is not Ciuco-Admin and content is private
-    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
-
-      // If Content doesn't have ORG, User must be Creator to retrieve Images of private Content
-      if(content.getOrganization() == null) {
-        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
-                .orElseThrow( () -> new HttpNoContentException("User not found."));
-
-        // Verify is User is creator of Content
-        if(user.getUserId() != content.getCreator().getUserId()) {
-          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
-        }
-        // Verify if User belongs to ORG of Content
-      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
-        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Images of " +
-                "Organization.");
-      }
-
-    }
+//    // If user is not Ciuco-Admin and content is private
+//    if(!userAuthData.isCiucoAdmin() && !content.isPublicContent()) {
+//
+//      // If Content doesn't have ORG, User must be Creator to retrieve Images of private Content
+//      if(content.getOrganization() == null) {
+//        User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+//                .orElseThrow( () -> new HttpNoContentException("User not found."));
+//
+//        // Verify is User is creator of Content
+//        if(user.getUserId() != content.getCreator().getUserId()) {
+//          throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+//        }
+//        // Verify if User belongs to ORG of Content
+//      } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+//        throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Images of " +
+//                "Organization.");
+//      }
+//
+//    }
 
     List<Image> imageList = accessImage.getImageByContent(content);
 
@@ -404,19 +404,19 @@ public class ServiceContent {
         .orElseThrow(() -> new HttpNoContentException("Content not found."));
 
     // If Content doesn't have ORG, User must be Creator to retrieve Images of private Content
-    if(content.getOrganization() == null) {
-      User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
-              .orElseThrow( () -> new HttpNoContentException("User not found."));
-
-      // Verify is User is creator of Content
-      if(user.getUserId() != content.getCreator().getUserId()) {
-        throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
-      }
-      // Verify if User belongs to ORG of Content
-    } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
-      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Model of " +
-              "Organization.");
-    }
+//    if(content.getOrganization() == null) {
+//      User user = accessUser.getByEmail(userAuthData.getUserInfo().getEmail())
+//              .orElseThrow( () -> new HttpNoContentException("User not found."));
+//
+//      // Verify is User is creator of Content
+//      if(user.getUserId() != content.getCreator().getUserId()) {
+//        throw new AuthDenialSecurityException("Mismatch: User is not Creator of Content.");
+//      }
+//      // Verify if User belongs to ORG of Content
+//    } else if (!userAuthData.hasOrgRoles(content.getOrganization().getOrganizationId())) {
+//      throw new AuthDenialSecurityException("Mismatch: User is not allowed to retrieve Content Model of " +
+//              "Organization.");
+//    }
 
     return content.getModel();
 

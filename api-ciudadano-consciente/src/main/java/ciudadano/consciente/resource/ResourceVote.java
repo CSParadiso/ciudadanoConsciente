@@ -2,6 +2,7 @@ package ciudadano.consciente.resource;
 
 import ciudadano.consciente.dto.DTOVote;
 import ciudadano.consciente.service.ServiceVote;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import ciudadano.consciente.utility.UtilityVerifyRequestField;
 import io.quarkus.oidc.UserInfo;
 import io.quarkus.security.Authenticated;
@@ -44,6 +45,9 @@ public class ResourceVote {
 
   @Inject
   SecurityIdentity securityIdentity;
+
+  @Inject
+  UtilityAuthVerifier utilityAuthVerifier;
 
   @RolesAllowed("Ciuco-Admin")
   @GET
@@ -162,31 +166,23 @@ public class ResourceVote {
      * desloguea el user.
      */
 
-    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-
-    audit.debug("Updating Vote Status" + id + "...");
-    return RestResponse.ResponseBuilder.ok(serviceVote.updateStatus(id, userInfo.getPreferredUserName())).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceVote.updateStatus(id, userAuthData)).build();
 
   }
 
   @Authenticated
   @GET
-  @Path("{user}")
+  @Path("users")
   @Operation(summary = "Retrieve votes of a User.")
   @APIResponse(responseCode = "200", description = "Votes of User successfully retrieved.", content = @Content(schema = @Schema(implementation = DTOVote.class)))
   @APIResponse(responseCode = "204", description = "Failed to retrieve Votes of User. Verify 'Warning' Header.")
-  public RestResponse<List<DTOVote>> getVotes(@PathParam("user") Integer userId) {
+  public RestResponse<List<DTOVote>> getVotesByUser(@PathParam("user") Integer userId) {
 
-    UserInfo userInfo = securityIdentity.getAttribute("userinfo");
-    boolean userRequested = !securityIdentity.hasRole("Ciuco-Admin");
-
-    if (userRequested) {
-      audit.debug("User " + userInfo.getPreferredUserName() + " is trying to get votes of User " + userId);
-    } else {
-      audit.info("Admin " + userInfo.getPreferredUserName() + " is trying to get votes of User " + userId);
-    }
-
-    return RestResponse.ResponseBuilder.ok(serviceVote.getVotesByUserId(userId, userInfo, userRequested)).build();
+    UtilityAuthVerifier.UserAuthData userAuthData =
+            utilityAuthVerifier.getPermissions(securityIdentity, new Object(){});
+    return RestResponse.ResponseBuilder.ok(serviceVote.getVotesByUser(userAuthData)).build();
 
   }
 

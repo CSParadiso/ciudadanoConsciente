@@ -452,6 +452,14 @@
   - refactor: añadidos permisos de autorización en POST, PATCH y DELETE de References
   - refactor: añadido borrado de atributo O-Moderator a través de Keycloak cuando se borra la ORGA.
   - IMAGE BUILD: api-ciudadano-consciente (1.2.11)
+
+- Commit:
+  - refactor: eliminado ID del path de votes (ahora se recupera el ususario con el token)
+  - feat: agregado el atributo username al DTOConcern
+  - refactor: corregido el PATCH de votes (ahora el patch verifica bien la autenticacion y niega el estado anterior)
+  - refactor: quitados las restricciones de autorizacion para los GET images y model de los CONTENT
+  - refactor: comentada la verificación de existencia previa de titulo en reference
+  - IMAGE BUILD: api-ciudadano-consciente (1.2.16)
 --- 
 
 --- 

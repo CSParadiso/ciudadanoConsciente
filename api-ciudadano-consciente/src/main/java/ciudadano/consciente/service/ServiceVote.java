@@ -9,6 +9,7 @@ import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.exception.HttpNoContentException;
 import ciudadano.consciente.mapper.MapperVote;
 import ciudadano.consciente.model.*;
+import ciudadano.consciente.utility.UtilityAuthVerifier;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -77,19 +78,25 @@ public class ServiceVote {
   }
 
   @Transactional(Transactional.TxType.REQUIRED)
-  public DTOVote updateStatus(Integer id, String username) {
+  public DTOVote updateStatus(Integer id, UtilityAuthVerifier.UserAuthData userAuthData) {
 
     Vote vote = accessVote.get(id)
         .orElseThrow(() -> new HttpNoContentException("Vote not found."));
 
-    if (!vote.getUser().getUsername().equals(username)) {
+    User user = accessUser.get(vote.getUser().getUserId())
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+    User userRequester = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
+            .orElseThrow(() -> new HttpNoContentException("User not found."));
+
+    if (userRequester.getUserId() != user.getUserId()) {
       audit.warn("Mismatch: NOT AUTHORIZED TO UPDATE. User Claims doesn't match User data.");
       throw new AuthDenialSecurityException(
           "Mismatch: NOT AUTHORIZED TO UPDATE VOTE. User Claims doesn't match User data.");
     }
 
     audit.debug("Updating Vote " + id + ".");
-    vote.setActive(false);
+    vote.setActive(!vote.isActive());
 
     audit.debug("Saving Vote " + vote.getVoteId() + ".");
     accessVote.save(vote)
@@ -198,21 +205,10 @@ public class ServiceVote {
 
   }
 
-  public List<DTOVote> getVotesByUserId(Integer id, UserInfo userInfo, boolean userRequested) {
+  public List<DTOVote> getVotesByUser(UtilityAuthVerifier.UserAuthData userAuthData) {
 
-    User user = accessUser.get(id)
+    User user = accessUser.getByAuthServerId(userAuthData.getUserInfo().getSubject())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
-
-    if (userRequested) {
-      // Just for security double check
-      if (user.getAuthServerId().equals(userInfo.getSubject())) {
-        audit.debug("User " + user.getUserId() + " is retrieving his votes.");
-      } else {
-        audit.warn("Mismatch: NOT AUTHORIZED TO DELETE. User Claims doesn't match User data.");
-        throw new AuthDenialSecurityException(
-            "Mismatch: NOT AUTHORIZED TO GET VOTES. User Claims doesn't match User data.");
-      }
-    }
 
     return mapperVote.entityToDto(accessVote.getByUser(user));
 

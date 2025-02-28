@@ -185,9 +185,9 @@ public class ServiceReference {
 
     String title = dtoUpdateReference.getTitle();
     if (utilityVerifyRequestField.isValidField(title)) {
-      if (accessReference.existsTitleInLevel(reference.getLevel(), title)) {
-        throw new HttpBadRequestException("Already exists a Reference with that title in Level.");
-      }
+      //if (accessReference.existsTitleInLevel(reference.getLevel(), title)) {
+      //  throw new HttpBadRequestException("Already exists a Reference with that title in Level.");
+      //}
       reference.setTitle(title);
     }
 

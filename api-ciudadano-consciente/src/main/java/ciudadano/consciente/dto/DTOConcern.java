@@ -21,6 +21,9 @@ public class DTOConcern {
     @Schema(defaultValue = "")
     private Integer user;
 
+    @Schema(defaultValue = "")
+    private String username;
+
     public Integer getConcernId() {
         return concernId;
     }
@@ -59,5 +62,13 @@ public class DTOConcern {
 
     public void setUser(Integer user) {
         this.user = user;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

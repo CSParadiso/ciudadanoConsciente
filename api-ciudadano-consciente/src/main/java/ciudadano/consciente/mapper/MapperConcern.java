@@ -15,6 +15,7 @@ public interface MapperConcern {
     List<DTOConcern> entityToDto(List<Concern> all);
 
     @Mapping(target = "user", source = "user.userId")
+    @Mapping(target = "username", source = "user.username")
     DTOConcern entityToDto(Concern concern);
 
     @Mapping(target = "user", source = "user")
