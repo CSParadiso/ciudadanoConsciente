@@ -4,4 +4,3 @@ PruebaWeb
 api-ciudadano-consciente/.quarkus/
 .obsidian/
 documentation/RequirementsMeeting.md
-documentation/deploy/.env

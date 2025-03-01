@@ -4,7 +4,7 @@ La idea es poder enviar correos con #Keycloak a través de Google a los usuarios
 1. Establecer correo de Google en el administrador del reino.
    ![[HabilitarEmailEnReinoKeycloak-Paso0.png]]
    ![[HabilitarEmailEnReinoKeycloak-Paso1.png]]
-3. En las configuraciones de la cuenta de Gmail, activar la verificación en dos pasos (es necesario para el siguiente paso)
+2. En las configuraciones de la cuenta de Gmail, activar la verificación en dos pasos (es necesario para el siguiente paso)
    ![[ActivarYConfigurarVerificacionEnDosPasosEnGoogle.png]]
 4. Habilitar contraseña de aplicación para que pueda usar las funciones de la cuenta de Gmail. (https://myaccount.google.com/apppasswords)
    ![[HabilitarPasswordDeApplicacionEnReinoKeycloak.png]]

@@ -30,7 +30,7 @@ quarkus.oidc.client-id=${OIDC_CLIENT_ID}
 quarkus.oidc.credentials.secret=${OIDC_SECRET}
 ```
 ```.env
-# keycloak OIDC
+# En keycloak OIDC 
 REALM=NOMBRE_REINO
 #OIDC_AUTH_SERVER_URL=URL/DEL/SERVIDOR/DE/AUTH/realms/NOMBRE_REINO
 OIDC_CLIENT_ID=NOMBRE_CLIENTE
