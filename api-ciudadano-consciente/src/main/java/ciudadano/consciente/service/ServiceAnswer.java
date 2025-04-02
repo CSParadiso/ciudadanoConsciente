@@ -147,8 +147,8 @@ public class ServiceAnswer {
     Level level = accessLevel.get(levelId)
         .orElseThrow(() -> new HttpNoContentException("Level not found."));
 
-    audit.debug("Verifying if user exists " + userInfo.getPreferredUserName());
-    User user = accessUser.getByUsername(userInfo.getPreferredUserName())
+    audit.debug("Verifying if user exists " + userInfo.getSubject());
+    User user = accessUser.getByAuthServerId(userInfo.getSubject())
         .orElseThrow(() -> new HttpNoContentException("User not found."));
 
     List<Object[]> rawAnswers = accessAnswer.getAllChildrenLevelsAnswersOfUser(level.getLevelId(), user.getUserId());

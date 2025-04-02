@@ -453,13 +453,16 @@
   - refactor: añadido borrado de atributo O-Moderator a través de Keycloak cuando se borra la ORGA.
   - IMAGE BUILD: api-ciudadano-consciente (1.2.11)
 
-- Commit:
+- Commit 0f1cb04:
   - refactor: eliminado ID del path de votes (ahora se recupera el ususario con el token)
   - feat: agregado el atributo username al DTOConcern
   - refactor: corregido el PATCH de votes (ahora el patch verifica bien la autenticacion y niega el estado anterior)
   - refactor: quitados las restricciones de autorizacion para los GET images y model de los CONTENT
   - refactor: comentada la verificación de existencia previa de titulo en reference
   - IMAGE BUILD: api-ciudadano-consciente (1.2.16)
+
+- Commit :
+  - refactor: modificado el endpoint 'https://ciudadano.paradisoft.site/answers/levels/16/childrens/user' de acuerdo al issue #13 (get de answers del usuario viene siempre vacio). Ahora busca usuario por Id del AuthUser y no por el username.
 --- 
 
 --- 
