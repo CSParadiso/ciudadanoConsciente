@@ -4,3 +4,11 @@ PruebaWeb
 api-ciudadano-consciente/.quarkus/
 .obsidian/
 documentation/RequirementsMeeting.md
+documentation/Keycloak/
+documentation/resources/
+documentation/diagrams/
+documentation/PERMISOS.md
+documentation/POST de nuevo User.md
+documentation/imageHandling.json
+documentation/interaccionConProgramadores
+documentation/mapeoUsuariosKC-API.txt

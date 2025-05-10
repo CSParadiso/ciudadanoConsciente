@@ -181,13 +181,12 @@ public class ServiceLevel {
     audit.debug("Retrieve levels of votes.");
     List<Level> paths = new ArrayList<>();
     for (Vote vote : votes) {
-
-      Level level = accessLevel.get(vote.getEntity()).orElseThrow(() -> new HttpNoContentException("Level not found."));
-      // Filtrar levels sin parent
-      if (level.getParent() == null) {
-        paths.add(level);
-      }
-
+      // Solo recupera los levels existentes, si hay paths favoritos que han sido borrados, no los trae
+      accessLevel.get(vote.getEntity()).ifPresent(level -> {
+        if (level.getParent() == null) {
+          paths.add(level);
+        }
+      });
     }
 
     return mapperLevel.entityToPathDto(paths);
