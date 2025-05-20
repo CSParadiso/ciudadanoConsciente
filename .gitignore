@@ -2,6 +2,7 @@
 resources/*
 PruebaWeb
 api-ciudadano-consciente/.quarkus/
+api-ciudadano-consciente/logs
 .obsidian/
 documentation/RequirementsMeeting.md
 documentation/Keycloak/

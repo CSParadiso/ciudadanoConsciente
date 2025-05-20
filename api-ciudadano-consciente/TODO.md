@@ -464,8 +464,9 @@
 - Commit 3dbec50:
   - refactor: modificado el endpoint 'https://ciudadano.paradisoft.site/answers/levels/16/childrens/user' de acuerdo al issue #13 (get de answers del usuario viene siempre vacio). Ahora busca usuario por Id del AuthUser y no por el username.
 
-- Commit :
+- Commit 4f6f1db:
   - bug: modificado el servicio 'getPathsByUserFavorite'. Ahora recupera los paths favoritos que existan (el voto queda aunque el path se haya borrado)
+  - - IMAGE BUILD: api-ciudadano-consciente (1.2.18)
 --- 
 
 --- 
